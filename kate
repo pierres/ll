@@ -1,0 +1,3 @@
+#!/bin/bash
+cd ~/public_html/laber-land/ll/trunk/
+kate *.php modules/*.php pages/*.php modules/highlight/*.php
