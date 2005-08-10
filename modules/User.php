@@ -304,7 +304,7 @@ public function getOnline()
 		}
 	catch (SqlNoDataException $e)
 		{
-		$result = array(array('id' =>null, 'name' =>null));
+		$result = array();
 		}
 
 	return $result;
