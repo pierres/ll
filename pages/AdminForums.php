@@ -54,7 +54,7 @@ protected function setForm()
 			$this->addOutput
 				(
 				AdminFunctions::buildPositionMenu('position['.$forum['id'].']', count($forums), $forum['position']).'
-				<input type="text" name="name['.$forum['id'].']" size="77" value="'.$forum['name'].'" />
+				<input type="text" name="name['.$forum['id'].']" size="74" value="'.$forum['name'].'" />
 				<a href="?page=AdminForumsMove;id='.$this->Board->getId().';forum='.$forum['id'].'"><span class="button">verschieben</span></a>
 				<a href="?page=AdminForumsDel;id='.$this->Board->getId().';forum='.$forum['id'].'"><span class="button" style="background-color:#CC0000">löschen</span></a>
 				<br />
@@ -67,7 +67,7 @@ protected function setForm()
 			$this->addOutput
 				(
 				AdminFunctions::buildPositionMenu('position['.$forum['id'].']', count($forums), $forum['position']).'
-				<input disabled="disabled" type="text" name="name['.$forum['id'].']" size="77" value="'.$forum['name'].'" />
+				<input disabled="disabled" type="text" name="name['.$forum['id'].']" size="74" value="'.$forum['name'].'" />
 				<a href="?page=AdminForumsMove;id='.$this->Board->getId().';forum='.$forum['id'].'"><span class="button">verschieben</span></a>
 				<a href="?page=AdminForumsDelEx;id='.$this->Board->getId().';forum='.$forum['id'].'"><span class="button" style="background-color:#CC6600">löschen</span></a>
 				<br />
@@ -80,7 +80,7 @@ protected function setForm()
 	$this->addOutput
 		(
 		AdminFunctions::buildPositionMenu('newposition', count($forums)+1, count($forums)+1).'
-		<input type="text" name="newname" size="77" value="" />
+		<input type="text" name="newname" size="74" value="" />
 		<a href="?page=AdminForumsEx;id='.$this->Board->getId().';cat='.$this->cat.'"><span class="button">externe Foren hinzufügen</span></a>
 		<br />
 		<textarea name="newdescription" cols="80" rows="4"></textarea>

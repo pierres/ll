@@ -36,7 +36,7 @@ protected function setForm()
 		$this->addOutput
 			(
 			AdminFunctions::buildPositionMenu('position['.$cat['id'].']', count($cats), $cat['position']).'
-			<input type="text" name="name['.$cat['id'].']" size="77" value="'.$cat['name'].'" />
+			<input type="text" name="name['.$cat['id'].']" size="74" value="'.$cat['name'].'" />
 			<a href="?page=AdminForums;id='.$this->Board->getId().';cat='.$cat['id'].'"><span class="button">Foren</span></a>
 			<a href="?page=AdminCatsDel;id='.$this->Board->getId().';cat='.$cat['id'].'"><span class="button" style="background-color:#CC0000">löschen</span></a>
 			<br /><br />
@@ -46,7 +46,7 @@ protected function setForm()
 	$this->addOutput
 		(
 		AdminFunctions::buildPositionMenu('newposition', count($cats)+1, count($cats)+1).'
-		<input type="text" name="newname" size="77" value="" />
+		<input type="text" name="newname" size="74" value="" />
 		');
 	}
 
