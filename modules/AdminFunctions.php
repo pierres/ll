@@ -329,7 +329,31 @@ public static function buildPositionMenu($name, $values, $marked)
 	return $menu.'</select>';
 	}
 
+public static function getUserId($name)
+	{
+	return self::__get('Sql')->fetchValue
+		('
+		SELECT
+			id
+		FROM
+			users
+		WHERE
+			name = \''.self::__get('Sql')->escapeString($name).'\'
+		');
+	}
 
+public static function getUserName($id)
+	{
+	return self::__get('Sql')->fetchValue
+		('
+		SELECT
+			name
+		FROM
+			users
+		WHERE
+			id = '.$id
+		);
+	}
 
 
 }

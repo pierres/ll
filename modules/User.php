@@ -75,44 +75,14 @@ function __construct()
 		}
 	}
 
-public function getId($name = '')
+public function getId()
 	{
-	if(empty($name))
-		{
-		return $this->id;
-		}
-	else
-		{
-		return $this->Sql->fetchValue
-			('
-			SELECT
-				id
-			FROM
-				users
-			WHERE
-				name = \''.$this->Sql->escapeString($name).'\''
-			);
-		}
+	return $this->id;
 	}
 
-public function getName($id = '')
+public function getName()
 	{
-	if(empty($id))
-		{
-		return $this->name;
-		}
-	else
-		{
-		return $this->Sql->fetchValue
-			('
-			SELECT
-				name
-			FROM
-				users
-			WHERE
-				id = '.$id
-			);
-		}
+	return $this->name;
 	}
 
 public function getLevel()
