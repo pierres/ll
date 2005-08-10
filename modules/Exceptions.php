@@ -90,7 +90,7 @@ public function showDebugScreen()
 	{
 	$screen = $this->getDebugScreen();
 	echo $screen;
-	file_put_contents(PATH.'/home/pierre/public_html/errors/'.time().'.html', $screen);
+	file_put_contents(Settings::LOG_DIR.time().'.html', $screen);
 	exit();
 	}
 }

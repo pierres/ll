@@ -22,6 +22,7 @@ const SMTP_HOST 	= '';
 const SMTP_PORT 	= 0;
 const SMTP_USER 	= '';
 const SMTP_PASSWORD 	= '';
+const LOG_DIR 		= '/home/pierre/public_html/ll/tmp/';
 
 }
 
