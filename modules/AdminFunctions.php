@@ -323,7 +323,7 @@ public static function buildPositionMenu($name, $values, $marked)
 
 	for ($i = 1; $i <= $values; $i++)
 		{
-		$menu .= '<option value="'.$i.'"'.($i == $marked ? 'selected="selected"' : '').'>'.$i.'</option>';
+		$menu .= '<option value="'.$i.'"'.($i == $marked ? ' selected="selected"' : '').'>'.$i.'</option>';
 		}
 
 	return $menu.'</select>';
