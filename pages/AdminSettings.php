@@ -50,7 +50,7 @@ protected function setForm()
 
 	try
 		{
-		$admins = $this->Sql->fetchCol
+		$mods = $this->Sql->fetchCol
 			('
 			SELECT
 				users.name
@@ -62,7 +62,7 @@ protected function setForm()
 				AND user_group.groupid = '.$this->Board->getMods()
 			);
 
-		$this->addTextArea('mods', 'Moderatoren', implode("\n", $admins), 80, 5);
+		$this->addTextArea('mods', 'Moderatoren', implode("\n", $mods), 80, 5);
 		}
 	catch (SqlNoDataException $e)
 		{
@@ -166,9 +166,9 @@ private function updateMods()
 			Gleichzeitiger Zugriff könnte Überscheindung zur Folge haben -> Tabellen sperren
 			Das hilft so aber auch nciht unbedingt viel :-(
 		*/
-		$this->Sql->query('LOCK TABLES user_group WRITE');
+		$this->Sql->query('LOCK TABLES user_group WRITE, boards WRITE');
 		$groupid = $this->Sql->fetchValue('SELECT MAX(groupid) FROM user_group') + 1;
-		$this->Sql->query('INSERT INTO boards SET mods = '.$groupid.' WHERE id = '.$this->Board->getId());
+		$this->Sql->query('UPDATE boards SET mods = '.$groupid.' WHERE id = '.$this->Board->getId());
 		}
 	else
 		{
@@ -203,9 +203,9 @@ private function updateAdmins()
 	if ($this->Board->getAdmins() == 0 && !empty($this->admins))
 		{
 		/** FIXME: Gleichzeitiger Zugriff könnte Überscheindung zur Folge haben -> Tabellen sperren */
-		$this->Sql->query('LOCK TABLES user_group WRITE');
+		$this->Sql->query('LOCK TABLES user_group WRITE, boards WRITE');
 		$groupid = $this->Sql->fetchValue('SELECT MAX(groupid) FROM user_group') + 1;
-		$this->Sql->query('INSERT INTO boards SET admins = '.$groupid.' WHERE id = '.$this->Board->getId());
+		$this->Sql->query('UPDATE boards SET admins = '.$groupid.' WHERE id = '.$this->Board->getId());
 		}
 	else
 		{

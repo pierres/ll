@@ -56,6 +56,7 @@ protected function setForm()
 				AdminFunctions::buildPositionMenu('position['.$forum['id'].']', count($forums), $forum['position']).'
 				<input type="text" name="name['.$forum['id'].']" size="74" value="'.$forum['name'].'" />
 				<a href="?page=AdminForumsMove;id='.$this->Board->getId().';forum='.$forum['id'].'"><span class="button">verschieben</span></a>
+				<a href="?page=AdminForumsMods;id='.$this->Board->getId().';forum='.$forum['id'].'"><span class="button">Moderatoren</span></a>
 				<a href="?page=AdminForumsDel;id='.$this->Board->getId().';forum='.$forum['id'].'"><span class="button" style="background-color:#CC0000">löschen</span></a>
 				<br />
 				<textarea name="description['.$forum['id'].']" cols="80" rows="4">'.$forum['description'].'</textarea>
