@@ -94,7 +94,7 @@ protected function sendForm()
 
 	foreach($forums as $forum => $value)
 		{
-		$position = $this->Sql->fetchValue('SELECT MAX(position)+1 FROM forum_cat WHERE catid = '.$this->cat);
+		$position = $this->Sql->fetchValue('SELECT COUNT(*)+1 FROM forum_cat WHERE catid = '.$this->cat);
 
 		$this->Sql->query
 			('
