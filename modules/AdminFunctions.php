@@ -317,7 +317,17 @@ public static function updateForum($forum)
 		);
 	}
 
+public static function buildPositionMenu($name, $values, $marked)
+	{
+	$menu = '<select name="'.$name.'">';
 
+	for ($i = 1; $i <= $values; $i++)
+		{
+		$menu .= '<option value="'.$i.'"'.($i == $marked ? 'selected="selected"' : '').'>'.$i.'</option>';
+		}
+
+	return $menu.'</select>';
+	}
 
 
 
