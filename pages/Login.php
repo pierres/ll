@@ -22,7 +22,7 @@ protected function setForm()
 
 	if(!$this->Io->getEnv('HTTPS'))
 		{
-		$tls = '<a href="https://'.$this->Io->getEnv('HTTP_HOST').'/?page=Login;id='.$this->Board->getId().'"><span class="button">TLS-Verschlüsselung</span></a> ';
+		$tls = '<br /><a href="https://'.$this->Io->getEnv('HTTP_HOST').'/?page=Login;id='.$this->Board->getId().'"><span class="button">TLS-Verschlüsselung</span></a> ';
 		}
 	else
 		{
