@@ -27,11 +27,11 @@ table     	{
 .frame		{
 		border-style:solid;
 		border-width:1px;
-		border-color:#000000;
+		border-color:#182263;
 		}
 
 .button		{
-		background-color:#737373;
+		background-color:#6c83af;
 		color:#FFFFFF;
 		font-size:10px;
 		font-family:sans-serif;
@@ -87,6 +87,7 @@ table     	{
 		width:150px;
 		height:132px;
 		}
+#logo:hover{cursor:pointer;}
 
 #title		{
 		padding-left:250px;
@@ -219,7 +220,7 @@ table     	{
 .title		{
 		color:#ffffff;
 		font-size:12px;
-		background-color:#737373;
+		background-color:#182263;
 		text-align:center;
 		padding-top:2px;
 		padding-bottom:2px;
@@ -254,8 +255,8 @@ table     	{
 
 .newthread:before{
 		content:"neu";
-		background-color:#FFCC00;
-		color:#182263;
+		background-color:#3366CC;
+		color:#FFFFFF;
 		font-size:10px;
 		font-family:sans-serif;
 		padding-left:4px;
@@ -374,7 +375,7 @@ input		{
 		background-color:#dbdbdb;
 		border-style:solid;
 		border-width:1px;
-		border-color:#000000;
+		border-color:#182263;
 		}
 
 textarea	{
@@ -384,7 +385,7 @@ textarea	{
 		background-color:#dbdbdb;
 		border-style:solid;
 		border-width:1px;
-		border-color:#000000;
+		border-color:#182263;
 		}
 
 select		{
@@ -394,7 +395,7 @@ select		{
 		background-color:#dbdbdb;
 		border-style:solid;
 		border-width:1px;
-		border-color:#000000;
+		border-color:#182263;
 		}
 
 .avatar 	{
@@ -416,7 +417,7 @@ select		{
 		max-height:300px;
 		border-style:solid;
 		border-width:1px;
-		border-color:#000000;
+		border-color:#182263;
 		}
 
 .image:hover	{

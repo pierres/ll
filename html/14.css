@@ -39,7 +39,7 @@ table     	{
 		padding-right:5px;
 		padding-top:0px;
 		padding-bottom:0px;
-		margin:2px;
+		margin:0px;
 		border-style:dotted;
 		border-color:#182263;
 		border-width:1px;
@@ -82,10 +82,10 @@ table     	{
 
 #logo		{
 		float:left;
-		background-image:url(../images/logo.png);
+		background-image:url(http://home.arcor.de/fu924/ytmtitle.jpg);
 		background-repeat:no-repeat;
-		width:150px;
-		height:111px;
+		width:560px;
+		height:56px;
 		}
 
 #title		{
@@ -93,6 +93,7 @@ table     	{
 		padding-top:10px;
 		font-size:16px;
 		font-weight:bold;
+text-align:right;
 		}
 
 #welcome	{
@@ -100,6 +101,7 @@ table     	{
 		padding-top:20px;
 		font-size:12px;
 		font-weight:bold;
+text-align:right;
 		}
 
 #menu		{

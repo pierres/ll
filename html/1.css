@@ -87,6 +87,7 @@ table     	{
 		width:150px;
 		height:111px;
 		}
+#logo:hover{cursor:pointer;}
 
 #title		{
 		padding-left:250px;
