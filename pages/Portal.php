@@ -40,8 +40,8 @@ public function prepare()
 		'
 		<table>
 			<tr>
-				<td style="vertical-align:top;">
-					<table class="frame">
+				<td style="vertical-align:top;width:200px;">
+					<table class="frame" style="width:100%;">
 						<tr>
 							<td class="title">
 								Mitglieder-Foren
@@ -78,7 +78,7 @@ public function prepare()
 						</tr>
 					</table>
 				</td>
-				<td style="vertical-align:top;padding-left:12px;;padding-right:12px;">
+				<td style="vertical-align:top;padding-left:12px;padding-right:12px;">
 					<table class="frame" style="margin-bottom:20px;width:100%;">
 						<tr>
 							<td class="title">
@@ -93,8 +93,8 @@ public function prepare()
 					</table>
 					'.$this->getNews($forum).'
 				</td>
-				<td style="vertical-align:top;">
-					<table class="frame">
+				<td style="vertical-align:top;width:250px;">
+					<table class="frame" style="width:100%;">
 						<tr>
 							<td class="title">
 								Aktuelle Themen
@@ -272,6 +272,8 @@ private function getRecent()
 
 	foreach ($threads as $thread)
 		{
+		$thread['name'] = cutString($thread['name'], 28);
+
 		if ($this->User->isOnline() && $this->Log->isNew($thread['id'], $thread['lastdate']))
 			{
 			$thread['name'] = '<span class="newthread">'.$thread['name'].'</span>';
@@ -312,7 +314,7 @@ private function getBoards()
 
 	foreach ($boards as $board)
 		{
-		$result .= '<li style="margin-bottom:5px;"><a href="?page=Forums;id='.$board['id'].'">'.$board['name'].'</a></li>';
+		$result .= '<li style="margin-bottom:5px;"><a href="?page=Forums;id='.$board['id'].'">'.cutString($board['name'], 25).'</a></li>';
 		}
 
 	return $result.'</ul>';
