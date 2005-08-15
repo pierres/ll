@@ -4,7 +4,7 @@
 class Settings{
 
 const DOMAIN		= 'localhost';
-const SQL_DATABASE 	= 'current';
+const SQL_DATABASE 	= 'develop';
 const SQL_USER		= '';
 const SQL_PASSWORD	= '';
 const LOG_TIMEOUT 	= 140;

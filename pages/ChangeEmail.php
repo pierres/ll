@@ -39,6 +39,25 @@ protected function checkForm()
 		{
 		$this->showWarning('Du hast Dich vertippt!');
 		}
+
+	try
+		{
+		$this->Sql->fetchValue
+			('
+			SELECT
+				id
+			FROM
+				users
+			WHERE
+				email = \''.$this->Sql->escapeString($this->email).'\''
+			);
+		}
+	catch (SqlNoDataException $e)
+		{
+		return;
+		}
+
+	$this->showWarning('E-Mail-Adresse bereits vergeben!');
 	}
 
 protected function sendForm()
