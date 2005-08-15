@@ -28,7 +28,6 @@ public function prepare()
 			SELECT
 				name,
 				type,
-				size,
 				content
 			FROM
 				files
@@ -44,10 +43,18 @@ public function prepare()
 
 public function show()
 	{
-	header('Pragma: public');
+	If (strpos($this->Io->getEnv('HTTP_ACCEPT_ENCODING'), 'gzip') !== false)
+		{
+		header('Content-Encoding: gzip');
+		}
+	else
+		{
+		$this->data['content'] = gzdecode($this->data['content']);
+		}
+
 	header('Content-Type: '.$this->data['type'].'; name='.$this->data['name']);
 	header('Content-Disposition: inline; filename="'.$this->data['name'].'"');
-	header('Content-length: '.$this->data['size']);
+	header('Content-length: '.strlen($this->data['content']));
 
 	echo $this->data['content'];
 	exit();

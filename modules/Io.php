@@ -24,7 +24,7 @@ function __construct()
 		die('"magic_quotes_gpc" ist aktiviert!');
 		}
 
-	if (isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/xhtml+xml') !== false)
+	if (strpos($this->getEnv('HTTP_ACCEPT'), 'application/xhtml+xml') !== false)
 		{
 		$this->contentType = 'Content-Type: application/xhtml+xml; charset=UTF-8';
 		}

@@ -59,4 +59,9 @@ function cutString($string, $length)
 	return (strlen($string) > $length ? substr($string, 0, ($length-3)).'...' : $string);
 	}
 
+function gzdecode($string)
+	{
+	return gzinflate(substr($string, 10));
+	}
+
 ?>

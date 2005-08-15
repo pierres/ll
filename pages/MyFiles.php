@@ -141,7 +141,7 @@ protected function sendForm()
 			name = \''.$this->Sql->formatString($this->file['name']).'\',
 			type = \''.$this->Sql->formatString($this->file['type']).'\',
 			size = '.intval($this->file['size']).',
-			content = \''.$this->Sql->escapeString(file_get_contents($this->file['tmp_name'])).'\',
+			content = \''.$this->Sql->escapeString(gzencode(file_get_contents($this->file['tmp_name']), 9)).'\',
 			userid = '.$this->User->getId().',
 			uploaded = '.time()
 		);
