@@ -89,6 +89,26 @@ $last = ($post > 0 ? '<a href="?page=PrivatePostings;id='.$this->Board->getId().
 
 $this->Log->insert($thread['id'], $thread['lastdate']);
 
+
+$recipients = $this->Sql->fetch
+	('
+	SELECT
+		users.id,
+		users.name
+	FROM
+		users,
+		thread_user
+	WHERE
+		thread_user.threadid ='.$thread['id'].'
+		AND thread_user.userid = users.id
+	');
+
+$users = array();
+foreach ($recipients as $recipient)
+	{
+	$users[] = '<a href="?page=ShowUser;id='.$this->Board->getId().';user='.$recipient['id'].'">'.$recipient['name'].'</a>';
+	}
+
 try
 	{
 	$result = $this->Sql->fetch
@@ -232,7 +252,10 @@ $body =
 			<td class="pages">
 				'.$last.$pages.$next.'&nbsp;
 			</td>
-			<td class="pages" colspan="2" style="text-align:right">
+			<td class="pages">
+			Schon dabei: '.implode(', ', $users).'
+			</td>
+			<td class="pages" style="text-align:right">
 				'.$reply_button.'
 			</td>
 		</tr>
