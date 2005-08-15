@@ -86,6 +86,8 @@ protected function sendForm()
 			smilies ='.($this->smilies ? 1 : 0)
 		);
 
+	$this->sendFile();
+
 	$this->UpdateThread();
 	$this->updateForum();
 

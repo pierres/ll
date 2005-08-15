@@ -1,7 +1,7 @@
 <?php
 
 
-class PrivatePostings extends Page{
+class PrivatePostings extends Postings{
 
 
 public function prepare(){
@@ -122,6 +122,7 @@ try
 			posts.dat,
 			posts.editdate,
 			posts.editby,
+			posts.file,
 			editors.name AS editorname,
 			posts.text
 		FROM
@@ -186,6 +187,15 @@ foreach ($result as $data)
 
 	$avatar = (empty($data['avatar']) ? '' : '<img src="'.$data['avatar'].'" class="avatar" alt="" />');
 
+	if ($data['file'] == 1)
+		{
+		$files = $this->getFiles($data['id']);
+		}
+	else
+		{
+		$files = '';
+		}
+
 	$posts .=
 		'
 		<tr>
@@ -201,7 +211,7 @@ foreach ($result as $data)
 		</tr>
 		<tr>
 			<td '.$style.' rowspan="2" colspan="2">
-				'.$data['text'].'
+				'.$data['text'].$files.'
 			</td>
 		</tr>
 		<tr>
