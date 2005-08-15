@@ -179,7 +179,87 @@ protected function sendForm()
 			id = '.$this->post
 		);
 
+	$this->sendFile();
+
 	$this->redirect();
+	}
+
+protected function sendFile()
+	{
+	if($this->User->isOnline() && $this->Io->isRequest('addfile'))
+		{
+		$files = $this->Io->getArray();
+
+		$this->Sql->query
+			('
+			DELETE FROM
+				post_file
+			WHERE
+				postid = '.$this->post
+			);
+
+		$this->Sql->query
+			('
+			UPDATE
+				posts
+			SET
+				file = 0
+			WHERE
+				id ='.$this->post
+			);
+
+		if (empty($files))
+			{
+			return;
+			}
+
+		$success = false;
+
+		foreach($files as $file => $blubb)
+			{
+			try
+				{
+				$this->Sql->fetchValue
+					('
+					SELECT
+						id
+					FROM
+						files
+					WHERE
+						id = '.intval($file).'
+						AND userid = '.$this->User->getId()
+					);
+				}
+			catch (SqlNoDataException $e)
+				{
+				continue;
+				}
+
+			$this->Sql->query
+				('
+				INSERT INTO
+					post_file
+				SET
+					postid = '.$this->post.',
+					fileid = '.intval($file)
+				);
+
+			$success = true;
+			}
+
+		if ($success)
+			{
+			$this->Sql->query
+				('
+				UPDATE
+					posts
+				SET
+					file = 1
+				WHERE
+					id ='.$this->post
+				);
+			}
+		}
 	}
 
 }
