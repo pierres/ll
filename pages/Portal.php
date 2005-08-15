@@ -4,19 +4,19 @@
 
 class Portal extends Page{
 
-
+private $forum;
 
 public function prepare()
 	{
 	try
 		{
-		$forum = $this->Io->getInt('forum');
+		$this->forum = $this->Io->getInt('forum');
 		}
 	catch (IoRequestException $e)
 		{
 		try
 			{
-			$forum = $this->Sql->fetchValue
+			$this->forum = $this->Sql->fetchValue
 				('
 				SELECT
 					id
@@ -91,7 +91,7 @@ public function prepare()
 							</td>
 						</tr>
 					</table>
-					'.$this->getNews($forum).'
+					'.$this->getNews().'
 				</td>
 				<td style="vertical-align:top;width:250px;">
 					<table class="frame" style="width:100%;">
@@ -127,7 +127,7 @@ public function prepare()
 	$this->setValue('body', $body);
 	}
 
-private function getNews($forum)
+private function getNews()
 	{
 	try
 		{
@@ -145,7 +145,7 @@ private function getNews($forum)
 					LEFT JOIN posts
 					ON posts.threadid = threads.id AND posts.dat = threads.firstdate
 			WHERE
-				threads.forumid = '.$forum.'
+				threads.forumid = '.$this->forum.'
 				AND threads.forumid != 0
 				AND threads.deleted = 0
 			ORDER BY
@@ -235,6 +235,7 @@ private function getRecent()
 					WHERE
 						deleted = 0
 						AND forumid != 0
+						AND forumid != '.$this->forum.'
 				)
 				ORDER BY
 					lastdate DESC
@@ -256,6 +257,7 @@ private function getRecent()
 				WHERE
 					deleted = 0
 					AND forumid != 0
+					AND forumid != '.$this->forum.'
 				ORDER BY
 					lastdate DESC
 				LIMIT
