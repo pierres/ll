@@ -189,7 +189,6 @@ foreach ($result as $data)
 		}
 
 	$postid = $data['id'];
-	$null = '';
 
 	$data['dat'] = formatDate($data['dat']);
 

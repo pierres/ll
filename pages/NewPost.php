@@ -58,12 +58,12 @@ protected function checkInput()
 			SELECT
 				id,
 				forumid,
-				closed,
-				deleted
+				closed
 			FROM
 				threads
 			WHERE
-				forumid <> 0
+				forumid != 0
+				AND deleted = 0
 				AND id = '.$this->Io->getInt('thread')
 			);
 		}
@@ -74,11 +74,6 @@ protected function checkInput()
 	catch (SqlNoDataException $e)
 		{
 		$this->showFailure('Thema nicht gefunden!');
-		}
-
-	if ($data['deleted'] != 0)
-		{
-		$this->showFailure('Thema wurde gelöscht!');
 		}
 
 	if ($data['closed'] != 0)
@@ -125,7 +120,7 @@ protected function sendForm()
 		{
 		if (!$this->Io->isEmpty('name'))
 			{
-			$username = $this->Io->getString('name');
+			$username = $this->Io->getHtml('name');
 			}
 		else
 			{
@@ -145,7 +140,7 @@ protected function sendForm()
 		SET
 			threadid = '.$this->thread.',
 			userid = '.$userid.',
-			username = \''.$this->Sql->formatString($username).'\',
+			username = \''.$this->Sql->escapeString($username).'\',
 			text = \''.$this->Sql->escapeString($this->text).'\',
 			dat = '.$this->time.',
 			smilies ='.($this->smilies ? 1 : 0)

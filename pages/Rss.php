@@ -26,6 +26,7 @@ public function prepare()
 					ON posts.threadid = threads.id AND posts.dat = threads.lastdate
 			WHERE
 				threads.deleted = 0
+				AND threads.forumid != 0
 			ORDER BY
 				threads.id DESC
 			LIMIT

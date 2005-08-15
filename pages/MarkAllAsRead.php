@@ -17,7 +17,8 @@ public function prepare()
 				FROM
 					threads
 				WHERE
-					lastdate > '.(time() - (86400 * Settings::LOG_TIMEOUT))
+					forumid != 0
+					AND lastdate > '.(time() - (86400 * Settings::LOG_TIMEOUT))
 				);
 			}
 		catch (SqlNoDataException $e)

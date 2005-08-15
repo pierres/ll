@@ -23,6 +23,7 @@ public function prepare()
 				threads
 			WHERE
 				threads.deleted = 0
+				AND threads.forumid != 0
 			ORDER BY
 				threads.id DESC
 			LIMIT

@@ -27,6 +27,7 @@ public function prepare()
 					threads
 				WHERE
 					forumid = '.$forum.'
+					AND forumid != 0
 					AND lastdate > '.(time() - (86400 * Settings::LOG_TIMEOUT))
 				);
 			}

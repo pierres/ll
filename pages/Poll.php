@@ -6,9 +6,13 @@ private $id 		= 0;
 private $question 	= '';
 private $options 	= array();
 
+private $target 	= '';
 
-public function __construct($pollid = 0)
+
+public function __construct($pollid = 0, $target = 'Postings')
 	{
+	$this->target = ($this->Io->isRequest('target') ? $this->Io->getString('target') : $target);
+
 	parent::__construct();
 
 	if ($pollid == 0)
@@ -27,6 +31,30 @@ public function __construct($pollid = 0)
 
 	try
 		{
+		$forum = $this->Sql->fetchValue
+			('
+			SELECT
+				forumid
+			FROM
+				threads
+			WHERE
+				id = '.$this->id
+			);
+
+		if ($forum == 0)
+			{
+			$this->Sql->fetchValue
+				('
+				SELECT
+					userid
+				FROM
+					thread_user
+				WHERE
+					userid = '.$this->User->getId().'
+					AND threadid = '.$this->id
+				);
+			}
+
 		$this->question = $this->Sql->fetchValue
 			('
 			SELECT
@@ -151,7 +179,7 @@ private function showForm()
 		'
 		<tr>
 			<td colspan="3" style="padding:0px;">
-			<form method="post" action="?page=Poll;id='.$this->Board->getId().';thread='.$this->id.'">
+			<form method="post" action="?page=Poll;id='.$this->Board->getId().';thread='.$this->id.';target='.$this->target.'">
 				<table style="width:100%">
 					<tr>
 						<td class="title" colspan="2">
@@ -217,9 +245,9 @@ public function prepare()
 		}
 	}
 
-private function reload()
+protected function reload()
 	{
-	$this->Io->redirect('Postings', 'thread='.$this->id);
+	$this->Io->redirect($this->target, 'thread='.$this->id);
 	}
 
 public function show()

@@ -56,7 +56,7 @@ protected function sendForm()
 			regdate = '.time()
 		);
 
-	$id = $this->Sql->fetchValue('SELECT LAST_INSERT_ID()');
+	$id = $this->Sql->insertId();
 
 	$this->Sql->query
 		('
@@ -67,7 +67,7 @@ protected function sendForm()
 			boardid ='. $id
 		);
 
-	$cat = $this->Sql->fetchValue('SELECT LAST_INSERT_ID()');
+	$cat = $this->Sql->insertId();
 
 	$this->Sql->query
 		('

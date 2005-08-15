@@ -151,6 +151,18 @@ public function redirect($class, $param = '', $id = 0)
 	exit();
 	}
 
+public function getFile($name)
+	{
+	if (isset($_FILES[$name]) && is_uploaded_file($_FILES[$name]['tmp_name']))
+		{
+		return $_FILES[$name];
+		}
+	else
+		{
+		throw new IoException('Datei nicht korrekt empfangen');
+		}
+	}
+
 }
 
 

@@ -338,7 +338,7 @@ public static function getUserId($name)
 		FROM
 			users
 		WHERE
-			name = \''.self::__get('Sql')->escapeString($name).'\'
+			name = \''.self::__get('Sql')->FormatString($name).'\'
 		');
 	}
 

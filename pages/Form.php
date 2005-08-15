@@ -5,14 +5,16 @@ abstract class Form extends Page{
 
 
 protected $elements 	= array();
-protected $descriptions 	= array();
+protected $descriptions = array();
 protected $buttons 	= array();
 protected $hidden 	= array();
 
 protected $warning	= array();
 protected $required 	= array();
 
-protected $focus		= '';
+protected $focus	= '';
+
+private $encoding 	= '';
 
 
 public function prepare()
@@ -51,11 +53,16 @@ protected function checkForm()
 	{
 	}
 
+protected function setEncoding($type)
+	{
+	$this->encoding = $type;
+	}
+
 protected function showForm()
 	{
 	$body =
 		$this->getWarning().'
-		<form method="post" action="?page='.$this->getName().';id='.$this->Board->getId().'">
+		<form '.$this->encoding.' method="post" action="?page='.$this->getName().';id='.$this->Board->getId().'">
 			<table class="frame">
 				<tr>
 					<td class="title">

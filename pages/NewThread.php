@@ -13,7 +13,7 @@ protected $title 		= 'Neues Thema erstellen';
 
 protected function setForm()
 	{
-	/** FIXME: Das machen wir zweimal um das Thema opben zu haben...sollte man in Form beheben */
+	/** FIXME: Das machen wir zweimal um das Thema oben zu haben...sollte man in Form beheben */
 	try
 		{
 		$this->topic = $this->Io->getString('topic');

@@ -146,6 +146,7 @@ private function getNews($forum)
 					ON posts.threadid = threads.id AND posts.dat = threads.firstdate
 			WHERE
 				threads.forumid = '.$forum.'
+				AND threads.forumid != 0
 				AND threads.deleted = 0
 			ORDER BY
 				threads.id DESC
@@ -213,6 +214,7 @@ private function getRecent()
 				threads
 			WHERE
 				deleted = 0
+				AND forumid != 0
 			ORDER BY
 				threads.lastdate DESC
 			LIMIT

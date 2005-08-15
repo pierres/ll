@@ -1,7 +1,7 @@
 <?php
 
 
-class QuotePost extends NewPost{
+class QuotePrivatePost extends NewPrivatePost{
 
 
 protected $title = 'Beitrag zitieren';
@@ -17,17 +17,16 @@ protected function checkInput()
 			SELECT
 				posts.id AS post,
 				threads.id AS thread,
-				threads.forumid,
 				posts.text,
 				posts.username
 			FROM
 				posts,
-				threads
+				threads,
+				thread_user
 			WHERE
-				posts.deleted = 0
-				AND threads.closed = 0
-				AND threads.deleted = 0
-				AND threads.forumid != 0
+				threads.forumid = 0
+				AND thread_user.threadid = threads.id
+				AND thread_user.userid = '.$this->User->getId().'
 				AND posts.threadid = threads.id
 				AND posts.id = '.$this->Io->getInt('post')
 			);
@@ -38,13 +37,12 @@ protected function checkInput()
 		}
 	catch (SqlNoDataException $e)
 		{
-		$this->showFailure('Beitrag nicht gefunden oder Thema geschlossen!');
+		$this->showFailure('Beitrag nicht gefunden!');
 		}
 
 	$this->text = '<quote='.unhtmlspecialchars($data['username']).'>'.$this->UnMarkup->fromHtml($data['text']).'</quote>'."\n\n";
 
 	$this->thread = $data['thread'];
-	$this->forum = $data['forumid'];
 
 	$this->addHidden('post', $data['post']);
 	}

@@ -47,7 +47,15 @@ catch (SqlNoDataException $e)
 
 $cat 		= 0;
 $catheader 	= '';
-$forums 	= '';
+
+if ($this->User->isOnline())
+	{
+	$forums = $this->getPrivateThreads();
+	}
+else
+	{
+	$forums = '';
+	}
 
 foreach ($result as $data)
 	{
@@ -166,6 +174,95 @@ $body =
 $this->setValue('title', $this->Board->getName());
 $this->setValue('body', $body);
 }
+
+
+private function getPrivateThreads()
+	{
+	try
+		{
+		$data = $this->Sql->fetchRow
+			('
+			SELECT
+				threads.id AS lastthread,
+				threads.lastusername,
+				threads.lastuserid,
+				threads.lastdate,
+				threads.name AS threadname
+			FROM
+				threads,
+				thread_user
+			WHERE
+				threads.forumid = 0
+				AND thread_user.threadid = threads.id
+				AND thread_user.userid = '.$this->User->getId().'
+			ORDER BY
+				threads.lastdate DESC
+			');
+
+		$count = $this->Sql->fetchRow
+			('
+			SELECT
+				COUNT(*) AS threads,
+				SUM(posts) AS posts
+			FROM
+				threads,
+				thread_user
+			WHERE
+				threads.forumid = 0
+				AND thread_user.threadid = threads.id
+				AND thread_user.userid = '.$this->User->getId()
+			);
+
+		$data['posts'] = $count['posts'];
+		$data['threads'] = $count['threads'];
+		}
+	catch (SqlNoDataException $e)
+		{
+		$data['lastthread'] = '';
+		$data['lastusername'] = '';
+		$data['lastuserid'] = 0;
+		$data['posts'] = 0;
+		$data['lastdate'] = 0;
+		$data['threads'] = 0;
+		$data['threadname'] = '';
+		}
+
+
+	$icon = ($this->Log->isNew($data['lastthread'], $data['lastdate']) ? '<span class="new"></span>' : '<span class="old"></span>');
+
+	$data['lastdate'] = formatDate($data['lastdate']);
+
+	$lastposter =
+		(empty($data['lastuserid'])
+		? (empty($data['lastusername']) ? '' : 'von '.$data['lastusername'])
+		: 'von <a href="?page=ShowUser;id='.$this->Board->getId().';user='.$data['lastuserid'].'">'.$data['lastusername'].'</a>'
+		);
+
+	return
+		'
+		<tr>
+			<td class="iconcol">
+				'.$icon.'
+			</td>
+			<td class="forumcol">
+				<div class="forumtitle"><a href="?page=PrivateThreads;id='.$this->Board->getId().'">Private Themen</a></div>
+				<div class="forumdescr">Hier kannst Du Dich mit anderen Mitgliedern in einem privaten Bereich unterhalten.</div>
+			</td>
+			<td class="countcol">
+				'.$data['threads'].'
+			</td>
+			<td class="countcol">
+				'.$data['posts'].'
+			</td>
+			<td class="lastpost">
+				<div><a href="?page=PrivatePostings;id='.$this->Board->getId().';thread='.$data['lastthread'].';post=-1">'.cutString($data['threadname'], 20).'</a></div>
+				<div>'.$lastposter.'</div>
+				<div>'.$data['lastdate'].'</div>
+			</td>
+		</tr>
+		';
+	}
+
 }
 
 
