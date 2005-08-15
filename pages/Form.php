@@ -53,11 +53,6 @@ protected function checkForm()
 	{
 	}
 
-protected function setEncoding($type)
-	{
-	$this->encoding = $type;
-	}
-
 protected function showForm()
 	{
 	$body =
@@ -134,6 +129,21 @@ protected function isSubmit()
 		}
 
 	return false;
+	}
+
+protected function addFile($name, $description, $cols = 80)
+	{
+	$this->addElement($name, '<label for="id'.$name.'">'.$description.'</label><br /><input id="id'.$name.'" type="file" name="'.$name.'" size="'.$cols.'" />');
+	$this->descriptions[$name] = $description;
+
+	if(empty($this->focus))
+		{
+		$this->focus = $name;
+		}
+
+	$this->encoding = 'enctype="multipart/form-data"';
+
+	return $name;
 	}
 
 protected function addCheckbox($name, $description, $checked = false)

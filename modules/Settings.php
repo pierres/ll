@@ -24,6 +24,10 @@ const SMTP_USER 	= '';
 const SMTP_PASSWORD 	= '';
 const LOG_DIR 		= '/home/pierre/public_html/ll/tmp/';
 
+const FILE_SIZE		= 524288;
+const QUOTA		= 1048576;
+const FILES		= 50;
+
 }
 
 ?>

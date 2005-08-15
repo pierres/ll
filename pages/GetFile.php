@@ -7,6 +7,11 @@ private $data = array();
 
 public function prepare()
 	{
+	if (!$this->User->isOnline())
+		{
+		$this->showFailure('Nur für Mitglieder!');
+		}
+
 	try
 		{
 		$file = $this->Io->getInt('file');
