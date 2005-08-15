@@ -9,7 +9,7 @@ public function prepare()
 	{
 	if (!$this->User->isOnline())
 		{
-		$this->showFailure('Nur für Mitglieder!');
+		$this->showWarning('Nur für Mitglieder!');
 		}
 
 	try
