@@ -50,7 +50,7 @@ public function setContentType($type)
 
 public function setCookie($key, $value, $maxage = null)
 	{
-	setcookie ($key, $value, $maxage, '/', '.'.Settings::DOMAIN);
+	setcookie ($key, $value, $maxage);//, '/', '.'.Settings::DOMAIN);
 	}
 
 public function out(&$text)

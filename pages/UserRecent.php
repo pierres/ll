@@ -51,7 +51,6 @@ public function prepare()
 				posts
 			WHERE
 				threads.forumid = forums.id
-				AND threads.lastdate > '.(time()-(86400*Settings::SESSION_TIMEOUT)).'
 				AND threads.deleted = 0
 				AND posts.threadid = threads.id
 				AND posts.userid = '.$user.'

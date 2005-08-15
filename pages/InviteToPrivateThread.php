@@ -101,7 +101,7 @@ protected function sendForm()
 			);
 		}
 
-	$this->Io->redirect('InviteToPrivateThread', 'thread='.$this->thread);
+	$this->Io->redirect('PrivatePostings', 'thread='.$this->thread);
 	}
 
 }
