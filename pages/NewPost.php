@@ -47,6 +47,116 @@ protected function setForm()
 	$this->setLength('text', 3, 65536);
 
 	$this->addCheckbox('smilies', 'grafische Smilies', $this->smilies);
+
+	$this->setFile();
+	}
+
+protected function setFile()
+	{
+	if ($this->User->isOnline())
+		{
+		if (($this->Io->isRequest('addfile')) && !$this->Io->isRequest('nofile'))
+			{
+			$this->addButton('nofile', 'keine Dateien');
+
+			try
+				{
+				$files = $this->Sql->fetch
+					('
+					SELECT
+						id,
+						name
+					FROM
+						files
+					WHERE
+						userid = '.$this->User->getId().'
+					ORDER BY
+						id DESC
+					');
+				}
+			catch (SqlNoDataException $e)
+				{
+				$files = array();
+				}
+
+			$this->addOutput('<br />Dateien auswählen:<br /><br />');
+
+			foreach ($files as $file)
+				{
+				$this->addCheckbox('files['.$file['id'].']', '<a onclick="openLink(this)" class="link" href="?page=GetFile;file='.$file['id'].'">'.$file['name'].'</a>');
+				}
+
+			$this->addOutput('<br />');
+
+			$this->addHidden('addfile', 1);
+			}
+		else
+			{
+			$this->addButton('addfile', 'Dateien');
+			}
+		}
+	}
+
+protected function sendFile()
+	{
+	if($this->User->isOnline() && $this->Io->isRequest('addfile'))
+		{
+		$files = $this->Io->getArray();
+
+		if (empty($files))
+			{
+			return;
+			}
+
+		$postid = $this->Sql->insertId();
+
+		$success = false;
+
+		foreach($files as $file => $blubb)
+			{
+			try
+				{
+				$this->Sql->fetchValue
+					('
+					SELECT
+						id
+					FROM
+						files
+					WHERE
+						id = '.intval($file).'
+						AND userid = '.$this->User->getId()
+					);
+				}
+			catch (SqlNoDataException $e)
+				{
+				continue;
+				}
+
+			$this->Sql->query
+				('
+				INSERT INTO
+					post_file
+				SET
+					postid = '.$postid.',
+					fileid = '.intval($file)
+				);
+
+			$success = true;
+			}
+
+		if ($success)
+			{
+			$this->Sql->query
+				('
+				UPDATE
+					posts
+				SET
+					file = 1
+				WHERE
+					id ='.$postid
+				);
+			}
+		}
 	}
 
 protected function checkInput()
@@ -145,6 +255,8 @@ protected function sendForm()
 			dat = '.$this->time.',
 			smilies ='.($this->smilies ? 1 : 0)
 		);
+
+	$this->sendFile();
 
 	$this->UpdateThread();
 	$this->updateForum();

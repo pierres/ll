@@ -143,6 +143,7 @@ try
 			posts.dat,
 			posts.editdate,
 			posts.editby,
+			posts.file,
 			editors.name AS editorname,
 			posts.text
 		FROM
@@ -257,6 +258,15 @@ foreach ($result as $data)
 
 	$avatar = (empty($data['avatar']) ? '' : '<img src="'.$data['avatar'].'" class="avatar" alt="" />');
 
+	if ($data['file'] == 1)
+		{
+		$files = $this->getFiles($data['id']);
+		}
+	else
+		{
+		$files = '';
+		}
+
 	$posts .=
 		'
 		<tr>
@@ -272,7 +282,7 @@ foreach ($result as $data)
 		</tr>
 		<tr>
 			<td '.$style.' rowspan="2" colspan="2">
-				'.$data['text'].'
+				'.$data['text'].$files.'
 			</td>
 		</tr>
 		<tr>
@@ -362,6 +372,46 @@ $body =
 $this->setValue('title', $thread['name']);
 $this->setValue('body', $body);
 }
+
+
+protected function getFiles($post)
+	{
+	try
+		{
+		$files = $this->Sql->fetch
+			('
+			SELECT
+				files.id,
+				files.name,
+				files.size
+			FROM
+				files,
+				post_file
+			WHERE
+				post_file.postid = '.$post.'
+				AND post_file.fileid = files.id
+			ORDER BY
+				files.id DESC
+			');
+		}
+	catch(SqlNoDataException $e)
+		{
+		$files = array();
+		}
+
+	$list =
+		'<table class="frame" style="margin:10px;font-size:9px;">';
+
+	foreach ($files as $file)
+		{
+		$list .= '<tr>
+ 		<td style="padding:5px;"><a class="link" onclick="openLink(this)" href="?page=GetFile;file='.$file['id'].'">'.$file['name'].'</a></td>
+		<td style="text-align:right;padding:5px;">'.round($file['size'] / 1024, 2).' KByte</td>
+		</tr>';
+		}
+
+	return $list.'</table>';
+	}
 
 }
 ?>

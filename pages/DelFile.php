@@ -22,19 +22,70 @@ public function prepare()
 
 	try
 		{
-		$this->Sql->query
+		$file = $this->Sql->fetchValue
 			('
-			DELETE FROM
+			SELECT
+				id
+			FROM
 				files
 			WHERE
 				id = '.$file.'
 				AND userid = '.$this->User->getId()
 			);
 		}
-	catch (SqlException $e)
+	catch (SqlNoDataException $e)
 		{
 		return;
 		}
+
+	$this->Sql->query
+		('
+		DELETE FROM
+			files
+		WHERE
+			id = '.$file
+		);
+
+	try
+		{
+		$posts = $this->Sql->fetchCol
+			('
+			SELECT
+				postid
+			FROM
+				post_file
+			WHERE
+				fileid = '.$file
+			);
+
+		foreach($posts as $post)
+			{
+			// Das ist also die letzte Datei für diesen Beitrag ...
+			if ($this->Sql->numRows('post_file WHERE postid = '.$post) == 1)
+				{
+				$this->Sql->query
+					('
+					UPDATE
+						posts
+					SET
+						file = 0
+					WHERE
+						id = '.$post
+					);
+				}
+			}
+		}
+	catch (SqlNoDataException $e)
+		{
+		}
+
+	$this->Sql->query
+		('
+		DELETE FROM
+			post_file
+		WHERE
+			fileid = '.$file
+		);
 	}
 
 public function show()

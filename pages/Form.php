@@ -169,12 +169,12 @@ protected function addRadio($name, $description, $array, $default = '')
 			{
 			$checked = ($this->Io->getString($name) == $value);
 			}
-			else
+		else
 			{
 			$checked = ($default == $value);
 			}
 
-		$elements .= '<input type="radio" name="'.$name.'"'.($checked ? ' checked="checked"' : '').' value="'.$value.'" />'.$key;
+		$elements .= '<input type="radio" name="'.$name.'"'.($checked ? ' checked="checked"' : '').' value="'.$value.'" />'.$key.'<br />';
 		}
 
 	$this->addElement($name, '<fieldset><legend>'.$description.'</legend>'.$elements.'</fieldset>');

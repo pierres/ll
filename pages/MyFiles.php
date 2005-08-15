@@ -48,7 +48,7 @@ protected function setForm()
 	foreach ($files as $file)
 		{
 		$list .= '<tr>
-		<td><a class="link" href="?page=GetFile;file='.$file['id'].'">'.$file['name'].'</a></td>
+		<td><a onclick="openLink(this)" class="link" href="?page=GetFile;file='.$file['id'].'">'.$file['name'].'</a></td>
 		<td style="text-align:right;">'.round($file['size'] / 1024, 2).'</td>
 		<td style="text-align:right;">'.formatDate($file['uploaded']).'</td>
 		<td style="text-align:right;"><a href="?page=DelFile;id='.$this->Board->getId().';file='.$file['id'].'"><span class="button" style="background-color:#CC0000">X</span></a></td>
