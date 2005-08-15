@@ -148,10 +148,22 @@ protected function listThreads()
 
 	foreach ($this->result as $data)
 		{
+		if($data['forumid'] == 0)
+			{
+			$target = 'PrivatePostings';
+			$forum = '<a href="?page=PrivateThreads;id='.$this->Board->getId().'">Private Themen</a>';
+			}
+		else
+			{
+			$target = 'Postings';
+			$forum = '<a href="?page=Threads;forum='.$data['forumid'].';id='.$this->Board->getId().'">'.$data['forumname'].'</a>';
+			}
+
+
 		$thread_pages = '';
 		for ($i = 0; $i < ($data['posts'] / Settings::MAX_POSTS) && ($data['posts'] / Settings::MAX_POSTS) > 1; $i++)
 			{
-			$thread_pages .= ' <a href="?page=Postings;id='.$this->Board->getId().';thread='.$data['id'].';post='.(Settings::MAX_POSTS * $i).'">'.($i+1).'</a>';
+			$thread_pages .= ' <a href="?page='.$target.';id='.$this->Board->getId().';thread='.$data['id'].';post='.(Settings::MAX_POSTS * $i).'">'.($i+1).'</a>';
 			}
 
 		$thread_pages = (!empty($thread_pages) ? '<span class="threadpages">&#171;'.$thread_pages.' &#187;</span>' : '');
@@ -187,7 +199,7 @@ protected function listThreads()
 				</td>
 				<td class="forumcol">
 					<div class="thread">
-					<a href="?page=Postings;id='.$this->Board->getId().';thread='.$data['id'].'">'.$data['name'].'</a>
+					<a href="?page='.$target.';id='.$this->Board->getId().';thread='.$data['id'].'">'.$data['name'].'</a>
 					</div>
 					<div class="threadpages">
 					'.$thread_pages.'
@@ -202,10 +214,10 @@ protected function listThreads()
 				</td>
 				<td class="lastpost">
 					<div>von '.$lastposter.'</div>
-					<div><a href="?page=Postings;id='.$this->Board->getId().';thread='.$data['id'].';post=-1">'.$data['lastdate'].'</a></div>
+					<div><a href="?page='.$target.';id='.$this->Board->getId().';thread='.$data['id'].';post=-1">'.$data['lastdate'].'</a></div>
 				</td>
 				<td class="forums">
-					<a href="?page=Threads;forum='.$data['forumid'].';id='.$this->Board->getId().'">'.$data['forumname'].'</a>
+					'.$forum.'
 				</td>
 			</tr>
 			';

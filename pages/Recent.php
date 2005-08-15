@@ -10,35 +10,99 @@ public function prepare()
 
 	try
 		{
-		$this->result = $this->Sql->fetch
-			('
-			SELECT
-				threads.id,
-				threads.name,
-				threads.lastdate,
-				threads.posts,
-				threads.lastuserid,
-				threads.lastusername,
-				threads.firstdate,
-				threads.firstuserid,
-				threads.firstusername,
-				threads.closed,
-				threads.sticky,
-				threads.poll,
-				threads.posts,
-				forums.id AS forumid,
-				forums.name AS forumname
-			FROM
-				forums,
-				threads
-			WHERE
-				threads.forumid = forums.id
-				AND threads.deleted = 0
-			ORDER BY
-				threads.lastdate DESC
-			LIMIT
-				25
-			');
+		if ($this->User->isOnline())
+			{
+			$this->result = $this->Sql->fetch
+				('
+				(
+					SELECT
+						threads.id,
+						threads.name,
+						threads.lastdate,
+						threads.posts,
+						threads.lastuserid,
+						threads.lastusername,
+						threads.firstdate,
+						threads.firstuserid,
+						threads.firstusername,
+						threads.closed,
+						threads.sticky,
+						threads.poll,
+						threads.posts,
+						0 AS forumid,
+						0 AS forumname
+					FROM
+						threads,
+						thread_user
+					WHERE
+						threads.forumid = 0
+						AND threads.deleted = 0
+						AND thread_user.threadid = threads.id
+						AND thread_user.userid = '.$this->User->getId().'
+				)
+				UNION
+				(
+					SELECT
+						threads.id,
+						threads.name,
+						threads.lastdate,
+						threads.posts,
+						threads.lastuserid,
+						threads.lastusername,
+						threads.firstdate,
+						threads.firstuserid,
+						threads.firstusername,
+						threads.closed,
+						threads.sticky,
+						threads.poll,
+						threads.posts,
+						forums.id AS forumid,
+						forums.name AS forumname
+					FROM
+						forums,
+						threads
+					WHERE
+						threads.forumid = forums.id
+						AND threads.deleted = 0
+				)
+				ORDER BY
+					lastdate DESC
+				LIMIT
+					25
+				');
+			}
+		else
+			{
+			$this->result = $this->Sql->fetch
+				('
+				SELECT
+					threads.id,
+					threads.name,
+					threads.lastdate,
+					threads.posts,
+					threads.lastuserid,
+					threads.lastusername,
+					threads.firstdate,
+					threads.firstuserid,
+					threads.firstusername,
+					threads.closed,
+					threads.sticky,
+					threads.poll,
+					threads.posts,
+					forums.id AS forumid,
+					forums.name AS forumname
+				FROM
+					forums,
+					threads
+				WHERE
+					threads.forumid = forums.id
+					AND threads.deleted = 0
+				ORDER BY
+					threads.lastdate DESC
+				LIMIT
+					25
+				');
+			}
 		}
 	catch (SqlNoDataException $e)
 		{

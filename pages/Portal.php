@@ -204,22 +204,64 @@ private function getRecent()
 	{
 	try
 		{
-		$threads = $this->Sql->fetch
-			('
-			SELECT
-				id,
-				name,
-				lastdate
-			FROM
-				threads
-			WHERE
-				deleted = 0
-				AND forumid != 0
-			ORDER BY
-				threads.lastdate DESC
-			LIMIT
-				25
-			');
+		if ($this->User->isOnline())
+			{
+			$threads = $this->Sql->fetch
+				('
+				(
+					SELECT
+						threads.id,
+						threads.name,
+						threads.lastdate,
+						threads.forumid
+					FROM
+						threads,
+						thread_user
+					WHERE
+						threads.forumid = 0
+						AND threads.deleted = 0
+						AND thread_user.threadid = threads.id
+						AND thread_user.userid = '.$this->User->getId().'
+				)
+				UNION
+				(
+					SELECT
+						id,
+						name,
+						lastdate,
+						forumid
+					FROM
+						threads
+					WHERE
+						deleted = 0
+						AND forumid != 0
+				)
+				ORDER BY
+					lastdate DESC
+				LIMIT
+					25
+				');
+			}
+		else
+			{
+			$threads = $this->Sql->fetch
+				('
+				SELECT
+					id,
+					name,
+					lastdate,
+					forumid
+				FROM
+					threads
+				WHERE
+					deleted = 0
+					AND forumid != 0
+				ORDER BY
+					lastdate DESC
+				LIMIT
+					25
+				');
+			}
 		}
 	catch(SqlNoDataException $e)
 		{
@@ -235,7 +277,14 @@ private function getRecent()
 			$thread['name'] = '<span class="newthread">'.$thread['name'].'</span>';
 			}
 
-		$result .= '<li style="margin-bottom:5px;"><a href="?page=Postings;thread='.$thread['id'].';post=-1;id='.$this->Board->getId().'">'.$thread['name'].'</a></li>';
+		if ($thread['forumid'] == 0)
+			{
+			$result .= '<li style="margin-bottom:5px;"><a href="?page=PrivatePostings;thread='.$thread['id'].';post=-1;id='.$this->Board->getId().'">'.$thread['name'].'</a></li>';
+			}
+		else
+			{
+			$result .= '<li style="margin-bottom:5px;"><a href="?page=Postings;thread='.$thread['id'].';post=-1;id='.$this->Board->getId().'">'.$thread['name'].'</a></li>';
+			}
 		}
 
 	return $result.'</ul>';

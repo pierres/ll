@@ -60,7 +60,7 @@ private function getDebugScreen()
 		$traceString .= '<br />';
 		}
 
-	header('Content-Type: application/xhtml+xml; charset=UTF-8');
+	header('Content-Type: text/html; charset=UTF-8');
 	header('HTTP/1.1 500 Kernel-Panic');
 
 	return '<?xml version="1.0" encoding="UTF-8" ?>
