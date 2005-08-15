@@ -151,7 +151,7 @@ private function getNews($forum)
 			ORDER BY
 				threads.id DESC
 			LIMIT
-				25
+				10
 			');
 		}
 	catch(SqlNoDataException $e)
