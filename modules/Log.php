@@ -121,9 +121,9 @@ public function isNew($threadid, $threadtime)
 
 public function getTime($threadid)
 	{
-	if (!$this->User->isOnline() || empty($this->log[$threadid]))
+	if (empty($this->log[$threadid]))
 		{
-		return 0;
+		return (time() - $this->timeout);
 		}
 
 	return $this->log[$threadid];
