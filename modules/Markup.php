@@ -59,7 +59,7 @@ function __construct()
 	$this->search[]  = '#^&lt;code(?: (\w{3,8}))?&gt;$(.+?)^&lt;/code&gt;$#esm';//<code>.+</code>
 	$this->replace[] = '$this->makeCode(\'$2\', \'$1\')';
 
-	$this->search[]  = '#&lt;quote(?:=.+?)?&gt;.+&lt;/quote&gt;#esm';//<quote=...>...</quote>
+	$this->search[]  = '#^&lt;quote(?:=.+?)?&gt;.+^&lt;/quote&gt;$#esm';//<quote=...>...</quote>
 	$this->replace[] = '$this->makeQuote(\'$0\')';
 
 	/** Listen */
@@ -403,6 +403,8 @@ private function makeList($in)
 
 private function getListDepth($line)
 	{
+	$line = str_replace('\"', '"', $line);
+
 	$cur = 0;
 	/* Ermittle die aktuelle Tiefe */
 	while (strlen($line) > $cur && $line[$cur] == '*')
