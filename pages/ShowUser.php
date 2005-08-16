@@ -142,6 +142,7 @@ public function prepare()
 			<tr>
 				<td class="main" colspan="3">
 					<a href="?page=UserRecent;id='.$this->Board->getId().';user='.$this->id.'"><span class="button">aktuelle Beiträge</span></a>
+					'.($this->User->isOnline() ? '<a href="?page=NewPrivateThread;id='.$this->Board->getId().';recipients='.$data['name'].'"><span class="button">Neues privates Thema</span></a>' : '').'
 				</td>
 			</tr>
 		</table>
