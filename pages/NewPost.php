@@ -14,6 +14,8 @@ protected $time 	= 0;
 protected $smilies 	= true;
 protected $title 	= 'Beitrag schreiben';
 
+protected $file		= array();
+
 
 protected function setForm()
 	{
@@ -65,7 +67,8 @@ protected function setFile()
 					('
 					SELECT
 						id,
-						name
+						name,
+						size
 					FROM
 						files
 					WHERE
@@ -79,13 +82,18 @@ protected function setFile()
 				$files = array();
 				}
 
-			$this->addOutput('<br />Dateien auswählen:<br /><br />');
+			$this->addOutput('<br />Dateien auswählen:<br /><table class="frame" style="margin:10px;font-size:9px;">');
 
 			foreach ($files as $file)
 				{
-				$this->addCheckbox('files['.$file['id'].']', '<a onclick="openLink(this)" class="link" href="?page=GetFile;file='.$file['id'].'">'.$file['name'].'</a>');
+				$this->addOutput('<tr><td style="padding:5px;">');
+				$this->addCheckbox('files['.$file['id'].']',
+				'<a class="link" onclick="openLink(this)" href="?page=GetFile;file='.$file['id'].'">'.$file['name'].'</a>');
+				$this->addOutput('</td><td style="text-align:right;padding:5px;vertical-align:bottom;"">'.round($file['size'] / 1024, 2).' KByte</td></tr>');
 				}
 
+			$this->addOutput('</table><br />');
+			$this->addFile('file', 'Neue Datei hinzufügen');
 			$this->addOutput('<br />');
 
 			$this->addHidden('addfile', 1);
@@ -97,18 +105,18 @@ protected function setFile()
 		}
 	}
 
-protected function sendFile()
+protected function sendFile($postid)
 	{
 	if($this->User->isOnline() && $this->Io->isRequest('addfile'))
 		{
 		$files = $this->Io->getArray();
 
+		$files = $this->sendNewFile($files);
+
 		if (empty($files))
 			{
 			return;
 			}
-
-		$postid = $this->Sql->insertId();
 
 		$success = false;
 
@@ -159,6 +167,73 @@ protected function sendFile()
 		}
 	}
 
+protected function checkNewFile()
+	{
+	if ($this->User->isOnline())
+		{
+		try
+			{
+			$this->file = $this->Io->getFile('file');
+			}
+		catch (IoException $e)
+			{
+			return;
+			//$this->showWarning('Datei wurde nicht hochgeladen!');
+			}
+
+		if ($this->file['size'] >= Settings::FILE_SIZE)
+			{
+			$this->showWarning('Datei ist zu groß!');
+			}
+
+		$data = $this->Sql->fetchRow
+			('
+			SELECT
+				COUNT(*) AS files,
+				SUM(size) AS quota
+			FROM
+				files
+			WHERE
+				userid = '.$this->User->getId()
+			);
+
+		if ($data['quota'] + $this->file['size'] >=  Settings::QUOTA)
+			{
+			$this->showWarning('Dein Speicherplatz ist voll!');
+			}
+
+		if ($data['files'] + 1 >=  Settings::FILES)
+			{
+			$this->showWarning('Du hast zu viele Dateien gespeichert!');
+			}
+		}
+	}
+
+protected function sendNewFile($files)
+	{
+	if ($this->User->isOnline() && !empty($this->file))
+		{
+		$this->Sql->query
+			('
+			INSERT INTO
+				files
+			SET
+				name = \''.$this->Sql->formatString($this->file['name']).'\',
+				type = \''.$this->Sql->formatString($this->file['type']).'\',
+				size = '.intval($this->file['size']).',
+				content = \''.$this->Sql->escapeString(gzencode(file_get_contents($this->file['tmp_name']), 9)).'\',
+				userid = '.$this->User->getId().',
+				uploaded = '.time()
+			);
+
+		$files[$this->Sql->insertId()] = '';
+
+		unlink($this->file['tmp_name']);
+		}
+
+	return $files;
+	}
+
 protected function checkInput()
 	{
 	try
@@ -201,6 +276,8 @@ protected function checkForm()
 	{
 	$this->smilies = $this->Io->isRequest('smilies');
 	$this->text = $this->Io->getString('text');
+
+	$this->checkNewFile();
 	}
 
 protected function checkAccess()
@@ -256,7 +333,7 @@ protected function sendForm()
 			smilies ='.($this->smilies ? 1 : 0)
 		);
 
-	$this->sendFile();
+	$this->sendFile($this->Sql->insertId());
 
 	$this->UpdateThread();
 	$this->updateForum();

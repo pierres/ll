@@ -46,12 +46,6 @@ protected function checkInput()
 	$this->addHidden('thread', $this->thread);
 	}
 
-protected function checkForm()
-	{
-	$this->smilies = $this->Io->isRequest('smilies');
-	$this->text = $this->Io->getString('text');
-	}
-
 protected function checkAccess()
 	{
 	/** Privater Thread -> Prüfung */
@@ -86,7 +80,7 @@ protected function sendForm()
 			smilies ='.($this->smilies ? 1 : 0)
 		);
 
-	$this->sendFile();
+	$this->sendFile($this->Sql->insertId());
 
 	$this->UpdateThread();
 	$this->updateForum();

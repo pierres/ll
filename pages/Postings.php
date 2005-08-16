@@ -399,8 +399,7 @@ protected function getFiles($post)
 		$files = array();
 		}
 
-	$list =
-		'<table class="frame" style="margin:10px;font-size:9px;">';
+	$list = '<table class="frame" style="margin:10px;font-size:9px;">';
 
 	foreach ($files as $file)
 		{
