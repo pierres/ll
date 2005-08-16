@@ -258,7 +258,7 @@ foreach ($result as $data)
 
 	$avatar = (empty($data['avatar']) ? '' : '<img src="'.$data['avatar'].'" class="avatar" alt="" />');
 
-	if ($data['file'] == 1)
+	if ($data['file'] == 1 && $this->User->isOnline())
 		{
 		$files = $this->getFiles($data['id']);
 		}
