@@ -56,7 +56,7 @@ function formatDate($time)
 
 function cutString($string, $length)
 	{
-	return (strlen($string) > $length ? mb_substr($string, 0, ($length-3), 'UTF-8').'...' : $string);
+	return (mb_strlen($string, 'UTF-8') > $length ? mb_substr($string, 0, ($length-3), 'UTF-8').'...' : $string);
 	}
 
 function gzdecode($string)
