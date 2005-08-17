@@ -213,6 +213,8 @@ protected function sendNewFile($files)
 	{
 	if ($this->User->isOnline() && !empty($this->file))
 		{
+		$content = gzencode(file_get_contents($this->file['tmp_name']), 9);
+
 		$this->Sql->query
 			('
 			INSERT INTO
@@ -220,8 +222,8 @@ protected function sendNewFile($files)
 			SET
 				name = \''.$this->Sql->formatString($this->file['name']).'\',
 				type = \''.$this->Sql->formatString($this->file['type']).'\',
-				size = '.intval($this->file['size']).',
-				content = \''.$this->Sql->escapeString(gzencode(file_get_contents($this->file['tmp_name']), 9)).'\',
+				size = '.strlen($content).',
+				content = \''.$this->Sql->escapeString($content).'\',
 				userid = '.$this->User->getId().',
 				uploaded = '.time()
 			);

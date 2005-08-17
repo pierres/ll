@@ -28,7 +28,8 @@ public function prepare()
 			SELECT
 				name,
 				type,
-				content
+				content,
+				size
 			FROM
 				files
 			WHERE
@@ -54,7 +55,7 @@ public function show()
 
 	header('Content-Type: '.$this->data['type'].'; name='.$this->data['name']);
 	header('Content-Disposition: inline; filename="'.$this->data['name'].'"');
-	header('Content-length: '.strlen($this->data['content']));
+	header('Content-length: '.$this->data['size']);
 
 	echo $this->data['content'];
 	exit();
