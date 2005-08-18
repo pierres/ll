@@ -324,63 +324,41 @@ private function makeList($in)
 	$lines = explode("\n", $in);
 
 	$out = '';
-
-	$cur = 0;
 	$last = 0;
-	$li = 0;
 
-	for($i=0; $i<count($lines);$i++)
+	foreach ($lines as $line)
 		{
-		$line = $lines[$i];
-
-		/**
-		Auf welcher Listenebene sind wir?
-		Die erste Ebene sollte 1 sein
-		Das hier sollte schneller als ein regulärer Ausdruck sein
-		*/
-		if ($last > 0)
+		$cur = 0;
+		/* Ermittle die aktuelle Tiefe */
+		while (strlen($line) > $cur && $line[$cur] == '*')
 			{
-			$cur = $this->getListDepth($line);
+			$cur++;
 			}
-		else
-			{
-			$cur = 1;
-			}
-
-		$next = ($i+1 < count($lines) ? $this->getListDepth($lines[$i+1]) : 0);
 
 		/* eine Ebene tiefer */
 		if ($cur > $last)
 			{
-			for ($j = $cur; $j > $last; $j--)
-				{
-				$out .= '<ul>';
-				}
+			$cur = $last + 1;
+
+			$out .= '<ul>';
 			}
-		/* eine Ebene höher */
+		/* eine oder mehrere Ebene höher */
 		elseif ($cur < $last)
 			{
+			$out .= '</li>';
+
 			for ($j = $last; $j > $cur; $j--)
 				{
-				$out .= '</ul>';
-
-				if ($li > 0)
-					{
-					$out .= '</li>';
-					$li--;
-					}
+				$out .= '</ul></li>';
 				}
-			}
-		/* Füge Zeile ohne Ebenenzeichen und Leerzeichen (+1) hinzu */
-		if ($cur < $next)
-			{
-			$out .= '<li>'.substr($line, $cur+1);
-			$li++;
 			}
 		else
 			{
-			$out .= '<li>'.substr($line, $cur+1).'</li>';
+			$out .= '</li>';
 			}
+
+		/* Füge Zeile ohne Ebenenzeichen und Leerzeichen (+1) hinzu */
+		$out .= '<li>'.substr($line, $cur+1);
 
 		$last = $cur;
 		}
@@ -388,30 +366,11 @@ private function makeList($in)
 	/* Alle geöffneten Tags auf jeden Fall schließen */
 	while ($cur > 0)
 		{
-		$out .= '</ul>';
+		$out .= '</li></ul>';
 		$cur--;
-
-		if ($li > 0)
-			{
-			$out .= '</li>';
-			$li--;
-			}
 		}
 
 	return $out;
-	}
-
-private function getListDepth($line)
-	{
-	$line = str_replace('\"', '"', $line);
-
-	$cur = 0;
-	/* Ermittle die aktuelle Tiefe */
-	while (strlen($line) > $cur && $line[$cur] == '*')
-		{
-		$cur++;
-		}
-	return $cur;
 	}
 
 private function makeHeading($text, $level)
