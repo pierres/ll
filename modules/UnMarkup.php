@@ -11,6 +11,10 @@ public function fromHtml($text)
 		return '';
 		}
 
+	/** LL3.1-Kompatibilität */
+	$search[] = '<br />';
+	$replace[] = "\n";
+
 	$search[] = '<pre>';
 	$replace[] = '<code>';
 	$search[] = '</pre>';
@@ -26,7 +30,6 @@ public function fromHtml($text)
 
 	$preg_search[] = '#<h[1-6]>(.+?)</h([1-6])>#e';
 	$preg_replace[] = '$this->unmakeHeading(\'$1\',\'$2\')';
-
 
 	$preg_search[] = '#<cite>(.+?)</cite><blockquote><div>#';
 	$preg_replace[] = '<quote=$1>';
@@ -72,11 +75,6 @@ public function fromHtml($text)
 
 	$preg_search[] = '#<ul>.+</ul>#es';
 	$preg_replace[] = '$this->unmakeList(\'$0\')';
-
-
-	/** LL3.1-Kompatibilität */
-	$search[] = '<br />';
-	$replace[] = "\n";
 
 	$text = preg_replace($preg_search, $preg_replace, $text);
 	$text = str_replace($search, $replace, $text);
@@ -162,18 +160,6 @@ private function unmakeExtraSmiley($smiley)
 
 private function unmakeList($list)
 	{
-	/*
-	<ul>
-	<li>
-		1
-		<ul>
-			<li>
-			1a
-			</li>
-		</ul>
-	</li>
-	</ul>
-	*/
 	$list = str_replace('\"', '"', $list);
 
 

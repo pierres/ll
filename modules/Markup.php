@@ -59,7 +59,7 @@ function __construct()
 	$this->search[]  = '#^&lt;code(?: (\w{3,8}))?&gt;$(.+?)^&lt;/code&gt;$#esm';//<code>.+</code>
 	$this->replace[] = '$this->makeCode(\'$2\', \'$1\')';
 
-	$this->search[]  = '#&lt;quote(?:=.+?)?&gt;.+&lt;/quote&gt;#esm';//<quote=...>...</quote>
+	$this->search[]  = '#^&lt;quote(?:=.+?)?&gt;$.+^&lt;/quote&gt;$#esm';//<quote=...>...</quote>
 	$this->replace[] = '$this->makeQuote(\'$0\')';
 
 	/** Listen */
@@ -223,11 +223,11 @@ public function toHtml($text)
 
 	$text = preg_replace('/\n{2,}/', '<br /><br />', $text);
 	/** Altest Verhalten bei Zeilenumbrüchen */
-	$text = preg_replace('/\n/', '<br />', $text);
+	//$text = preg_replace('/\n/', '<br />', $text);
 
 	/** Keine Zeilenumbrüche entfernen; Das macht sonst Probleme bei UnMarkup z.B. bei Listen */
-	$text = preg_replace('/[^\n\S]{1,}/', ' ', $text);
-	//$text = preg_replace('/\s{1,}/', ' ', $text);
+	//$text = preg_replace('/[^\n\S]{1,}/', ' ', $text);
+	$text = preg_replace('/\s{1,}/', ' ', $text);
 
 	while ($this->Codes->hasNext())
 		{
@@ -272,7 +272,7 @@ private function openQuote($cite = '')
 	$cite = str_replace('\"', '"', $cite);
 
 	$this->quotes++;
-	return (empty($cite) ? '' : '<cite>'.$cite.'</cite>')."<blockquote><div>\n";
+	return (empty($cite) ? '' : '<cite>'.$cite.'</cite>').'<blockquote><div>';
 	}
 
 private function closeQuote()
@@ -284,7 +284,7 @@ private function closeQuote()
 		else
 		{
 		$this->quotes--;
-		return "\n</div></blockquote>";
+		return '</div></blockquote>';
 		}
 	}
 /*
@@ -300,7 +300,7 @@ private function makeQuote($in)
 
 	$in = preg_replace
 		(
-		array('#&lt;quote(?:=(.+?))?&gt;\s*#em'  , '#\s*&lt;/quote&gt;#em'),
+		array('#&lt;quote(?:=(.+?))?&gt;#em'  , '#&lt;/quote&gt;#em'),
 		array('$this->openQuote(\'$1\')', '$this->closeQuote()'),
 		$in
 		);
