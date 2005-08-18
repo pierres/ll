@@ -5,7 +5,7 @@ class MyProfile extends Form{
 
 private $realname 	= '';
 private $gender 	= 0;
-private $birthday 	= '';
+private $birthday 	= 0;
 private $email 		= '';
 private $location 	= '';
 private $plz		= '';
@@ -31,7 +31,7 @@ protected function setForm()
 	$this->addRadio('gender', 'Geschlecht', $gender, $this->gender);
 	$this->setLength('gender', 1, 1);
 
-	$this->addText('birthday', 'Dein Geburtstag', date('d.m.Y', $this->birthday), 10);
+	$this->addText('birthday', 'Dein Geburtstag', (!empty($this->birthday) ? date('d.m.Y', $this->birthday) : ''), 10);
 	$this->setLength('birthday', 6, 10);
 
 	$this->addText('location', 'Dein Wohnort', $this->location);
