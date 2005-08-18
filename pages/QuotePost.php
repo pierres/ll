@@ -41,7 +41,7 @@ protected function checkInput()
 		$this->showFailure('Beitrag nicht gefunden oder Thema geschlossen!');
 		}
 
-	$this->text = '<quote='.unhtmlspecialchars($data['username']).'>'.$this->UnMarkup->fromHtml($data['text']).'</quote>'."\n\n";
+	$this->text = '<quote='.unhtmlspecialchars($data['username']).">\n".$this->UnMarkup->fromHtml($data['text'])."\n</quote>\n\n";
 
 	$this->thread = $data['thread'];
 	$this->forum = $data['forumid'];
