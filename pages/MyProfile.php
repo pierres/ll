@@ -104,16 +104,19 @@ protected function checkForm()
 	try
 		{
 		$birthday = $this->Io->getString('birthday');
-
-		$birthday = strtotime(preg_replace('/(\d+)\.(\d+)\.(\d+)/', '$3-$2-$1', $birthday));
-
-		if ($birthday === -1)
+		
+		if (!empty($birthday))
 			{
-			$this->showWarning('Konnte Deinen Geburtstag nicht bestimmen');
-			}
+			$birthday = strtotime(preg_replace('/(\d+)\.(\d+)\.(\d+)/', '$3-$2-$1', $birthday));
+
+			if ($birthday === -1)
+				{
+				$this->showWarning('Konnte Deinen Geburtstag nicht bestimmen');
+				}
 			else
-			{
-			$this->birthday = $birthday;
+				{
+				$this->birthday = $birthday;
+				}
 			}
 		}
 	catch (IoRequestException $e)
