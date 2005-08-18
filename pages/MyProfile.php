@@ -118,9 +118,14 @@ protected function checkForm()
 				$this->birthday = $birthday;
 				}
 			}
+		else
+			{
+			$this->birthday = 0;
+			}
 		}
 	catch (IoRequestException $e)
 		{
+		$this->birthday = 0;
 		}
 
 	try
