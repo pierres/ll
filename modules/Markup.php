@@ -410,7 +410,7 @@ private function makeLink($url, $name = '')
 		$target = ' onclick="openLink(this)" rel="nofollow" class="extlink"';
 		}
 
-	$this->Stack->push('<a href="'.$url.'"'.$target.'>'.$name.'</a>');
+	$this->Stack->push('<a href="'.rehtmlspecialchars($url).'"'.$target.'>'.rehtmlspecialchars($name).'</a>');
 
 	return $this->sep.$this->Stack->lastID().$this->sep;
 	}
@@ -419,14 +419,14 @@ private function makeImage($url)
 	{
 	$url = str_replace('\"', '"', $url);
 
-	$this->Stack->push('<img src="'.$url.'" alt="" class="image" onclick="openImage(this)" />');
+	$this->Stack->push('<img src="'.rehtmlspecialchars($url).'" alt="" class="image" onclick="openImage(this)" />');
 
 	return $this->sep.$this->Stack->lastID().$this->sep;
 	}
 
 private function makeEmail($email)
 	{
-	$email = str_replace('\"', '"', $email);
+	$email = rehtmlspecialchars(str_replace('\"', '"', $email));
 
 	$this->Stack->push('<a href="mailto:'.$email.'">'.$email.'</a>');
 

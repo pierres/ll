@@ -32,6 +32,11 @@ function unhtmlspecialchars($string)
 	return $string;
 	}
 
+function rehtmlspecialchars($string)
+	{
+	return htmlspecialchars(unhtmlspecialchars($string));
+	}
+
 /**
 * gibt die Tageszeit aus
 * FIXME: Ist das hier so geschickt?
