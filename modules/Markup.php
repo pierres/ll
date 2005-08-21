@@ -394,7 +394,10 @@ private function makeLink($url, $name = '')
 		}
 	elseif (strlen($name) > 50)
 		{
+		// Verhindere das Abschneiden im Entity
+		$name = unhtmlspecialchars($name);
 		$name = substr($name, 0, 37).'...'.substr($name, -10);
+		$name = htmlspecialchars($name);
 		}
 
 	/** FIXME: externer oder interner Link? */

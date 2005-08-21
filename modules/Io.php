@@ -23,12 +23,11 @@ function __construct()
 		{
 		die('"magic_quotes_gpc" ist aktiviert!');
 		}
-/*
+
 	if (strpos($this->getEnv('HTTP_ACCEPT'), 'application/xhtml+xml') !== false)
 		{
 		$this->contentType = 'Content-Type: application/xhtml+xml; charset=UTF-8';
 		}
-*/
 	}
 
 private function header($string)
