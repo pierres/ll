@@ -210,7 +210,7 @@ private function start($id, $name ,$level, $groups)
 		SET
 			sessionid = \''.$this->sessionid.'\',
 			id = '.$this->id.',
-			name = \''.$this->name.'\',
+			name = \''.$this->Sql->escapeString($this->name).'\',
 			level = '.$this->level.',
 			groups = \''.implode(',', $this->groups).'\',
 			lastupdate = '.time()
