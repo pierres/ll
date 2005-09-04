@@ -117,7 +117,7 @@ public function logout()
 	$this->name 	= '';
 	$this->groups 	= array();
 	}
-
+/** FIXME: Methode sollte gesplittet werden */
 public function login($name, $password, $cookie = false)
 	{
 	try

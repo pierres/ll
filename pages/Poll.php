@@ -88,7 +88,7 @@ public function __construct($pollid = 0, $target = 'Postings')
 
 public function showPoll()
 	{
-	if ($this->hasVoted())
+	if ($this->hasVoted() || $this->Io->isRequest('result'))
 		{
 		return $this->showResult();
 		}
@@ -190,6 +190,7 @@ private function showForm()
 					<tr>
 						<td class="main" colspan="2">
 							<input type="submit" name="submit" value="Abstimmen" />
+							<input type="submit" name="result" value="Ergebnis" />
 						</td>
 					</tr>
 				</table>
@@ -247,7 +248,7 @@ public function prepare()
 
 protected function reload()
 	{
-	$this->Io->redirect($this->target, 'thread='.$this->id);
+	$this->Io->redirect($this->target, 'thread='.$this->id.($this->Io->isRequest('result') ? ';result=' : ''));
 	}
 
 public function show()
