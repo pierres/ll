@@ -9,6 +9,7 @@ private $birthday 	= 0;
 private $email 		= '';
 private $location 	= '';
 private $plz		= '';
+private $avatar		= '';
 private $text		= '';
 
 
@@ -39,6 +40,9 @@ protected function setForm()
 
 	$this->addText('plz', 'Deine Postleitzahl', $this->plz, 5);
 	$this->setLength('plz', 5, 5);
+
+	$this->addText('avatar', 'Dein Avatar', $this->avatar);
+	$this->setLength('avatar', 5, 100);
 
 	$this->addTextarea('text', 'Freier Text', $this->text);
 	$this->setLength('text', 3, 65536);
@@ -130,6 +134,28 @@ protected function checkForm()
 
 	try
 		{
+		$this->avatar 	= $this->Io->getString('avatar');
+
+		$protocoll 	= '(?:https?|ftp):\/\/';
+		$name 		= '[a-z0-9](?:[a-z0-9_\-\.]*[a-z0-9])?';
+		$tld 		= '[a-z]{2,5}';
+		$domain		=  $name.'\.'.$tld;
+		$address	= '(?:'.$domain.'|[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})';
+		$path 		= '(?:\/(?:[a-z0-9_%&:;,\+\-\/=~\.#]*[a-z0-9\/])?)?';
+		$request 	= '(?:\?[a-z0-9_%&:;,\+\-\/=~\.#]*[a-z0-9])?';
+		$img	 	= '[a-z0-9_\-]+\.(?:gif|jpe?g|png)';
+
+		if (!preg_match('/(^images\/avatars\/'.$img.'$)|(^'.$protocoll.$address.$path.$img.'$)/i', $this->avatar))
+			{
+			$this->showWarning('Ungültige Avatar-URL');
+			}
+		}
+	catch (IoRequestException $e)
+		{
+		}
+
+	try
+		{
 		$this->text 	= $this->Io->getString('text');
 		}
 	catch (IoRequestException $e)
@@ -147,6 +173,7 @@ private function getData()
 			birthday,
 			location,
 			plz,
+			avatar,
 			text
 		FROM
 			users
@@ -159,6 +186,7 @@ private function getData()
 	$this->birthday		= $data['birthday'];
 	$this->location 	= unhtmlspecialchars($data['location']);
 	$this->plz 		= $data['plz'];
+	$this->avatar 		= unhtmlspecialchars($data['avatar']);
 	$this->text 		= $this->UnMarkup->fromHtml($data['text']);
 	}
 
@@ -174,6 +202,7 @@ protected function sendForm()
 			birthday = '.$this->birthday.',
 			location = \''.$this->Sql->formatString($this->location).'\',
 			plz = '.$this->plz.',
+			avatar = \''.$this->Sql->formatString($this->avatar).'\',
 			text = \''.$this->Sql->escapeString($this->Markup->toHtml($this->text)).'\'
 		WHERE
 			id = '.$this->User->getId()
