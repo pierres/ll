@@ -129,10 +129,8 @@ function __construct()
 	/** ftp.domain.tld */
 	$this->search[] = '/ftp\.'.$domain.$path.$request.'/ie';
 	$this->replace[] = '$this->makeLink(\'ftp://$0\', \'$0\')';
-/*
-	Sind das alle Shortcuts? Folgende List ist zumindest aus LL2.
-	Erstze \W mit \s (Tip von Felix)
-*/
+
+
 	$this->smilies_search[] = '/(^|\s)(;-?\))($|\W)/e';		//;-) ;)
 	$this->smilies_replace[]   = '\'$1\'.$this->makeSmiley(\'wink\').\'$3\'';
 
@@ -224,7 +222,7 @@ public function toHtml($text)
 
 	$text = preg_replace('/\n{2,}/', '<br /><br />', $text);
 	/** Altes Verhalten bei Zeilenumbrüchen */
-	//$text = preg_replace('/\n/', '<br />', $text);
+	$text = preg_replace('/\n/', '<br />', $text);
 
 	/** Keine Zeilenumbrüche entfernen; Das macht sonst Probleme bei UnMarkup z.B. bei Listen */
 	//$text = preg_replace('/[^\n\S]{1,}/', ' ', $text);

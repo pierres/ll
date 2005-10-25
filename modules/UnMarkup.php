@@ -80,7 +80,7 @@ public function fromHtml($text)
 	$text = str_replace($search, $replace, $text);
 
 
-	$text = html_entity_decode($text, ENT_COMPAT, 'UTF-8');
+	$text = unhtmlspecialchars($text);
 
 	return $text;
 	}
@@ -131,22 +131,22 @@ private function unmakeSmiley($smiley)
 
 	switch($smiley)
 		{
-		case 'wink' 		: return ';-)'; break;
-		case 'grin' 		: return ';D'; break;
-		case 'rolleyes' 	: return '::)'; break;
-		case 'smiley' 		: return ':-)'; break;
-		case 'undecided' 	: return ':-\\'; break;
-		case 'lipsrsealed' 	: return ':-X'; break;
-		case 'embarassed' 	: return ':-['; break;
-		case 'kiss' 		: return ':-*'; break;
-		case 'angry' 		: return '>:('; break;
-		case 'tongue' 		: return ':P'; break;
-		case 'cheesy' 		: return ':D'; break;
-		case 'sad' 		: return ':-('; break;
-		case 'shocked' 		: return ':o'; break;
-		case 'cool' 		: return '8)'; break;
-		case 'huh' 		: return '???'; break;
-		case 'cry' 		: return ':\'('; break;
+		case 'wink' 		: return ';-)';
+		case 'grin' 		: return ';D';
+		case 'rolleyes' 	: return '::)';
+		case 'smiley' 		: return ':-)';
+		case 'undecided' 	: return ':-\\';
+		case 'lipsrsealed' 	: return ':-X';
+		case 'embarassed' 	: return ':-[';
+		case 'kiss' 		: return ':-*';
+		case 'angry' 		: return '>:(';
+		case 'tongue' 		: return ':P';
+		case 'cheesy' 		: return ':D';
+		case 'sad' 		: return ':-(';
+		case 'shocked' 		: return ':o';
+		case 'cool' 		: return '8)';
+		case 'huh' 		: return '???';
+		case 'cry' 		: return ':\'(';
 		default 		: return $smiley;
 		}
 	}
