@@ -201,6 +201,7 @@ public function toHtml($text)
 
 	$text = str_replace("\r", '', $text);	//Wer braucht schon Windows-Zeilenumbrche?
 	$text = htmlspecialchars($text, ENT_COMPAT, 'UTF-8');
+	//$text = htmlentities($text, ENT_COMPAT, 'UTF-8');
 	$text = preg_replace($this->search, $this->replace, $text);
 
 	if ($this->smiliesenabled)
@@ -222,7 +223,7 @@ public function toHtml($text)
 		}
 
 	$text = preg_replace('/\n{2,}/', '<br /><br />', $text);
-	/** Altest Verhalten bei Zeilenumbrüchen */
+	/** Altes Verhalten bei Zeilenumbrüchen */
 	//$text = preg_replace('/\n/', '<br />', $text);
 
 	/** Keine Zeilenumbrüche entfernen; Das macht sonst Probleme bei UnMarkup z.B. bei Listen */

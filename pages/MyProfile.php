@@ -108,10 +108,18 @@ protected function checkForm()
 	try
 		{
 		$birthday = $this->Io->getString('birthday');
-		
+
 		if (!empty($birthday))
 			{
-			$birthday = strtotime(preg_replace('/(\d+)\.(\d+)\.(\d+)/', '$3-$2-$1', $birthday));
+			$birthday = preg_replace('/(\d+)\.(\d+)\.(\d+)/', '$3-$2-$1', $birthday);
+			if (!empty($birthday))
+				{
+				$birthday = strtotime($birthday);
+				}
+			else
+				{
+				$birthday = -1;
+				}
 
 			if ($birthday === -1)
 				{

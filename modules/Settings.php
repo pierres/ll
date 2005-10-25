@@ -4,10 +4,10 @@
 class Settings{
 
 const DOMAIN		= 'localhost';
-const SQL_DATABASE 	= 'develop';
+const SQL_DATABASE 	= 'current';
 const SQL_USER		= '';
 const SQL_PASSWORD	= '';
-const LOG_TIMEOUT 	= 140;
+const LOG_TIMEOUT 	= 14;
 const SESSION_TIMEOUT 	= 3600;
 const SESSION_REFRESH 	= 900;
 const MAX_AGE		= 31536000;
