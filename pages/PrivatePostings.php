@@ -185,7 +185,7 @@ foreach ($result as $data)
 
 	$poster = (!empty($data['userid']) ? '<a href="?page=ShowUser;id='.$this->Board->getId().';user='.$data['userid'].'">'.$data['username'].'</a>' : $data['username']);
 
-	$avatar = (empty($data['avatar']) ? '' : '<img src="'.$data['avatar'].'" class="avatar" alt="" />');
+	$avatar = (empty($data['avatar']) || !$this->User->isOnline() ? '' : '<img src="?page=GetFile;file='.$data['avatar'].'" class="avatar" />');
 
 	if ($data['file'] == 1)
 		{

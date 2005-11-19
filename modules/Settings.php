@@ -27,6 +27,7 @@ const LOG_DIR 		= '/home/pierre/public_html/ll/tmp/';
 const FILE_SIZE		= 524288;
 const QUOTA		= 1048576;
 const FILES		= 50;
+const AVATAR_SIZE	= 102400;
 
 }
 

@@ -41,8 +41,7 @@ protected function setForm()
 	$this->addText('plz', 'Deine Postleitzahl', $this->plz, 5);
 	$this->setLength('plz', 5, 5);
 
-	$this->addText('avatar', 'Dein Avatar', $this->avatar);
-	$this->setLength('avatar', 5, 100);
+	$this->listMyFiles();
 
 	$this->addTextarea('text', 'Freier Text', $this->text);
 	$this->setLength('text', 3, 65536);
@@ -142,24 +141,11 @@ protected function checkForm()
 
 	try
 		{
-		$this->avatar 	= $this->Io->getString('avatar');
-
-		$protocoll 	= '(?:https?|ftp):\/\/';
-		$name 		= '[a-z0-9](?:[a-z0-9_\-\.]*[a-z0-9])?';
-		$tld 		= '[a-z]{2,5}';
-		$domain		=  $name.'\.'.$tld;
-		$address	= '(?:'.$domain.'|[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})';
-		$path 		= '(?:\/(?:[a-z0-9_%&:;,\+\-\/=~\.#]*[a-z0-9\/])?)?';
-		$request 	= '(?:\?[a-z0-9_%&:;,\+\-\/=~\.#]*[a-z0-9])?';
-		$img	 	= '[a-z0-9_\-]+\.(?:gif|jpe?g|png)';
-
-		if (!preg_match('/(^images\/avatars\/'.$img.'$)|(^'.$protocoll.$address.$path.$img.'$)/i', $this->avatar))
-			{
-			$this->showWarning('Ungültige Avatar-URL');
-			}
+		$this->avatar = $this->Io->getInt('avatar');
 		}
 	catch (IoRequestException $e)
 		{
+		$this->avatar = 0;
 		}
 
 	try
@@ -194,7 +180,7 @@ private function getData()
 	$this->birthday		= $data['birthday'];
 	$this->location 	= unhtmlspecialchars($data['location']);
 	$this->plz 		= $data['plz'];
-	$this->avatar 		= unhtmlspecialchars($data['avatar']);
+	$this->avatar 		= $data['avatar'];
 	$this->text 		= $this->UnMarkup->fromHtml($data['text']);
 	}
 
@@ -210,13 +196,47 @@ protected function sendForm()
 			birthday = '.$this->birthday.',
 			location = \''.$this->Sql->formatString($this->location).'\',
 			plz = '.$this->plz.',
-			avatar = \''.$this->Sql->formatString($this->avatar).'\',
+			avatar = '.$this->avatar.',
 			text = \''.$this->Sql->escapeString($this->Markup->toHtml($this->text)).'\'
 		WHERE
 			id = '.$this->User->getId()
 		);
 
 	$this->Io->redirect('MyProfile');
+	}
+
+private function listMyFiles()
+	{
+	try
+		{
+		$files = $this->Sql->fetch
+			('
+			SELECT
+				id,
+				name
+			FROM
+				files
+			WHERE
+				userid = '.$this->User->getId().'
+				AND type LIKE \'image/%\'
+				AND size <= '.Settings::AVATAR_SIZE.'
+			ORDER BY
+				id DESC
+			');
+		}
+	catch (SqlNoDataException $e)
+		{
+		$files = array();
+		}
+
+	$list = array('<em>kein Avatar</em>' => 0);
+
+	foreach ($files as $file)
+		{
+		$list['<a class="link" onclick="openLink(this)" href="?page=GetFile;file='.$file['id'].'">'.$file['name'].'</a>'] = $file['id'];
+		}
+
+	$this->addRadio('avatar', 'Avatar', $list, $this->avatar);
 	}
 
 }
