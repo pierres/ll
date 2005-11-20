@@ -37,8 +37,8 @@ protected function setForm()
 
 	$this->addText('location', 'Dein Wohnort', $this->location);
 	$this->setLength('location', 3, 255);
-
-	$this->addText('plz', 'Deine Postleitzahl', $this->plz, 5);
+	/** FIXME */
+	$this->addText('plz', 'Deine Postleitzahl', !empty($this->plz) ? $this->plz : '', 5);
 	$this->setLength('plz', 5, 5);
 
 	$this->listMyFiles();
@@ -81,7 +81,11 @@ protected function checkForm()
 			}
 		catch (SqlNodataException $e)
 			{
-			$this->showWarning('Postleitzahl nicht gefunden');
+			/** FIXME */
+			if (!empty($this->plz))
+				{
+				$this->showWarning('Postleitzahl nicht gefunden');
+				}
 			}
 		}
 	catch (IoRequestException $e)
