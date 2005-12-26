@@ -160,7 +160,7 @@ protected $query;
 
 function __construct($link, $query = '')
 	{
-	parent::__construct('<pre>'.htmlspecialchars($query).'</pre>'. mysqli_error($link), mysqli_errno($link));
+	parent::__construct($query."\n\n". mysqli_error($link), mysqli_errno($link));
 	}
 }
 

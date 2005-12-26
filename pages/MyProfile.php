@@ -114,17 +114,9 @@ protected function checkForm()
 
 		if (!empty($birthday))
 			{
-			$birthday = preg_replace('/(\d+)\.(\d+)\.(\d+)/', '$3-$2-$1', $birthday);
-			if (!empty($birthday))
-				{
-				$birthday = strtotime($birthday);
-				}
-			else
-				{
-				$birthday = -1;
-				}
+			$birthday = strtotime(preg_replace('/(\d+)\.(\d+)\.(\d+)/', '$3-$2-$1', $birthday));
 
-			if ($birthday === -1)
+			if (!$birthday)
 				{
 				$this->showWarning('Konnte Deinen Geburtstag nicht bestimmen');
 				}

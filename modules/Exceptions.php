@@ -11,15 +11,15 @@ function ExceptionHandler(Exception $e)
 		</head>
 		<body>
 			<h1 style="font-size:16px;">'.get_class($e).'</h1>
-			<h2 style="font-size:14px;">'.$e->getMessage().'</h2>
+			<pre>'.htmlentities($e->getMessage()).'</pre>
 			<h3 style="font-size:12px;">Code</h3>
-			<p>'.$e->getCode().'</p>
+			<pre>'.htmlentities($e->getCode()).'</pre>
 			<h3 style="font-size:12px;">File</h3>
-			<p>'.$e->getFile().'</p>
+			<pre>'.$e->getFile().'</pre>
 			<h3 style="font-size:12px;">Line</h3>
-			<p>'.$e->getLine().'</p>
+			<pre>'.$e->getLine().'</pre>
 			<h3 style="font-size:12px;">Trace</h3>
-			<pre>'.$e->getTraceAsString().'</pre>
+			<pre>'.htmlentities($e->getTraceAsString()).'</pre>
 		</body>
 	</html>';
 
