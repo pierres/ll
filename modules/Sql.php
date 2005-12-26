@@ -17,11 +17,9 @@ function __construct()
 	{
 	$this->connects++;
 
-	$this->link = mysql_connect('localhost', Settings::SQL_USER, Settings::SQL_PASSWORD);
+	$this->link = mysqli_connect('localhost', Settings::SQL_USER, Settings::SQL_PASSWORD, Settings::SQL_DATABASE);
 
-	mysql_select_db(Settings::SQL_DATABASE, $this->link);
-
-	if (mysql_errno())
+	if (mysqli_connect_errno())
 		{
 		throw new SqlException($this->link);
 		}
@@ -42,22 +40,22 @@ public function formatString($string)
 
 public function escapeString($string)
 	{
-	return mysql_real_escape_string($string, $this->link);
+	return mysqli_real_escape_string($this->link, $string);
 	}
 
 public function query($query)
 	{
 	$this->queries++;
 
-	if (!$result = mysql_query($query, $this->link))
+	if (!$result = mysqli_query($this->link, $query))
 		{
 		throw new SqlException($this->link, $query);
 		}
 
-// 	if (mysqli_warning_count($this->link))
-// 		{
-// 		throw new SqlWarningException($this->link, $query);
-// 		}
+	if (mysqli_warning_count($this->link))
+		{
+		throw new SqlWarningException($this->link, $query);
+		}
 
 	return $result;
 	}
@@ -66,7 +64,7 @@ public function insertId()
 	{
 	$this->queries++;
 
-	if (!$result = mysql_insert_id($this->link))
+	if (!$result = mysqli_insert_id($this->link))
 		{
 		throw new SqlException($this->link);
 		}
@@ -92,24 +90,24 @@ public function fetch($query)
 	{
 	$this->queries++;
 
-	if (!$result = mysql_query( $query, $this->link))
+	if (!$result = mysqli_query($this->link, $query))
 		{
 		throw new SqlException($this->link, $query);
 		}
 
-	if (mysql_num_rows($result) == 0)
+	if (mysqli_num_rows($result) == 0)
 		{
 		throw new SqlNoDataException($this->link, $query);
 		}
 
 	$array = array();
 
-	while($ar = mysql_fetch_assoc($result))
+	while($ar = mysqli_fetch_assoc($result))
 		{
 		$array[] = $ar;
 		}
 
-	mysql_free_result($result);
+	mysqli_free_result($result);
 
 	return $array;
 	}
@@ -125,24 +123,24 @@ public function fetchCol($query)
 	{
 	$this->queries++;
 
-	if (!$result = mysql_query($query, $this->link))
+	if (!$result = mysqli_query($this->link, $query))
 		{
 		throw new SqlException($this->link, $query);
 		}
 
-	if (mysql_num_rows($result) == 0)
+	if (mysqli_num_rows($result) == 0)
 		{
 		throw new SqlNoDataException($this->link, $query);
 		}
 
 	$array = array();
 
-	while($ar = mysql_fetch_row($result))
+	while($ar = mysqli_fetch_row($result))
 		{
 		$array[] = $ar[0];
 		}
 
-	mysql_free_result($result);
+	mysqli_free_result($result);
 
 	return $array;
 	}
@@ -162,7 +160,7 @@ protected $query;
 
 function __construct($link, $query = '')
 	{
-	parent::__construct('<pre>'.htmlspecialchars($query).'</pre>'. mysql_error($link), mysql_errno($link));
+	parent::__construct('<pre>'.htmlspecialchars($query).'</pre>'. mysqli_error($link), mysqli_errno($link));
 	}
 }
 
@@ -172,11 +170,11 @@ function __construct($link, $query)
 	{
 	parent::__construct($link, $query);
 
-	if ($result = mysql_query('SHOW WARNINGS', $link))
+	if ($result = mysqli_query($link, 'SHOW WARNINGS'))
 		{
-		$row = mysql_fetch_row($result);
+		$row = mysqli_fetch_row($result);
 		echo 'Datenbankfehler:<br /><br />'.sprintf("%s (%d): %s\n", $row[0], $row[1], $row[2]);
-		mysql_free_result($result);
+		mysqli_free_result($result);
 		}
 	}
 }
