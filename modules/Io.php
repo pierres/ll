@@ -24,10 +24,10 @@ function __construct()
 		die('"magic_quotes_gpc" ist aktiviert!');
 		}
 
-	if (strpos($this->getEnv('HTTP_ACCEPT'), 'application/xhtml+xml') !== false)
-		{
-		$this->contentType = 'Content-Type: application/xhtml+xml; charset=UTF-8';
-		}
+// 	if (strpos($this->getEnv('HTTP_ACCEPT'), 'application/xhtml+xml') !== false)
+// 		{
+// 		$this->contentType = 'Content-Type: application/xhtml+xml; charset=UTF-8';
+// 		}
 	}
 
 private function header($string)
@@ -166,12 +166,12 @@ public function getFile($name)
 }
 
 
-class IoException extends WebException{
+class IoException extends RuntimeException{
 
 
-function __construct($message, $webMessage = 'Ein-/Ausgabefehler')
+function __construct($message)
 	{
-	parent::__construct($message, $webMessage);
+	parent::__construct($message, 0);
 	}
 
 }
@@ -179,14 +179,9 @@ function __construct($message, $webMessage = 'Ein-/Ausgabefehler')
 class IoRequestException extends IoException{
 
 
-function __construct($name, $description = false)
+function __construct($message)
 	{
-	if (!$description)
-		{
-		$description = $name;
-		}
-
-	parent::__construct($name, 'Der Parameter "'.$description.'" wurde nicht übergeben.');
+	parent::__construct('Der Parameter "'.$message.'" wurde nicht übergeben.');
 	}
 
 }

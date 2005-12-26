@@ -324,7 +324,12 @@ public function isMod()
 
 }
 
-class LoginException extends WebException{
+class LoginException extends RuntimeException{
+
+function __construct($message)
+	{
+	parent::__construct($message, 0);
+	}
 
 }
 

@@ -1,115 +1,51 @@
 <?php
 
-function myExceptionHandler(Exception $e)
+function ExceptionHandler(Exception $e)
 	{
-	$e->showDebugScreen();
+	$screen = '<?xml version="1.0" encoding="UTF-8" ?>
+		<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "xhtml11.dtd">
+		<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de">
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+		<head>
+		<title>'.get_class($e).'</title>
+		</head>
+		<body>
+			<h1 style="font-size:16px;">'.get_class($e).'</h1>
+			<h2 style="font-size:14px;">'.$e->getMessage().'</h2>
+			<h3 style="font-size:12px;">Code</h3>
+			<p>'.$e->getCode().'</p>
+			<h3 style="font-size:12px;">File</h3>
+			<p>'.$e->getFile().'</p>
+			<h3 style="font-size:12px;">Line</h3>
+			<p>'.$e->getLine().'</p>
+			<h3 style="font-size:12px;">Trace</h3>
+			<pre>'.$e->getTraceAsString().'</pre>
+		</body>
+	</html>';
+
+	if (Settings::LOG_DIR != '' && is_writable(Settings::LOG_DIR))
+		{
+		file_put_contents(Settings::LOG_DIR.time().'.html', $screen);
+		}
+
+	header('Content-Type: text/html; charset=UTF-8');
+	header('HTTP/1.1 500 Exception');
+	echo $screen;
 	exit();
 	}
 
 /**
 * Hiermit sorgen wir dafür, daß auch PHP-Fehler eine Exception werfen.
 */
-function myErrorHandler ($level, $string, $file, $line, $context)
+function ErrorHandler($code, $string, $file, $line, $context)
 	{
-	throw new RuntimeException ($level, $string, $file, $line, $context);
+	throw new RuntimeException ($string, $code);
 	}
 
-error_reporting(E_STRICT | E_ALL);
-set_exception_handler('myExceptionHandler');
-set_error_handler('myErrorHandler');
 
-class WebException extends Exception{
-
-
-protected $webMessage = '';
-
-function __construct($message, $webMessage = 'Ausnahmefehler', $code = 0)
-	{
-	$this->webMessage = $webMessage;
-	parent::__construct($message, $code);
-	}
-
-public function getWebMessage()
-	{
-	return $this->webMessage;
-	}
-
-private function getDebugScreen()
-	{
-	$traces = $this->getTrace();
-	$traceString = '';
-
-	foreach($traces as $trace)
-		{
-		foreach($trace as $key => $value)
-			{
-			if (is_Array($value))
-				{
-				$traceString .= '<strong>'.$key.'</strong> => (';
-				foreach($trace as $key => $value)
-					{
-					$traceString .= '<em>'.$key.'</em> =>'.$value.'; ';
-					}
-				$traceString .= ')<br />';
-				}
-				else
-				{
-				$traceString .= '<strong>'.$key.'</strong> =>'.$value.'<br />';
-				}
-			}
-		$traceString .= '<br />';
-		}
-
-	header('Content-Type: text/html; charset=UTF-8');
-	header('HTTP/1.1 500 Kernel-Panic');
-
-	return '<?xml version="1.0" encoding="UTF-8" ?>
-		<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "xhtml11.dtd">
-		<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de">
-		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-		<head>
-		<title>'.$this->getWebMessage().'</title>
-		</head>
-		<body>
-			<h1>'.get_class($this).'</h1>
-			<h2>'.$this->getWebMessage().'</h2>
-			<h2>'.$this->getMessage().'</h2>
-			<h3>Code</h3>
-			<p>'.$this->getCode().'</p>
-			<h3>Datei</h3>
-			<p>'.$this->getFile().'</p>
-			<h3>Zeile</h3>
-			<p>'.$this->getLine().'</p>
-			<h3>Verlauf</h3>
-			<p><small>'.$traceString.'</small></p>
-		</body>
-	</html>';
-	}
-
-public function showDebugScreen()
-	{
-	$screen = $this->getDebugScreen();
-	echo $screen;
-	file_put_contents(Settings::LOG_DIR.time().'.html', $screen);
-	exit();
-	}
-}
-
-class RuntimeException extends WebException{
-
-
-protected $_context = array();
-
-
-function __construct($level, $string, $file, $line, $context)
-	{
-	parent::__construct($string, 'Laufzeit-Fehler', $level);
-	$this->file = $file;
-	$this->line = $line;
-	$this->_level = $level;
-	$this->_context = $context;
-	}
-}
+//error_reporting(E_STRICT | E_ALL);
+set_exception_handler('ExceptionHandler');
+set_error_handler('ErrorHandler');
 
 
 ?>

@@ -301,8 +301,8 @@ foreach ($result as $data)
 if ($thread['poll'] == 1)
 	{
 	/** Poll sollte extra schließbar sein */
-	$this->Poll = new Poll($thread['id']);
-	$poll = $this->Poll->showPoll();
+	$thisPoll = new Poll($thread['id']);
+	$poll = $thisPoll->showPoll();
 	}
 else
 	{

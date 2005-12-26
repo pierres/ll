@@ -154,13 +154,13 @@ public function fetchValue($query)
 
 }
 
-class SqlException extends WebException {
+class SqlException extends RuntimeException {
 
 protected $query;
 
 function __construct($link, $query = '')
 	{
-	parent::__construct('<pre>'.htmlspecialchars($query).'</pre>', mysqli_error($link), mysqli_errno($link));
+	parent::__construct('<pre>'.htmlspecialchars($query).'</pre>'. mysqli_error($link), mysqli_errno($link));
 	}
 }
 
@@ -173,7 +173,7 @@ function __construct($link, $query)
 	if ($result = mysqli_query($link, 'SHOW WARNINGS'))
 		{
 		$row = mysqli_fetch_row($result);
-		$this->webMessage .= 'Datenbankfehler:<br /><br />'.sprintf("%s (%d): %s\n", $row[0], $row[1], $row[2]);
+		echo 'Datenbankfehler:<br /><br />'.sprintf("%s (%d): %s\n", $row[0], $row[1], $row[2]);
 		mysqli_free_result($result);
 		}
 	}
