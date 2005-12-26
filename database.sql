@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 26. Dezember 2005 um 15:52
+-- Erstellungszeit: 26. Dezember 2005 um 15:58
 -- Server Version: 5.0.17
 -- PHP-Version: 5.1.1
 --
@@ -28,7 +28,7 @@ CREATE TABLE `boards` (
   `admins` mediumint(8) unsigned NOT NULL default '0',
   `mods` mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=24 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -43,7 +43,7 @@ CREATE TABLE `cats` (
   `position` tinyint(3) unsigned NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `boardid` (`boardid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=120 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -60,7 +60,7 @@ CREATE TABLE `files` (
   `uploaded` int(11) unsigned NOT NULL default '0',
   `content` mediumblob NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=38 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -95,7 +95,7 @@ CREATE TABLE `forums` (
   `mods` mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `boardid` (`boardid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=323 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -127,7 +127,7 @@ CREATE TABLE `poll_values` (
   `id` mediumint(8) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`),
   KEY `pollid` (`pollid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1055 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -191,7 +191,7 @@ CREATE TABLE `posts` (
   KEY `deleted` (`deleted`),
   KEY `dat` (`dat`),
   FULLTEXT KEY `text` (`text`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=40100 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -251,7 +251,7 @@ CREATE TABLE `threads` (
   KEY `dat` (`lastdate`),
   KEY `deleted` (`deleted`),
   FULLTEXT KEY `name` (`name`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=4410 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -306,4 +306,4 @@ CREATE TABLE `users` (
   `svn` tinyint(1) unsigned NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `name` (`name`(10))
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1721 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
