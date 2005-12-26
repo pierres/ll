@@ -19,9 +19,8 @@ public function prepare()
 				<td class="main">
 					<a href="?page=ShowUser;id=1;user=486">Pierre Schmitz</a>
 					<p>
-					Rheinweg 88<br />
-					53129 Bonn<br /><br />
-					Telefon: 0228 1802169<br />
+					Wülscheider Kirchweg 8<br />
+					53604 Bad Honnef<br /><br />
 					<a href="?page=Contact;id=1">E-Mail</a>
 					</p>
 				</td>

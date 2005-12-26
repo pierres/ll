@@ -168,14 +168,14 @@ class SqlWarningException extends SqlException {
 
 function __construct($link, $query)
 	{
-	parent::__construct($link, $query);
-
 	if ($result = mysqli_query($link, 'SHOW WARNINGS'))
 		{
 		$row = mysqli_fetch_row($result);
-		echo 'Datenbankfehler:<br /><br />'.sprintf("%s (%d): %s\n", $row[0], $row[1], $row[2]);
+		$query .= 'Datenbankfehler:<br /><br />'.sprintf("%s (%d): %s\n", $row[0], $row[1], $row[2]);
 		mysqli_free_result($result);
 		}
+
+	parent::__construct($link, $query);
 	}
 }
 
