@@ -74,7 +74,7 @@ protected function showForm()
 						'.implode('', $this->hidden)
 						.implode(' ', $this->buttons).'
 						&nbsp;&nbsp;
-						<input accesskey="r" class="button" type="reset" name="reset" value="Zurüksetzen" />
+						<input accesskey="r" class="button" type="reset" name="reset" value="Zurücksetzen" />
 					</td>
 				</tr>
 			</table>
