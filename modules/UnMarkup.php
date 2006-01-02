@@ -158,6 +158,45 @@ private function unmakeExtraSmiley($smiley)
 	return ':'.$smiley.':';
 	}
 
+// private function unmakeList($list)
+// 	{
+// 	$list = str_replace('\"', '"', $list);
+// 	$pos = 0;
+// 	$last = 0;
+// 	$ul = 0;
+// 	$out = '';
+//
+// 	while ($pos < strlen($list))
+// 		{
+// 		if (strpos($list, '<ul>', $pos)
+// 			{
+// 			$out .= substr($list, $last, $pos-$last);
+// 			$ul++;
+// 			$pos += 4;
+// 			continue;
+// 			}
+//
+// 		if (strpos($list, '<li>', $pos)
+// 			{
+// 			$out .= substr($list, $last, $pos-$last);
+//
+// 			for($i = 0; $i < $ul; $i++)
+// 				{
+// 				$out .= '*';
+// 				}
+//
+// 			$out .= ' ';
+//
+// 			$li++;
+// 			$pos += 4;
+// 			continue;
+// 			}
+//
+// 		$pos++;
+// 		$last = $pos;
+// 		}
+// 	}
+
 private function unmakeList($list)
 	{
 	$list = str_replace('\"', '"', $list);
@@ -182,8 +221,8 @@ private function unmakeList($list)
 			{
 			$line = preg_replace('#</ul>#', '', $line);
 			$last = 1;
-			$line = preg_replace('#<ul>#', "\n* ", $line);
-			$out .= $line."\n";
+			$line = preg_replace('#<ul>#', "a\n* ", $line);
+			$out .= $line."b\n";
 			continue;
 			}
 
@@ -193,10 +232,10 @@ private function unmakeList($list)
 
 		for ($i=0; $i < $cur; $i++)
 			{
-			$out .= '*';
+			$out .= 'c*';
 			}
 
-		$out .= ' '.$line."\n";
+		$out .= 'd '.$line."e\n";
 
 		$last = $cur;
 		}

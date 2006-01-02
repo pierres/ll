@@ -279,6 +279,28 @@ protected function checkForm()
 	$this->smilies = $this->Io->isRequest('smilies');
 	$this->text = $this->Io->getString('text');
 
+	if (!$this->User->isOnline() && !$this->Io->isEmpty('name'))
+		{
+		try
+			{
+			$user = $this->Sql->fetchRow
+				('
+				SELECT
+					id,
+					name
+				FROM
+					users
+				WHERE
+					name = \''.$this->Sql->escapeString($this->Io->getHtml('name')).'\''
+				);
+
+			$this->showWarning('Der Name <strong><a href="?page=ShowUser;user='.$user['id'].';id='.$this->Board->getId().'">'.$user['name'].'</a></strong> wurde bereits registriert. <strong><a href="?page=Login;id='.$this->Board->getId().';name='.urlencode($this->Io->getHtml('name')).'">Melde Dich an</a></strong>, falls dies Dein Benutzer-Konto ist.');
+			}
+		catch (SqlNoDataException $e)
+			{
+			}
+		}
+
 	$this->checkNewFile();
 	}
 

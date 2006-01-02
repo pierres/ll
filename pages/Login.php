@@ -10,7 +10,7 @@ protected function setForm()
 
 	$this->addSubmit('Einloggen');
 
-	$this->addText('name', 'Dein Name', '', 25);
+	$this->addText('name', 'Dein Name', !$this->Io->isEmpty('name') ? $this->Io->getHtml('name') : '', 25);
 	$this->requires('name');
 	$this->setLength('name', 3, 25);
 

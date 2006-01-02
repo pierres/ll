@@ -63,8 +63,9 @@ function __construct()
 	$this->replace[] = '$this->makeQuote(\'$0\')';
 
 	/** Listen */
-	$this->search[]  = '/(?:^\*+\s.+$\n)*^\*+\s.+$/em';
-	$this->replace[] = '$this->makeList(\'$0\')';
+// 	$this->search[]  = '/(?:^\*+\s.+$\n)*^\*+\s.+$/em';
+	$this->search[]  = '/(?:^\*+ [^\n]+$\n)+/em';
+	$this->replace[] = '$this->makeList(\'$0\')."\n"';
 
 	/** Überschriften */
 	$this->search[]  = '/^=(={1,6})=*(.+?)=*$/me';
@@ -328,6 +329,7 @@ private function makeList($in)
 	foreach ($lines as $line)
 		{
 		$cur = 0;
+
 		/* Ermittle die aktuelle Tiefe */
 		while (strlen($line) > $cur && $line[$cur] == '*')
 			{
