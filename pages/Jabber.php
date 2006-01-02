@@ -17,7 +17,7 @@ public function prepare()
 			</tr>
 			<tr>
 				<td class="main" style="vertical-align:top;">
-						<img src="images/jabber-powered.png" alt="Jabber" />
+						<img src="images/jabber/jabber-powered.png" alt="Jabber" />
 					</td>
 					<td class="main">
 <p>
@@ -40,18 +40,18 @@ Um Jabber nutzen zu können ist ein sog. Instant-Messenger notwenidg. Die meiste
 
 <h1 style="font-size:14px">Einrichtung der Software</h1>
 <p>
-Nach dem Start von PSI muß ein neues Konto angelegt werden.<br /><img src="images/psi/1.png" alt="" /><br />
-Nun mußt Du Deine Jabber-ID angeben, die "<em>DeinBenutzername</em>@jabber.laber-land.de" lautet. Das Passwort ist ebenfalls das gleiche wie im Forum. <br /><br /><img src="images/psi/2.png" alt="" /><br />
-Unter &quot;Verbindung&quot; mußt Du noch "Kennwort unverschlüsselt übermitteln" aktivieren.<br /><img src="images/psi/3.png" alt="" /><br />
+Nach dem Start von PSI muß ein neues Konto angelegt werden.<br /><img src="images/jabber/1.png" alt="" /><br />
+Nun mußt Du Deine Jabber-ID angeben, die "<em>DeinBenutzername</em>@jabber.laber-land.de" lautet. Das Passwort ist ebenfalls das gleiche wie im Forum. <br /><br /><img src="images/jabber/2.png" alt="" /><br />
+Unter &quot;Verbindung&quot; mußt Du noch "Kennwort unverschlüsselt übermitteln" aktivieren.<br /><img src="images/jabber/3.png" alt="" /><br />
 Optinal kann unter "Details" noch die Visitenkarte angelegt werden. Diese Informationen können von anderen Nutzern abgerufen werden.
 Hiernnach brauchst Du nur noch Deinen Status auf "Online" zu ändern und Du bist "drin". (Man kann sich auch beim Programmstart automatisch verbinden lassen)
-<br /><img src="images/psi/4.png" alt="" /><br />
+<br /><img src="images/jabber/4.png" alt="" /><br />
 Um mit anderen in Kontakt zu treten, mußt Du deren Jabber-ID zu Deiner Kontakliste hinzufüen.
 </p>
 
 <h1 style="font-size:14px">Chat-Räume betreten</h1>
 <p>
-Um mit mehreren gleichzeitig zu chatten, müssen alle einen sog. Chat-Raum betreten. Wähle "Chatroom betreten" und trage folgende Einstellungen ein. (Der Spitzname ist frei wählbar)<br /><img src="images/psi/5.png" alt="" /><br /><br /><img src="images/psi/6.png" alt="" />
+Um mit mehreren gleichzeitig zu chatten, müssen alle einen sog. Chat-Raum betreten. Wähle "Chatroom betreten" und trage folgende Einstellungen ein. (Der Spitzname ist frei wählbar)<br /><img src="images/jabber/5.png" alt="" /><br /><br /><img src="images/jabber/6.png" alt="" />
 </p>
 				</td>
 			</tr>
