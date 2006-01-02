@@ -21,7 +21,7 @@ public function prepare()
 					</td>
 					<td class="main">
 <p>
-Laber-Land bietet allen die Möglichkeit sich in Echtzeit zu unterhalten und Diskussionen in &quot;Chat&quot;-Rämen zu führen.Hier findest Du ein Kurzanleitung zur Einrichtung und Nutzung des Dienstes.</p>
+Laber-Land bietet allen die Möglichkeit sich in Echtzeit zu unterhalten und Diskussionen in &quot;Chat&quot;-Rämen zu führen. Hier findest Du eine Kurzanleitung zur Einrichtung und Nutzung des Dienstes.</p>
 
 <p>
 Zur Realisierung nutzen wir das <a href="http://www.jabber.org" class="extlink">Jabber</a>-Protokoll. Dis ist ein freies und standardisiertes Protokoll für Instant-Messaging. Mehr Informationen, warum man Jabber und uzm Beispiel nicht ICQ nutzen sollte findet man unter <a href="http://www.deshalbfrei.org/software:instant_messaging" class="extlink">deshalbfrei.org</a>
