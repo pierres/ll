@@ -24,7 +24,7 @@ public function prepare()
 Laber-Land bietet allen die Möglichkeit sich in Echtzeit zu unterhalten und Diskussionen in &quot;Chat&quot;-Rämen zu führen. Hier findest Du eine Kurzanleitung zur Einrichtung und Nutzung des Dienstes.</p>
 
 <p>
-Zur Realisierung nutzen wir das <a href="http://www.jabber.org" class="extlink">Jabber</a>-Protokoll. Dis ist ein freies und standardisiertes Protokoll für Instant-Messaging. Mehr Informationen, warum man Jabber und uzm Beispiel nicht ICQ nutzen sollte findet man unter <a href="http://www.deshalbfrei.org/software:instant_messaging" class="extlink">deshalbfrei.org</a>
+Zur Realisierung nutzen wir das <a href="http://www.jabber.org" class="extlink">Jabber</a>-Protokoll. Das ist ein freies und standardisiertes Protokoll für Instant-Messaging. Mehr Informationen, warum man Jabber und uzm Beispiel nicht ICQ nutzen sollte findet man unter <a href="http://www.deshalbfrei.org/software:instant_messaging" class="extlink">deshalbfrei.org</a>
 </p>
 
 <h1 style="font-size:14px">Voraussetzungen</h1>
@@ -34,7 +34,7 @@ Du mußt entweder im <a href="?page=Register" class="link">Forum registriert</a>
 
 <h1 style="font-size:14px">Benötigte Software</h1>
 <p>
-Um Jabber nutzen zu können ist ein sog. Instant-Messenger notwenidg. Die meisten Multiprotokoll-Proramme wie zum Beispiel <a href="http://www.miranda-im.org" class="extlink">Miranda</a> oder <a href="http://www.kde.org">Kopete</a> unterstützen Jabber bereits. Empfehlenswert ist auch der reine Jabber-Client <a href="http://psi.sf.net" class="extlink">PSI</a>.
+Um Jabber nutzen zu können ist ein sog. Instant-Messenger notwenidg. Die meisten Multiprotokoll-Proramme wie zum Beispiel <a href="http://www.miranda-im.org" class="extlink">Miranda</a> oder <a href="http://www.kde.org" class="extlink">Kopete</a> unterstützen Jabber bereits. Empfehlenswert ist auch der reine Jabber-Client <a href="http://psi.sf.net" class="extlink">PSI</a>.
 </p>
 
 
@@ -42,9 +42,9 @@ Um Jabber nutzen zu können ist ein sog. Instant-Messenger notwenidg. Die meiste
 <p>
 Nach dem Start von PSI muß ein neues Konto angelegt werden.<br /><img src="images/jabber/1.png" alt="" /><br />
 Nun mußt Du Deine Jabber-ID angeben, die "<em>DeinBenutzername</em>@jabber.laber-land.de" lautet. Das Passwort ist ebenfalls das gleiche wie im Forum. <br /><br /><img src="images/jabber/2.png" alt="" /><br />
-Unter &quot;Verbindung&quot; mußt Du noch "Kennwort unverschlüsselt übermitteln" aktivieren.<br /><img src="images/jabber/3.png" alt="" /><br />
-Optinal kann unter "Details" noch die Visitenkarte angelegt werden. Diese Informationen können von anderen Nutzern abgerufen werden.
-Hiernnach brauchst Du nur noch Deinen Status auf "Online" zu ändern und Du bist "drin". (Man kann sich auch beim Programmstart automatisch verbinden lassen)
+Unter &quot;Verbindung&quot; mußt Du noch &quot;Kennwort unverschlüsselt übermitteln&quot; aktivieren.<br /><img src="images/jabber/3.png" alt="" /><br />
+Optinal kann unter &quot;Details&quot; noch die Visitenkarte angelegt werden. Diese Informationen können von anderen Nutzern abgerufen werden.
+Hiernnach brauchst Du nur noch Deinen Status auf &quot;Online&quot; zu ändern und Du bist &quot;drin&quot;. (Man kann sich auch beim Programmstart automatisch verbinden lassen)
 <br /><img src="images/jabber/4.png" alt="" /><br />
 Um mit anderen in Kontakt zu treten, mußt Du deren Jabber-ID zu Deiner Kontakliste hinzufüen.
 </p>
