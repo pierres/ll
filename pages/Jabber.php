@@ -24,17 +24,17 @@ public function prepare()
 Laber-Land bietet allen die Möglichkeit sich in Echtzeit zu unterhalten und Diskussionen in &quot;Chat&quot;-Rämen zu führen.Hier findest Du ein Kurzanleitung zur Einrichtung und Nutzung des Dienstes.</p>
 
 <p>
-Zur Realisierung nutzen wir das <a href="http://www.jabber.org">Jabber</a>-Protokoll. Dis ist ein freies und standardisiertes Protokoll für Instant-Messaging. Mehr Informationen, warum man Jabber und uzm Beispiel nicht ICQ nutzen sollte findet man unter <a href="http://www.deshalbfrei.org/software:instant_messaging">deshalbfrei.org</a>
+Zur Realisierung nutzen wir das <a href="http://www.jabber.org" class="extlink">Jabber</a>-Protokoll. Dis ist ein freies und standardisiertes Protokoll für Instant-Messaging. Mehr Informationen, warum man Jabber und uzm Beispiel nicht ICQ nutzen sollte findet man unter <a href="http://www.deshalbfrei.org/software:instant_messaging" class="extlink">deshalbfrei.org</a>
 </p>
 
 <h1 style="font-size:14px">Voraussetzungen</h1>
 <p>
-Du mußt entweder im <a href="?page=Register">Forum registriert</a> sein oder bereits eine Jabber-Kennung eines anderen Dienstes besitzen.
+Du mußt entweder im <a href="?page=Register" class="link">Forum registriert</a> sein oder bereits eine Jabber-Kennung eines anderen Dienstes besitzen.
 </p>
 
 <h1 style="font-size:14px">Benötigte Software</h1>
 <p>
-Um Jabber nutzen zu können ist ein sog. Instant-Messenger notwenidg. Die meisten Multiprotokoll-Proramme wie zum Beispiel <a href="http://www.miranda-im.org">Miranda</a> oder <a href="http://www.kde.org">Kopete</a> unterstützen Jabber bereits. Empfehlenswert ist auch der reine Jabber-Client <a href="http://psi.sf.net">PSI</a>.
+Um Jabber nutzen zu können ist ein sog. Instant-Messenger notwenidg. Die meisten Multiprotokoll-Proramme wie zum Beispiel <a href="http://www.miranda-im.org" class="extlink">Miranda</a> oder <a href="http://www.kde.org">Kopete</a> unterstützen Jabber bereits. Empfehlenswert ist auch der reine Jabber-Client <a href="http://psi.sf.net" class="extlink">PSI</a>.
 </p>
 
 
@@ -56,7 +56,7 @@ Um mit mehreren gleichzeitig zu chatten, müssen alle einen sog. Chat-Raum betre
 				</td>
 			</tr>
 		</table>
-		<div style="font-size:8px;text-align:left;">JabberPowered is a trademark of <a href="http://www.jabber.org">Jabber, Inc.</a> and its use is licensed through the Jabber Software Foundation.</div>
+		<div style="font-size:8px;text-align:left;">JabberPowered is a trademark of <a href="http://www.jabber.org" class="extlink">Jabber, Inc.</a> and its use is licensed through the Jabber Software Foundation.</div>
 		';
 
 	$this->setValue('body', $body);
