@@ -190,9 +190,11 @@ protected function listThreads()
 		$thread_pages = '';
 		for ($i = 0; $i < ($data['posts'] / Settings::MAX_POSTS) && ($data['posts'] / Settings::MAX_POSTS) > 1; $i++)
 			{
-			if ($i > 20)
+			if ($i >= 6 && $i <= ($data['posts'] / Settings::MAX_POSTS) - 6)
 				{
-				break;
+				$thread_pages .= ' ... ';
+				$i = nat($data['posts'] / Settings::MAX_POSTS) - 6;
+				continue;
 				}
 
 			$thread_pages .= ' <a href="?page=Postings;id='.$this->Board->getId().';thread='.$data['id'].';post='.(Settings::MAX_POSTS * $i).'">'.($i+1).'</a>';
