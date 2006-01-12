@@ -47,13 +47,11 @@ public function getValue($key)
 	return $this->variables[$key];
 	}
 
-/** FIXME: Toll, wenn ich von hier aus $this->show() starte crasht Apache
-*/
 public function showWarning($text)
 	{
 	$this->setValue('title', 'Warnung');
 	$this->setValue('body', '<div class="warning">'.$text.'</div>');
-	$this->sendOutput();
+	$this->show();
 	}
 
 protected function debug()
@@ -89,18 +87,17 @@ private function getWebring()
 		');
 
 	$menu = <<<eot
-<form action="">
-<div>
-<select name ="link" onchange="location.href='?page=Forums;id='+this.form.link.options[this.form.link.selectedIndex].value">
+<script type="text/javascript">
+document.write("<form action=\"\"><div>	<select name=\"link\" onchange=\"location.href='?page=Forums;id='+this.form.link.options[this.form.link.selectedIndex].value\">
 eot;
 
 	foreach ($boards as $board)
 		{
-		$selected = ($this->Board->getId() == $board['id'] ? ' selected="selected"': '');
-		$menu .= '<option value="'.$board['id'].'"'.$selected.'>'.$board['name'].'</option>';
+		$selected = ($this->Board->getId() == $board['id'] ? ' selected=\"selected\"': '');
+		$menu .= '<option value=\"'.$board['id'].'\"'.$selected.'>'.$board['name'].'<\/option>';
 		}
 
-	return $menu.'</select></div></form>';
+	return $menu.'<\/select><\/div><\/form>");</script>';
 	}
 
 public function prepare()
@@ -110,11 +107,6 @@ public function prepare()
 	}
 
 public function show()
-	{
-	$this->sendOutput();
-	}
-
-private function sendOutput()
 	{
 	$file = file_get_contents(PATH.'html/'.$this->Board->getId().'.html');
 
