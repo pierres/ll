@@ -281,5 +281,34 @@ $this->setValue('title', $thread['name']);
 $this->setValue('body', $body);
 }
 
+protected function getPages()
+	{
+	$pages = '';
+
+	for ($i = 0; $i < ($this->posts / Settings::MAX_POSTS) && ($this->posts / Settings::MAX_POSTS) > 1; $i++)
+		{
+		if ($this->post < Settings::MAX_POSTS * ($i-4))
+			{
+			$i = Settings::MAX_POSTS * ($i-4);
+			continue;
+			}
+		elseif($this->post > Settings::MAX_POSTS * ($i+4))
+			{
+			continue;
+			}
+
+		if ($this->post == (Settings::MAX_POSTS * $i))
+			{
+			$pages .= ' <strong>'.($i+1).'</strong>';
+			}
+		else
+			{
+			$pages .= ' <a href="?page=PrivatePostings;id='.$this->Board->getId().';thread='.$this->thread.';post='.(Settings::MAX_POSTS * $i).'">'.($i+1).'</a>';
+			}
+		}
+
+	return $pages;
+	}
+
 }
 ?>
