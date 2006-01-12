@@ -88,6 +88,7 @@ private function getWebring()
 
 	$menu = <<<eot
 <script type="text/javascript">
+<!--
 document.write("<form action=\"\"><div>	<select name=\"link\" onchange=\"location.href='?page=Forums;id='+this.form.link.options[this.form.link.selectedIndex].value\">
 eot;
 
@@ -97,7 +98,9 @@ eot;
 		$menu .= '<option value=\"'.$board['id'].'\"'.$selected.'>'.$board['name'].'<\/option>';
 		}
 
-	return $menu.'<\/select><\/div><\/form>");</script>';
+	return $menu.'<\/select><\/div><\/form>");
+	-->
+	</script>';
 	}
 
 public function prepare()
