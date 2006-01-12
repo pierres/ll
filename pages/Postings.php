@@ -395,7 +395,7 @@ protected function getPages()
 	return $pages;
 	}
 
-protected function getFiles()
+protected function getFiles($post)
 	{
 	try
 		{
@@ -404,12 +404,13 @@ protected function getFiles()
 			SELECT
 				files.id,
 				files.name,
-				files.size
+				files.size,
+				files.type
 			FROM
 				files,
 				post_file
 			WHERE
-				post_file.postid = '.$this->post.'
+				post_file.postid = '.$post.'
 				AND post_file.fileid = files.id
 			ORDER BY
 				files.id DESC
@@ -424,10 +425,21 @@ protected function getFiles()
 
 	foreach ($files as $file)
 		{
-		$list .= '<tr>
- 		<td style="padding:5px;"><a class="link" onclick="openLink(this)" href="?page=GetFile;file='.$file['id'].'">'.$file['name'].'</a></td>
-		<td style="text-align:right;padding:5px;">'.round($file['size'] / 1024, 2).' KByte</td>
-		</tr>';
+		if ($file['size'] <= Settings::AVATAR_SIZE && strpos($file['type'], 'image/') == 0)
+			{
+			$list .= '<tr>
+ 			<td style="padding:5px;" colspan="2">
+			<img src="?page=GetFile;file='.$file['id'].'" alt="'.$file['name'].'" class="image" onclick="openImage(this)" />
+ 			</td>
+			</tr>';
+			}
+		else
+			{
+			$list .= '<tr>
+ 			<td style="padding:5px;"><a class="link" onclick="openLink(this)" href="?page=GetFile;file='.$file['id'].'">'.$file['name'].'</a></td>
+			<td style="text-align:right;padding:5px;">'.round($file['size'] / 1024, 2).' KByte</td>
+			</tr>';
+			}
 		}
 
 	return $list.'</table>';
