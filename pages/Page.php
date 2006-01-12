@@ -129,10 +129,10 @@ private function sendOutput()
 
 	$this->setValue('webring', $this->getWebring());
 
-	if ($this->User->isLevel(User::ROOT))
-		{
-		$this->setValue('body', $this->getValue('body').$this->debug());
-		}
+// 	if ($this->User->isLevel(User::ROOT))
+// 		{
+// 		$this->setValue('body', $this->getValue('body').$this->debug());
+// 		}
 
 	$this->setValue('body', $this->getValue('body').'<div style="text-align:right;font-size:8px;"><a href="?page=Impressum">Impressum</a></div>');
 
