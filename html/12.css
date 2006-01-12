@@ -12,7 +12,7 @@ a		{
 		}
 
 a:hover		{
-		color:#FFCC00;
+		color:#990000;
 		text-decoration:none;
 		}
 
@@ -22,6 +22,7 @@ table     	{
 		border-collapse:collapse;
 		margin-left:auto;
 		margin-right:auto;
+
 		}
 
 .frame		{
@@ -43,29 +44,29 @@ table     	{
 		border-style:dotted;
 		border-color:#182263;
 		border-width:1px;
-		background-image:url(../images/button.png);
+		background-image:url((../images/button.png);
 		background-repeat:repeat-x;
 		}
 
 .button:hover	{
-		background-color:#FFCC00;
-		color:#182263;
+		background-color:#990000;
+		color:#ffffff;
 		}
 
 .new:before	{
-		content:url(../images/new.png);
+		content:url(http://www.akainosekaide.de/mangacenter/neu.gif);
 		}
 
 .old:before	{
-		content:url(../images/old.png);
+		content:url(http://www.akainosekaide.de/mangacenter/alt2.gif);
 		}
 
 .newex:before	{
-		content:url(../images/newex.png);
+		content:url(http://www.akainosekaide.de/mangacenter/neu.gif);
 		}
 
 .oldex:before	{
-		content:url(../images/oldex.png);
+		content:url(http://www.akainosekaide.de/mangacenter/alt2.gif);
 		}
 
 .poll:before	{
@@ -82,21 +83,20 @@ table     	{
 
 #logo		{
 		float:left;
-		background-image:url(../images/logo.png);
+background-image:url(http://www.laber-land.de/~akai/mangacenter/mclogo.jpg);
 		background-repeat:no-repeat;
-		width:150px;
-		height:111px;
+		width:0px;
+		height:0px;
 		}
 
 #title		{
-		padding-left:250px;
-		padding-top:10px;
+		
 		font-size:16px;
 		font-weight:bold;
 		}
 
 #welcome	{
-		padding-left:250px;
+		padding-left:0px;f
 		padding-top:20px;
 		font-size:12px;
 		font-weight:bold;
@@ -114,14 +114,14 @@ table     	{
 
 #webring	{
 		text-align:center;
-		padding-top:50px;
+		padding-top:10px;
 		}
 
 .cat		{
 		color:#FFFFFF;
 		font-weight:bold;
 		font-size:12px;
-		background-color:#6c83af;
+		background-color:#990000;
 		padding:1px;
 		padding-left:100px;
 		border-color:#182263;
@@ -142,7 +142,7 @@ table     	{
 		color:#FFFFFF;
 		font-weight:bold;
 		font-size:10px;
-		background-color:#6c83af;
+		background-color:#990000;
 		padding:1px;
 		}
 
@@ -151,7 +151,7 @@ table     	{
 		}
 
 .pathlink:hover	{
-		color:#FFCC00;
+		color:#ffffff;
 		}
 
 .iconcol	{
@@ -219,19 +219,20 @@ table     	{
 .title		{
 		color:#ffffff;
 		font-size:12px;
-		background-color:#182263;
+		background-color:#990000;
 		text-align:center;
 		padding-top:2px;
 		padding-bottom:2px;
 		padding-left:8px;
 		padding-right:8px;
-		background-image:url(../images/bg.png);
-		background-repeat:repeat-x;
+		background-image:url(http://www.laber-land.de/~akai/mangacenter/dings.jpg); 
+background-repeat:repeat-x;
+
 		}
 
 .pollbar	{
 		font-size:9px;
-		background-color:#6c83af;
+		background-color:#990000;
 		}
 
 .pages		{
