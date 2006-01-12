@@ -3,13 +3,16 @@
 
 class Postings extends Page{
 
-private $ismod = false;
+protected $ismod 		= false;
+protected $thread 		= 0;
+protected $post 		= 0;
+protected $posts 		= 0;
 
 public function prepare(){
 
 try
 	{
-	$threadid = $this->Io->getInt('thread');
+	$this->thread = $this->Io->getInt('thread');
 	}
 catch (IoRequestException $e)
 	{
@@ -18,11 +21,11 @@ catch (IoRequestException $e)
 
 try
 	{
-	$post = $this->Io->getInt('post');
+	$this->post = $this->Io->getInt('post');
 	}
 catch (IoRequestException $e)
 	{
-	$post = 0;
+	$this->post = 0;
 	}
 
 try
@@ -47,7 +50,7 @@ try
 			forums,
 			cats
 		WHERE
-			threads.id = '.$threadid.'
+			threads.id = '.$this->thread.'
 			AND threads.forumid = forum_cat.forumid
 			AND forum_cat.catid = cats.id
 			AND cats.boardid = '.$this->Board->getId().'
@@ -68,12 +71,12 @@ catch (SqlNoDataException $e)
 				threads,
 				forums
 			WHERE
-				threads.id = '.$threadid.'
+				threads.id = '.$this->thread.'
 				AND forums.id = threads.forumid
 				AND forums.boardid != '.$this->Board->getId()
 			);
 
-		$this->Io->redirect('Postings','thread='.$threadid.';post='.$post, $id);
+		$this->Io->redirect('Postings','thread='.$this->thread.';post='.$this->post, $id);
 		}
 	catch (SqlNoDataException $e)
 		{
@@ -83,23 +86,23 @@ catch (SqlNoDataException $e)
 
 $this->ismod = $this->User->isGroup($thread['mods']) || $this->User->isMod();
 
-$count = $this->Sql->numRows('posts WHERE '.($this->ismod ? '' : 'posts.deleted = 0 AND').' posts.threadid = '.$threadid);
+$this->posts = $this->Sql->numRows('posts WHERE '.($this->ismod ? '' : 'posts.deleted = 0 AND').' posts.threadid = '.$this->thread);
 
 
-if ($post == -1)
+if ($this->post == -1)
 	{
-	if ($this->Log->isNew($threadid, $thread['lastdate']))
+	if ($this->Log->isNew($this->thread, $thread['lastdate']))
 		{
-		$post = $count - $this->Sql->numRows('posts WHERE '.($this->ismod ? '' : 'posts.deleted = 0 AND').' posts.threadid = '.$threadid.' AND dat >= '.$this->Log->getTime($threadid));
+		$this->post = $this->posts - $this->Sql->numRows('posts WHERE '.($this->ismod ? '' : 'posts.deleted = 0 AND').' posts.threadid = '.$this->thread.' AND dat >= '.$this->Log->getTime($this->thread));
 		}
 	else
 		{
-		$post = nat($count-Settings::MAX_POSTS);
+		$this->post = nat($this->posts-Settings::MAX_POSTS);
 		}
 	}
 
 
-$limit = $post.','.Settings::MAX_POSTS;
+$limit = $this->post.','.Settings::MAX_POSTS;
 
 if ($thread['deleted'] == 1 && !$this->ismod)
 	{
@@ -107,22 +110,12 @@ if ($thread['deleted'] == 1 && !$this->ismod)
 	}
 
 
-$pages = '';
-	for ($i = 0; $i < ($count / Settings::MAX_POSTS) and ($count / Settings::MAX_POSTS) > 1; $i++)
-		{
-		if ($post == (Settings::MAX_POSTS * $i))
-			{
-			$pages .= ' <strong>'.($i+1).'</strong>';
-			}
-		else
-			{
-			$pages .= ' <a href="?page=Postings;id='.$this->Board->getId().';thread='.$threadid.';post='.(Settings::MAX_POSTS * $i).'">'.($i+1).'</a>';
-			}
-		}
+$pages = $this->getPages();
 
-$next = ($count > Settings::MAX_POSTS+$post ? ' <a href="?page=Postings;id='.$this->Board->getId().';thread='.$threadid.';post='.(Settings::MAX_POSTS+$post).'">&#187;</a>' : '');
+$next = ($this->posts > Settings::MAX_POSTS+$this->post ? ' <a href="?page=Postings;id='.$this->Board->getId().';thread='.$this->thread.';post='.(Settings::MAX_POSTS+$this->post).'">&#187;</a>' : '');
 
-$last = ($post > 0 ? '<a href="?page=Postings;id='.$this->Board->getId().';thread='.$threadid.';post='.nat($post-Settings::MAX_POSTS).'">&#171;</a>' : '');
+$last = ($this->post > 0 ? '<a href="?page=Postings;id='.$this->Board->getId().';thread='.$this->thread.';post='.nat($this->post-Settings::MAX_POSTS).'">&#171;</a>' : '');
+
 
 if ($this->User->isOnline())
 	{
@@ -153,7 +146,7 @@ try
 				LEFT JOIN users AS editors
 					ON posts.editby = editors.id
 		WHERE
-			posts.threadid = '.$threadid.'
+			posts.threadid = '.$this->thread.'
 			'.($this->ismod ? '' : 'AND posts.deleted = 0').'
 		ORDER BY
 			posts.dat ASC
@@ -167,7 +160,7 @@ catch (SqlNoDataException $e)
 	}
 
 
-$posts 		= '';
+$postings		= '';
 $i 		= 2;
 $first 		= true;
 $closed 	= (empty($thread['closed']) ? false : true);
@@ -206,13 +199,13 @@ foreach ($result as $data)
 		{
 		if ($this->User->isOnline())
 			{
-			if ($first && $post == 0)
+			if ($first && $this->post == 0)
 				{
 				$edit_button = (($this->ismod or $this->User->isUser($data['userid'])) ?
-							' <a href="?page=EditThread;id='.$this->Board->getId().';thread='.$threadid.'"><span class="button">Thema ändern</span></a>' : '');
+							' <a href="?page=EditThread;id='.$this->Board->getId().';thread='.$this->thread.'"><span class="button">Thema ändern</span></a>' : '');
 
 				$del_button = ($this->ismod ?
-							' <a href="?page=DelThread;id='.$this->Board->getId().';thread='.$threadid.'"><span class="button">Thema löschen</span></a>' : '');
+							' <a href="?page=DelThread;id='.$this->Board->getId().';thread='.$this->thread.'"><span class="button">Thema löschen</span></a>' : '');
 				$first = false;
 				}
 			else
@@ -267,7 +260,7 @@ foreach ($result as $data)
 		$files = '';
 		}
 
-	$posts .=
+	$postings .=
 		'
 		<tr>
 			<td '.$style.' rowspan="2" style="vertical-align:top;width:150px;">
@@ -345,7 +338,7 @@ $body =
 				<!-- <a href="?page=NewThread;id='.$this->Board->getId().';forum='.$thread['forumid'].'"><span class="button">Neues Thema</span></a> -->'.$reply_button.'
 			</td>
 		</tr>
-			'.$posts.'
+			'.$postings.'
 		<tr>
 			<td class="pages">
 				'.$last.$pages.$next.'&nbsp;
@@ -373,8 +366,31 @@ $this->setValue('title', $thread['name']);
 $this->setValue('body', $body);
 }
 
+protected function getPages()
+	{
+	$pages = '';
 
-protected function getFiles($post)
+	for ($i = 0; $i < ($this->posts / Settings::MAX_POSTS) && ($this->posts / Settings::MAX_POSTS) > 1; $i++)
+		{
+		if ($this->posts > 9 && $this->post < Settings::MAX_POSTS * ($i-4) || $this->post > Settings::MAX_POSTS * ($i + 4))
+			{
+			continue;
+			}
+
+		if ($this->post == (Settings::MAX_POSTS * $i))
+			{
+			$pages .= ' <strong>'.($i+1).'</strong>';
+			}
+		else
+			{
+			$pages .= ' <a href="?page=Postings;id='.$this->Board->getId().';thread='.$this->thread.';post='.(Settings::MAX_POSTS * $i).'">'.($i+1).'</a>';
+			}
+		}
+
+	return $pages;
+	}
+
+protected function getFiles()
 	{
 	try
 		{
@@ -388,7 +404,7 @@ protected function getFiles($post)
 				files,
 				post_file
 			WHERE
-				post_file.postid = '.$post.'
+				post_file.postid = '.$this->post.'
 				AND post_file.fileid = files.id
 			ORDER BY
 				files.id DESC

@@ -5,6 +5,7 @@ class PrivateThreads extends Page{
 
 
 protected $thread 	= 0;
+protected $threads 	= 0;
 protected $result 	= array();
 
 public function prepare(){
@@ -27,7 +28,7 @@ catch (IoRequestException $e)
 $limit = $this->thread.','.Settings::MAX_THREADS;
 
 
-$count = $this->Sql->numRows
+$this->threads = $this->Sql->numRows
 	('
 		threads,
 		thread_user
@@ -71,20 +72,9 @@ catch (SqlNoDataException $e)
 	}
 
 
-$pages = '';
-for ($i = 0; $i < ($count / Settings::MAX_THREADS) and ($count / Settings::MAX_THREADS) > 1; $i++)
-	{
-	if ($this->thread == (Settings::MAX_THREADS * $i))
-		{
-		$pages .= ' <strong>'.($i+1).'</strong>';
-		}
-	else
-		{
-		$pages .= ' <a href="?page=PrivateThreads;id='.$this->Board->getId().';thread='.(Settings::MAX_THREADS * $i).'">'.($i+1).'</a>';
-		}
-	}
+$pages = $this->getPages();
 
-$next = ($count > Settings::MAX_THREADS+$this->thread
+$next = ($this->threads > Settings::MAX_THREADS+$this->thread
 	? ' <a href="?page=PrivateThreads;id='.$this->Board->getId().';thread='.(Settings::MAX_THREADS+$this->thread).'">&#187;</a>'
 	: '');
 
@@ -146,6 +136,11 @@ protected function listThreads()
 		$thread_pages = '';
 		for ($i = 0; $i < ($data['posts'] / Settings::MAX_POSTS) && ($data['posts'] / Settings::MAX_POSTS) > 1; $i++)
 			{
+			if ($i > 20)
+				{
+				break;
+				}
+
 			$thread_pages .= ' <a href="?page=PrivatePostings;id='.$this->Board->getId().';thread='.$data['id'].';post='.(Settings::MAX_POSTS * $i).'">'.($i+1).'</a>';
 			}
 
@@ -201,6 +196,30 @@ protected function listThreads()
 			}
 
 	return $threads;
+	}
+
+protected function getPages()
+	{
+	$pages = '';
+
+	for ($i = 0; $i < ($this->threads / Settings::MAX_THREADS) && ($this->threads / Settings::MAX_THREADS) > 1; $i++)
+		{
+		if ($this->threads > 9 && $this->thread < Settings::MAX_THREADS * ($i-4) || $this->thread > Settings::MAX_THREADS * ($i + 4))
+			{
+			continue;
+			}
+
+		if ($this->thread == (Settings::MAX_POSTS * $i))
+			{
+			$pages .= ' <strong>'.($i+1).'</strong>';
+			}
+		else
+			{
+			$pages .= ' <a href="?page=PrivateThreads;id='.$this->Board->getId().';thread='.(Settings::MAX_THREADS * $i).'">'.($i+1).'</a>';
+			}
+		}
+
+	return $pages;
 	}
 
 }

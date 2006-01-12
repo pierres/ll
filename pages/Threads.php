@@ -7,6 +7,7 @@ class Threads extends Page{
 protected $ismod 	= false;
 protected $forum 	= 0;
 protected $thread 	= 0;
+protected $threads 	= 0;
 protected $result 	= array();
 
 public function prepare(){
@@ -81,7 +82,7 @@ catch (SqlNoDataException $e)
 
 $this->ismod = $this->User->isGroup($forum['mods']) || $this->User->isMod();
 
-$count = $this->Sql->numRows('threads WHERE '.($this->ismod ? '' : 'threads.deleted = 0 AND').' (threads.forumid = '.$this->forum.' OR threads.movedfrom = '.$this->forum.')');
+$this->threads = $this->Sql->numRows('threads WHERE '.($this->ismod ? '' : 'threads.deleted = 0 AND').' (threads.forumid = '.$this->forum.' OR threads.movedfrom = '.$this->forum.')');
 
 try
 	{
@@ -121,20 +122,9 @@ catch (SqlNoDataException $e)
 	}
 
 
-$pages = '';
-for ($i = 0; $i < ($count / Settings::MAX_THREADS) and ($count / Settings::MAX_THREADS) > 1; $i++)
-	{
-	if ($this->thread == (Settings::MAX_THREADS * $i))
-		{
-		$pages .= ' <strong>'.($i+1).'</strong>';
-		}
-	else
-		{
-		$pages .= ' <a href="?page=Threads;id='.$this->Board->getId().';thread='.(Settings::MAX_THREADS * $i).';forum='.$this->forum.'">'.($i+1).'</a>';
-		}
-	}
+$pages = $this->getPages();
 
-$next = ($count > Settings::MAX_THREADS+$this->thread
+$next = ($this->threads > Settings::MAX_THREADS+$this->thread
 	? ' <a href="?page=Threads;id='.$this->Board->getId().';thread='.(Settings::MAX_THREADS+$this->thread).';forum='.$this->forum.'">&#187;</a>'
 	: '');
 
@@ -200,6 +190,11 @@ protected function listThreads()
 		$thread_pages = '';
 		for ($i = 0; $i < ($data['posts'] / Settings::MAX_POSTS) && ($data['posts'] / Settings::MAX_POSTS) > 1; $i++)
 			{
+			if ($i > 20)
+				{
+				break;
+				}
+
 			$thread_pages .= ' <a href="?page=Postings;id='.$this->Board->getId().';thread='.$data['id'].';post='.(Settings::MAX_POSTS * $i).'">'.($i+1).'</a>';
 			}
 
@@ -270,6 +265,30 @@ protected function listThreads()
 			}
 
 	return $threads;
+	}
+
+protected function getPages()
+	{
+	$pages = '';
+
+	for ($i = 0; $i < ($this->threads / Settings::MAX_THREADS) && ($this->threads / Settings::MAX_THREADS) > 1; $i++)
+		{
+		if ($this->threads > 9 && $this->thread < Settings::MAX_THREADS * ($i-4) || $this->thread > Settings::MAX_THREADS * ($i + 4))
+			{
+			continue;
+			}
+
+		if ($this->thread == (Settings::MAX_POSTS * $i))
+			{
+			$pages .= ' <strong>'.($i+1).'</strong>';
+			}
+		else
+			{
+			$pages .= ' <a href="?page=Threads;id='.$this->Board->getId().';thread='.(Settings::MAX_THREADS * $i).';forum='.$this->forum.'">'.($i+1).'</a>';
+			}
+		}
+
+	return $pages;
 	}
 
 }

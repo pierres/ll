@@ -13,7 +13,7 @@ public function prepare(){
 
 try
 	{
-	$threadid = $this->Io->getInt('thread');
+	$this->thread = $this->Io->getInt('thread');
 	}
 catch (IoRequestException $e)
 	{
@@ -22,11 +22,11 @@ catch (IoRequestException $e)
 
 try
 	{
-	$post = $this->Io->getInt('post');
+	$this->post = $this->Io->getInt('post');
 	}
 catch (IoRequestException $e)
 	{
-	$post = 0;
+	$this->post = 0;
 	}
 
 try
@@ -42,7 +42,7 @@ try
 			threads,
 			thread_user
 		WHERE
-			threads.id = '.$threadid.'
+			threads.id = '.$this->thread.'
 			AND threads.forumid = 0
 			AND thread_user.threadid = threads.id
 			AND thread_user.userid = '.$this->User->getId()
@@ -53,39 +53,28 @@ catch (SqlNoDataException $e)
 		$this->showWarning('Thema nicht gefunden.');
 		}
 
-$count = $this->Sql->numRows('posts WHERE posts.threadid = '.$threadid);
+$this->posts = $this->Sql->numRows('posts WHERE posts.threadid = '.$this->thread);
 
-if ($post == -1)
+if ($this->post == -1)
 	{
-	if ($this->Log->isNew($threadid, $thread['lastdate']))
+	if ($this->Log->isNew($this->thread, $thread['lastdate']))
 		{
-		$post = $count - $this->Sql->numRows('posts WHERE posts.threadid = '.$threadid.' AND dat >= '.$this->Log->getTime($threadid));
+		$this->post = $this->posts - $this->Sql->numRows('posts WHERE posts.threadid = '.$this->thread.' AND dat >= '.$this->Log->getTime($this->thread));
 		}
 	else
 		{
-		$post = nat($count-Settings::MAX_POSTS);
+		$this->post = nat($this->posts-Settings::MAX_POSTS);
 		}
 	}
 
 
-$limit = $post.','.Settings::MAX_POSTS;
+$limit = $this->post.','.Settings::MAX_POSTS;
 
-$pages = '';
-	for ($i = 0; $i < ($count / Settings::MAX_POSTS) and ($count / Settings::MAX_POSTS) > 1; $i++)
-		{
-		if ($post == (Settings::MAX_POSTS * $i))
-			{
-			$pages .= ' <strong>'.($i+1).'</strong>';
-			}
-		else
-			{
-			$pages .= ' <a href="?page=PrivatePostings;id='.$this->Board->getId().';thread='.$threadid.';post='.(Settings::MAX_POSTS * $i).'">'.($i+1).'</a>';
-			}
-		}
+$pages = $this->getPages();
 
-$next = ($count > Settings::MAX_POSTS+$post ? ' <a href="?page=PrivatePostings;id='.$this->Board->getId().';thread='.$threadid.';post='.(Settings::MAX_POSTS+$post).'">&#187;</a>' : '');
+$next = ($this->posts > Settings::MAX_POSTS+$this->post ? ' <a href="?page=PrivatePostings;id='.$this->Board->getId().';thread='.$this->thread.';post='.(Settings::MAX_POSTS+$this->post).'">&#187;</a>' : '');
 
-$last = ($post > 0 ? '<a href="?page=PrivatePostings;id='.$this->Board->getId().';thread='.$threadid.';post='.nat($post-Settings::MAX_POSTS).'">&#171;</a>' : '');
+$last = ($this->post > 0 ? '<a href="?page=PrivatePostings;id='.$this->Board->getId().';thread='.$this->thread.';post='.nat($this->post-Settings::MAX_POSTS).'">&#171;</a>' : '');
 
 $this->Log->insert($thread['id'], $thread['lastdate']);
 
@@ -132,7 +121,7 @@ try
 				LEFT JOIN users AS editors
 					ON posts.editby = editors.id
 		WHERE
-			posts.threadid = '.$threadid.'
+			posts.threadid = '.$this->thread.'
 		ORDER BY
 			posts.dat ASC
 		LIMIT
@@ -145,7 +134,7 @@ catch (SqlNoDataException $e)
 	}
 
 
-$posts 		= '';
+$postings 	= '';
 $i 		= 2;
 $first 		= true;
 
@@ -168,10 +157,10 @@ foreach ($result as $data)
 		$edited = '';
 		}
 
-	if ($first && $post == 0)
+	if ($first && $this->post == 0)
 		{
 		$edit_button = (($this->User->isUser($data['userid'])) ?
-					' <a href="?page=EditPrivateThread;id='.$this->Board->getId().';thread='.$threadid.'"><span class="button">Thema ändern</span></a>' : '');
+					' <a href="?page=EditPrivateThread;id='.$this->Board->getId().';thread='.$this->thread.'"><span class="button">Thema ändern</span></a>' : '');
 		$first = false;
 		}
 	else
@@ -196,7 +185,7 @@ foreach ($result as $data)
 		$files = '';
 		}
 
-	$posts .=
+	$postings .=
 		'
 		<tr>
 			<td '.$style.' rowspan="2" style="vertical-align:top;width:150px;">
@@ -269,7 +258,7 @@ $body =
 				'.$reply_button.'
 			</td>
 		</tr>
-			'.$posts.'
+			'.$postings.'
 		<tr>
 			<td class="pages">
 				'.$last.$pages.$next.'&nbsp;

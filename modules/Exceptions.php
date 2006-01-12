@@ -43,7 +43,7 @@ function ErrorHandler($code, $string, $file, $line, $context)
 	}
 
 
-error_reporting(E_STRICT | E_ALL);
+//error_reporting(E_STRICT | E_ALL);
 set_exception_handler('ExceptionHandler');
 set_error_handler('ErrorHandler');
 
