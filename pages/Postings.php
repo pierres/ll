@@ -372,7 +372,12 @@ protected function getPages()
 
 	for ($i = 0; $i < ($this->posts / Settings::MAX_POSTS) && ($this->posts / Settings::MAX_POSTS) > 1; $i++)
 		{
-		if ($this->posts > 9 && $this->post < Settings::MAX_POSTS * ($i-4) || $this->post > Settings::MAX_POSTS * ($i + 4))
+		if ($this->post < Settings::MAX_POSTS * ($i-4))
+			{
+			$i = Settings::MAX_POSTS * ($i-4);
+			continue;
+			}
+		elseif($this->post > Settings::MAX_POSTS * ($i+4))
 			{
 			continue;
 			}

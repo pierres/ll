@@ -273,7 +273,12 @@ protected function getPages()
 
 	for ($i = 0; $i < ($this->threads / Settings::MAX_THREADS) && ($this->threads / Settings::MAX_THREADS) > 1; $i++)
 		{
-		if ($this->threads > 9 && $this->thread < Settings::MAX_THREADS * ($i-4) || $this->thread > Settings::MAX_THREADS * ($i + 4))
+		if ($this->thread < Settings::MAX_THREADS * ($i-4))
+			{
+			$i = Settings::MAX_THREADS * ($i-4);
+			continue;
+			}
+		elseif($this->thread > Settings::MAX_THREADS * ($i+4))
 			{
 			continue;
 			}
