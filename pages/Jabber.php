@@ -34,7 +34,7 @@ Du mußt entweder im <a href="?page=Register" class="link">Forum registriert</a>
 
 <h1 style="font-size:14px">Benötigte Software</h1>
 <p>
-Um Jabber nutzen zu können ist ein sog. Instant-Messenger notwenidg. Die meisten Multiprotokoll-Proramme wie zum Beispiel <a href="http://www.miranda-im.org" class="extlink">Miranda</a> oder <a href="http://www.kde.org" class="extlink">Kopete</a> unterstützen Jabber bereits. Empfehlenswert ist auch der reine Jabber-Client <a href="http://psi.sf.net" class="extlink">PSI</a>.
+Um Jabber nutzen zu können ist ein sog. Instant-Messenger notwenidg. Die meisten Multiprotokoll-Proramme wie zum Beispiel <a href="http://www.miranda-im.org" class="extlink">Miranda</a> oder <a href="http://www.kde.org" class="extlink">Kopete</a> unterstützen Jabber bereits. Empfehlenswert ist auch der reine Jabber-Client <a href="http://www.psi-im.org" class="extlink">PSI</a>.
 </p>
 
 
