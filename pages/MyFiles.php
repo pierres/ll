@@ -104,7 +104,7 @@ protected function checkForm()
 		$this->showWarning('Datei wurde nicht hochgeladen!');
 		}
 
-	if ($this->file['size'] >= Settings::FILE_SIZE)
+	if (!isset($this->file['size']) || $this->file['size'] >= Settings::FILE_SIZE)
 		{
 		$this->showWarning('Datei ist zu groß!');
 		}
