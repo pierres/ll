@@ -90,23 +90,20 @@ protected function setForm()
 
 protected function checkForm()
 	{
-	/**
-	pro User: Gesamtzahl, Gesamtgröße und Einzelgröße der Dateien beschränken
-	Systemweit: Gesamtzahl und Größe
-	Avatare vielleicht doch auf HD sichern -> sonst sehr viele DB-Abfragen
-	*/
 	try
 		{
 		$this->file = $this->Io->getFile('file');
 		}
 	catch (IoException $e)
 		{
-		$this->showWarning('Datei wurde nicht hochgeladen!');
+		$this->showWarning($e->getMessage());
+		return;
 		}
 
-	if (!isset($this->file['size']) || $this->file['size'] >= Settings::FILE_SIZE)
+	if ($this->file['size'] >= Settings::FILE_SIZE)
 		{
 		$this->showWarning('Datei ist zu groß!');
+		return;
 		}
 
 	$data = $this->Sql->fetchRow

@@ -159,7 +159,7 @@ public function getFile($name)
 		}
 	else
 		{
-		throw new IoException('Datei nicht korrekt empfangen');
+		throw new IoException('Datei wurde nicht hochgeladen! Die Datei ist möglicherweise größer als '.ini_get('upload_max_filesize').'Byte .');
 		}
 	}
 
