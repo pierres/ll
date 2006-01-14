@@ -177,7 +177,6 @@ protected function checkNewFile()
 			}
 		catch (IoException $e)
 			{
-			$this->showWarning($e->getMessage());
 			return;
 			}
 
