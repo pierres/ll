@@ -33,7 +33,7 @@ protected function setForm()
 		{
 		$this->text = $this->Io->getString('text');
 		$this->Markup->enableSmilies($this->Io->isRequest('smilies'));
-
+		/** FIXME: position of preview-window is not allways optimal */
 		$this->addElement('previewwindow',
 		'<div class="preview">'.$this->Markup->toHtml($this->text).'</div>');
 		}
@@ -177,8 +177,8 @@ protected function checkNewFile()
 			}
 		catch (IoException $e)
 			{
+			$this->showWarning($e->getMessage());
 			return;
-			//$this->showWarning('Datei wurde nicht hochgeladen!');
 			}
 
 		if ($this->file['size'] >= Settings::FILE_SIZE)

@@ -37,10 +37,10 @@ protected function setForm()
 		}
 
 	$list =
-		'<table style="margin:10px;width:100%;">
+		'<table style="margin:10px;width:600px;">
 		<tr>
 		<td style="padding-bottom:5px;"><strong>Datei</strong></td>
-		<td style="text-align:right;padding-bottom:5px;"><strong>Größe</strong> (KByte)</td>
+		<td style="text-align:right;padding-bottom:5px;"><strong>Größe</strong>&nbsp;(KByte)</td>
 		<td style="text-align:right;padding-bottom:5px;"><strong>Datum</strong></td>
 		<td></td>
 		</tr>';

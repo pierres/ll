@@ -70,18 +70,18 @@ public function prepare()
 				</td>
 			</tr>
 			<tr>
-				<td class="main">
+				<td class="main" style="width:150px;">
 					Name:
 				</td>
 				<td class="main">
 					'.$data['realname'].'
 				</td>
 				<td class="main" rowspan="7">
-					'.$avatar.'
+					<div style="height:100px;width:150px;overflow:hidden;">'.$avatar.'</div>
 				</td>
 			</tr>
 			<tr>
-				<td class="main" style="vertical-align:top">
+				<td class="main" style="vertical-align:top;width:150px;">
 					Wohnort:
 				</td>
 				<td class="main">
@@ -89,7 +89,7 @@ public function prepare()
 				</td>
 			</tr>
 			<tr>
-				<td class="main">
+				<td class="main" style="width:150px;">
 					Alter:
 				</td>
 				<td class="main">
@@ -97,7 +97,7 @@ public function prepare()
 				</td>
 			</tr>
 			<tr>
-				<td class="main">
+				<td class="main" style="width:150px;">
 					Geschlecht:
 				</td>
 				<td class="main">
@@ -105,7 +105,7 @@ public function prepare()
 				</td>
 			</tr>
 			<tr>
-				<td class="main" style="vertical-align:top">
+				<td class="main" style="vertical-align:top;width:150px;">
 					Dabei seit:
 				</td>
 				<td class="main" colspan="2">
@@ -114,7 +114,7 @@ public function prepare()
 				</td>
 			</tr>
 			<tr>
-				<td class="main" style="vertical-align:top">
+				<td class="main" style="vertical-align:top;width:150px;">
 					Letzter Beitrag:
 				</td>
 				<td class="main" colspan="2">
@@ -123,7 +123,7 @@ public function prepare()
 				</td>
 			</tr>
 			<tr>
-				<td class="main" style="vertical-align:top">
+				<td class="main" style="vertical-align:top;width:150px;">
 					Beitr&auml;ge:
 				</td>
 				<td class="main" colspan="2">
@@ -132,7 +132,7 @@ public function prepare()
 				</td>
 			</tr>
 			<tr>
-				<td class="main" style="vertical-align:top">
+				<td class="main" style="vertical-align:top;width:150px;">
 					Freier Text
 				</td>
 				<td class="main" colspan="2">

@@ -249,7 +249,7 @@ foreach ($result as $data)
 
 	$poster = (!empty($data['userid']) ? '<a href="?page=ShowUser;id='.$this->Board->getId().';user='.$data['userid'].'">'.$data['username'].'</a>' : $data['username']);
 
-	$avatar = (empty($data['avatar']) || !$this->User->isOnline() ? '' : '<img src="?page=GetFile;file='.$data['avatar'].'" class="avatar" />');
+	$avatar = (empty($data['avatar']) || !$this->User->isOnline() ? '' : '<img src="?page=GetFile;file='.$data['avatar'].'" class="avatar"  />');
 
 	if ($data['file'] == 1 && $this->User->isOnline())
 		{
@@ -266,7 +266,7 @@ foreach ($result as $data)
 			<td '.$style.' rowspan="2" style="vertical-align:top;width:150px;">
 				<div class="postname">'.$poster.'</div>
 			</td>
-			<td '.$style.' style="vertical-align:top;">
+			<td '.$style.' style="vertical-align:top;width:150px;">
 				<div class="postdate">'.$data['dat'].'</div>
 			</td>
 			<td '.$style.'>
@@ -279,8 +279,8 @@ foreach ($result as $data)
 			</td>
 		</tr>
 		<tr>
-			<td  '.$style.' rowspan="2" style="vertical-align:top;text-align:center;">
-				'.$avatar.'
+			<td  '.$style.' rowspan="2" style="vertical-align:top;text-align:center;width:150px;">
+				<div style="height:100px;width:150px;overflow:hidden;">'.$avatar.'</div>
 			</td>
 		</tr>
 		<tr>

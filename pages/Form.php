@@ -132,7 +132,7 @@ protected function isSubmit()
 	return false;
 	}
 
-protected function addFile($name, $description, $cols = 80)
+protected function addFile($name, $description, $cols = 50)
 	{
 	$this->addHidden('MAX_FILE_SIZE', Settings::FILE_SIZE);
 	/** Workaround for PHP-"Bug". See http://de3.php.net/manual/en/ini.core.php#ini.post-max-size */

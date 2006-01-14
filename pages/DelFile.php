@@ -86,6 +86,17 @@ public function prepare()
 		WHERE
 			fileid = '.$file
 		);
+
+	$this->Sql->query
+		('
+		UPDATE
+			users
+		SET
+			avatar = 0
+		WHERE
+			id = '.$this->User->getId().'
+			AND avatar = '.$file
+		);
 	}
 
 public function show()
