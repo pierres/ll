@@ -22,21 +22,53 @@ public function prepare()
 		$this->showWarning('keine Datei angegeben');
 		}
 
-	$this->thumb = ($this->Io->isRequest('thumb') ? 'thumb' : '');
+	$this->thumb = $this->Io->isRequest('thumb');
 
 	try
 		{
-		$this->data = $this->Sql->fetchRow
-			('
-			SELECT
-				type,
-				'.$this->thumb.'content AS content,
-				'.$this->thumb.'size AS size
-			FROM
-				images
-			WHERE
-				url = \''.$this->Sql->escapeString($this->url).'\''
-			);
+		if ($this->thumb)
+			{
+			$this->data = $this->Sql->fetchRow
+				('
+				(
+				SELECT
+					type,
+					thumbcontent AS content,
+					thumbsize AS size
+				FROM
+					images
+				WHERE
+					url = \''.$this->Sql->escapeString($this->url).'\'
+					AND thumbsize > 0
+				)
+				UNION
+				(
+				SELECT
+					type,
+					content AS content,
+					size AS size
+				FROM
+					images
+				WHERE
+					url = \''.$this->Sql->escapeString($this->url).'\'
+					AND thumbsize = 0
+				)
+				');
+			}
+		else
+			{
+			$this->data = $this->Sql->fetchRow
+				('
+				SELECT
+					type,
+					content,
+					size
+				FROM
+					images
+				WHERE
+					url = \''.$this->Sql->escapeString($this->url).'\'
+				');
+			}
 		}
 	catch (SqlNoDataException $e)
 		{
@@ -47,7 +79,7 @@ public function prepare()
 private function loadImage()
 	{
 	$file = $this->getFile();
-	$size = strlen($file['content']);
+	$file['size'] = strlen($file['content']);
 
 	$file['thumbcontent'] = $this->getThumb($file['content'], $file['type']);
 	$file['thumbsize'] = strlen($file['thumbcontent']);
@@ -59,13 +91,20 @@ private function loadImage()
 		SET
 			url = \''.$this->Sql->escapeString($this->url).'\',
 			type = \''.$this->Sql->escapeString($file['type']).'\',
-			size = '.$size.',
+			size = '.$file['size'].',
 			content = \''.$this->Sql->escapeString($file['content']).'\',
-			thumbcontent = \''.$this->Sql->escapeString($thumb).'\',
-			thumbsize = '.$thumbsize
+			thumbcontent = \''.$this->Sql->escapeString($file['thumbcontent']).'\',
+			thumbsize = '.$file['thumbsize']
 		);
 
-	return array('type' => $file['type'], 'content' => $file[$this->thumb.'content'], $this->thumb.'size' => $size);
+	if ($this->thumb && $file['thumbsize'] > 0)
+		{
+		return array('type' => $file['type'], 'content' => $file['thumbcontent'], 'size' => $file['thumbsize']);
+		}
+	else
+		{
+		return array('type' => $file['type'], 'content' => $file['content'], 'size' => $file['size']);
+		}
 	}
 
 private function getThumb($content, $type)
@@ -78,8 +117,7 @@ private function getThumb($content, $type)
 
 	if ($width <= $size)
 		{
-		$new_w = $width;
-		$new_h = $height;
+		return '';
 		}
 	else
 		{
@@ -88,16 +126,27 @@ private function getThumb($content, $type)
 		}
 
 	$img = imagecreatetruecolor($new_w,$new_h);
-	imagecopyresized($img,$src,0,0,0,0,$new_w,$new_h,$width,$height);
+
+	if     ($type == 'image/png')
+		{
+		imagealphablending($img, false);
+		imagesavealpha($img, true);
+		}
+	elseif ($type == 'image/gif')
+		{
+		imagealphablending($img, true);
+		}
+
+	imagecopyresampled($img,$src,0,0,0,0,$new_w,$new_h,$width,$height);
 
 	ob_start();
 
 	switch ($type)
 		{
-		case 'image/jpeg' 	: imagejpeg($img); break;
-		case 'image/png' 	: imagepng($img); break;
-		case 'image/gif' 	: imagegif($img); break;
-		default 		: imagepng($img); break;
+		case 'image/jpeg' 	: imagejpeg($img, '', 80); 	break;
+		case 'image/png' 	: imagepng($img); 		break;
+		case 'image/gif' 	: imagegif($img); 		break;
+		default 		: imagepng($img); 		break;
 		}
 
 	$thumb = ob_get_contents();
