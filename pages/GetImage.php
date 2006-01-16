@@ -146,7 +146,6 @@ private function getThumb($content, $type)
 		case 'image/jpeg' 	: imagejpeg($img, '', 80); 	break;
 		case 'image/png' 	: imagepng($img); 		break;
 		case 'image/gif' 	: imagegif($img); 		break;
-		default 		: imagepng($img); 		break;
 		}
 
 	$thumb = ob_get_contents();
@@ -165,7 +164,7 @@ private function getFile()
 
 	if (!$link)
 		{
-		echo "$errstr ($errno)<br />\n";
+		$this->showWarning('Konnte das Bild nicht laden: '.$errstr);
 		}
 	else
 		{
