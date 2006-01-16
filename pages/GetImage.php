@@ -1,10 +1,17 @@
 <?php
 
+/**
+* TODO: Größenbegrenzung -> dann redirect zu URL
+*	evtl. timestamp mitführen
+*	Konfiguration extrahieren
+*/
 class GetImage extends Page{
 
-private $data 	= array();
-private $url 	= '';
-private $thumb	= '';
+private $data 		= array();
+private $url 		= '';
+private $thumb		= '';
+private $thumbsize 	= 300;
+private $maxFileSize 	= 2097152; //2MByte
 
 public function prepare()
 	{
@@ -109,19 +116,18 @@ private function loadImage()
 
 private function getThumb($content, $type)
 	{
-	$size = 300;
 	$src = imagecreatefromstring($content);
 	$width = imagesx($src);
 	$height = imagesy($src);
 	$aspect_ratio = $height/$width;
 
-	if ($width <= $size)
+	if ($width <= $this->thumbsize)
 		{
 		return '';
 		}
 	else
 		{
-		$new_w = $size;
+		$new_w = $this->thumbsize;
 		$new_h = abs($new_w * $aspect_ratio);
 		}
 
@@ -156,10 +162,10 @@ private function getThumb($content, $type)
 	return $thumb;
 	}
 
-private function getFile()
+private function getFileSize()
 	{
-	$host = parse_url($this->url);
-	$link = fsockopen ($host['host'], 80, $errno, $errstr, 10);
+	$request = parse_url($this->url);
+	$link = fsockopen ($request['host'], 80, $errno, $errstr, 10);
 	$buffer = '';
 
 	if (!$link)
@@ -168,10 +174,54 @@ private function getFile()
 		}
 	else
 		{
-		fputs ($link, 'GET '.$this->url." HTTP/1.0\r\n\r\n");
+		fputs ($link, 'HEAD '.$request['path']." HTTP/1.0\r\nHost: ".$request['host']."\r\n\r\n");
 		while (!feof($link))
 			{
-			$buffer .= fgets($link,2048);
+			$buffer .= fgets($link, 256);
+			}
+		fclose($link);
+		}
+
+	if (!preg_match('#Content-Type: (image/.*)#', $buffer))
+		{
+		$this->showWarning('Das ist kein Bild!');
+		}
+
+	preg_match('/Content-Length: (.*)/', $buffer, $size);
+
+	return $size[1];
+	}
+
+private function getFile()
+	{
+	if ($this->getFileSize() > $this->maxFileSize)
+		{
+		if ($this->thumb)
+			{
+			$this->showWarning('Das ist mir zu viel');
+			}
+		else
+			{
+			header('Location: '.$this->url);
+			exit;
+			}
+		}
+
+	$request = parse_url($this->url);
+
+	$link = fsockopen ($request['host'], 80, $errno, $errstr, 10);
+	$buffer = '';
+
+	if (!$link)
+		{
+		$this->showWarning('Konnte das Bild nicht laden: '.$errstr);
+		}
+	else
+		{
+		fputs ($link, 'GET '.$request['path']." HTTP/1.0\r\nHost: ".$request['host']."\r\n\r\n");
+		while (!feof($link))
+			{
+			$buffer .= fgets($link,8192);
 			}
 		fclose($link);
 		}
@@ -179,9 +229,36 @@ private function getFile()
 	$result = explode("\r\n\r\n", $buffer);
 	unset($buffer);
 
-	preg_match('/Content-Type: (.*)/s', $result[0], $type);
+	preg_match('/Content-Type: (.*)/', $result[0], $type);
 
 	return array('type' => trim($type[1]), 'content' => $result[1]);
+	}
+
+public function showWarning($text)
+	{
+	$font = 2;
+	$width  = imagefontwidth($font) * strlen($text);
+	$height = imagefontheight($font);
+	$image = imagecreate($width+2, $height+2);
+
+	$white = imagecolorallocate($image, 255, 255, 255);
+	$black = imagecolorallocate($image, 0, 0, 0);
+
+	imagestring($image, 2, 1, 1,  $text, $black);
+
+	ob_start();
+	imagepng($image);
+	$content = ob_get_contents();
+	ob_end_clean();
+
+	imagedestroy($image);
+
+	$this->data['type'] = 'image/png';
+	$this->data['size'] = strlen($content);
+	$this->data['content'] = $content;
+	$this->url = 'Warning.png';
+
+	$this->show();
 	}
 
 public function show()
