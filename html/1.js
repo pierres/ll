@@ -6,5 +6,5 @@ function openLink(a)
 
 function openImage(img)
 	{
-	window.open(img.src);
+	window.open(img.src.replace(/;thumb/, ""));
 	}
