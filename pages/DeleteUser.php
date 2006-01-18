@@ -133,6 +133,26 @@ protected function sendForm()
 				lastuserid = '.$this->user
 			);
 
+		$this->Sql->query
+			('
+			UPDATE
+				posts
+			SET
+				userid = 0
+			WHERE
+				userid = '.$this->user
+			);
+
+		$this->Sql->query
+			('
+			UPDATE
+				posts
+			SET
+				editby = 0
+			WHERE
+				editby = '.$this->user
+			);
+
 		if ($this->user == $this->User->getId())
 			{
 			$this->User->logout();
