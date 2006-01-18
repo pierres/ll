@@ -15,10 +15,7 @@ private $maxFileSize 	= 2097152; //2MByte
 
 public function prepare()
 	{
-	if (!$this->User->isOnline())
-		{
-		$this->showWarning('Nur für Mitglieder!');
-		}
+	$this->thumb = $this->Io->isRequest('thumb');
 
 	try
 		{
@@ -29,7 +26,18 @@ public function prepare()
 		$this->showWarning('keine Datei angegeben');
 		}
 
-	$this->thumb = $this->Io->isRequest('thumb');
+	if (!$this->User->isOnline())
+		{
+		if ($this->thumb)
+			{
+			$this->showWarning($this->url);
+			}
+		else
+			{
+			header('Location: '.$this->url);
+			exit;
+			}
+		}
 
 	try
 		{
@@ -236,15 +244,17 @@ private function getFile()
 
 public function showWarning($text)
 	{
-	$font = 2;
+	$text = utf8_decode($text);
+	$font = -1;
 	$width  = imagefontwidth($font) * strlen($text);
 	$height = imagefontheight($font);
-	$image = imagecreate($width+2, $height+2);
-
+	$image = imagecreate($width+8, $height+4);
 	$white = imagecolorallocate($image, 255, 255, 255);
 	$black = imagecolorallocate($image, 0, 0, 0);
 
-	imagestring($image, 2, 1, 1,  $text, $black);
+	imagecolortransparent($image, $white).
+
+	imagestring($image, $font, 4, 2, $text , $black);
 
 	ob_start();
 	imagepng($image);

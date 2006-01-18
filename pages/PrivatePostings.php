@@ -150,7 +150,14 @@ foreach ($result as $data)
 
 	if ($data['editdate'] > 0)
 		{
-		$edited = '<div class="postedit">von <a href="?page=ShowUser;id='.$this->Board->getId().';user='.$data['editby'].'">'.$data['editorname'].'</a> am '.formatDate($data['editdate']).' geändert</div>';
+		if (empty($data['editorname']))
+			{
+			$edited = '<div class="postedit">am '.formatDate($data['editdate']).' geändert</div>';
+			}
+		else
+			{
+			$edited = '<div class="postedit">von <a href="?page=ShowUser;id='.$this->Board->getId().';user='.$data['editby'].'">'.$data['editorname'].'</a> am '.formatDate($data['editdate']).' geändert</div>';
+			}
 		}
 	else
 		{
@@ -172,7 +179,7 @@ foreach ($result as $data)
 	$quote_button = '<a href="?page=QuotePrivatePost;id='.$this->Board->getId().';post='.$postid.'"><span class="button">zitieren</span></a>';
 
 
-	$poster = (!empty($data['userid']) ? '<a href="?page=ShowUser;id='.$this->Board->getId().';user='.$data['userid'].'">'.$data['username'].'</a>' : $data['username']);
+	$poster = (!empty($data['userid']) ? '<a href="?page=ShowUser;id='.$this->Board->getId().';user='.$data['userid'].'">'.$data['name'].'</a>' : $data['username']);
 
 	$avatar = (empty($data['avatar']) || !$this->User->isOnline() ? '' : '<img src="?page=GetFile;file='.$data['avatar'].'" class="avatar" />');
 
