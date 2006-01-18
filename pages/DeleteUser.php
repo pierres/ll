@@ -49,7 +49,7 @@ protected function setForm()
 
 	$this->addHidden('user', $this->user);
 
-	$this->addElement('hint', 'Soll das Benutzerkonto von <strong>'.$username.'</strong> wirklich gelöscht werden?');
+	$this->addElement('hint', 'Soll das Benutzerkonto von <strong><a href="?page=ShowUser;id='.$this->Board->getId().';user='.$this->user.'">'.$username.'</a></strong> wirklich gelöscht werden? <br />Alle Beiträge und angehängten Dateien bleiben erhalten.');
 
 	$this->addRadio('confirm', 'Bestätige Deine Entscheidung',
 	array('Ja, ich möchte dieses Benutzerkonto endgültig löschen.' => 1, 'Nein, lieber doch nichts löschen.' => 2), 2);
