@@ -420,8 +420,8 @@ private function makeImage($url)
 	{
 	$url = str_replace('\"', '"', $url);
 
-	//$this->Stack->push('<img src="'.rehtmlspecialchars($url).'" alt="" class="image" onclick="openImage(this)" />');
-	$this->Stack->push('<img src="?page=GetImage;thumb;url='.rehtmlspecialchars($url).'" alt="" class="image" onclick="openImage(this)" />');
+	$this->Stack->push('<img src="'.rehtmlspecialchars($url).'" alt="" class="image" onclick="openImage(this)" />');
+	//$this->Stack->push('<img src="?page=GetImage;thumb;url='.rehtmlspecialchars($url).'" alt="" class="image" onclick="openImage(this)" />');
 
 	return $this->sep.$this->Stack->lastID().$this->sep;
 	}
