@@ -21,7 +21,7 @@ protected function setForm()
 		$this->showFailure('Nur für Mitglieder!');
 		}
 
-	if ($this->User->getID() != $this->user && !$this->User->isAdmin())
+	if ($this->User->getID() != $this->user && !$this->User->isLevel(User::ROOT))
 		{
 		$this->showFailure('Keine Berechtigung!');
 		}
