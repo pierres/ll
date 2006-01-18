@@ -1,11 +1,15 @@
 -- phpMyAdmin SQL Dump
--- version 2.7.0-pl1
+-- version 2.7.0-pl2
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 26. Dezember 2005 um 15:58
--- Server Version: 5.0.17
+-- Erstellungszeit: 18. Januar 2006 um 13:57
+-- Server Version: 5.0.18
 -- PHP-Version: 5.1.1
+
+SET AUTOCOMMIT=0;
+START TRANSACTION;
+
 --
 -- Datenbank: `current`
 --
@@ -95,6 +99,22 @@ CREATE TABLE `forums` (
   `mods` mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `boardid` (`boardid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `images`
+--
+
+CREATE TABLE `images` (
+  `url` varchar(255) NOT NULL,
+  `type` varchar(100) NOT NULL,
+  `content` mediumblob NOT NULL,
+  `size` mediumint(6) unsigned NOT NULL,
+  `thumbcontent` mediumblob NOT NULL,
+  `thumbsize` mediumint(6) unsigned NOT NULL,
+  PRIMARY KEY  (`url`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -250,6 +270,8 @@ CREATE TABLE `threads` (
   KEY `forumid` (`forumid`),
   KEY `dat` (`lastdate`),
   KEY `deleted` (`deleted`),
+  KEY `lastuserid` (`lastuserid`),
+  KEY `firstuserid` (`firstuserid`),
   FULLTEXT KEY `name` (`name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -307,3 +329,5 @@ CREATE TABLE `users` (
   PRIMARY KEY  (`id`),
   KEY `name` (`name`(10))
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+COMMIT;
