@@ -48,6 +48,11 @@ public function setContentType($type)
 	$this->contentType = $type;
 	}
 
+public function setOutputHandler($handler)
+	{
+	$this->outputHandler = $handler;
+	}
+
 public function setCookie($key, $value, $maxage = null)
 	{
 	setcookie ($key, $value, $maxage);//, '/', '.'.Settings::DOMAIN);
@@ -143,15 +148,75 @@ public function redirect($class, $param = '', $id = 0)
 	{
 	$param = (!empty($param) ? ';'.$param : '');
 
-	$this->header('Location: http'.(!getenv('HTTPS') ? '' : 's').'://'.
+	$this->redirectToUrl('http'.(!getenv('HTTPS') ? '' : 's').'://'.
 				getenv('HTTP_HOST')
 				.dirname($_SERVER['PHP_SELF'])
 				.'?id='.($id == 0 ? $this->Board->getId() : $id).';page='.$class.$param);
+	}
 
+public function redirectToUrl($url)
+	{
+	$this->header('Location: '.$url);
 	exit();
 	}
 
-public function getFile($name)
+public function getRemoteFileSize($url)
+	{
+	$request = parse_url($url);
+	$link = fsockopen ($request['host'], 80, $errno, $errstr, 10);
+
+	if (!$link)
+		{
+		throw new IoException('Konnte die Datei nicht laden: '.$errstr);
+		}
+	else
+		{
+		fputs ($link, 'HEAD '.$request['path']." HTTP/1.0\r\nHost: ".$request['host']."\r\n\r\n");
+		$buffer = fgets($link, 2048);
+		fclose($link);
+		}
+
+	if (!preg_match('/Content-Length: (.*)/', $buffer, $size))
+		{
+		throw new IoException('Konnte die Datei nicht laden.');
+		}
+
+	return $size[1];
+	}
+
+public function getRemoteFile($url)
+	{
+	$request = parse_url($url);
+
+	$link = fsockopen ($request['host'], 80, $errno, $errstr, 10);
+	$buffer = '';
+
+	if (!$link)
+		{
+		throw new IoException('Konnte die Datei nicht laden: '.$errstr);
+		}
+	else
+		{
+		fputs ($link, 'GET '.$request['path']." HTTP/1.0\r\nHost: ".$request['host']."\r\n\r\n");
+		while (!feof($link))
+			{
+			$buffer .= fgets($link, 8192);
+			}
+		fclose($link);
+		}
+
+	$result = explode("\r\n\r\n", $buffer);/** FIXME */
+	unset($buffer);
+
+	if (!preg_match('/Content-Type: (.*)/', $result[0], $type))
+		{
+		throw new IoException('Konnte die Datei nicht laden.');
+		}
+
+	return array('type' => trim($type[1]), 'content' => $result[1]);
+	}
+
+public function getUploadedFile($name)
 	{
 	if (isset($_FILES[$name]) && is_uploaded_file($_FILES[$name]['tmp_name']))
 		{

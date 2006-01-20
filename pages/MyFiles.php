@@ -92,7 +92,7 @@ protected function checkForm()
 	{
 	try
 		{
-		$this->file = $this->Io->getFile('file');
+		$this->file = $this->Io->getUploadedFile('file');
 		}
 	catch (IoException $e)
 		{

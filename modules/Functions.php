@@ -72,4 +72,53 @@ function gzdecode($string)
 	return gzinflate(substr($string, 10));
 	}
 
+function resizeImage($image, $type, $size)
+	{
+	$src = imagecreatefromstring($image);
+	$width = imagesx($src);
+	$height = imagesy($src);
+	$aspect_ratio = $height/$width;
+
+	if ($width <= $size)
+		{
+		return '';
+		}
+	else
+		{
+		$new_w = $size;
+		$new_h = abs($new_w * $aspect_ratio);
+		}
+
+	$img = imagecreatetruecolor($new_w,$new_h);
+
+	if     ($type == 'image/png')
+		{
+		imagealphablending($img, false);
+		imagesavealpha($img, true);
+		}
+	elseif ($type == 'image/gif')
+		{
+		imagealphablending($img, true);
+		}
+
+	imagecopyresampled($img,$src,0,0,0,0,$new_w,$new_h,$width,$height);
+
+	ob_start();
+
+	switch ($type)
+		{
+		case 'image/jpeg' 	: imagejpeg($img, '', 80); 	break;
+		case 'image/png' 	: imagepng($img); 		break;
+		case 'image/gif' 	: imagegif($img); 		break;
+		}
+
+	$thumb = ob_get_contents();
+	ob_end_clean();
+
+	imagedestroy($img);
+
+	return $thumb;
+	}
+
+
 ?>
