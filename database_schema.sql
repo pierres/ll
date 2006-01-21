@@ -31,7 +31,7 @@ CREATE TABLE `boards` (
   `admins` mediumint(8) unsigned NOT NULL default '0',
   `mods` mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -374,4 +374,4 @@ CREATE TABLE `users` (
   `text` text NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `name` (`name`(10))
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
