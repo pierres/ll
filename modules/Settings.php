@@ -3,31 +3,51 @@
 
 class Settings{
 
-const DOMAIN		= 'localhost';
-const SQL_DATABASE 	= 'current';
-const SQL_USER		= '';
-const SQL_PASSWORD	= '';
-const LOG_TIMEOUT 	= 14;
-const SESSION_TIMEOUT 	= 3600;
-const SESSION_REFRESH 	= 900;
-const MAX_AGE		= 31536000;
-const MAX_THREADS 	= 20;
-const MAX_POSTS 	= 20;
-const MAX_SUMMARY 	= 5;
-const MAX_MEMBERS 	= 50;
-const MAX_POST 		= 20000;
-const MIN_POST 		= 3;
-const POST_MASTER 	= 'pierre@localhost';
-const SMTP_HOST 	= '';
-const SMTP_PORT 	= 0;
-const SMTP_USER 	= '';
-const SMTP_PASSWORD 	= '';
-const LOG_DIR 		= '';
 
-const FILE_SIZE		= 524288;
-const QUOTA		= 1048576;
-const FILES		= 50;
-const AVATAR_SIZE	= 102400;
+private $config = array();
+
+
+public function __construct()
+	{
+	$this->config['domain']			= 'localhost';
+	$this->config['sql_database'] 		= 'll';
+	$this->config['sql_user']		= '';
+	$this->config['sql_password']		= '';
+
+	$this->config['log_timeout'] 		= 14;
+	$this->config['session_timeout'] 	= 3600;
+	$this->config['session_refresh'] 	= 900;
+	$this->config['max_age']		= 31536000;
+	$this->config['max_threads'] 		= 20;
+	$this->config['max_posts'] 		= 20;
+	$this->config['max_summary'] 		= 5;
+	$this->config['max_members'] 		= 50;
+	$this->config['max_post'] 		= 20000;
+	$this->config['min_post'] 		= 3;
+	$this->config['post_master'] 		= 'admin@localhost';
+	$this->config['smtp_host'] 		= '';
+	$this->config['smtp_port'] 		= 0;
+	$this->config['smtp_user'] 		= '';
+	$this->config['smtp_password'] 		= '';
+	$this->config['log_dir'] 		= '';
+
+	$this->config['file_size']		= 524288;
+	$this->config['quota']			= 1048576;
+	$this->config['files']			= 50;
+	$this->config['avatar_size']		= 102400;
+
+	if (file_exists(PATH.'LocalSettings.php'))
+		{
+		include (PATH.'LocalSettings.php');
+		}
+	}
+
+
+public function getValue($key)
+	{
+	return $this->config[$key];
+	}
+
 
 }
 

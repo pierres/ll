@@ -75,8 +75,8 @@ protected function setForm()
 		}
 
 	$list .= '<tr>
-		<td style="padding-top:10px;"><strong>Noch '.(Settings::FILES - $data['files']).' Dateien übrig</strong></td>
-		<td style="text-align:right;padding-top:10px;"><strong>Noch '.round((Settings::QUOTA - $data['quota']) / 1024, 2).'</strong></td>
+		<td style="padding-top:10px;"><strong>Noch '.($this->Settings->getValue('files') - $data['files']).' Dateien übrig</strong></td>
+		<td style="text-align:right;padding-top:10px;"><strong>Noch '.round(($this->Settings->getValue('quota') - $data['quota']) / 1024, 2).'</strong></td>
 		<td></td>
 		<td></td>
 		</tr></table>';
@@ -100,7 +100,7 @@ protected function checkForm()
 		return;
 		}
 
-	if ($this->file['size'] >= Settings::FILE_SIZE)
+	if ($this->file['size'] >= $this->Settings->getValue('file_size'))
 		{
 		$this->showWarning('Datei ist zu groß!');
 		return;
@@ -117,12 +117,12 @@ protected function checkForm()
 			userid = '.$this->User->getId()
 		);
 
-	if ($data['quota'] + $this->file['size'] >=  Settings::QUOTA)
+	if ($data['quota'] + $this->file['size'] >=  $this->Settings->getValue('quota'))
 		{
 		$this->showWarning('Dein Speicherplatz ist voll!');
 		}
 
-	if ($data['files'] + 1 >=  Settings::FILES)
+	if ($data['files'] + 1 >=  $this->Settings->getValue('files'))
 		{
 		$this->showWarning('Du hast zu viele Dateien gespeichert!');
 		}

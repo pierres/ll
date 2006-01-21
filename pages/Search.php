@@ -32,7 +32,7 @@ protected function checkForm()
 		$this->thread = 0;
 		}
 
-	$limit = $this->thread.','.Settings::MAX_THREADS;
+	$limit = $this->thread.','.$this->Settings->getValue('max_threads');
 
 	try
 		{
@@ -113,9 +113,9 @@ protected function sendForm()
 	{
 	$this->setValue('title', 'Suche nach &quot;'.htmlspecialchars($this->search).'&quot;');
 
-	$next = '&nbsp;<a href="?page=Search;id='.$this->Board->getId().';thread='.(Settings::MAX_THREADS+$this->thread).';search='.urlencode($this->search).';submit=">&#187;</a>';
+	$next = '&nbsp;<a href="?page=Search;id='.$this->Board->getId().';thread='.($this->Settings->getValue('max_threads')+$this->thread).';search='.urlencode($this->search).';submit=">&#187;</a>';
 
-	$last = ($this->thread > 0 ? '<a href="?page=Search;id='.$this->Board->getId().';thread='.nat($this->thread-Settings::MAX_THREADS).';search='.urlencode($this->search).';submit=">&#171;</a>' : '');
+	$last = ($this->thread > 0 ? '<a href="?page=Search;id='.$this->Board->getId().';thread='.nat($this->thread-$this->Settings->getValue('max_threads')).';search='.urlencode($this->search).';submit=">&#171;</a>' : '');
 
 	$threads = $this->listThreads();
 
@@ -161,16 +161,16 @@ protected function listThreads()
 
 
 		$thread_pages = '';
-		for ($i = 0; $i < ($data['posts'] / Settings::MAX_POSTS) && ($data['posts'] / Settings::MAX_POSTS) > 1; $i++)
+		for ($i = 0; $i < ($data['posts'] / $this->Settings->getValue('max_posts')) && ($data['posts'] / $this->Settings->getValue('max_posts')) > 1; $i++)
 			{
-			if ($i >= 6 && $i <= ($data['posts'] / Settings::MAX_POSTS) - 6)
+			if ($i >= 6 && $i <= ($data['posts'] / $this->Settings->getValue('max_posts')) - 6)
 				{
 				$thread_pages .= ' ... ';
-				$i = nat($data['posts'] / Settings::MAX_POSTS) - 6;
+				$i = nat($data['posts'] / $this->Settings->getValue('max_posts')) - 6;
 				continue;
 				}
 
-			$thread_pages .= ' <a href="?page='.$target.';id='.$this->Board->getId().';thread='.$data['id'].';post='.(Settings::MAX_POSTS * $i).'">'.($i+1).'</a>';
+			$thread_pages .= ' <a href="?page='.$target.';id='.$this->Board->getId().';thread='.$data['id'].';post='.($this->Settings->getValue('max_posts') * $i).'">'.($i+1).'</a>';
 			}
 
 		$thread_pages = (!empty($thread_pages) ? '<span class="threadpages">&#171;'.$thread_pages.' &#187;</span>' : '');

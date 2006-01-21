@@ -54,8 +54,8 @@ protected function sendForm()
 	{
 	if ($this->Io->isRequest('cookie'))
 		{
-		$this->Io->setCookie('cookieid', $this->User->getId(), (time() + Settings::MAX_AGE));
-		$this->Io->setCookie('cookiepw', md5($this->Io->getString('password')), (time() + Settings::MAX_AGE));
+		$this->Io->setCookie('cookieid', $this->User->getId(), (time() + $this->Settings->getValue('max_age')));
+		$this->Io->setCookie('cookiepw', md5($this->Io->getString('password')), (time() + $this->Settings->getValue('max_age')));
 		}
 
 	$this->Io->redirect('Forums');

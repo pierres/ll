@@ -54,7 +54,7 @@ function __construct()
 	$this->name 		= $data['name'];
 	$this->groups 		= explode(',', $data['groups']);
 
-	if (time() - $data['lastupdate'] > Settings::SESSION_REFRESH)
+	if (time() - $data['lastupdate'] > $this->Settings->getValue('session_refresh'))
 		{
 		try
 			{

@@ -402,7 +402,7 @@ private function makeLink($url, $name = '')
 		}
 
 	/** FIXME: externer oder interner Link? */
-	if (strpos($url, Settings::DOMAIN) !== false)
+	if (strpos($url, $this->Settings->getValue('domain')) !== false)
 		{
 		$target = ' class="link"';
 		}

@@ -1,5 +1,9 @@
 <?php
 
+ini_set('docref_root', 'http://www.php.net/');
+set_exception_handler('ExceptionHandler');
+set_error_handler('ErrorHandler');
+
 function ExceptionHandler(Exception $e)
 	{
 	$screen = '<?xml version="1.0" encoding="UTF-8" ?>
@@ -11,21 +15,19 @@ function ExceptionHandler(Exception $e)
 		</head>
 		<body>
 			<h1 style="font-size:16px;">'.get_class($e).'</h1>
-			<pre>'.htmlentities($e->getMessage()).'</pre>
-			<h3 style="font-size:12px;">Code</h3>
-			<pre>'.htmlentities($e->getCode()).'</pre>
-			<h3 style="font-size:12px;">File</h3>
-			<pre>'.$e->getFile().'</pre>
-			<h3 style="font-size:12px;">Line</h3>
-			<pre>'.$e->getLine().'</pre>
-			<h3 style="font-size:12px;">Trace</h3>
-			<pre>'.htmlentities($e->getTraceAsString()).'</pre>
+			<pre>'.$e->getMessage().'</pre>
+			<pre>
+<strong>Code</strong>: '.$e->getCode().'
+<strong>File</strong>: '.$e->getFile().'
+<strong>Line</strong>: '.$e->getLine().'</pre>
+			<h2 style="font-size:14px;">Trace:</h2>
+			<pre>'.$e->getTraceAsString().'</pre>
 		</body>
 	</html>';
 
-	if (Settings::LOG_DIR != '' && is_writable(Settings::LOG_DIR))
+	if (Modul::__get('Settings')->getValue('log_dir') != '' && is_writable(Modul::__get('Settings')->getValue('log_dir')))
 		{
-		file_put_contents(Settings::LOG_DIR.time().'.html', $screen);
+		file_put_contents(Modul::__get('Settings')->getValue('log_dir').time().'.html', $screen);
 		}
 
 	header('Content-Type: text/html; charset=UTF-8');
@@ -37,15 +39,20 @@ function ExceptionHandler(Exception $e)
 /**
 * Hiermit sorgen wir dafür, daß auch PHP-Fehler eine Exception werfen.
 */
-function ErrorHandler($code, $string, $file, $line, $context)
+function ErrorHandler($code, $string, $file, $line)
 	{
-	throw new RuntimeException ($string, $code);
+	throw new InternalRuntimeException ($string, $code, $file, $line);
 	}
 
+class InternalRuntimeException extends RuntimeException{
 
-//error_reporting(E_STRICT | E_ALL);
-set_exception_handler('ExceptionHandler');
-set_error_handler('ErrorHandler');
+public function __construct($string, $code, $file, $line)
+	{
+	parent::__construct($string, $code);
+	$this->file = $file;
+	$this->line = $line;
+	}
 
+}
 
 ?>

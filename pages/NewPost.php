@@ -180,7 +180,7 @@ protected function checkNewFile()
 			return;
 			}
 
-		if ($this->file['size'] >= Settings::FILE_SIZE)
+		if ($this->file['size'] >= $this->Settings->getValue('file_size'))
 			{
 			$this->showWarning('Datei ist zu groß!');
 			}
@@ -196,12 +196,12 @@ protected function checkNewFile()
 				userid = '.$this->User->getId()
 			);
 
-		if ($data['quota'] + $this->file['size'] >=  Settings::QUOTA)
+		if ($data['quota'] + $this->file['size'] >=  $this->Settings->getValue('quota'))
 			{
 			$this->showWarning('Dein Speicherplatz ist voll!');
 			}
 
-		if ($data['files'] + 1 >=  Settings::FILES)
+		if ($data['files'] + 1 >=  $this->Settings->getValue('files'))
 			{
 			$this->showWarning('Du hast zu viele Dateien gespeichert!');
 			}

@@ -63,18 +63,18 @@ if ($this->post == -1)
 		}
 	else
 		{
-		$this->post = nat($this->posts-Settings::MAX_POSTS);
+		$this->post = nat($this->posts- $this->Settings->getValue('max_posts'));
 		}
 	}
 
 
-$limit = $this->post.','.Settings::MAX_POSTS;
+$limit = $this->post.','. $this->Settings->getValue('max_posts');
 
 $pages = $this->getPages();
 
-$next = ($this->posts > Settings::MAX_POSTS+$this->post ? ' <a href="?page=PrivatePostings;id='.$this->Board->getId().';thread='.$this->thread.';post='.(Settings::MAX_POSTS+$this->post).'">&#187;</a>' : '');
+$next = ($this->posts >  $this->Settings->getValue('max_posts')+$this->post ? ' <a href="?page=PrivatePostings;id='.$this->Board->getId().';thread='.$this->thread.';post='.( $this->Settings->getValue('max_posts')+$this->post).'">&#187;</a>' : '');
 
-$last = ($this->post > 0 ? '<a href="?page=PrivatePostings;id='.$this->Board->getId().';thread='.$this->thread.';post='.nat($this->post-Settings::MAX_POSTS).'">&#171;</a>' : '');
+$last = ($this->post > 0 ? '<a href="?page=PrivatePostings;id='.$this->Board->getId().';thread='.$this->thread.';post='.nat($this->post- $this->Settings->getValue('max_posts')).'">&#171;</a>' : '');
 
 $this->Log->insert($thread['id'], $thread['lastdate']);
 
@@ -292,25 +292,25 @@ protected function getPages()
 	{
 	$pages = '';
 
-	for ($i = 0; $i < ($this->posts / Settings::MAX_POSTS) && ($this->posts / Settings::MAX_POSTS) > 1; $i++)
+	for ($i = 0; $i < ($this->posts /  $this->Settings->getValue('max_posts')) && ($this->posts /  $this->Settings->getValue('max_posts')) > 1; $i++)
 		{
-		if ($this->post < Settings::MAX_POSTS * ($i-4))
+		if ($this->post <  $this->Settings->getValue('max_posts') * ($i-4))
 			{
-			$i = Settings::MAX_POSTS * ($i-4);
+			$i =  $this->Settings->getValue('max_posts') * ($i-4);
 			continue;
 			}
-		elseif($this->post > Settings::MAX_POSTS * ($i+4))
+		elseif($this->post >  $this->Settings->getValue('max_posts') * ($i+4))
 			{
 			continue;
 			}
 
-		if ($this->post == (Settings::MAX_POSTS * $i))
+		if ($this->post == ( $this->Settings->getValue('max_posts') * $i))
 			{
 			$pages .= ' <strong>'.($i+1).'</strong>';
 			}
 		else
 			{
-			$pages .= ' <a href="?page=PrivatePostings;id='.$this->Board->getId().';thread='.$this->thread.';post='.(Settings::MAX_POSTS * $i).'">'.($i+1).'</a>';
+			$pages .= ' <a href="?page=PrivatePostings;id='.$this->Board->getId().';thread='.$this->thread.';post='.( $this->Settings->getValue('max_posts') * $i).'">'.($i+1).'</a>';
 			}
 		}
 

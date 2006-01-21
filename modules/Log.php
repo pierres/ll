@@ -18,7 +18,7 @@ public function __construct()
 		return false;
 		}
 
-	$this->timeout = 86400 * Settings::LOG_TIMEOUT; //days
+	$this->timeout = 86400 * $this->Settings->getValue('log_timeout'); //days
 /*
 	Das ist keine schöne Lösung;
 	mir fälllt z.Z. aber keine bessere ein.

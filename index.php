@@ -27,8 +27,7 @@ function __autoload($class)
 		}
 	}
 
-$start = mTime();
-
+Modul::__set('Settings', new Settings());
 Modul::__set('Io', new Io());
 Modul::__set('Sql', new Sql());
 Modul::__set('Board', new Board());

@@ -54,25 +54,6 @@ public function showWarning($text)
 	$this->show();
 	}
 
-protected function debug()
-	{
-	global $start;
-
-	$modules = implode(', ', array_keys(self::$modules));
-	$time = substr((mTime()-$start), 0, 7);
-
-	return <<<eot
-<div style="clear:left;text-align:center;">
-<pre style="border:1px solid;width:500px;text-align:left;">
-DB-Verbindungen: 	{$this->Sql->connects}
-DB-Abfragen: 		{$this->Sql->queries}
-Aktive Module:		{$modules}
-Ausführungsdauer:	{$time}s
-</pre>
-</div>
-eot;
-	}
-
 private function getWebring()
 	{
 	$boards = $this->Sql->fetch
@@ -123,11 +104,6 @@ public function show()
 		}
 
 	$this->setValue('webring', $this->getWebring());
-
-// 	if ($this->User->isLevel(User::ROOT))
-// 		{
-// 		$this->setValue('body', $this->getValue('body').$this->debug());
-// 		}
 
 	$this->setValue('body', $this->getValue('body').'<div style="text-align:right;font-size:8px;"><a href="?page=Impressum">Impressum</a></div>');
 

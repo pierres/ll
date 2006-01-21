@@ -28,7 +28,7 @@ public function prepare()
 				WHERE
 					forumid = '.$forum.'
 					AND forumid != 0
-					AND lastdate > '.(time() - (86400 * Settings::LOG_TIMEOUT))
+					AND lastdate > '.(time() - (86400 *  $this->Settings->getValue('log_timeout')))
 				);
 			}
 		catch (SqlNoDataException $e)

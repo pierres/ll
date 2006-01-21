@@ -17,7 +17,7 @@ function __construct()
 	{
 	$this->connects++;
 
-	$this->link = mysqli_connect('localhost', Settings::SQL_USER, Settings::SQL_PASSWORD, Settings::SQL_DATABASE);
+	$this->link = mysqli_connect('localhost', $this->Settings->getValue('sql_user'), $this->Settings->getValue('sql_password'), $this->Settings->getValue('sql_database'));
 
 	if (mysqli_connect_errno())
 		{

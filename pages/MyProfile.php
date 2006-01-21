@@ -215,7 +215,7 @@ private function listMyFiles()
 			WHERE
 				userid = '.$this->User->getId().'
 				AND type LIKE \'image/%\'
-				AND size <= '.Settings::AVATAR_SIZE.'
+				AND size <= '.$this->Settings->getValue('avatar_size').'
 			ORDER BY
 				id DESC
 			');
