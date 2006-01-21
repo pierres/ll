@@ -228,7 +228,7 @@ private function collectGarbage()
 			DELETE FROM
 				session
 			WHERE
-				lastupdate <= '.(time() - SETTINGS::SESSION_TIMEOUT)
+				lastupdate <= '.(time() - $this->Settings->getValue('session_timeout'))
 			);
 		}
 	catch (SqlException $e)
