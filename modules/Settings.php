@@ -24,16 +24,12 @@ public function __construct()
 	$this->config['max_members'] 		= 50;
 	$this->config['max_post'] 		= 20000;
 	$this->config['min_post'] 		= 3;
-	$this->config['post_master'] 		= 'admin@localhost';
-	$this->config['smtp_host'] 		= '';
-	$this->config['smtp_port'] 		= 0;
-	$this->config['smtp_user'] 		= '';
-	$this->config['smtp_password'] 		= '';
+
 	$this->config['log_dir'] 		= '';
 
-	$this->config['file_size']		= 524288;
-	$this->config['quota']			= 1048576;
-	$this->config['files']			= 50;
+	$this->config['file_size']		= 2097152;
+	$this->config['quota']			= 10485760;
+	$this->config['files']			= 100;
 	$this->config['avatar_size']		= 102400;
 
 	if (file_exists(PATH.'LocalSettings.php'))
