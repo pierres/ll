@@ -1,0 +1,2 @@
+INSERT INTO `users` VALUES (NULL, 'root', '', MD5('password'), '', 0, 0, UNIX_TIMESTAMP(), 3, 0, 0, 0, NULL, NULL, '');
+INSERT INTO `boards` VALUES (NULL, LAST_INSERT_ID(), 'Mein erstes Board', UNIX_TIMESTAMP(), 0, 0, 0, '', 0, 0);

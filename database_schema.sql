@@ -3,13 +3,9 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 18. Januar 2006 um 13:57
+-- Erstellungszeit: 21. Januar 2006 um 17:47
 -- Server Version: 5.0.18
 -- PHP-Version: 5.1.1
-
-SET AUTOCOMMIT=0;
-START TRANSACTION;
-
 --
 -- Datenbank: `current`
 --
@@ -18,6 +14,9 @@ START TRANSACTION;
 
 --
 -- Tabellenstruktur für Tabelle `boards`
+--
+-- Erzeugt am: 21. Januar 2006 um 17:18
+-- Aktualisiert am: 21. Januar 2006 um 17:36
 --
 
 CREATE TABLE `boards` (
@@ -32,12 +31,15 @@ CREATE TABLE `boards` (
   `admins` mediumint(8) unsigned NOT NULL default '0',
   `mods` mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
 --
 -- Tabellenstruktur für Tabelle `cats`
+--
+-- Erzeugt am: 21. Januar 2006 um 17:18
+-- Aktualisiert am: 21. Januar 2006 um 17:18
 --
 
 CREATE TABLE `cats` (
@@ -47,12 +49,15 @@ CREATE TABLE `cats` (
   `position` tinyint(3) unsigned NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `boardid` (`boardid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
 --
 -- Tabellenstruktur für Tabelle `files`
+--
+-- Erzeugt am: 21. Januar 2006 um 17:18
+-- Aktualisiert am: 21. Januar 2006 um 17:18
 --
 
 CREATE TABLE `files` (
@@ -64,12 +69,15 @@ CREATE TABLE `files` (
   `uploaded` int(11) unsigned NOT NULL default '0',
   `content` mediumblob NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
 --
 -- Tabellenstruktur für Tabelle `forum_cat`
+--
+-- Erzeugt am: 21. Januar 2006 um 17:18
+-- Aktualisiert am: 21. Januar 2006 um 17:18
 --
 
 CREATE TABLE `forum_cat` (
@@ -85,6 +93,9 @@ CREATE TABLE `forum_cat` (
 --
 -- Tabellenstruktur für Tabelle `forums`
 --
+-- Erzeugt am: 21. Januar 2006 um 17:18
+-- Aktualisiert am: 21. Januar 2006 um 17:18
+--
 
 CREATE TABLE `forums` (
   `id` mediumint(8) unsigned NOT NULL auto_increment,
@@ -99,12 +110,15 @@ CREATE TABLE `forums` (
   `mods` mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `boardid` (`boardid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
 --
 -- Tabellenstruktur für Tabelle `images`
+--
+-- Erzeugt am: 21. Januar 2006 um 17:18
+-- Aktualisiert am: 21. Januar 2006 um 17:18
 --
 
 CREATE TABLE `images` (
@@ -121,6 +135,9 @@ CREATE TABLE `images` (
 
 --
 -- Tabellenstruktur für Tabelle `plz`
+--
+-- Erzeugt am: 21. Januar 2006 um 17:18
+-- Aktualisiert am: 21. Januar 2006 um 17:18
 --
 
 CREATE TABLE `plz` (
@@ -139,6 +156,9 @@ CREATE TABLE `plz` (
 --
 -- Tabellenstruktur für Tabelle `poll_values`
 --
+-- Erzeugt am: 21. Januar 2006 um 17:18
+-- Aktualisiert am: 21. Januar 2006 um 17:18
+--
 
 CREATE TABLE `poll_values` (
   `pollid` mediumint(8) unsigned NOT NULL default '0',
@@ -147,12 +167,15 @@ CREATE TABLE `poll_values` (
   `id` mediumint(8) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`),
   KEY `pollid` (`pollid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
 --
 -- Tabellenstruktur für Tabelle `poll_voters`
+--
+-- Erzeugt am: 21. Januar 2006 um 17:18
+-- Aktualisiert am: 21. Januar 2006 um 17:18
 --
 
 CREATE TABLE `poll_voters` (
@@ -167,6 +190,9 @@ CREATE TABLE `poll_voters` (
 --
 -- Tabellenstruktur für Tabelle `polls`
 --
+-- Erzeugt am: 21. Januar 2006 um 17:18
+-- Aktualisiert am: 21. Januar 2006 um 17:18
+--
 
 CREATE TABLE `polls` (
   `id` mediumint(8) unsigned NOT NULL default '0',
@@ -178,6 +204,9 @@ CREATE TABLE `polls` (
 
 --
 -- Tabellenstruktur für Tabelle `post_file`
+--
+-- Erzeugt am: 21. Januar 2006 um 17:18
+-- Aktualisiert am: 21. Januar 2006 um 17:18
 --
 
 CREATE TABLE `post_file` (
@@ -191,6 +220,9 @@ CREATE TABLE `post_file` (
 
 --
 -- Tabellenstruktur für Tabelle `posts`
+--
+-- Erzeugt am: 21. Januar 2006 um 17:18
+-- Aktualisiert am: 21. Januar 2006 um 17:18
 --
 
 CREATE TABLE `posts` (
@@ -211,7 +243,7 @@ CREATE TABLE `posts` (
   KEY `deleted` (`deleted`),
   KEY `dat` (`dat`),
   FULLTEXT KEY `text` (`text`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -236,6 +268,9 @@ CREATE TABLE `session` (
 --
 -- Tabellenstruktur für Tabelle `thread_user`
 --
+-- Erzeugt am: 21. Januar 2006 um 17:18
+-- Aktualisiert am: 21. Januar 2006 um 17:18
+--
 
 CREATE TABLE `thread_user` (
   `userid` mediumint(8) unsigned NOT NULL default '0',
@@ -248,6 +283,9 @@ CREATE TABLE `thread_user` (
 
 --
 -- Tabellenstruktur für Tabelle `threads`
+--
+-- Erzeugt am: 21. Januar 2006 um 17:18
+-- Aktualisiert am: 21. Januar 2006 um 17:18
 --
 
 CREATE TABLE `threads` (
@@ -273,12 +311,15 @@ CREATE TABLE `threads` (
   KEY `lastuserid` (`lastuserid`),
   KEY `firstuserid` (`firstuserid`),
   FULLTEXT KEY `name` (`name`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
 --
 -- Tabellenstruktur für Tabelle `threads_log`
+--
+-- Erzeugt am: 21. Januar 2006 um 17:18
+-- Aktualisiert am: 21. Januar 2006 um 17:18
 --
 
 CREATE TABLE `threads_log` (
@@ -295,6 +336,9 @@ CREATE TABLE `threads_log` (
 --
 -- Tabellenstruktur für Tabelle `user_group`
 --
+-- Erzeugt am: 21. Januar 2006 um 17:18
+-- Aktualisiert am: 21. Januar 2006 um 17:18
+--
 
 CREATE TABLE `user_group` (
   `userid` mediumint(8) unsigned NOT NULL default '0',
@@ -307,6 +351,9 @@ CREATE TABLE `user_group` (
 
 --
 -- Tabellenstruktur für Tabelle `users`
+--
+-- Erzeugt am: 21. Januar 2006 um 17:40
+-- Aktualisiert am: 21. Januar 2006 um 17:40
 --
 
 CREATE TABLE `users` (
@@ -325,9 +372,6 @@ CREATE TABLE `users` (
   `location` varchar(255) default NULL,
   `plz` mediumint(5) unsigned default NULL,
   `text` text NOT NULL,
-  `svn` tinyint(1) unsigned NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `name` (`name`(10))
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-COMMIT;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
