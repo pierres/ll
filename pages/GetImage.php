@@ -172,8 +172,8 @@ public function showWarning($text)
 
 public function show()
 	{
-	$header = 	'Content-Type: '.$this->data['type'].'; name='.$this->url ."\n".
-			'Content-Disposition: inline; filename="'.$this->url.'"' ."\n".
+	$header = 	'Content-Type: '.$this->data['type'].'; name='.$this->url.
+			'Content-Disposition: inline; filename="'.$this->url.'"'.
 			'Content-length: '.$this->data['size'];
 
 	$this->Io->setContentType($header);
