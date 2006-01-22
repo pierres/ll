@@ -160,21 +160,44 @@ public function redirectToUrl($url)
 	exit();
 	}
 
-public function getRemoteFileSize($url)
+private function parseURL($url)
 	{
-	$request = parse_url($url);
-	$link = fsockopen ($request['host'], 80, $errno, $errstr, 10);
+	$request = @parse_url($url);
+
+	if (!$request)
+		{
+		throw new IoException('Konnte die URL '.$url.' nicht auflösen.');
+		}
+
+	return $request;
+	}
+
+private function openRemoteFile($host)
+	{
+	$link = @fsockopen($host, 80, $errno, $errstr, 10);
+
 
 	if (!$link)
 		{
-		throw new IoException('Konnte die Datei nicht laden: '.$errstr);
+		throw new IoException('Konnte keine Verbindung zu '.$host.' herstellen: '.$errstr);
 		}
-	else
+
+	return $link;
+	}
+
+public function getRemoteFileSize($url)
+	{
+	$request = $this->parseURL($url);
+	$link = $this->openRemoteFile($request['host']);
+
+	fputs ($link, 'HEAD '.$request['path']." HTTP/1.0\r\nHost: ".$request['host']."\r\n\r\n");
+
+	$buffer = '';
+	while (!feof($link))
 		{
-		fputs ($link, 'HEAD '.$request['path']." HTTP/1.0\r\nHost: ".$request['host']."\r\n\r\n");
-		$buffer = fgets($link, 2048);
-		fclose($link);
+		$buffer .= fgets($link, 512);
 		}
+	fclose($link);
 
 	if (!preg_match('/Content-Length: (.*)/', $buffer, $size))
 		{
@@ -186,24 +209,17 @@ public function getRemoteFileSize($url)
 
 public function getRemoteFile($url)
 	{
-	$request = parse_url($url);
+	$request = $this->parseURL($url);
+	$link = $this->openRemoteFile($request['host']);
 
-	$link = fsockopen ($request['host'], 80, $errno, $errstr, 10);
 	$buffer = '';
 
-	if (!$link)
+	fputs ($link, 'GET '.$request['path']." HTTP/1.0\r\nHost: ".$request['host']."\r\n\r\n");
+	while (!feof($link))
 		{
-		throw new IoException('Konnte die Datei nicht laden: '.$errstr);
+		$buffer .= fgets($link, 8192);
 		}
-	else
-		{
-		fputs ($link, 'GET '.$request['path']." HTTP/1.0\r\nHost: ".$request['host']."\r\n\r\n");
-		while (!feof($link))
-			{
-			$buffer .= fgets($link, 8192);
-			}
-		fclose($link);
-		}
+	fclose($link);
 
 	$result = explode("\r\n\r\n", $buffer);/** FIXME */
 	unset($buffer);

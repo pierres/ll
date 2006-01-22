@@ -26,6 +26,11 @@ public function prepare()
 		$this->showWarning('keine Datei angegeben');
 		}
 
+	if (empty($this->url))
+		{
+		$this->showWarning('keine Datei angegeben');
+		}
+
 	if (!$this->User->isOnline())
 		{
 		if ($this->thumb)
@@ -109,6 +114,10 @@ private function loadImage()
 		$file = $this->Io->getRemoteFile($this->url);
 		}
 	catch (IoException $e)
+		{
+		$this->showWarning($e->getMessage());
+		}
+	catch (Exception $e)
 		{
 		$this->showWarning($e->getMessage());
 		}

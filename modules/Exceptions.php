@@ -6,7 +6,9 @@ set_error_handler('ErrorHandler');
 
 function ExceptionHandler(Exception $e)
 	{
-	$screen = '<?xml version="1.0" encoding="UTF-8" ?>
+	try
+		{
+		$screen = '<?xml version="1.0" encoding="UTF-8" ?>
 		<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "xhtml11.dtd">
 		<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de">
 		<head>
@@ -25,15 +27,20 @@ function ExceptionHandler(Exception $e)
 		</body>
 	</html>';
 
-	if (Modul::__get('Settings')->getValue('log_dir') != '' && is_writable(Modul::__get('Settings')->getValue('log_dir')))
-		{
-		file_put_contents(Modul::__get('Settings')->getValue('log_dir').time().'.html', $screen);
-		}
+		if (Modul::__get('Settings')->getValue('log_dir') != '')
+			{
+			file_put_contents(Modul::__get('Settings')->getValue('log_dir').time().'.html', $screen);
+			}
 
-	header('Content-Type: text/html; charset=UTF-8');
-	header('HTTP/1.1 500 Exception');
-	echo $screen;
-	exit();
+		header('Content-Type: text/html; charset=UTF-8');
+		header('HTTP/1.1 500 Exception');
+		echo $screen;
+		exit();
+		}
+	catch (Exception $e)
+		{
+		die($e->getMessage());
+		}
 	}
 
 /**
