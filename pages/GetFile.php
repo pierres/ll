@@ -42,6 +42,13 @@ public function prepare()
 		}
 	}
 
+public function showWarning($text)
+	{
+	$this->setValue('title', 'Warnung');
+	$this->setValue('body', '<div class="warning">'.$text.'</div>');
+	parent::show();
+	}
+
 public function show()
 	{
 	If (strpos($this->Io->getEnv('HTTP_ACCEPT_ENCODING'), 'gzip') !== false)

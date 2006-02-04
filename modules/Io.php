@@ -64,7 +64,10 @@ public function out(&$text)
 	$this->header ($this->status);
 	$this->header ($this->contentType);
 	echo $text;
-	ob_end_flush();
+	while (ob_get_level() > 0)
+		{
+		ob_end_flush();
+		}
 	exit();
 	}
 

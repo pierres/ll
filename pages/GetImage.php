@@ -166,8 +166,7 @@ public function showWarning($text)
 
 	ob_start();
 	imagepng($image);
-	$content = ob_get_contents();
-	ob_end_clean();
+	$content = ob_get_clean();
 
 	imagedestroy($image);
 
