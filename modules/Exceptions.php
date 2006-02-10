@@ -17,7 +17,7 @@ function ExceptionHandler(Exception $e)
 		</head>
 		<body>
 			<h1 style="font-size:16px;">'.get_class($e).'</h1>
-			<pre>'.$e->getMessage().'</pre>
+			<p>'.$e->getMessage().'</p>
 			<pre>
 <strong>Code</strong>: '.$e->getCode().'
 <strong>File</strong>: '.$e->getFile().'
