@@ -54,7 +54,7 @@ private function buildAtom()
 			<guid>'.$thread['id'].'</guid>
 			<pubDate>'.date('r', $thread['lastdate']).'</pubDate>
 			<author>'.$thread['lastusername'].'</author>
-			<description>'.$thread['text'].'</description>
+			<description>'.strip_tags($thread['text']).'</description>
 			</item>
 			';
 		}
