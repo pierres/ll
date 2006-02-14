@@ -28,7 +28,7 @@ public function prepare()
 				threads.deleted = 0
 				AND threads.forumid != 0
 			ORDER BY
-				threads.id DESC
+				posts.id DESC
 			LIMIT
 				25
 			');
@@ -54,7 +54,7 @@ private function buildAtom()
 			<guid>'.$thread['id'].'</guid>
 			<pubDate>'.date('r', $thread['lastdate']).'</pubDate>
 			<author>'.$thread['lastusername'].'</author>
-			<description>'.strip_tags($thread['text']).'</description>
+			<description>'.$thread['text'].'</description>
 			</item>
 			';
 		}
