@@ -432,7 +432,7 @@ protected function getFiles($post)
 
 	foreach ($files as $file)
 		{
-		if ($file['size'] <= $this->Settings->getValue('avatar_size') && strpos($file['type'], 'image/') == 0)
+		if ($file['size'] <= $this->Settings->getValue('avatar_size') && strpos($file['type'], 'image/') === 0)
 			{
 			$list .= '<tr>
  			<td style="padding:5px;" colspan="2">
