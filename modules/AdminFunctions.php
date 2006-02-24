@@ -29,6 +29,14 @@ private static function removeThread($thread)
 	self::__get('Sql')->query
 		('
 		DELETE FROM
+			post_file
+		WHERE
+			postid IN (SELECT id FROM posts WHERE threadid ='.$thread.')
+		');
+
+	self::__get('Sql')->query
+		('
+		DELETE FROM
 			posts
 		WHERE
 			threadid = '.$thread
@@ -70,6 +78,14 @@ private static function removeThread($thread)
 		('
 		DELETE FROM
 			threads_log
+		WHERE
+			threadid = '.$thread
+		);
+
+	self::__get('Sql')->query
+		('
+		DELETE FROM
+			thread_user
 		WHERE
 			threadid = '.$thread
 		);

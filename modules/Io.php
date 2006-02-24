@@ -123,18 +123,36 @@ public function getHex($name)
 	{
 	return hexVal($this->getString($name));
 	}
-
-public function getArray()
+/**
+* @TODO: remove deprecated use of getArray()
+*/
+public function getArray($filter = null)
 	{
 	$result = array();
 
-	foreach($this->request as $name => $request)
+	if ($filter === null)
 		{
-		if(is_array($request))
+		foreach($this->request as $name => $request)
 			{
-			foreach($request as $key => $value)
+			if(is_array($request))
 				{
-				$result[$key][$name] = $value;
+				foreach($request as $key => $value)
+					{
+					$result[$key][$name] = $value;
+					}
+				}
+			}
+		}
+	else
+		{
+		foreach($this->request as $name => $request)
+			{
+			if(is_array($request) && $name == $filter)
+				{
+				foreach($request as $key => $value)
+					{
+					$result[] = $value;
+					}
 				}
 			}
 		}

@@ -333,8 +333,6 @@ $body =
 				<a class="pathlink" href="?page=Forums;id='.$this->Board->getId().'#cat'.$thread['catid'].'">'.$thread['catname'].'</a>
 				&#187;
 				<a class="pathlink" href="?page=Threads;id='.$this->Board->getId().';forum='.$thread['forumid'].'">'.$thread['forumname'].'</a>
-				<!-- &#187;
-				<strong>'.$thread['name'].'</strong> -->
 			</td>
 		</tr>
 		<tr>
@@ -342,7 +340,7 @@ $body =
 				'.$last.$pages.$next.'&nbsp;
 			</td>
 			<td class="pages" colspan="2" style="text-align:right">
-				<!-- <a href="?page=NewThread;id='.$this->Board->getId().';forum='.$thread['forumid'].'"><span class="button">Neues Thema</span></a> -->'.$reply_button.'
+				'.$reply_button.'
 			</td>
 		</tr>
 			'.$postings.'
@@ -351,7 +349,7 @@ $body =
 				'.$last.$pages.$next.'&nbsp;
 			</td>
 			<td class="pages" colspan="2" style="text-align:right">
-				<!-- <a href="?page=NewThread;id='.$this->Board->getId().';forum='.$thread['forumid'].'"><span class="button">Neues Thema</span></a> -->'.$reply_button.'
+				'.$reply_button.'
 				<a id="last"></a>
 			</td>
 		</tr>
@@ -362,8 +360,6 @@ $body =
 				<a class="pathlink" href="?page=Forums;id='.$this->Board->getId().'#cat'.$thread['catid'].'">'.$thread['catname'].'</a>
 				&#187;
 				<a class="pathlink" href="?page=Threads;id='.$this->Board->getId().';forum='.$thread['forumid'].'">'.$thread['forumname'].'</a>
-				<!-- &#187;
-				<strong>'.$thread['name'].'</strong> -->
 			</td>
 		</tr>
 		'.$thread_buttons.'
