@@ -7,6 +7,9 @@ class UserList extends Page{
 private $user = 0;
 private $users = 0;
 
+/**
+*@TODO: Create Search-Index
+*/
 
 public function prepare()
 	{
@@ -20,9 +23,30 @@ public function prepare()
 		{
 		$this->user = 0;
 		}
-
 	$limit = $this->user.','.$this->Settings->getValue('max_users');
-	$this->users = $this->Sql->numRows('users');
+
+	try
+		{
+		$orderby = $this->Io->getString('orderby');
+		$allowdorderby = array('id', 'name', 'posts', 'realname');
+		if (!in_array($orderby, $allowdorderby))
+			{
+			$orderby = 'id';
+			}
+		}
+	catch (IoRequestException $e)
+		{
+		$orderby = 'id';
+		}
+
+	try
+		{
+		$sort = $this->Io->getInt('sort');
+		}
+	catch (IoRequestException $e)
+		{
+		$sort = 0;
+		}
 
 	try
 		{
@@ -37,7 +61,7 @@ public function prepare()
 			FROM
 				users
 			ORDER BY
-				id DESC
+				'.$orderby.' '.($sort > 0 ? 'DESC' : 'ASC').'
 			LIMIT
 				'.$limit
 			);
@@ -47,22 +71,26 @@ public function prepare()
 		$users = array();
 		}
 
+	$link = '?page=UserList;id='.$this->Board->getId().';user='.$this->user;
+	$curlink = '?page=UserList;id='.$this->Board->getId().';orderby='.$orderby.';sort='.$sort;
+
+	$this->users = $this->Sql->numRows('users');
 	$pages = $this->getPages();
 
 	$next = ($this->users > $this->Settings->getValue('max_users')+$this->user
-		? ' <a href="?page=UserList;id='.$this->Board->getId().';user='.($this->Settings->getValue('max_users')+$this->user).'">&#187;</a>'
+		? ' <a href="'.$curlink.';user='.($this->Settings->getValue('max_users')+$this->user).'">&#187;</a>'
 		: '');
 
 	$last = ($this->user > 0
-		? '<a href="?page=UserList;id='.$this->Board->getId().';user='.nat($this->user-$this->Settings->getValue('max_users')).'">&#171;</a>'
+		? '<a href="'.$curlink.';user='.nat($this->user-$this->Settings->getValue('max_users')).'">&#171;</a>'
 		: '');
 
 	$list = '<table style="width:700px;">
 		<tr>
-			<td class="path">Benutzer</td>
-			<td class="path">Name</td>
-			<td class="path">Beiträge</td>
-			<td class="path">Dabei seit</td>
+			<td class="path"><a class="pathlink" href="'.$link.';orderby=name;sort='.abs($sort-1).'">Benutzer</a></td>
+			<td class="path"><a class="pathlink" href="'.$link.';orderby=realname;sort='.abs($sort-1).'">Name</a></td>
+			<td class="path"><a class="pathlink" href="'.$link.';orderby=posts;sort='.abs($sort-1).'">Beiträge</a></td>
+			<td class="path"><a class="pathlink" href="'.$link.';orderby=id;sort='.abs($sort-1).'">Dabei seit</a></td>
 		</tr>';
 	foreach ($users as $user)
 		{
