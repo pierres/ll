@@ -24,7 +24,7 @@ public function __construct()
 	$this->config['max_threads'] 		= 20;
 	$this->config['max_posts'] 		= 20;
 	$this->config['max_summary'] 		= 5;
-	$this->config['max_members'] 		= 50;
+	$this->config['max_users'] 		= 150;
 	$this->config['max_post'] 		= 20000;
 	$this->config['min_post'] 		= 3;
 
