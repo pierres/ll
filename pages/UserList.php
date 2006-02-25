@@ -9,10 +9,6 @@ private $users 		= 0;
 private $orderby 	= 'regdate';
 private $sort		= 1;
 
-/**
-*@TODO: Create Search-Index
-*/
-
 public function prepare()
 	{
 	$this->setValue('title', 'Benutzerliste');
