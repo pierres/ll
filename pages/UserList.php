@@ -87,7 +87,7 @@ public function prepare()
 			<td class="path"><a class="pathlink" href="'.$link.';orderby=name;sort='.abs($this->sort-1).'">Benutzer</a></td>
 			<td class="path"><a class="pathlink" href="'.$link.';orderby=realname;sort='.abs($this->sort-1).'">Name</a></td>
 			<td class="path"><a class="pathlink" href="'.$link.';orderby=posts;sort='.abs($this->sort-1).'">Beiträge</a></td>
-			<td class="path"><a class="pathlink" href="'.$link.';orderby=id;sort='.abs($this->sort-1).'">Dabei seit</a></td>
+			<td class="path"><a class="pathlink" href="'.$link.';orderby=regdate;sort='.abs($this->sort-1).'">Dabei seit</a></td>
 		</tr>
 		<tr>
 			<td class="pages" colspan="2">'.$last.$pages.$next.'</td>
