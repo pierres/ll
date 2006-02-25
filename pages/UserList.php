@@ -6,7 +6,7 @@ class UserList extends Page{
 
 private $user 		= 0;
 private $users 		= 0;
-private $orderby 	= 'regdate';
+private $orderby 	= 'posts';
 private $sort		= 1;
 
 public function prepare()
@@ -29,12 +29,12 @@ public function prepare()
 
 		if (!in_array($this->orderby, array('regdate', 'name', 'posts', 'realname')))
 			{
-			$this->orderby = 'regdate';
+			$this->orderby = 'posts';
 			}
 		}
 	catch (IoRequestException $e)
 		{
-		$this->orderby = 'regdate';
+		$this->orderby = 'posts';
 		}
 
 	try
