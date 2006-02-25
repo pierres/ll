@@ -91,7 +91,7 @@ public function prepare()
 		</tr>
 		<tr>
 			<td class="pages" colspan="2">'.$last.$pages.$next.'</td>
-			<td class="pages" style="text-align:right;" colspan="2">'.$this->user.' bis '.($this->user+$this->Settings->getValue('max_users')).' von '.$this->users.'</td>
+			<td class="pages" style="text-align:right;" colspan="2">'.($this->user+1).' bis '.($this->user+$this->Settings->getValue('max_users')).' von '.$this->users.'</td>
 		</tr>';
 	foreach ($users as $user)
 		{
@@ -104,7 +104,7 @@ public function prepare()
 		}
 	$list .= '<tr>
 			<td class="pages" colspan="2">'.$last.$pages.$next.'</td>
-			<td class="pages" style="text-align:right;" colspan="2">'.$this->user.' bis '.($this->user+$this->Settings->getValue('max_users')).' von '.$this->users.'</td>
+			<td class="pages" style="text-align:right;" colspan="2">'.($this->user+1).' bis '.($this->user+$this->Settings->getValue('max_users')).' von '.$this->users.'</td>
 		</tr>';
 
 	$body ='	<table class="frame" style="width:700px;">
