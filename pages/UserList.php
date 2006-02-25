@@ -4,8 +4,10 @@
 class UserList extends Page{
 
 
-private $user = 0;
-private $users = 0;
+private $user 		= 0;
+private $users 		= 0;
+private $orderby 	= 'regdate';
+private $sort		= 1;
 
 /**
 *@TODO: Create Search-Index
@@ -27,25 +29,25 @@ public function prepare()
 
 	try
 		{
-		$orderby = $this->Io->getString('orderby');
-		$allowdorderby = array('id', 'name', 'posts', 'realname');
-		if (!in_array($orderby, $allowdorderby))
+		$this->orderby = $this->Io->getString('orderby');
+
+		if (!in_array($this->orderby, array('regdate', 'name', 'posts', 'realname')))
 			{
-			$orderby = 'id';
+			$this->orderby = 'regdate';
 			}
 		}
 	catch (IoRequestException $e)
 		{
-		$orderby = 'id';
+		$this->orderby = 'regdate';
 		}
 
 	try
 		{
-		$sort = $this->Io->getInt('sort');
+		$this->sort = $this->Io->getInt('sort');
 		}
 	catch (IoRequestException $e)
 		{
-		$sort = 0;
+		$this->sort = 1;
 		}
 
 	try
@@ -61,7 +63,7 @@ public function prepare()
 			FROM
 				users
 			ORDER BY
-				'.$orderby.' '.($sort > 0 ? 'DESC' : 'ASC').'
+				'.$this->orderby.' '.($this->sort > 0 ? 'DESC' : 'ASC').'
 			LIMIT
 				'.$limit
 			);
@@ -72,7 +74,7 @@ public function prepare()
 		}
 
 	$link = '?page=UserList;id='.$this->Board->getId().';user='.$this->user;
-	$curlink = '?page=UserList;id='.$this->Board->getId().';orderby='.$orderby.';sort='.$sort;
+	$curlink = '?page=UserList;id='.$this->Board->getId().';orderby='.$this->orderby.';sort='.$this->sort;
 
 	$this->users = $this->Sql->numRows('users');
 	$pages = $this->getPages();
@@ -85,43 +87,37 @@ public function prepare()
 		? '<a href="'.$curlink.';user='.nat($this->user-$this->Settings->getValue('max_users')).'">&#171;</a>'
 		: '');
 
-	$list = '<table style="width:700px;">
+	$list = '<tr>
+			<td class="path"><a class="pathlink" href="'.$link.';orderby=name;sort='.abs($this->sort-1).'">Benutzer</a></td>
+			<td class="path"><a class="pathlink" href="'.$link.';orderby=realname;sort='.abs($this->sort-1).'">Name</a></td>
+			<td class="path"><a class="pathlink" href="'.$link.';orderby=posts;sort='.abs($this->sort-1).'">Beiträge</a></td>
+			<td class="path"><a class="pathlink" href="'.$link.';orderby=id;sort='.abs($this->sort-1).'">Dabei seit</a></td>
+		</tr>
 		<tr>
-			<td class="path"><a class="pathlink" href="'.$link.';orderby=name;sort='.abs($sort-1).'">Benutzer</a></td>
-			<td class="path"><a class="pathlink" href="'.$link.';orderby=realname;sort='.abs($sort-1).'">Name</a></td>
-			<td class="path"><a class="pathlink" href="'.$link.';orderby=posts;sort='.abs($sort-1).'">Beiträge</a></td>
-			<td class="path"><a class="pathlink" href="'.$link.';orderby=id;sort='.abs($sort-1).'">Dabei seit</a></td>
+			<td class="pages" colspan="2">'.$last.$pages.$next.'</td>
+			<td class="pages" style="text-align:right;" colspan="2">'.$this->user.' bis '.($this->user+$this->Settings->getValue('max_users')).' von '.$this->users.'</td>
 		</tr>';
 	foreach ($users as $user)
 		{
 		$list .= '<tr>
-			<td><a href="?page=ShowUser;user='.$user['id'].'">'.$user['name'].'</a></td>
-			<td>'.$user['realname'].'</td>
-			<td>'.$user['posts'].'</td>
-			<td>'.date('d.m.Y', $user['regdate']).'</td>
+			<td class="main" style="min-width:200px;"><a href="?page=ShowUser;user='.$user['id'].'">'.$user['name'].'</a></td>
+			<td class="main" style="min-width:200px;">'.$user['realname'].'</td>
+			<td class="main">'.$user['posts'].'</td>
+			<td class="main">'.date('d.m.Y', $user['regdate']).'</td>
 			</tr>';
 		}
-	$list .= '</table>';
+	$list .= '<tr>
+			<td class="pages" colspan="2">'.$last.$pages.$next.'</td>
+			<td class="pages" style="text-align:right;" colspan="2">'.$this->user.' bis '.($this->user+$this->Settings->getValue('max_users')).' von '.$this->users.'</td>
+		</tr>';
 
-	$body ='	<table class="frame">
+	$body ='	<table class="frame" style="width:700px;">
 				<tr>
-					<td class="title" colspan="2">
+					<td class="title" colspan="4">
 						'.$this->getValue('title').'
 					</td>
 				</tr>
-				<tr>
-					<td class="pages">'.$last.$pages.$next.'</td>
-					<td class="pages" style="text-align:right;">'.$this->user.' bis '.($this->user+$this->Settings->getValue('max_users')).' von '.$this->users.'</td>
-				</tr>
-				<tr>
-					<td class="main" style="padding-top:0px;" colspan="2">
-						'.$list.'
-					</td>
-				</tr>
-				<tr>
-					<td class="pages">'.$last.$pages.$next.'</td>
-					<td class="pages" style="text-align:right;">'.$this->user.' bis '.($this->user+$this->Settings->getValue('max_users')).' von '.$this->users.'</td>
-				</tr>
+					'.$list.'
 			</table>';
 
 	$this->setValue('body', $body);
@@ -129,16 +125,17 @@ public function prepare()
 
 protected function getPages()
 	{
+	$showpages = 20;
 	$pages = '';
 
 	for ($i = 0; $i < ($this->users / $this->Settings->getValue('max_users')) && ($this->users / $this->Settings->getValue('max_users')) > 1; $i++)
 		{
-		if ($this->user < $this->Settings->getValue('max_users') * ($i-4))
+		if ($this->user < $this->Settings->getValue('max_users') * ($i-$showpages))
 			{
-			$i = $this->Settings->getValue('max_users') * ($i-4);
+			$i = $this->Settings->getValue('max_users') * ($i-$showpages);
 			continue;
 			}
-		elseif($this->user > $this->Settings->getValue('max_users') * ($i+4))
+		elseif($this->user > $this->Settings->getValue('max_users') * ($i+$showpages))
 			{
 			continue;
 			}
@@ -149,7 +146,7 @@ protected function getPages()
 			}
 		else
 			{
-			$pages .= ' <a href="?page=UserList;id='.$this->Board->getId().';user='.($this->Settings->getValue('max_users') * $i).'">'.($i+1).'</a>';
+			$pages .= ' <a href="?page=UserList;id='.$this->Board->getId().';orderby='.$this->orderby.';sort='.$this->sort.';user='.($this->Settings->getValue('max_users') * $i).'">'.($i+1).'</a>';
 			}
 		}
 
