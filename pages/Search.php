@@ -176,6 +176,8 @@ protected function listThreads()
 		$thread_pages = (!empty($thread_pages) ? '<span class="threadpages">&#171;'.$thread_pages.' &#187;</span>' : '');
 
 
+		$data['name'] = cutString($data['name'], 80);
+
 		if ($this->User->isOnline() && $this->Log->isNew($data['id'], $data['lastdate']))
 			{
 			$data['name'] = '<span class="newthread">'.$data['name'].'</span>';
