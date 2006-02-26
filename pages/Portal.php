@@ -92,6 +92,9 @@ public function prepare()
 						</tr>
 					</table>
 					'.$this->getNews().'
+					<div>
+						<a href="?page=Threads;forum='.$this->forum.';id='.$this->Board->getId().'"><span class="button">mehr Neuigkeiten</span></a>
+					</div>
 				</td>
 				<td style="vertical-align:top;width:250px;">
 					<table class="frame" style="width:100%;">

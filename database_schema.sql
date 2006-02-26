@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 25. Februar 2006 um 16:46
+-- Erstellungszeit: 26. Februar 2006 um 15:19
 -- Server Version: 5.0.18
 -- PHP-Version: 5.1.2
 --
@@ -43,6 +43,7 @@ CREATE TABLE `cats` (
   `position` tinyint(3) unsigned NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `boardid` (`boardid`)
+  KEY `position` (`position`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -60,6 +61,9 @@ CREATE TABLE `files` (
   `uploaded` int(11) unsigned NOT NULL default '0',
   `content` mediumblob NOT NULL,
   PRIMARY KEY  (`id`)
+  KEY `type` (`type`)
+  KEY `userid` (`userid`)
+  KEY `uploaded` (`uploaded`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -73,7 +77,8 @@ CREATE TABLE `forum_cat` (
   `forumid` mediumint(8) unsigned NOT NULL default '0',
   `position` tinyint(3) unsigned NOT NULL default '0',
   KEY `catid` (`catid`),
-  KEY `forumid` (`forumid`,`catid`)
+  KEY `forumid` (`forumid`)
+  KEY `position` (`position`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -110,7 +115,7 @@ CREATE TABLE `images` (
   `size` mediumint(6) unsigned NOT NULL,
   `thumbcontent` mediumblob NOT NULL,
   `thumbsize` mediumint(6) unsigned NOT NULL,
-  PRIMARY KEY  (`url`)
+  PRIMARY KEY  (`url`(100))
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -128,6 +133,7 @@ CREATE TABLE `plz` (
   `x` smallint(3) unsigned NOT NULL default '0',
   `y` smallint(3) unsigned NOT NULL default '0',
   KEY `code` (`code`)
+  KEY `location` (`location` (10))
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -264,10 +270,14 @@ CREATE TABLE `threads` (
   `movedfrom` mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `forumid` (`forumid`),
-  KEY `dat` (`lastdate`),
   KEY `deleted` (`deleted`),
+  KEY `sticky` (`sticky`),
+  KEY `movedfrom` (`movedfrom`),
+  KEY `closed` (`closed`),
   KEY `lastuserid` (`lastuserid`),
   KEY `firstuserid` (`firstuserid`),
+  KEY `firstdate` (`firstdate`),
+  KEY `lastdate` (`lastdate`),
   FULLTEXT KEY `name` (`name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -326,5 +336,7 @@ CREATE TABLE `users` (
   KEY `name` (`name`(10)),
   KEY `regdate` (`regdate`),
   KEY `posts` (`posts`),
-  KEY `realname` (`realname`)
+  KEY `svn` (`svn`),
+  KEY `realname` (`realname`(10)),
+  KEY `lastpost` (`lastpost`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
