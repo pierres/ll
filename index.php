@@ -1,7 +1,6 @@
 <?php
 
 define('PATH', './');
-setlocale(LC_ALL, 'de_DE.utf8');
 
 require (PATH.'modules/Settings.php');
 require (PATH.'modules/Exceptions.php');
