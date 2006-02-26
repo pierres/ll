@@ -287,7 +287,7 @@ protected function getPages()
 			continue;
 			}
 
-		if ($this->thread == ($this->Settings->getValue('max_posts') * $i))
+		if ($this->thread == ($this->Settings->getValue('max_threads') * $i))
 			{
 			$pages .= ' <strong>'.($i+1).'</strong>';
 			}
