@@ -51,8 +51,7 @@ protected function checkForm()
 
 protected function sendForm()
 	{
-	/** FIXME: Generiere schönere Passwörter */
-	$password = crypt(time(), crc32(microtime() ) );
+	$password = generatePassword();
 
 	$this->Sql->query
 		('
