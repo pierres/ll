@@ -11,7 +11,7 @@ private $subject 	= '';
 
 public function send()
 	{
-	mail($this->to, $this->subject, $this->text, 'From: '.$this->from."\r\n");
+	mail($this->to, $this->subject, $this->text, 'Content-Type: text/plain;charset="utf-8"'."\r\n".'From: '.$this->from."\r\n");
 	}
 
 public function setFrom($from)
