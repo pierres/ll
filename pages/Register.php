@@ -55,7 +55,7 @@ protected function checkForm()
 
 protected function sendForm()
 	{
-	$password = crypt(time(), crc32(microtime() ) );
+	$password = generatePassword();
 
 	$this->Sql->query
 		('
