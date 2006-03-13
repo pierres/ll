@@ -20,7 +20,7 @@ public function prepare()
 
 	try
 		{
-		$this->cat = $this->Sql->fetchValue
+		$tsm = $this->DB->prepare
 			('
 			SELECT
 				cats.id
@@ -31,24 +31,37 @@ public function prepare()
 			WHERE
 				forum_cat.catid = cats.id
 				AND forums.id = forum_cat.forumid
-				AND forums.boardid != '.$this->Board->getId().'
-				AND cats.boardid = '.$this->Board->getId().'
-				AND forum_cat.forumid = '.$this->forum
+				AND forums.boardid != ?
+				AND cats.boardid = ?
+				AND forum_cat.forumid = ?'
 			);
+		$stm->bindInteger($this->Board->getId());
+		$stm->bindInteger($this->Board->getId());
+		$stm->bindInteger($this->forum);
+		$this->cat = $stm->getColumn();
 		}
-	catch (SqlNoDataException $e)
+	catch (DBNoDataException $e)
 		{
 		$this->Io->redirect('AdminCats');
 		}
 
-	$this->Sql->query
-		('
-		DELETE FROM
-			forum_cat
-		WHERE
-			forumid = '.$this->forum.'
-			AND catid = '.$this->cat
-		);
+	try
+		{
+		$stm = $this->DB->prepare
+			('
+			DELETE FROM
+				forum_cat
+			WHERE
+				forumid = ?
+				AND catid = ?'
+			);
+		$stm->bindInteger($this->forum);
+		$stm->bindInteger($this->cat);
+		$stm->execute();
+	catch (DBNoDataException $e)
+		{
+		/** FIXME */
+		}
 	}
 
 public function show()

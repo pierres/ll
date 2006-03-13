@@ -127,14 +127,17 @@ protected function sendPoll()
 	if ($this->Io->isRequest('poll') && $this->User->isOnline())
 		{
 		$poll_options = explode("\n",$this->poll_options);
-		$this->Sql->query
+		$stm = $this->DB->prepare
 			('
 			INSERT INTO
 				polls
 			SET
-				id = '.$this->thread.',
-				question = \''.$this->Sql->formatString($this->poll_question).'\'
+				id = ?,
+				question = ?
 			');
+		$stm->bindInteger($this->thread);
+		$stm->bindString(htmlspecialchars($this->poll_question));
+		$stm->execute();
 
 		foreach ($poll_options as $option)
 			{
@@ -142,54 +145,61 @@ protected function sendPoll()
 
 			if(!empty($option))
 				{
-				$this->Sql->query
+				$stm = $this->DB->prepare
 					('
 					INSERT INTO
 						poll_values
 					SET
-						pollid = '.$this->thread.',
-						value = \''.$this->Sql->formatString($option).'\'
+						pollid = ?,
+						value = ?
 					');
+				$stm->bindInteger($this->thread);
+				$stm->bindString(htmlspecialchars($option));
+				$stm->execute();
 				}
 			}
 
-		$this->Sql->query
+		$stm = $this->DB->prepare
 			('
 			UPDATE
 				threads
 			SET
 				poll = 1
 			WHERE
-				id = '.$this->thread
+				id = ?'
 			);
+			$stm->bindInteger($this->thread);
+			$stm->execute();
 		}
 	}
 
 protected function sendForm()
 	{
-	$this->Sql->query(
-		'
+	$stm = $this->DB->prepare
+		('
 		INSERT INTO
 			threads
 		SET
-			name = \''.$this->Sql->formatString($this->topic).'\',
-			forumid = '.$this->forum.',
-			lastuserid = '.$this->User->getId().',
-			lastusername =  \''.$this->Sql->formatString($this->User->getName()).'\',
-			lastdate = '.$this->time
-		);
+			name = ?,
+			forumid = ?
+		');
+	$stm->bindString(htmlspecialchars($this->topic));
+	$stm->bindInteger($this->forum);
+	$stm->execute();
 
-	$this->thread = $this->Sql->insertId();
+	$this->thread = $this->DB->getInsertId();
 
-	$this->Sql->query(
-		'
+	$stm = $this->DB->prepare
+		('
 		UPDATE
 			boards
 		SET
 			threads = threads + 1
 		WHERE
-			id = '.$this->Board->getId()
+			id = ?'
 		);
+	$stm->bindInteger($this->Board->getId());
+	$stm->execute();
 
 	$this->sendPoll();
 

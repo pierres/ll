@@ -29,18 +29,21 @@ protected function checkForm()
 	{
 	try
 		{
-		$this->Sql->fetchValue
+		$stm = $this->DB->prepare
 			('
 			SELECT
 				id
 			FROM
 				cats
 			WHERE
-				boardid = '.$this->Board->getId().'
-				AND id = '.$this->cat
+				boardid = ?
+				AND id = ?'
 			);
+		$stm->bindInteger($this->Board->getId());
+		$stm->bindInteger($this->cat);
+		$stm->getColumn();
 		}
-	catch (SqlNoDataException $e)
+	catch (DBNoDataException $e)
 		{
 		$this->redirect();
 		}

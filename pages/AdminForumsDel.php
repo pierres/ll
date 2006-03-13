@@ -19,7 +19,7 @@ protected function setForm()
 
 	try
 		{
-		$this->cat = $this->Sql->fetchValue
+		$stm = $this->DB->prepare
 			('
 			SELECT
 				cats.id
@@ -30,12 +30,16 @@ protected function setForm()
 			WHERE
 				forum_cat.catid = cats.id
 				AND forums.id = forum_cat.forumid
-				AND forums.boardid = '.$this->Board->getId().'
-				AND cats.boardid = '.$this->Board->getId().'
-				AND forum_cat.forumid = '.$this->forum
+				AND forums.boardid = ?
+				AND cats.boardid = ?
+				AND forum_cat.forumid = ?'
 			);
+		$stm->bindInteger($this->Board->getId());
+		$stm->bindInteger($this->Board->getId());
+		$stm->bindInteger($this->forum);
+		$this->cat = $stm->getColumn();
 		}
-	catch (SqlNoDataException $e)
+	catch (DBNoDataException $e)
 		{
 		$this->Io->redirect('AdminCats');
 		}

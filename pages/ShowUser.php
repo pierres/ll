@@ -19,7 +19,7 @@ public function prepare()
 
 	try
 		{
-		$data = $this->Sql->fetchRow
+		$stm = $this->DB->prepare
 			('
 			SELECT
 				id,
@@ -37,10 +37,12 @@ public function prepare()
 			FROM
 				users
 			WHERE
-				id = '.$this->id
+				id = ?'
 			);
+		$stm->bindInteger($this->id);
+		$data = $stm->getRow();
 		}
-	catch (SqlNoDataException $e)
+	catch (DBNoDataException $e)
 		{
 		$this->showWarning('Kein Benutzer gefunden!');
 		}

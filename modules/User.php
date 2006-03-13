@@ -28,7 +28,7 @@ function __construct()
 
 	try
 		{
-		$data = $this->Sql->fetchRow
+		$stm = $this->DB->prepare
 			('
 			SELECT
 				id,
@@ -39,10 +39,12 @@ function __construct()
 			FROM
 				session
 			WHERE
-				sessionid = \''.$sessionid.'\''
+				sessionid = ?'
 			);
+		$stm->bindString($sessionid);
+		$data = $stm->getRow();
 		}
-	catch (SqlNoDataException $e)
+	catch (DBNoDataException $e)
 		{
 		$this->Io->setCookie('sessionid', '');
 		return $this->cookieLogin();
@@ -58,17 +60,20 @@ function __construct()
 		{
 		try
 			{
-			$this->Sql->query
+			$stm = $this->DB->prepare
 				('
 				UPDATE
 					session
 				SET
-					lastupdate = '.time().'
+					lastupdate = ?
 				WHERE
-					sessionid = \''.$this->sessionid.'\''
+					sessionid = ?'
 				);
+			$stm->bindInteger(time());
+			$stm->bindString($this->sessionid);
+			$stm->execute();
 			}
-		catch (SqlException $e)
+		catch (DBException $e)
 			{
 			$this->logout();
 			}
@@ -96,15 +101,17 @@ public function logout()
 
 	try
 		{
-		$this->Sql->query
+		$stm = $this->DB->prepare
 			('
 			DELETE FROM
 				session
 			WHERE
-				id = '.$this->id
+				id = ?'
 			);
+		$stm->bindInteger($this->id);
+		$stm->execute();
 		}
-	catch (SqlException $e)
+	catch (DBException $e)
 		{
 		}
 
@@ -124,7 +131,7 @@ public function login($name, $password, $cookie = false)
 		{
 		if ($cookie)
 			{
-			$data = $this->Sql->fetchRow
+			$stm = $this->DB->prepare
 				('
 				SELECT
 					id,
@@ -133,13 +140,15 @@ public function login($name, $password, $cookie = false)
 				FROM
 					users
 				WHERE
-					id = '.$name.'
-					AND password = \''.$this->Sql->escapeString($password).'\''
+					id = ?
+					AND password = ?'
 				);
+			$stm->bindInteger($name);
+			$stm->bindString($password);
 			}
 		else
 			{
-			$data = $this->Sql->fetchRow
+			$stm = $this->DB->prepare
 				('
 				SELECT
 					id,
@@ -148,34 +157,47 @@ public function login($name, $password, $cookie = false)
 				FROM
 					users
 				WHERE
-					name = \''.$this->Sql->escapeString($name).'\'
-					AND password = \''.md5($password).'\''
+					name = ?
+					AND password = ?'
 				);
+			$stm->bindString($name);
+			$stm->bindString(md5($password));
 			}
+
+		$data = $stm->getRow();
 		}
-	catch (SqlNoDataException $e)
+	catch (DBNoDataException $e)
 		{
 		throw new LoginException('Falsche Benutzername/Passwort-Kombination');
 		}
 
+	$gruopArray = array();
+
 	try
 		{
-		$groups = $this->Sql->fetchCol
+		$stm = $this->DB->prepare
 			('
 			SELECT
 				groupid
 			FROM
 				user_group
 			WHERE
-				userid = '.$data['id']
+				userid = ?'
 			);
+		$stm->bindInteger($data['id']);
+		$groups = $stm->getColumnSet();
+
+		/** @FIXME: Warum enthält das Array nur 0? */
+		foreach ($groups as $group)
+			{
+			$gruopArray[] = $group;
+			}
 		}
-	catch (SqlNoDataException $e)
+	catch (DBNoDataException $e)
 		{
-		$groups = array();
 		}
 
-	$this->start($data['id'], $data['name'], $data['level'], $groups);
+	$this->start($data['id'], $data['name'], $data['level'], $gruopArray);
 	}
 
 private function start($id, $name ,$level, $groups)
@@ -191,30 +213,39 @@ private function start($id, $name ,$level, $groups)
 
 	try
 		{
-		$this->Sql->query
+		$stm = $this->DB->prepare
 			('
 			DELETE FROM
 				session
 			WHERE
-				id ='.$this->id
+				id = ?'
 			);
+		$stm->bindInteger($this->id);
+		$stm->execute();
 		}
-	catch (SqlException $e)
+	catch (DBNoDataException $e)
 		{
 		}
 
-	$this->Sql->query
+	$stm = $this->DB->prepare
 		('
 		INSERT INTO
 			session
 		SET
-			sessionid = \''.$this->sessionid.'\',
-			id = '.$this->id.',
-			name = \''.$this->Sql->escapeString($this->name).'\',
-			level = '.$this->level.',
-			groups = \''.implode(',', $this->groups).'\',
-			lastupdate = '.time()
+			sessionid = ?,
+			id = ?,
+			name = ?,
+			level = ?,
+			groups = ?,
+			lastupdate = ?'
 		);
+	$stm->bindString($this->sessionid);
+	$stm->bindInteger($this->id);
+	$stm->bindString($this->name);
+	$stm->bindInteger($this->level);
+	$stm->bindString(implode(',', $this->groups));
+	$stm->bindInteger(time());
+	$stm->execute();
 
 	$this->Io->setCookie('sessionid', $this->sessionid);
 	}
@@ -223,15 +254,17 @@ private function collectGarbage()
 	{
 	try
 		{
-		$this->Sql->query
+		$stm = $this->DB->prepare
 			('
 			DELETE FROM
 				session
 			WHERE
-				lastupdate <= '.(time() - $this->Settings->getValue('session_timeout'))
+				lastupdate <= ?'
 			);
+		$stm->bindInteger(time() - $this->Settings->getValue('session_timeout'));
+		$stm->execute();
 		}
-	catch (SqlException $e)
+	catch (DBNoDataException $e)
 		{
 		}
 	}
@@ -263,7 +296,7 @@ public function getOnline()
 	{
 	try
 		{
-		$result = $this->Sql->fetch
+		return $this->DB->getRowSet
 			('
 			SELECT
 				id,
@@ -272,12 +305,10 @@ public function getOnline()
 				session
 			');
 		}
-	catch (SqlNoDataException $e)
+	catch (DBNoDataException $e)
 		{
-		$result = array();
+		return array();
 		}
-
-	return $result;
 	}
 
 public function isGroup($id)

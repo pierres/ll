@@ -43,17 +43,19 @@ protected function checkAccess($forum = 0)
 
 	try
 		{
-		$mods = $this->Sql->fetchValue
+		$stm = $this->DB->prepare
 			('
 			SELECT
 				mods
 			FROM
 				forums
 			WHERE
-				id = '.$forum
+				id = ?'
 			);
+		$stm->bindInteger($forum);
+		$mods = $stm->getColumn();
 		}
-	catch (SqlNoDataException $e)
+	catch (DBNoDataException $e)
 		{
 		$this->showFailure('Kein Forum gefunden.');
 		}
@@ -71,7 +73,7 @@ protected function buildList()
 	/** FIXME: Kann man Themen aus dem Board herausschieben ? */
 	try
 		{
-		$result = $this->Sql->fetch
+		$stm = $this->DB->prepare
 			('
 			SELECT
 				cats.id AS catid,
@@ -86,51 +88,56 @@ protected function buildList()
 				forums,
 				forum_cat
 			WHERE
-				cats.boardid = '.$this->Board->getId().'
+				cats.boardid = ?
 				AND forum_cat.forumid = forums.id
 				AND forum_cat.catid = cats.id
-				AND forums.id <> '.$this->forum.'
+				AND forums.id <> ?
 			ORDER BY
 				cats.position,
 				forum_cat.position
 			');
-		}
-	catch (SqlNoDataException $e)
-		{
-		$result = array();
-		}
+		$stm->bindInteger($this->Board->getId());
+		$stm->bindInteger($this->forum);
 
-	$cat = 0;
-	$catheader = '';
-	$forums = '';
+		$cat = 0;
+		$catheader = '';
+		$forums = '';
 
-	foreach ($result as $data)
-		{
-		if ($cat != $data['catid'])
+		foreach ($stm->getRowSet() as $data)
 			{
-			$this->addElement('cat'.$cat,
-				'<strong>&#171; '.$data['catname'].' &#187;</strong>');
+			if ($cat != $data['catid'])
+				{
+				$this->addElement('cat'.$cat,
+					'<strong>&#171; '.$data['catname'].' &#187;</strong>');
+				}
+
+			$this->addElement('forum'.$data['id'],
+				'<input class="radio" type="radio" name="moveto" value="'.$data['id'].'" />&nbsp;'.$data['name']);
+
+			$cat = $data['catid'];
 			}
-
-		$this->addElement('forum'.$data['id'],
-			'<input class="radio" type="radio" name="moveto" value="'.$data['id'].'" />&nbsp;'.$data['name']);
-
-		$cat = $data['catid'];
+		}
+	catch (DBNoDataException $e)
+		{
 		}
 	}
 
 protected function sendForm()
 	{
-	$this->Sql->query
+	$stm = $this->DB->prepare
 		('
 		UPDATE
 			threads
 		SET
-			forumid = '.$this->moveto.',
-			movedfrom = '.$this->forum.'
+			forumid = ?,
+			movedfrom = ?
 		WHERE
-			id = '.$this->thread
+			id = ?'
 		);
+	$stm->bindInteger($this->moveto);
+	$stm->bindInteger($this->forum);
+	$stm->bindInteger($this->thread);
+	$stm->execute();
 
 	$this->updateForum();
 	// Auch das neue Forum muß aktualisiert werden

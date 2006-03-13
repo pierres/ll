@@ -36,7 +36,7 @@ protected function checkForm()
 
 	try
 		{
-		$this->result = $this->Sql->fetch
+		$stm = $this->DB->prepare
 		('
 		(
 			SELECT
@@ -53,7 +53,7 @@ protected function checkForm()
 				threads.sticky,
 				threads.poll,
 				threads.posts,
-				MATCH (threads.name) AGAINST (\''.$this->Sql->escapeString($this->search).'\' IN BOOLEAN MODE) AS score,
+				MATCH (threads.name) AGAINST (? IN BOOLEAN MODE) AS score,
 				forums.id AS forumid,
 				forums.name AS forumname
 			FROM
@@ -61,7 +61,7 @@ protected function checkForm()
 				forums
 			WHERE MATCH
 				(threads.name)
-			AGAINST (\''.$this->Sql->escapeString($this->search).'\' IN BOOLEAN MODE)
+			AGAINST (? IN BOOLEAN MODE)
 			AND threads.forumid = forums.id
 			AND threads.deleted = 0
 			ORDER BY score DESC
@@ -82,7 +82,7 @@ protected function checkForm()
 				threads.sticky,
 				threads.poll,
 				threads.posts,
-				MATCH (posts.text) AGAINST (\''.$this->Sql->escapeString($this->search).'\' IN BOOLEAN MODE) as score,
+				MATCH (posts.text) AGAINST (? IN BOOLEAN MODE) as score,
 				forums.id AS forumid,
 				forums.name AS forumname
 			FROM
@@ -91,7 +91,7 @@ protected function checkForm()
 				forums
 			WHERE MATCH
 				(posts.text)
-			AGAINST (\''.$this->Sql->escapeString($this->search).'\' IN BOOLEAN MODE)
+			AGAINST (? IN BOOLEAN MODE)
 			AND posts.threadid = threads.id
 			AND threads.forumid = forums.id
 			AND threads.deleted = 0
@@ -101,8 +101,13 @@ protected function checkForm()
 		)
 		LIMIT '.$limit
 		);
+		$stm->bindString($this->search);
+		$stm->bindString($this->search);
+		$stm->bindString($this->search);
+		$stm->bindString($this->search);
+		$this->result = $stm->getRowSet();
 		}
-	catch (SqlNoDataException $e)
+	catch (DBNoDataException $e)
 		{
 		$this->showWarning('Leider nichts gefunden');
 		}

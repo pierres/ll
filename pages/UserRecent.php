@@ -29,7 +29,7 @@ public function prepare()
 		{
 		if ($user == $this->User->getId())
 			{
-			$this->result = $this->Sql->fetch
+			$stm = $this->DB->prepare
 				('
 				(
 					SELECT
@@ -55,7 +55,7 @@ public function prepare()
 						threads.forumid = 0
 						AND threads.deleted = 0
 						AND thread_user.threadid = threads.id
-						AND thread_user.userid = '.$this->User->getId().'
+						AND thread_user.userid = ?
 					GROUP BY
 						threads.id
 				)
@@ -85,7 +85,7 @@ public function prepare()
 						threads.forumid = forums.id
 						AND threads.deleted = 0
 						AND posts.threadid = threads.id
-						AND posts.userid = '.$user.'
+						AND posts.userid = ?
 					GROUP BY
 						threads.id
 				)
@@ -94,10 +94,11 @@ public function prepare()
 				LIMIT
 					25
 				');
+			$stm->bindInteger($this->User->getId());
 			}
 		else
 			{
-			$this->result = $this->Sql->fetch
+			$stm = $this->DB->prepare
 				('
 				SELECT
 					threads.id,
@@ -123,7 +124,7 @@ public function prepare()
 					threads.forumid = forums.id
 					AND threads.deleted = 0
 					AND posts.threadid = threads.id
-					AND posts.userid = '.$user.'
+					AND posts.userid = ?
 				GROUP BY
 					threads.id
 				ORDER BY
@@ -132,8 +133,10 @@ public function prepare()
 					25
 				');
 			}
+		$stm->bindInteger($user);
+		$this->result = $stm->getRowSet();
 		}
-	catch( SqlNoDataException $e)
+	catch (DBNoDataException $e)
 		{
 		$this->result = array();
 		}

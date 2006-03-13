@@ -31,7 +31,7 @@ catch (IoRequestException $e)
 
 try
 	{
-	$thread = $this->Sql->fetchRow
+	$stm = $this->DB->prepare
 		('
 		SELECT
 			threads.name,
@@ -42,24 +42,63 @@ try
 			threads,
 			thread_user
 		WHERE
-			threads.id = '.$this->thread.'
+			threads.id = ?
 			AND threads.forumid = 0
 			AND thread_user.threadid = threads.id
-			AND thread_user.userid = '.$this->User->getId()
+			AND thread_user.userid = ?'
 		);
+	$stm->bindInteger($this->thread);
+	$stm->bindInteger($this->User->getId());
+	$thread = $stm->getRow();
 	}
-catch (SqlNoDataException $e)
-		{
-		$this->showWarning('Thema nicht gefunden.');
-		}
+catch (DBNoDataException $e)
+	{
+	$this->showWarning('Thema nicht gefunden.');
+	}
 
-$this->posts = $this->Sql->numRows('posts WHERE posts.threadid = '.$this->thread);
+try
+	{
+	$stm = $this->DB->prepare
+		('
+		SELECT
+			COUNT(*)
+		FROM
+			posts
+		WHERE
+			posts.threadid = ?'
+		);
+	$stm->bindInteger($this->thread);
+	$this->posts = $stm->getColumn();
+	}
+catch (DBNoDataException $e)
+	{
+	$this->posts = 0;
+	}
 
 if ($this->post == -1)
 	{
 	if ($this->Log->isNew($this->thread, $thread['lastdate']))
 		{
-		$this->post = $this->posts - $this->Sql->numRows('posts WHERE posts.threadid = '.$this->thread.' AND dat >= '.$this->Log->getTime($this->thread));
+		try
+			{
+			$stm = $this->DB->prepare
+				('
+				SELECT
+					COUNT(*)
+				FROM
+					posts
+				WHERE
+					posts.threadid = ?
+					AND dat >= ?
+				');
+			$stm->bindInteger($this->thread);
+			$stm->bindInteger($this->Log->getTime($this->thread));
+			$this->post = $this->posts - $stm->getColumn();
+			}
+		catch (DBNoDataException $e)
+			{
+			$this->post = $this->posts;
+			}
 		}
 	else
 		{
@@ -78,29 +117,40 @@ $last = ($this->post > 0 ? '<a href="?page=PrivatePostings;id='.$this->Board->ge
 
 $this->Log->insert($thread['id'], $thread['lastdate']);
 
-
-$recipients = $this->Sql->fetch
-	('
-	SELECT
-		users.id,
-		users.name
-	FROM
-		users,
-		thread_user
-	WHERE
-		thread_user.threadid ='.$thread['id'].'
-		AND thread_user.userid = users.id
-	');
-
-$users = array();
-foreach ($recipients as $recipient)
+try
 	{
-	$users[] = '<a href="?page=ShowUser;id='.$this->Board->getId().';user='.$recipient['id'].'">'.$recipient['name'].'</a>';
+	$stm = $this->DB->prepare
+		('
+		SELECT
+			users.id,
+			users.name
+		FROM
+			users,
+			thread_user
+		WHERE
+			thread_user.threadid = ?
+			AND thread_user.userid = users.id
+			AND users.id <> ?
+		');
+	$stm->bindInteger($thread['id']);
+	$stm->bindInteger($this->User->getId());
+
+	$users = array();
+	foreach ($stm->getRowSet() as $recipient)
+		{
+		$users[] = '<a href="?page=ShowUser;id='.$this->Board->getId().';user='.$recipient['id'].'">'.$recipient['name'].'</a>';
+		}
+
+	$recipients = implode(', ', $users);
+	}
+catch (DBNoDataException $e)
+	{
+	$recipients = '';
 	}
 
 try
 	{
-	$result = $this->Sql->fetch
+	$stm = $this->DB->prepare
 		('
 		SELECT
 			posts.id,
@@ -121,14 +171,16 @@ try
 				LEFT JOIN users AS editors
 					ON posts.editby = editors.id
 		WHERE
-			posts.threadid = '.$this->thread.'
+			posts.threadid = ?
 		ORDER BY
 			posts.dat ASC
 		LIMIT
 			'.$limit
 		);
+	$stm->bindInteger($this->thread);
+	$result = $stm->getRowSet();
 	}
-catch (SqlNoDataException $e)
+catch (DBNoDataException $e)
 	{
 	$result = array();
 	}
@@ -259,7 +311,7 @@ $body =
 				'.$last.$pages.$next.'&nbsp;
 			</td>
 			<td class="pages">
-			Schon dabei: '.implode(', ', $users).'
+			Schon dabei: '.$recipients.'
 			</td>
 			<td class="pages" style="text-align:right">
 				'.$reply_button.'

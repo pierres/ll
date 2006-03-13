@@ -25,12 +25,12 @@ public function __construct()
 		{
 		$board = $this->getBoard($id);
 		}
-	catch (SqlNoDataException $e)
+	catch (DBNoDataException $e)
 		{
 		$board = $this->getBoard(1);
 		}
 
-	$this->name 	= htmlspecialchars($board['name']);
+	$this->name 	= $board['name'];
 	$this->id	= $board['id'];
 	$this->admin 	= $board['admin'];
 	$this->admins 	= $board['admins'];
@@ -39,7 +39,7 @@ public function __construct()
 
 private function getBoard($id)
 	{
-	return $this->Sql->fetchRow
+	$stm = $this->DB->prepare
 		('
 		SELECT
 			id,
@@ -50,8 +50,11 @@ private function getBoard($id)
 		FROM
 			boards
 		WHERE
-			id = '.$id
+			id = ?'
 		);
+	$stm->bindInteger($id);
+
+	return $stm->getRow();
 	}
 
 public function getId()

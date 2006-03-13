@@ -27,7 +27,7 @@ public function __construct()
 */
 	try
 		{
-		$temp = $this->Sql->fetch
+		$stm = $this->DB->prepare
 			('
 			SELECT
 				threadid,
@@ -35,17 +35,17 @@ public function __construct()
 			FROM
 				threads_log
 			WHERE
-				userid = '.$this->User->getId()
+				userid = ?'
 			);
-		}
-	catch(SqlNoDataException $e)
-		{
-		$temp = array();
-		}
+		$stm->bindInteger($this->User->getId());
 
-	foreach($temp as $temp2)
+		foreach($stm->getRowSet() as $thread)
+			{
+			$this->log[$thread['threadid']] = $thread['dat'];
+			}
+		}
+	catch (DBNoDataException $e)
 		{
-		$this->log[$temp2['threadid']] = $temp2['dat'];
 		}
 	}
 
@@ -69,29 +69,35 @@ public function insert($threadid, $threadtime)
 
 	if (empty($this->log[$threadid]))
 		{
-		$this->Sql->query
+		$stm = $this->DB->prepare
 			('
 			INSERT INTO
 				threads_log
 			SET
-				dat = '.$threadtime.',
-				threadid = '.$threadid.',
-				userid = '.$this->User->getId()
+				dat = ?,
+				threadid = ?,
+				userid = ?'
 			);
+
 		}
 	else
 		{
-		$this->Sql->query
+		$stm = $this->DB->prepare
 			('
 			UPDATE
 				threads_log
 			SET
-				dat = '.$threadtime.'
+				dat = ?
 			WHERE
-				threadid = '.$threadid.'
-				AND userid = '.$this->User->getId()
+				threadid = ?
+				AND userid = ?'
 			);
 		}
+
+	$stm->bindInteger($threadtime);
+	$stm->bindInteger($threadid);
+	$stm->bindInteger($this->User->getId());
+	$stm->execute();
 
 	/** FIXME: kann man beim Neuerstellen/Löschen eines Beitrags starten.*/
 	$this->collectGarbage();
@@ -131,27 +137,41 @@ public function getTime($threadid)
 
 public function delete($threadid)
 	{
-	$this->Sql->query
-		('
-		DELETE FROM
-			threads_log
-		WHERE
-			threadid = '.$threadid
-		);
+	try
+		{
+		$stm = $this->DB->prepare
+			('
+			DELETE FROM
+				threads_log
+			WHERE
+				threadid = ?'
+			);
+		$stm->bindInteger($threadid);
+		$stm->execute();
+		}
+	catch (DBNoDataException $e)
+		{
+		}
 	}
 
 private function collectGarbage()
 	{
-	$deltime = time() - $this->timeout;
-
-	$this->Sql->query
-		('
-		DELETE FROM
-			threads_log
-		WHERE
-			dat <= '.$deltime
-		);
-    }
+	try
+		{
+		$stm = $this->DB->prepare
+			('
+			DELETE FROM
+				threads_log
+			WHERE
+				dat <= ?'
+			);
+		$stm->bindInteger(time() - $this->timeout);
+		$stm->execute();
+		}
+	catch (DBNoDataException $e)
+		{
+		}
+	}
 
 }
 ?>

@@ -16,7 +16,7 @@ protected function setForm()
 
 	try
 		{
-		$files = $this->Sql->fetch
+		$stm = $this->DB->prepare
 			('
 			SELECT
 				id,
@@ -26,12 +26,14 @@ protected function setForm()
 			FROM
 				files
 			WHERE
-				userid = '.$this->User->getId().'
+				userid = ?
 			ORDER BY
 				id DESC
 			');
+		$stm->bindInteger($this->User->getId());
+		$files = $stm->getRowSet();
 		}
-	catch (SqlNoDataException $e)
+	catch (DBNoDataException $e)
 		{
 		$files = array();
 		}
@@ -57,7 +59,7 @@ protected function setForm()
 
 	try
 		{
-		$data = $this->Sql->fetchRow
+		$stm = $this->DB->prepare
 			('
 			SELECT
 				COUNT(*) AS files,
@@ -65,10 +67,12 @@ protected function setForm()
 			FROM
 				files
 			WHERE
-				userid = '.$this->User->getId()
+				userid = ?'
 			);
+		$stm->bindInteger($this->User->getId());
+		$data = $stm->getRow();
 		}
-	catch (SqlNoDataException $e)
+	catch (DBNoDataException $e)
 		{
 		$data['files'] = 0;
 		$data['quota'] = 0;
@@ -106,16 +110,26 @@ protected function checkForm()
 		return;
 		}
 
-	$data = $this->Sql->fetchRow
-		('
-		SELECT
-			COUNT(*) AS files,
-			SUM(size) AS quota
-		FROM
-			files
-		WHERE
-			userid = '.$this->User->getId()
-		);
+	try
+		{
+		$stm = $this->DB->prepare
+			('
+			SELECT
+				COUNT(*) AS files,
+				SUM(size) AS quota
+			FROM
+				files
+			WHERE
+				userid = ?'
+			);
+		$stm->bindInteger($this->User->getId());
+		$data = $stm->getRow();
+		}
+	catch (DBNoDataException $e)
+		{
+		$data['files'] = 0;
+		$data['quota'] = 0;
+		}
 
 	if ($data['quota'] + $this->file['size'] >=  $this->Settings->getValue('quota'))
 		{
@@ -132,18 +146,25 @@ protected function sendForm()
 	{
 	$content = gzencode(file_get_contents($this->file['tmp_name']), 9);
 
-	$this->Sql->query
+	$stm = $this->DB->prepare
 		('
 		INSERT INTO
 			files
 		SET
-			name = \''.$this->Sql->formatString($this->file['name']).'\',
-			type = \''.$this->Sql->formatString($this->file['type']).'\',
-			size = '.strlen($content).',
-			content = \''.$this->Sql->escapeString($content).'\',
-			userid = '.$this->User->getId().',
-			uploaded = '.time()
+			name = ?,
+			type = ?,
+			size = ?,
+			content = ?,
+			userid = ?,
+			uploaded = ?'
 		);
+	$stm->bindString(htmlspecialchars($this->file['name']));
+	$stm->bindString($this->file['type']);
+	$stm->bindInteger(strlen($content));
+	$stm->bindString($content);
+	$stm->bindInteger($this->User->getId());
+	$stm->bindInteger(time());
+	$stm->execute();
 
 	unlink($this->file['tmp_name']);
 

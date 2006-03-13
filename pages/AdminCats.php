@@ -12,7 +12,7 @@ protected function setForm()
 
 	try
 		{
-		$cats = $this->Sql->fetch
+		$stm = $this->DB->prepare
 			('
 			SELECT
 				id,
@@ -21,31 +21,33 @@ protected function setForm()
 			FROM
 				cats
 			WHERE
-				boardid = '.$this->Board->getId().'
+				boardid = ?
 			ORDER BY
 				position
 			');
-		}
-	catch (SqlNoDataException $e)
-		{
-		$cats = array();
-		}
+		$stm->bindInteger($this->Board->getId());
 
-	foreach ($cats as $cat)
+		foreach ($stm->getRowSet() as $cat)
+			{
+			$cats = $stm->getNumRows();
+			$this->addOutput
+				(
+				AdminFunctions::buildPositionMenu('position['.$cat['id'].']', $cats, $cat['position']).'
+				<input type="text" name="name['.$cat['id'].']" size="74" value="'.$cat['name'].'" />
+				<a href="?page=AdminForums;id='.$this->Board->getId().';cat='.$cat['id'].'"><span class="button">Foren</span></a>
+				<a href="?page=AdminCatsDel;id='.$this->Board->getId().';cat='.$cat['id'].'"><span class="button" style="background-color:#CC0000">löschen</span></a>
+				<br /><br />
+				');
+			}
+		}
+	catch (DBNoDataException $e)
 		{
-		$this->addOutput
-			(
-			AdminFunctions::buildPositionMenu('position['.$cat['id'].']', count($cats), $cat['position']).'
-			<input type="text" name="name['.$cat['id'].']" size="74" value="'.$cat['name'].'" />
-			<a href="?page=AdminForums;id='.$this->Board->getId().';cat='.$cat['id'].'"><span class="button">Foren</span></a>
-			<a href="?page=AdminCatsDel;id='.$this->Board->getId().';cat='.$cat['id'].'"><span class="button" style="background-color:#CC0000">löschen</span></a>
-			<br /><br />
-			');
+		$cats = 0;
 		}
 
 	$this->addOutput
 		(
-		AdminFunctions::buildPositionMenu('newposition', count($cats)+1, count($cats)+1).'
+		AdminFunctions::buildPositionMenu('newposition', $cats+1, $cats+1).'
 		<input type="text" name="newname" size="74" value="" />
 		');
 	}
@@ -57,26 +59,32 @@ protected function checkForm()
 
 protected function sendForm()
 	{
+	/** FIXME */
 	$cats = $this->Io->getArray();
 
 	try
 		{
 		foreach($cats as $cat => $value)
 			{
-			$this->Sql->query
+			$stm = $this->DB->prepare
 				('
 				UPDATE
 					cats
 				SET
-					position = '.intval($value['position']).',
-					name = \''.$this->Sql->escapeString(htmlspecialchars($value['name'])).'\'
+					position = ?,
+					name = ?
 				WHERE
-					boardid = '.$this->Board->getId().'
-					AND id = '.intval($cat)
+					boardid = ?
+					AND id = ?'
 				);
+			$stm->bindInteger($value['position']);
+			$stm->bindString(htmlspecialchars($value['name']));
+			$stm->bindInteger($this->Board->getId());
+			$stm->bindInteger($cat);
+			$stm->execute();
 			}
 		}
-	catch(SqlException $e)
+	catch(DBException $e)
 		{
 		/** FIXME */
 		}
@@ -85,17 +93,22 @@ protected function sendForm()
 		{
 		try
 			{
-			$this->Sql->query
+			$stm = $this->DB->prepare
 				('
 				INSERT INTO
 					cats
 				SET
-					position = '.($this->Io->isEmpty('position') ? 0 : $this->Io->getInt('newposition')).',
-					name = \''.$this->Sql->escapeString($this->Io->getHtml('newname')).'\',
-					boardid = '.$this->Board->getId()
+					position = ?,
+					name = ?,
+					boardid = ?'
 				);
+
+			$stm->bindInteger($this->Io->isEmpty('position') ? 0 : $this->Io->getInt('newposition'));
+			$stm->bindString($this->Io->getHtml('newname'));
+			$stm->bindInteger($this->Board->getId());
+			$stm->execute();
 			}
-		catch(SqlException $e)
+		catch(DBException $e)
 			{
 			/** FIXME */
 			}

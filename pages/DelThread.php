@@ -14,15 +14,17 @@ public function prepare()
 
 protected function sendForm()
 	{
-	$this->Sql->query
+	$stm = $this->DB->prepare
 		('
 		UPDATE
 			threads
 		SET
 			deleted = ABS(deleted - 1)
 		WHERE
-			id = '.$this->thread
+			id = ?'
 		);
+	$stm->bindInteger($this->thread);
+	$stm->execute();
 
 	$this->updateForum();
 	$this->redirect();

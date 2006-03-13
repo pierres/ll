@@ -21,7 +21,7 @@ protected function setForm()
 
 	try
 		{
-		$forums = $this->Sql->fetch
+		$stm = $this->DB->prepare
 			('
 			SELECT
 				forums.id,
@@ -37,15 +37,20 @@ protected function setForm()
 			WHERE
 				forum_cat.forumid = forums.id
 				AND forum_cat.catid = cats.id
-				AND forum_cat.catid = '.$this->cat.'
-				AND cats.boardid = '.$this->Board->getId().'
+				AND forum_cat.catid = ?
+				AND cats.boardid = ?
 			ORDER BY
 				forum_cat.position
 			');
+		$stm->bindInteger($this->cat);
+		$stm->bindInteger($this->Board->getId());
+		$forums = $stm->getRowSet();
+		$totalForums = $stm->getNumRows();
 		}
-	catch (SqlNoDataException $e)
+	catch (DBNoDataException $e)
 		{
 		$forums = array();
+		$totalForums = 0;
 		}
 
 	foreach ($forums as $forum)
@@ -55,7 +60,7 @@ protected function setForm()
 			$this->addOutput
 				(
 				'<table><tr><td>'.
-				AdminFunctions::buildPositionMenu('position['.$forum['id'].']', count($forums), $forum['position']).'
+				AdminFunctions::buildPositionMenu('position['.$forum['id'].']', $totalForums, $forum['position']).'
 				<input type="text" name="name['.$forum['id'].']" size="74" value="'.$forum['name'].'" />
 				<br />
 				<textarea name="description['.$forum['id'].']" cols="80" rows="4">'.$forum['description'].'</textarea>
@@ -64,7 +69,7 @@ protected function setForm()
 				<a href="?page=AdminForumsDel;id='.$this->Board->getId().';forum='.$forum['id'].'"><span class="button" style="background-color:#CC0000">löschen</span></a>
 				</td>
 					<td style="vertical-align:bottom">
-					'.implode('<br />', $this->getMods($forum['mods'])).'
+					'.$this->getMods($forum['mods']).'
 					<br />
 					<a href="?page=AdminForumsMods;id='.$this->Board->getId().';forum='.$forum['id'].'"><span class="button">Moderatoren</span></a>
 					</td>
@@ -78,7 +83,7 @@ protected function setForm()
 			$this->addOutput
 				(
 				'<table style="width:100%"><tr><td>'.
-				AdminFunctions::buildPositionMenu('position['.$forum['id'].']', count($forums), $forum['position']).'
+				AdminFunctions::buildPositionMenu('position['.$forum['id'].']', $totalForums, $forum['position']).'
 				<input disabled="disabled" type="text" name="name['.$forum['id'].']" size="74" value="'.$forum['name'].'" />
 				<br />
 				<textarea disabled="disabled" name="description['.$forum['id'].']" cols="80" rows="4">'.$forum['description'].'</textarea>
@@ -87,7 +92,7 @@ protected function setForm()
 				<a href="?page=AdminForumsDelEx;id='.$this->Board->getId().';forum='.$forum['id'].'"><span class="button" style="background-color:#CC6600">löschen</span></a>
 				</td>
 					<td style="vertical-align:bottom">
-					'.implode('<br /> ', $this->getMods($forum['mods'])).'
+					'.$this->getMods($forum['mods']).'
 					</td>
 				</tr>
 				</table>
@@ -99,7 +104,7 @@ protected function setForm()
 	$this->addOutput
 		(
 		'<table style="width:100%"><tr><td>'.
-		AdminFunctions::buildPositionMenu('newposition', count($forums)+1, count($forums)+1).'
+		AdminFunctions::buildPositionMenu('newposition', $totalForums+1, $totalForums+1).'
 		<input type="text" name="newname" size="74" value="" />
 		<br />
 		<textarea name="newdescription" cols="80" rows="4"></textarea>
@@ -114,9 +119,11 @@ protected function setForm()
 
 private function getMods($group)
 	{
+	$mods = array();
+
 	try
 		{
-		$mods = $this->Sql->fetchCol
+		$stm = $this->DB->prepare
 			('
 			SELECT
 				users.name
@@ -125,33 +132,41 @@ private function getMods($group)
 				user_group
 			WHERE
 				user_group.userid = users.id
-				AND user_group.groupid = '.$group
+				AND user_group.groupid = ?'
 			);
+		$stm->bindInteger($group);
+		$t = $stm->getColumnSet();
+		foreach($t as $mod)
+			{
+			$mods[] = $mod;
+			}
 		}
-	catch (SqlNoDataException $e)
+	catch (DBNoDataException $e)
 		{
-		$mods = array();
 		}
 
-	return $mods;
+	return implode('<br />',$mods);
 	}
 
 protected function checkForm()
 	{
 	try
 		{
-		$this->Sql->fetchValue
+		$stm = $this->DB->prepare
 			('
 			SELECT
 				id
 			FROM
 				cats
 			WHERE
-				id = '.$this->cat.'
-				AND boardid = '.$this->Board->getId()
+				id = ?
+				AND boardid = ?'
 			);
+		$stm->bindInteger($this->cat);
+		$stm->bindInteger($this->Board->getId());
+		$stm->getColumn();
 		}
-	catch(SqlNoDataException $e)
+	catch(DBNoDataException $e)
 		{
 		$this->Io->redirect('AdminCats');
 		}
@@ -159,6 +174,7 @@ protected function checkForm()
 
 protected function sendForm()
 	{
+	/** FIXME */
 	$forums = $this->Io->getArray();
 
 	try
@@ -167,32 +183,41 @@ protected function sendForm()
 			{
 			if(isset($value['name']) && isset($value['description']))
 				{
-				$this->Sql->query
+				$stm = $this->DB->prepare
 					('
 					UPDATE
 						forums
 					SET
-						name = \''.$this->Sql->escapeString(htmlspecialchars($value['name'])).'\',
-						description = \''.$this->Sql->escapeString(htmlspecialchars($value['description'])).'\'
+						name = ?,
+						description = ?
 					WHERE
-						boardid = '.$this->Board->getId().'
-						AND id = '.intval($forum)
+						boardid = ?
+						AND id = ?'
 					);
+				$stm->bindString(htmlspecialchars($value['name']));
+				$stm->bindString(htmlspecialchars($value['description']));
+				$stm->bindInteger($this->Board->getId());
+				$stm->bindInteger($forum);
+				$stm->execute();
 				}
 
-			$this->Sql->query
+			$stm = $this->DB->prepare
 				('
 				UPDATE
 					forum_cat
 				SET
-					position = '.intval($value['position']).'
+					position = ?
 				WHERE
-					forumid = '.intval($forum).'
-					AND catid = '.$this->cat
+					forumid = ?
+					AND catid = ?'
 				);
+			$stm->bindInteger($value['position']);
+			$stm->bindInteger($forum);
+			$stm->bindInteger($this->cat);
+			$stm->execute();
 			}
 		}
-	catch(SqlException $e)
+	catch(DBException $e)
 		{
 		/** FIXME */
 		}
@@ -201,27 +226,34 @@ protected function sendForm()
 		{
 		try
 			{
-			$this->Sql->query
+			$stm = $this->DB->prepare
 				('
 				INSERT INTO
 					forums
 				SET
-					name = \''.$this->Sql->escapeString($this->Io->getHtml('newname')).'\',
-					description = \''.$this->Sql->escapeString($this->Io->getHtml('newdescription')).'\',
-					boardid = '.$this->Board->getId()
+					name = ?,
+					description = ?,
+					boardid = ?'
 				);
+			$stm->bindString($this->Io->getHtml('newname'));
+			$stm->bindString($this->Io->getHtml('newdescription'));
+			$stm->bindInteger($this->Board->getId());
+			$stm->execute();
 
-			$this->Sql->query
+			$stm = $this->DB->prepare
 				('
 				INSERT INTO
 					forum_cat
 				SET
 					forumid = LAST_INSERT_ID(),
-					position = '.intval($this->Io->getInt('newposition')).',
-					catid = '.$this->cat
+					position = ?,
+					catid = ?'
 				);
+			$stm->bindInteger($this->Io->getInt('newposition'));
+			$stm->bindInteger($this->cat);
+			$stm->execute();
 			}
-		catch(SqlException $e)
+		catch(DBException $e)
 			{
 			/** FIXME */
 			}

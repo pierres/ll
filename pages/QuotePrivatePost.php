@@ -12,7 +12,7 @@ protected function checkInput()
 	/** Hier noch weitere Test bzgl. PrivateThreads nötig */
 	try
 		{
-		$data = $this->Sql->fetchRow
+		$stm = $this->DB->prepare
 			('
 			SELECT
 				posts.id AS post,
@@ -26,16 +26,19 @@ protected function checkInput()
 			WHERE
 				threads.forumid = 0
 				AND thread_user.threadid = threads.id
-				AND thread_user.userid = '.$this->User->getId().'
+				AND thread_user.userid = ?
 				AND posts.threadid = threads.id
-				AND posts.id = '.$this->Io->getInt('post')
+				AND posts.id = ?'
 			);
+		$stm->bindInteger($this->User->getId());
+		$stm->bindInteger($this->Io->getInt('post'));
+		$data = $stm->getRow();
 		}
 	catch (IoException $e)
 		{
 		$this->showFailure('Kein Beitrag angegeben!');
 		}
-	catch (SqlNoDataException $e)
+	catch (DBNoDataException $e)
 		{
 		$this->showFailure('Beitrag nicht gefunden!');
 		}

@@ -42,17 +42,19 @@ protected function checkForm()
 
 	try
 		{
-		$this->Sql->fetchValue
+		$stm = $this->DB->prepare
 			('
 			SELECT
 				id
 			FROM
 				users
 			WHERE
-				email = \''.$this->Sql->escapeString($this->email).'\''
+				email = ?'
 			);
+		$stm->bindString($this->email);
+		$stm->getColumn();
 		}
-	catch (SqlNoDataException $e)
+	catch (DBNoDataException $e)
 		{
 		return;
 		}
@@ -64,16 +66,20 @@ protected function sendForm()
 	{
 	$password = generatePassword();
 
-	$this->Sql->query
+	$stm = $this->DB->prepare
 		('
 		UPDATE
 			users
 		SET
-			email = \''.$this->Sql->escapeString($this->email).'\',
-			password = \''.md5($password).'\'
+			email = ?,
+			password = ?
 		WHERE
-			id = '.$this->User->getId()
+			id = ?'
 		);
+	$stm->bindString($this->email);
+	$stm->bindString(md5($password));
+	$stm->bindInteger($this->User->getId());
+	$stm->execute();
 
 	$this->Mail->setTo($this->email);
 	$this->Mail->setFrom('support@laber-land.de');

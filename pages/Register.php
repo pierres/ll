@@ -35,20 +35,23 @@ protected function checkForm()
 
 	try
 		{
-		 $this->Sql->fetchValue
+		$stm = $this->DB->prepare
 			('
 			SELECT
 				id
 			FROM
 				users
 			WHERE
-				name = \''.$this->Sql->formatString($this->name).'\'
-				OR email = \''.$this->Sql->escapeString($this->email).'\'
+				name = ?
+				OR email = ?
 			');
+		$stm->bindString(htmlspecialchars($this->name));
+		$stm->bindString($this->email);
+		$stm->getColumn();
 
 		$this->showWarning('Name oder E-Mail bereits vergeben!');
 		}
-	catch (SqlNoDataException $e)
+	catch (DBNoDataException $e)
 		{
 		}
 	}
@@ -57,16 +60,21 @@ protected function sendForm()
 	{
 	$password = generatePassword();
 
-	$this->Sql->query
+	$stm = $this->DB->prepare
 		('
 		INSERT INTO
 			users
 		SET
-			name = \''.$this->Sql->formatString($this->name).'\',
-			email = \''.$this->Sql->escapeString($this->email).'\',
-			password = \''.md5($password).'\',
-			regdate = '.time()
+			name = ?,
+			email = ?,
+			password = ?,
+			regdate = ?'
 		);
+	$stm->bindString(htmlspecialchars($this->name));
+	$stm->bindString($this->email);
+	$stm->bindString(md5($password));
+	$stm->bindInteger(time());
+	$stm->execute();
 
 	$this->Mail->setTo($this->email);
 	$this->Mail->setFrom('support@laber-land.de');

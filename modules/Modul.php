@@ -1,6 +1,6 @@
 <?php
 
-class Modul{
+abstract class Modul{
 
 /** FIXME: Nur für Debugging public */
 public static $modules = array();

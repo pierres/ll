@@ -30,7 +30,7 @@ catch (IoRequestException $e)
 
 try
 	{
-	$thread = $this->Sql->fetchRow
+	$stm = $this->DB->prepare
 		('
 		SELECT
 			threads.name,
@@ -50,20 +50,23 @@ try
 			forums,
 			cats
 		WHERE
-			threads.id = '.$this->thread.'
+			threads.id = ?
 			AND threads.forumid = forum_cat.forumid
 			AND forum_cat.catid = cats.id
-			AND cats.boardid = '.$this->Board->getId().'
+			AND cats.boardid = ?
 			AND forums.id = threads.forumid'
 		);
+	$stm->bindInteger($this->thread);
+	$stm->bindInteger($this->Board->getId());
+	$thread = $stm->getRow();
 	}
-catch (SqlNoDataException $e)
+catch (DBNoDataException $e)
 	{
 	// Falls das Thema nicht (mehr) im aktuellen Board ist versuchen wir es zu finden.
 	// (und wir stellen sicher, daß wir nicht auf die gleiche Seite weiterleiten.)
 	try
 		{
-		$id = $this->Sql->fetchValue
+		$stm = $this->DB->prepare
 			('
 			SELECT
 				forums.boardid
@@ -71,14 +74,17 @@ catch (SqlNoDataException $e)
 				threads,
 				forums
 			WHERE
-				threads.id = '.$this->thread.'
+				threads.id = ?
 				AND forums.id = threads.forumid
-				AND forums.boardid != '.$this->Board->getId()
+				AND forums.boardid != ?'
 			);
+		$stm->bindInteger($this->thread);
+		$stm->bindInteger($this->Board->getId());
+		$boardid = $stm->getColumn();
 
-		$this->Io->redirect('Postings','thread='.$this->thread.';post='.$this->post, $id);
+		$this->Io->redirect('Postings','thread='.$this->thread.';post='.$this->post, $boardid);
 		}
-	catch (SqlNoDataException $e)
+	catch (DBNoDataException $e)
 		{
 		$this->showWarning('Thema nicht gefunden.');
 		}
@@ -86,14 +92,51 @@ catch (SqlNoDataException $e)
 
 $this->ismod = $this->User->isGroup($thread['mods']) || $this->User->isMod();
 
-$this->posts = $this->Sql->numRows('posts WHERE '.($this->ismod ? '' : 'posts.deleted = 0 AND').' posts.threadid = '.$this->thread);
+try
+	{
+	$stm = $this->DB->prepare
+		('
+		SELECT
+			COUNT(*)
+		FROM
+			posts
+		WHERE
+			'.($this->ismod ? '' : 'posts.deleted = 0 AND').
+			' posts.threadid = ?');
+	$stm->bindInteger($this->thread);
+	$this->posts = $stm->getColumn();
+	}
+catch (DBNoDataException $e)
+	{
+	$this->posts = 0;
+	}
 
 
 if ($this->post == -1)
 	{
 	if ($this->Log->isNew($this->thread, $thread['lastdate']))
 		{
-		$this->post = $this->posts - $this->Sql->numRows('posts WHERE '.($this->ismod ? '' : 'posts.deleted = 0 AND').' posts.threadid = '.$this->thread.' AND dat >= '.$this->Log->getTime($this->thread));
+		try
+			{
+			$stm = $this->DB->prepare
+				('
+				SELECT
+					COUNT(*)
+				FROM
+					posts
+				WHERE
+					'.($this->ismod ? '' : 'posts.deleted = 0 AND').'
+					posts.threadid = ?
+					AND dat >= ?
+				');
+			$stm->bindInteger($this->thread);
+			$stm->bindInteger($this->Log->getTime($this->thread));
+			$this->post = $this->posts - $stm->getColumn();
+			}
+		catch (DBNoDataException $e)
+			{
+			$this->post = $this->posts;
+			}
 		}
 	else
 		{
@@ -124,7 +167,7 @@ if ($this->User->isOnline())
 
 try
 	{
-	$result = $this->Sql->fetch
+	$stm = $this->DB->prepare
 		('
 		SELECT
 			posts.id,
@@ -146,21 +189,22 @@ try
 				LEFT JOIN users AS editors
 					ON posts.editby = editors.id
 		WHERE
-			posts.threadid = '.$this->thread.'
+			posts.threadid = ?
 			'.($this->ismod ? '' : 'AND posts.deleted = 0').'
 		ORDER BY
 			posts.dat ASC
 		LIMIT
 			'.$limit
 		);
+	$stm->bindInteger($this->thread);
+	$result = $stm->getRowSet();
 	}
-catch (SqlNoDataException $e)
+catch (DBNoDataException $e)
 	{
 	$result = array();
 	}
 
-
-$postings		= '';
+$postings	= '';
 $i 		= 2;
 $first 		= true;
 $closed 	= (empty($thread['closed']) ? false : true);
@@ -402,7 +446,7 @@ protected function getFiles($post)
 	{
 	try
 		{
-		$files = $this->Sql->fetch
+		$stm = $this->DB->prepare
 			('
 			SELECT
 				files.id,
@@ -413,16 +457,19 @@ protected function getFiles($post)
 				files,
 				post_file
 			WHERE
-				post_file.postid = '.$post.'
+				post_file.postid = ?
 				AND post_file.fileid = files.id
 			ORDER BY
 				files.id DESC
 			');
+		$stm->bindInteger($post);
+		$files = $stm->getRowSet();
 		}
-	catch(SqlNoDataException $e)
+	catch(DBNoDataException $e)
 		{
 		$files = array();
 		}
+
 
 	$list = '<table class="frame" style="margin:10px;font-size:9px;">';
 

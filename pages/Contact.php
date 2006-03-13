@@ -14,7 +14,7 @@ protected function setForm()
 		{
 		try
 			{
-			$data = $this->Sql->fetchRow
+			$stm = $this->DB->prepare
 				('
 				SELECT
 					name,
@@ -23,8 +23,10 @@ protected function setForm()
 				FROM
 					users
 				WHERE
-					id = '.$this->User->getId()
+					id = ?'
 				);
+			$stm->bindInteger($this->User->getId());
+			$data = $stm->getRow();
 
 			if (!empty($data['realname']))
 				{
@@ -37,7 +39,7 @@ protected function setForm()
 
 			$this->email = $data['email'];
 			}
-		catch (SqlNoDataException $e)
+		catch (DBNoDataException $e)
 			{
 			}
 		}

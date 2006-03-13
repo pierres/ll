@@ -27,97 +27,115 @@ protected function checkForm()
 
 	try
 		{
-		 $this->Sql->fetchValue
+		$stm = $this->DB->prepare
 			('
 			SELECT
 				id
 			FROM
 				boards
 			WHERE
-				name = \''.$this->Sql->formatString($this->name).'\'
+				name = ?
 			');
+		$stm->bindString(htmlspecialchars($this->name));
+		$stm->getColumn();
 
 		$this->showWarning('Name bereits vergeben!');
 		}
-	catch (SqlNoDataException $e)
+	catch (DBNoDataException $e)
 		{
 		}
 	}
 
 protected function sendForm()
 	{
-	$this->Sql->query
+	$stm = $this->DB->prepare
 		('
 		INSERT INTO
 			boards
 		SET
-			admin = '.$this->User->getId().',
-			name =  \''.$this->Sql->formatString($this->name).'\',
-			regdate = '.time()
+			admin = ?,
+			name =  ?,
+			regdate = ?'
 		);
+	$stm->bindInteger($this->User->getId());
+	$stm->bindString(htmlspecialchars($this->name));
+	$stm->bindInteger(time());
+	$stm->execute();
 
-	$id = $this->Sql->insertId();
+	$id = $this->DB->getInsertId();
 
-	$this->Sql->query
+	$stm = $this->DB->prepare
 		('
 		INSERT INTO
 			cats
 		SET
 			name = \'Allgemeines\',
-			boardid ='. $id
+			boardid = ?'
 		);
+	$stm->bindInteger($id);
+	$stm->execute();
 
-	$cat = $this->Sql->insertId();
+	$cat = $this->DB->getInsertId();
 
-	$this->Sql->query
+	$stm = $this->DB->prepare
 		('
 		INSERT INTO
 			forum_cat
 		SET
-			catid = '.$cat.',
+			catid = ?,
 			forumid = 5,
 			position = 1
 		');
+	$stm->bindInteger($cat);
+	$stm->execute();
 
-	$this->Sql->query
+	$stm = $this->DB->prepare
 		('
 		INSERT INTO
 			forum_cat
 		SET
-			catid = '.$cat.',
+			catid = ?,
 			forumid = 8,
 			position = 2
 		');
+	$stm->bindInteger($cat);
+	$stm->execute();
 
-	$this->Sql->query
+	$stm = $this->DB->prepare
 		('
 		INSERT INTO
 			forum_cat
 		SET
-			catid = '.$cat.',
+			catid = ?,
 			forumid = 9,
 			position = 3
 		');
+	$stm->bindInteger($cat);
+	$stm->execute();
 
-	$this->Sql->query
+	$stm = $this->DB->prepare
 		('
 		INSERT INTO
 			forum_cat
 		SET
-			catid = '.$cat.',
+			catid = ?,
 			forumid = 202,
 			position = 4
 		');
+	$stm->bindInteger($cat);
+	$stm->execute();
 
-	$this->Sql->query
+	$stm = $this->DB->prepare
 		('
 		INSERT INTO
 			forum_cat
 		SET
-			catid = '.$cat.',
+			catid = ?,
 			forumid = 7,
 			position = 5
 		');
+	$stm->bindInteger($cat);
+	$stm->execute();
 
 	copy(PATH.'/html/default.html', PATH.'/html/'.$id.'.html');
 	copy(PATH.'/html/default.css', PATH.'/html/'.$id.'.css');

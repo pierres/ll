@@ -7,9 +7,18 @@ class Forums extends Page{
 public function prepare(){
 
 
+if ($this->User->isOnline())
+	{
+	$forums = $this->getPrivateThreads();
+	}
+else
+	{
+	$forums = '';
+	}
+
 try
 	{
-	$result = $this->Sql->fetch
+	$stm = $this->DB->prepare
 		('
 		SELECT
 			cats.id AS catid,
@@ -32,15 +41,17 @@ try
 				ON forums.lastthread = threads.id,
 			forum_cat
 		WHERE
-			cats.boardid = '.$this->Board->getId().'
+			cats.boardid = ?
 			AND forum_cat.forumid = forums.id
 			AND forum_cat.catid = cats.id
 		ORDER BY
 			cats.position,
 			forum_cat.position
 		');
+	$stm->bindInteger($this->Board->getId());
+	$result = $stm->getRowSet();
 	}
-catch (SqlNoDataException $e)
+catch (DBNoDataException $e)
 	{
 	$result = array();
 	}
@@ -48,14 +59,6 @@ catch (SqlNoDataException $e)
 $cat 		= 0;
 $catheader 	= '';
 
-if ($this->User->isOnline())
-	{
-	$forums = $this->getPrivateThreads();
-	}
-else
-	{
-	$forums = '';
-	}
 
 foreach ($result as $data)
 	{
@@ -178,9 +181,10 @@ $this->setValue('body', $body);
 
 private function getPrivateThreads()
 	{
+	/** TODO: Anzahl in thread_user speichern */
 	try
 		{
-		$data = $this->Sql->fetchRow
+		$stm = $this->DB->prepare
 			('
 			SELECT
 				threads.id AS lastthread,
@@ -194,12 +198,14 @@ private function getPrivateThreads()
 			WHERE
 				threads.forumid = 0
 				AND thread_user.threadid = threads.id
-				AND thread_user.userid = '.$this->User->getId().'
+				AND thread_user.userid = ?
 			ORDER BY
 				threads.lastdate DESC
 			');
+		$stm->bindInteger($this->User->getId());
+		$data = $stm->getRow();
 
-		$count = $this->Sql->fetchRow
+		$stm = $this->DB->prepare
 			('
 			SELECT
 				COUNT(*) AS threads,
@@ -210,13 +216,15 @@ private function getPrivateThreads()
 			WHERE
 				threads.forumid = 0
 				AND thread_user.threadid = threads.id
-				AND thread_user.userid = '.$this->User->getId()
+				AND thread_user.userid = ?'
 			);
+		$stm->bindInteger($this->User->getId());
+		$count = $stm->getRow();
 
 		$data['posts'] = $count['posts'];
 		$data['threads'] = $count['threads'];
 		}
-	catch (SqlNoDataException $e)
+	catch (DBNoDataException $e)
 		{
 		$data['lastthread'] = '';
 		$data['lastusername'] = '';
@@ -226,7 +234,6 @@ private function getPrivateThreads()
 		$data['threads'] = 0;
 		$data['threadname'] = '';
 		}
-
 
 	$icon = ($this->Log->isNew($data['lastthread'], $data['lastdate']) ? '<span class="new"></span>' : '<span class="old"></span>');
 

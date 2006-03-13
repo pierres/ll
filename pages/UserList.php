@@ -46,33 +46,34 @@ public function prepare()
 		$this->sort = 1;
 		}
 
-	try
-		{
-		$users = $this->Sql->fetch
-			('
-			SELECT
-				id,
-				name,
-				realname,
-				posts,
-				regdate
-			FROM
-				users
-			ORDER BY
-				'.$this->orderby.' '.($this->sort > 0 ? 'DESC' : 'ASC').'
-			LIMIT
-				'.$limit
-			);
-		}
-	catch(SqlNoDataException $e)
-		{
-		$users = array();
-		}
+	$users = $this->DB->getRowSet
+		('
+		SELECT
+			id,
+			name,
+			realname,
+			posts,
+			regdate
+		FROM
+			users
+		ORDER BY
+			'.$this->orderby.' '.($this->sort > 0 ? 'DESC' : 'ASC').'
+		LIMIT
+			'.$limit
+		);
+
 
 	$link = '?page=UserList;id='.$this->Board->getId().';user='.$this->user;
 	$curlink = '?page=UserList;id='.$this->Board->getId().';orderby='.$this->orderby.';sort='.$this->sort;
 
-	$this->users = $this->Sql->numRows('users');
+	$this->users = $this->DB->getColumn
+		('
+		SELECT
+			COUNT(*)
+		FROM
+			users
+		');
+
 	$pages = $this->getPages();
 
 	$next = ($this->users > $this->Settings->getValue('max_users')+$this->user

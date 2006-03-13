@@ -9,7 +9,7 @@ public function prepare()
 		{
 		try
 			{
-			$threads = $this->Sql->fetch
+			$stm = $this->DB->prepare
 				('
 				SELECT
 					id,
@@ -18,17 +18,17 @@ public function prepare()
 					threads
 				WHERE
 					forumid != 0
-					AND lastdate > '.(time() - (86400 * $this->Settings->getValue('log_timeout')))
+					AND lastdate > ?'
 				);
-			}
-		catch (SqlNoDataException $e)
-			{
-			$threads = array();
-			}
+			$stm->bindInteger(time() - (86400 * $this->Settings->getValue('log_timeout')));
 
-		foreach ($threads as $thread)
+			foreach ($stm->getRowSet() as $thread)
+				{
+				$this->Log->insert($thread['id'], $thread['lastdate']);
+				}
+			}
+		catch (DBNoDataException $e)
 			{
-			$this->Log->insert($thread['id'], $thread['lastdate']);
 			}
 		}
 	}

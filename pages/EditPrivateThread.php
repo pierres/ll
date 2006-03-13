@@ -15,7 +15,7 @@ protected function checkInput()
 	{
 	try
 		{
-		$data = $this->Sql->fetchRow
+		$stm = $this->DB->prepare
 			('
 			SELECT
 				posts.id,
@@ -28,45 +28,54 @@ protected function checkInput()
 				threads
 			WHERE
 				threads.id = posts.threadid
-				AND threads.id = '.$this->Io->getInt('thread').'
+				AND threads.id = ?
 			ORDER BY
 				posts.dat ASC
 			');
+		$stm->bindInteger($this->Io->getInt('thread'));
+		$data = $stm->getRow();
 		}
 	catch (IoException $e)
 		{
 		$this->showFailure('Kein Thema angegeben!');
 		}
-	catch (SqlNoDataException $e)
+	catch (DBNoDataException $e)
 		{
 		$this->showFailure('Thema nicht gefunden!');
 		}
 
 	try
 		{
-		$this->poll_question = $this->Sql->fetchValue
+		$stm = $this->DB->prepare
 			('
 			SELECT
 				question
 			FROM
 				polls
 			WHERE
-				id = '.$this->Io->getInt('thread')
+				id = ?'
 			);
+		$stm->bindInteger($this->Io->getInt('thread'));
+		$this->poll_question = $stm->getColumn();
 
-		$this->poll_options = implode("\n", $this->Sql->fetchCol
+		$stm = $this->DB->prepare
 			('
 			SELECT
 				value
 			FROM
 				poll_values
 			WHERE
-				pollid = '.$this->Io->getInt('thread').'
+				pollid = ?
 			ORDER BY
 				id ASC
-			'));
+			');
+		$stm->bindInteger($this->Io->getInt('thread'));
+		foreach($stm->getColumnSet() as $poll_option)
+			{
+			$this->poll_options .= $poll_option."\n";
+			}
 		}
-	catch (SqlNoDataException $e)
+	catch (DBNoDataException $e)
 		{
 		}
 
@@ -100,64 +109,76 @@ protected function checkAccess()
 
 	try
 		{
-		$access = $this->Sql->fetchValue
+		$stm = $this->DB->prepare
 			('
 			SELECT
 				userid
 			FROM
 				posts
 			WHERE
-				id = '.$this->post.'
-				AND userid = '.$this->User->getId()
+				id = ?
+				AND userid = ?'
 			);
+		$stm->bindInteger($this->post);
+		$stm->bindInteger($this->User->getId());
+		$access = $stm->getColumn();
 		}
-	catch (SqlNoDataException $e)
+	catch (DBNoDataException $e)
 		{
 		$this->showFailure('Kein Beitrag gefunden.');
 		}
 	}
 
-
 protected function sendForm()
 	{
-	$this->Sql->query(
+	$stm = $this->DB->prepare(
 		'
 		UPDATE
 			threads
 		SET
-			name = \''.$this->Sql->formatString($this->topic).'\'
+			name = ?
 		WHERE
-			id = '.$this->thread
+			id = ?'
 		);
+	$stm->bindString(htmlspecialchars($this->topic));
+	$stm->bindInteger($this->thread);
+	$stm->execute();
 
 	if ($this->Io->isRequest('poll_question') && $this->Io->isRequest('poll_options'))
 		{
 		/** FIXME: Warum schlägt hier ein gewöhnlicher Stringvergleich fehl? */
-		if (metaphone($this->poll_options) != metaphone($this->db_poll_options) || metaphone($this->poll_question) != metaphone($this->db_poll_question))
+// 		if (metaphone($this->poll_options) != metaphone($this->db_poll_options) || metaphone($this->poll_question) != metaphone($this->db_poll_question))
+		if ($this->poll_options != $this->db_poll_options || $this->poll_question != $this->db_poll_question)
 			{
-			$this->Sql->query
+			$stm = $this->DB->prepare
 				('
 				DELETE FROM
 					polls
 				WHERE
-					id = '.$this->thread
+					id = ?'
 				);
+			$stm->bindInteger($this->thread);
+			$stm->execute();
 
-			$this->Sql->query
+			$stm = $this->DB->prepare
 				('
 				DELETE FROM
 					poll_values
 				WHERE
-					pollid = '.$this->thread
+					pollid = ?'
 				);
+			$stm->bindInteger($this->thread);
+			$stm->execute();
 
-			$this->Sql->query
+			$stm = $this->DB->prepare
 				('
 				DELETE FROM
 					poll_voters
 				WHERE
-					pollid = '.$this->thread
+					pollid = ?'
 				);
+			$stm->bindInteger($this->thread);
+			$stm->execute();
 
 			parent::sendPoll();
 			}
@@ -166,18 +187,24 @@ protected function sendForm()
 	$this->Markup->enableSmilies($this->smilies);
 	$this->text = $this->Markup->toHtml($this->text);
 
-	$this->Sql->query
+	$stm = $this->DB->prepare
 		('
 		UPDATE
 			posts
 		SET
-			text = \''.$this->Sql->escapeString($this->text).'\',
-			editdate = '.$this->time.',
-			editby = '.$this->User->getId().',
-			smilies = '.($this->smilies ? 1 : 0).'
+			text = ?,
+			editdate = ?,
+			editby = ?,
+			smilies = ?
 		WHERE
-			id = '.$this->post
+			id = ?'
 		);
+	$stm->bindString($this->text);
+	$stm->bindInteger($this->time);
+	$stm->bindInteger($this->User->getId());
+	$stm->bindInteger($this->smilies ? 1 : 0);
+	$stm->bindInteger($this->post);
+	$stm->execute();
 
 	$this->sendFile($this->post);
 
@@ -188,23 +215,27 @@ protected function sendFile($postid)
 	{
 	if($this->User->isOnline() && $this->Io->isRequest('addfile'))
 		{
-		$this->Sql->query
+		$stm = $this->DB->prepare
 			('
 			DELETE FROM
 				post_file
 			WHERE
-				postid = '.$postid
+				postid = ?'
 			);
+		$stm->bindInteger($postid);
+		$stm->execute();
 
-		$this->Sql->query
+		$stm = $this->DB->prepare
 			('
 			UPDATE
 				posts
 			SET
 				file = 0
 			WHERE
-				id ='.$postid
+				id = ?'
 			);
+		$stm->bindInteger($postid);
+		$stm->execute();
 
 		parent::sendFile($postid);
 		}

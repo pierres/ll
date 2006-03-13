@@ -10,10 +10,10 @@ protected $result 	= array();
 
 public function prepare(){
 
-	if (!$this->User->isOnline())
-		{
-		$this->showWarning('Nur für Mitglieder');
-		}
+if (!$this->User->isOnline())
+	{
+	$this->showWarning('Nur für Mitglieder');
+	}
 
 try
 	{
@@ -27,20 +27,31 @@ catch (IoRequestException $e)
 
 $limit = $this->thread.','. $this->Settings->getValue('max_threads');
 
-
-$this->threads = $this->Sql->numRows
-	('
-		threads,
-		thread_user
-	WHERE
-		threads.forumid = 0
-		AND thread_user.threadid = threads.id
-		AND thread_user.userid = '.$this->User->getId()
-	);
+try
+	{
+	$stm = $this->DB->prepare
+		('
+		SELECT
+			COUNT(*)
+		FROM
+			threads,
+			thread_user
+		WHERE
+			threads.forumid = 0
+			AND thread_user.threadid = threads.id
+			AND thread_user.userid = ?'
+		);
+	$stm->bindInteger($this->User->getId());
+	$this->threads = $stm->getColumn();
+	}
+catch (DBNoDataException $e)
+	{
+	$this->threads = 0;
+	}
 
 try
 	{
-	$this->result = $this->Sql->fetch
+	$stm = $this->DB->prepare
 		('
 		SELECT
 			threads.id,
@@ -59,18 +70,19 @@ try
 		WHERE
 			threads.forumid = 0
 			AND thread_user.threadid = threads.id
-			AND thread_user.userid = '.$this->User->getId().'
+			AND thread_user.userid = ?
 		ORDER BY
 			threads.lastdate DESC
 		LIMIT
 			'.$limit
 		);
+	$stm->bindInteger($this->User->getId());
+	$this->result = $stm->getRowSet();
 	}
-catch (SqlNoDataException $e)
+catch (DBNoDataException $e)
 	{
 	$this->result = array();
 	}
-
 
 $pages = $this->getPages();
 

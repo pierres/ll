@@ -11,7 +11,7 @@ public function prepare()
 		die('kein Zugriff!');
 		}
 
-	$boards = $this->Sql->fetchCol
+	$boards = $this->DB->getColumnSet
 		('
 		SELECT
 			id
@@ -25,7 +25,7 @@ public function prepare()
 		$this->links[] = 'http://www.laber-land.de/?page=Recent;id='.$board;
 		}
 
-	$threads = $this->Sql->fetch
+	$threads = $this->DB->getRowSet
 		('
 		SELECT
 			threads.id,
@@ -44,7 +44,7 @@ public function prepare()
 		$this->links[] = 'http://www.laber-land.de/?page=Postings;id='.$thread['boardid'].';thread='.$thread['id'];
 		}
 
-	$users = $this->Sql->fetchCol
+	$users = $this->DB->getColumnSet
 		('
 		SELECT
 			id
@@ -57,7 +57,7 @@ public function prepare()
 		$this->links[] = 'http://www.laber-land.de/?page=ShowUser;id=1;user='.$user;
 		}
 
-	$forums = $this->Sql->fetch
+	$forums = $this->DB->getRowSet
 		('
 		SELECT
 			id,

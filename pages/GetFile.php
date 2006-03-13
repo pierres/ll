@@ -23,7 +23,11 @@ public function prepare()
 
 	try
 		{
-		$this->data = $this->Sql->fetchRow
+		/**
+		 FIXME: entsprechende BLOB-Befehle von mysqli verwenden
+		 TODO: evtl. im Dateisystem zwischenspeichern
+		*/
+		$stm = $this->DB->prepare
 			('
 			SELECT
 				name,
@@ -33,10 +37,12 @@ public function prepare()
 			FROM
 				files
 			WHERE
-				id = '.$file
+				id = ?'
 			);
+		$stm->bindInteger($file);
+		$this->data = $stm->getRow();
 		}
-	catch (SqlNoDataException $e)
+	catch (DBNoDataException $e)
 		{
 		$this->showWarning('Datei nicht gefunden');
 		}

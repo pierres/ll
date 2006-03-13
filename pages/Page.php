@@ -56,16 +56,23 @@ public function showWarning($text)
 
 private function getWebring()
 	{
-	$boards = $this->Sql->fetch
-		('
-		SELECT
-			id,
-			name
-		FROM
-			boards
-		ORDER BY
-			id ASC
-		');
+	try
+		{
+		$boards = $this->DB->getRowSet
+			('
+			SELECT
+				id,
+				name
+			FROM
+				boards
+			ORDER BY
+				id ASC
+			');
+		}
+	catch (DBNoDataException $e)
+		{
+		$boards = array();
+		}
 
 	$menu = <<<eot
 <script type="text/javascript">

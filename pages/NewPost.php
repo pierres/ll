@@ -63,7 +63,7 @@ protected function setFile()
 
 			try
 				{
-				$files = $this->Sql->fetch
+				$stm = $this->DB->prepare
 					('
 					SELECT
 						id,
@@ -72,12 +72,14 @@ protected function setFile()
 					FROM
 						files
 					WHERE
-						userid = '.$this->User->getId().'
+						userid = ?
 					ORDER BY
 						id DESC
 					');
+				$stm->bindInteger($this->User->getId());
+				$files = $stm->getRowSet();
 				}
-			catch (SqlNoDataException $e)
+			catch (DBNoDataException $e)
 				{
 				$files = array();
 				}
@@ -124,45 +126,53 @@ protected function sendFile($postid)
 			{
 			try
 				{
-				$this->Sql->fetchValue
+				$stm = $this->DB->prepare
 					('
 					SELECT
 						id
 					FROM
 						files
 					WHERE
-						id = '.intval($file).'
-						AND userid = '.$this->User->getId()
+						id = ?
+						AND userid = ?'
 					);
+				$stm->bindInteger($file);
+				$stm->bindInteger($this->User->getId());
+				$stm->getColumn();
 				}
-			catch (SqlNoDataException $e)
+			catch (DBNoDataException $e)
 				{
 				continue;
 				}
 
-			$this->Sql->query
+			$stm = $this->DB->prepare
 				('
 				INSERT INTO
 					post_file
 				SET
-					postid = '.$postid.',
-					fileid = '.intval($file)
+					postid = ?,
+					fileid = ?'
 				);
+			$stm->bindInteger($postid);
+			$stm->bindInteger($file);
+			$stm->execute();
 
 			$success = true;
 			}
 
 		if ($success)
 			{
-			$this->Sql->query
+			$stm = $this->DB->prepare
 				('
 				UPDATE
 					posts
 				SET
 					file = 1
 				WHERE
-					id ='.$postid
+					id = ?'
 				);
+			$stm->bindInteger($postid);
+			$stm->execute();
 			}
 		}
 	}
@@ -185,7 +195,7 @@ protected function checkNewFile()
 			$this->showWarning('Datei ist zu groß!');
 			}
 
-		$data = $this->Sql->fetchRow
+		$stm = $this->DB->prepare
 			('
 			SELECT
 				COUNT(*) AS files,
@@ -193,8 +203,10 @@ protected function checkNewFile()
 			FROM
 				files
 			WHERE
-				userid = '.$this->User->getId()
+				userid = ?'
 			);
+		$stm->bindInteger($this->User->getId());
+		$data = $stm->getRow();
 
 		if ($data['quota'] + $this->file['size'] >=  $this->Settings->getValue('quota'))
 			{
@@ -214,20 +226,28 @@ protected function sendNewFile($files)
 		{
 		$content = gzencode(file_get_contents($this->file['tmp_name']), 9);
 
-		$this->Sql->query
+		$stm = $this->DB->prepare
 			('
 			INSERT INTO
 				files
 			SET
-				name = \''.$this->Sql->formatString($this->file['name']).'\',
-				type = \''.$this->Sql->formatString($this->file['type']).'\',
-				size = '.strlen($content).',
-				content = \''.$this->Sql->escapeString($content).'\',
-				userid = '.$this->User->getId().',
-				uploaded = '.time()
+				name = ?,
+				type = ?,
+				size = ?,
+				content = ?,
+				userid = ?,
+				uploaded = ?'
 			);
+		$stm->bindString(htmlspecialchars($this->file['name']));
+		$stm->bindString($this->file['type']);
+		$stm->bindInteger(strlen($content));
+		$stm->bindString($content);
+		$stm->bindInteger($this->User->getId());
+		$stm->bindInteger(time());
 
-		$files[$this->Sql->insertId()] = '';
+		$stm->execute();
+
+		$files[$this->DB->getInsertId()] = '';
 
 		unlink($this->file['tmp_name']);
 		}
@@ -239,7 +259,7 @@ protected function checkInput()
 	{
 	try
 		{
-		$data = $this->Sql->fetchRow
+		$stm = $this->DB->prepare
 			('
 			SELECT
 				id,
@@ -250,14 +270,16 @@ protected function checkInput()
 			WHERE
 				forumid != 0
 				AND deleted = 0
-				AND id = '.$this->Io->getInt('thread')
+				AND id = ?'
 			);
+		$stm->bindInteger($this->Io->getInt('thread'));
+		$data = $stm->getRow();
 		}
 	catch (IoException $e)
 		{
 		$this->showFailure('Kein Thema angegeben!');
 		}
-	catch (SqlNoDataException $e)
+	catch (DBNoDataException $e)
 		{
 		$this->showFailure('Thema nicht gefunden!');
 		}
@@ -282,7 +304,7 @@ protected function checkForm()
 		{
 		try
 			{
-			$user = $this->Sql->fetchRow
+			$stm = $this->DB->prepare
 				('
 				SELECT
 					id,
@@ -290,12 +312,14 @@ protected function checkForm()
 				FROM
 					users
 				WHERE
-					name = \''.$this->Sql->escapeString($this->Io->getHtml('name')).'\''
+					name = ?'
 				);
+			$stm->bindString($this->Io->getHtml('name'));
+			$user = $stm->getRow();
 
 			$this->showWarning('Der Name <strong><a href="?page=ShowUser;user='.$user['id'].';id='.$this->Board->getId().'">'.$user['name'].'</a></strong> wurde bereits registriert. <strong><a href="?page=Login;id='.$this->Board->getId().';name='.urlencode($this->Io->getHtml('name')).'">Melde Dich an</a></strong>, falls dies Dein Benutzer-Konto ist.');
 			}
-		catch (SqlNoDataException $e)
+		catch (DBNoDataException $e)
 			{
 			}
 		}
@@ -315,16 +339,19 @@ protected function sendForm()
 		$username = $this->User->getName();
 		$userid = $this->User->getId();
 
-		$this->Sql->query(
-			'
+		$stm = $this->DB->prepare
+			('
 			UPDATE
 				users
 			SET
 				posts = posts + 1,
-				lastpost = '.$this->time.'
+				lastpost = ?
 			WHERE
-				id = '.$userid
+				id = ?'
 			);
+		$stm->bindInteger($this->time);
+		$stm->bindInteger($userid);
+		$stm->execute();
 		}
 	else
 		{
@@ -343,34 +370,45 @@ protected function sendForm()
 	$this->Markup->enableSmilies($this->smilies);
 	$this->text = $this->Markup->toHtml($this->text);
 
-	$this->Sql->query
+	$stm = $this->DB->prepare
 		('
 		INSERT INTO
 			posts
 		SET
-			threadid = '.$this->thread.',
-			userid = '.$userid.',
-			username = \''.$this->Sql->escapeString($username).'\',
-			text = \''.$this->Sql->escapeString($this->text).'\',
-			dat = '.$this->time.',
-			smilies ='.($this->smilies ? 1 : 0)
+			threadid = ?,
+			userid = ?,
+			username = ?,
+			text = ?,
+			dat = ?,
+			smilies = ?'
 		);
+	$stm->bindInteger($this->thread);
+	$stm->bindInteger($userid);
+	$stm->bindString($username);
+	$stm->bindString($this->text);
+	$stm->bindInteger($this->time);
+	$stm->bindInteger($this->smilies ? 1 : 0);
 
-	$this->sendFile($this->Sql->insertId());
+	$stm->execute();
 
-	$this->UpdateThread();
+	$this->sendFile($this->DB->getInsertId());
+
+	$this->updateThread();
 	$this->updateForum();
 
-	$this->Sql->query(
-		'
+	$stm = $this->DB->prepare
+		('
 		UPDATE
 			boards
 		SET
 			posts = posts + 1,
-			lastpost = '.$this->time.'
+			lastpost = ?
 		WHERE
-			id = '.$this->Board->getId()
+			id = ?'
 		);
+	$stm->bindInteger($this->time);
+	$stm->bindInteger($this->Board->getId());
+	$stm->execute();
 
 	$this->Log->insert($this->thread, $this->time);
 
@@ -391,7 +429,7 @@ protected function redirect()
 	{
 	try
 		{
-		$data = $this->Sql->fetchRow
+		$stm = $this->DB->prepare
 			('
 			SELECT
 				threads.name AS thread,
@@ -401,11 +439,13 @@ protected function redirect()
 				threads,
 				forums
 			WHERE
-				threads.id = '.$this->thread.'
+				threads.id = ?
 				AND threads.forumid = forums.id
 			');
+		$stm->bindInteger($this->thread);
+		$data = $stm->getRow();
 		}
-	catch (SqlNoDataException $e)
+	catch (DBNoDataException $e)
 		{
 		$data['thread'] = '';
 		$data['forum'] = '';

@@ -22,81 +22,105 @@ public function prepare()
 
 	try
 		{
-		$file = $this->Sql->fetchValue
+		$stm = $this->DB->prepare
 			('
 			SELECT
 				id
 			FROM
 				files
 			WHERE
-				id = '.$file.'
-				AND userid = '.$this->User->getId()
+				id = ?
+				AND userid = ?'
 			);
+		$stm->bindInteger($file);
+		$stm->bindInteger($this->User->getId());
+		$file =$stm->getColumn();
 		}
-	catch (SqlNoDataException $e)
+	catch (DBNoDataException $e)
 		{
 		return;
 		}
 
-	$this->Sql->query
+	$stm = $this->DB->prepare
 		('
 		DELETE FROM
 			files
 		WHERE
-			id = '.$file
+			id = ?'
 		);
+	$stm->bindInteger($file);
+	$stm->execute();
 
 	try
 		{
-		$posts = $this->Sql->fetchCol
+		$stm = $this->DB->prepare
 			('
 			SELECT
 				postid
 			FROM
 				post_file
 			WHERE
-				fileid = '.$file
+				fileid = ?'
 			);
+		$stm->bindInteger($file);
 
-		foreach($posts as $post)
+		foreach($stm->getColumnSet() as $post)
 			{
 			// Das ist also die letzte Datei für diesen Beitrag ...
-			if ($this->Sql->numRows('post_file WHERE postid = '.$post) == 1)
+			$stm = $this->DB->prepare
+				('
+				SELECT
+					COUNT(*)
+				FROM
+					post_file
+				WHERE
+					postid = ?'
+				);
+			$stm->bindInteger($post);
+
+			if ($stm->getColumn() == 1)
 				{
-				$this->Sql->query
+				$stm = $this->DB->prepare
 					('
 					UPDATE
 						posts
 					SET
 						file = 0
 					WHERE
-						id = '.$post
+						id = ?'
 					);
+				$stm->bindInteger($post);
+				$stm->execute();
 				}
 			}
 		}
-	catch (SqlNoDataException $e)
+	catch (DBNoDataException $e)
 		{
 		}
 
-	$this->Sql->query
+	$stm = $this->DB->prepare
 		('
 		DELETE FROM
 			post_file
 		WHERE
-			fileid = '.$file
+			fileid = ?'
 		);
+	$stm->bindInteger($file);
+	$stm->execute();
 
-	$this->Sql->query
+	$stm = $this->DB->prepare
 		('
 		UPDATE
 			users
 		SET
 			avatar = 0
 		WHERE
-			id = '.$this->User->getId().'
-			AND avatar = '.$file
+			id = ?
+			AND avatar = ?'
 		);
+	$stm->bindInteger($this->User->getId());
+	$stm->bindInteger($file);
+	$stm->execute();
 	}
 
 public function show()

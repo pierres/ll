@@ -35,7 +35,7 @@ $limit = $this->thread.','.$this->Settings->getValue('max_threads');
 
 try
 	{
-	$forum = $this->Sql->fetchRow
+	$stm = $this->DB->prepare
 		('
 		SELECT
 			forums.name,
@@ -47,34 +47,38 @@ try
 			forum_cat,
 			cats
 		WHERE
-			forums.id = '.$this->forum.'
+			forums.id = ?
 			AND forum_cat.forumid = forums.id
 			AND forum_cat.catid = cats.id
-			AND cats.boardid = '.$this->Board->getId()
+			AND cats.boardid = ?'
 		);
+	$stm->bindInteger($this->forum);
+	$stm->bindInteger($this->Board->getId());
+	$forum = $stm->getRow();
 	}
-catch (SqlNoDataException $e)
+catch (DBException $e)
 	{
-	//$this->showWarning('Kein Forum gefunden.');
-
 	// Falls das Forum nicht (mehr) im aktuellen Board ist versuchen wir es zu finden.
 	// (und wir stellen sicher, daß wir nicht auf die gleiche Seite weiterleiten.)
 	try
 		{
-		$id = $this->Sql->fetchValue
+		$stm = $this->DB->prepare
 			('
 			SELECT
 				boardid
 			FROM
 				forums
 			WHERE
-				id = '.$this->forum.'
-				AND boardid != '.$this->Board->getId()
+				id = ?
+				AND boardid != ?'
 			);
+		$stm->bindInteger($this->forum);
+		$stm->bindInteger($this->Board->getId());
+		$boardid = $stm->getColumn();
 
-		$this->Io->redirect('Threads','forum='.$this->forum.';thread='.$this->thread, $id);
+		$this->Io->redirect('Threads','forum='.$this->forum.';thread='.$this->thread, $boardid);
 		}
-	catch (SqlNoDataException $e)
+	catch (DBException $e)
 		{
 		$this->showWarning('Forum nicht gefunden.');
 		}
@@ -82,11 +86,28 @@ catch (SqlNoDataException $e)
 
 $this->ismod = $this->User->isGroup($forum['mods']) || $this->User->isMod();
 
-$this->threads = $this->Sql->numRows('threads WHERE '.($this->ismod ? '' : 'threads.deleted = 0 AND').' (threads.forumid = '.$this->forum.' OR threads.movedfrom = '.$this->forum.')');
-
 try
 	{
-	$this->result = $this->Sql->fetch
+	$stm = $this->DB->prepare
+		('
+		SELECT
+			COUNT(*)
+		FROM
+			threads
+		WHERE
+			'.($this->ismod ? '' : 'threads.deleted = 0 AND').
+			' (threads.forumid = ? OR threads.movedfrom = ?)');
+	$stm->bindInteger($this->forum);
+	$stm->bindInteger($this->forum);
+	$this->threads = $stm->getColumn();
+	}
+catch (DBException $e)
+	{
+	$this->threads = 0;
+	}
+try
+	{
+	$stm = $this->DB->prepare
 		('
 		SELECT
 			id,
@@ -107,7 +128,7 @@ try
 		FROM
 			threads
 		WHERE
-			(forumid = '.$this->forum.' OR movedfrom = '.$this->forum.')
+			(forumid = ? OR movedfrom = ?)
 			'.($this->ismod ? '' : 'AND deleted =  0').'
 		ORDER BY
 			sticky DESC,
@@ -115,8 +136,11 @@ try
 		LIMIT
 			'.$limit
 		);
+	$stm->bindInteger($this->forum);
+	$stm->bindInteger($this->forum);
+	$this->result = $stm->getRowSet();
 	}
-catch (SqlNoDataException $e)
+catch (DBNoDataException $e)
 	{
 	$this->result = array();
 	}

@@ -20,7 +20,7 @@ protected function checkInput()
 	{
 	try
 		{
-		$this->thread = $this->Sql->fetchValue
+		$stm = $this->DB->prepare
 			('
 			SELECT
 				threads.id
@@ -30,15 +30,18 @@ protected function checkInput()
 			WHERE
 				threads.forumid = 0
 				AND thread_user.threadid = threads.id
-				AND thread_user.userid = '.$this->User->getId().'
-				AND threads.id = '.$this->Io->getInt('thread')
+				AND thread_user.userid = ?
+				AND threads.id = ?'
 			);
+		$stm->bindInteger($this->User->getId());
+		$stm->bindInteger($this->Io->getInt('thread'));
+		$this->thread = $stm->getColumn();
 		}
 	catch (IoException $e)
 		{
 		$this->showFailure('Kein Thema angegeben!');
 		}
-	catch (SqlNoDataException $e)
+	catch (DBNoDataException $e)
 		{
 		$this->showFailure('Thema nicht gefunden!');
 		}
@@ -53,48 +56,62 @@ protected function checkAccess()
 
 protected function sendForm()
 	{
-	$this->Sql->query(
-		'
+	$stm = $this->DB->prepare
+		('
 		UPDATE
 			users
 		SET
 			posts = posts + 1,
-			lastpost = '.$this->time.'
+			lastpost = ?
 		WHERE
-			id = '.$this->User->getId()
+			id = ?'
 		);
+	$stm->bindInteger($this->time);
+	$stm->bindInteger($this->User->getId());
+	$stm->execute();
 
 	$this->Markup->enableSmilies($this->smilies);
 	$this->text = $this->Markup->toHtml($this->text);
 
-	$this->Sql->query
+	$stm = $this->DB->prepare
 		('
 		INSERT INTO
 			posts
 		SET
-			threadid = '.$this->thread.',
-			userid = '.$this->User->getId().',
-			username = \''.$this->Sql->escapeString($this->User->getName()).'\',
-			text = \''.$this->Sql->escapeString($this->text).'\',
-			dat = '.$this->time.',
-			smilies ='.($this->smilies ? 1 : 0)
+			threadid = ?,
+			userid = ?,
+			username = ?,
+			text = ?,
+			dat = ?,
+			smilies = ?'
 		);
+	$stm->bindInteger($this->thread);
+	$stm->bindInteger($this->User->getId());
+	$stm->bindString($this->User->getName());
+	$stm->bindString($this->text);
+	$stm->bindInteger($this->time);
+	$stm->bindInteger($this->smilies ? 1 : 0);
 
-	$this->sendFile($this->Sql->insertId());
+	$stm->execute();
+
+	$this->sendFile($this->DB->getInsertId());
 
 	$this->UpdateThread();
-	$this->updateForum();
+	//$this->updateForum();
 
-	$this->Sql->query(
-		'
+	$stm = $this->DB->prepare
+		('
 		UPDATE
 			boards
 		SET
 			posts = posts + 1,
-			lastpost = '.$this->time.'
+			lastpost = ?
 		WHERE
-			id = '.$this->Board->getId()
+			id = ?'
 		);
+	$stm->bindInteger($this->time);
+	$stm->bindInteger($this->Board->getId());
+	$stm->execute();
 
 	$this->Log->insert($this->thread, $this->time);
 
@@ -108,26 +125,28 @@ protected function updateThread()
 
 protected function updateForum()
 	{
-	AdminFunctions::updateForum($this->forum);
+	//AdminFunctions::updateForum($this->forum);
 	}
 
 protected function redirect()
 	{
 	try
 		{
-		$data = $this->Sql->fetchRow
+		$stm = $this->DB->prepare
 			('
 			SELECT
-				name AS thread
+				name
 			FROM
 				threads
 			WHERE
-				id = '.$this->thread
+				id = ?'
 			);
+		$stm->bindInteger($this->thread);
+		$threadName = $stm->getColumn();
 		}
-	catch (SqlNoDataException $e)
+	catch (DBNoDataException $e)
 		{
-		$data['thread'] = '';
+		$threadName = '';
 		}
 
 	$body =
@@ -145,7 +164,7 @@ protected function redirect()
 			</tr>
 			<tr>
 				<td class="main">
-					<a href="?page=PrivatePostings;id='.$this->Board->getId().';thread='.$this->thread.';post=-1#last">&#187; zurück zum Thema &quot;<em>'.$data['thread'].'</em>&quot;</a>
+					<a href="?page=PrivatePostings;id='.$this->Board->getId().';thread='.$this->thread.';post=-1#last">&#187; zurück zum Thema &quot;<em>'.$threadName.'</em>&quot;</a>
 				</td>
 			</tr>
 			<tr>

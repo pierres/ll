@@ -65,21 +65,24 @@ protected function checkForm()
 
 		try
 			{
-			$location = $this->Sql->fetchValue
+			$stm = $this->DB->prepare
 				('
 				SELECT
 					location
 				FROM
 					plz
 				WHERE
-					code = '.$this->plz
+					code = ?'
 				);
+			$stm->bindInteger($this->plz);
+			$location = $stm->getColumn();
+
 			if (empty($this->location))
 				{
 				$this->location = $location;
 				}
 			}
-		catch (SqlNodataException $e)
+		catch (DBNoDataException $e)
 			{
 			/** FIXME */
 			if (!empty($this->plz))
@@ -155,7 +158,7 @@ protected function checkForm()
 
 private function getData()
 	{
-	$data = $this->Sql->fetchRow
+	$stm = $this->DB->prepare
 		('
 		SELECT
 			realname,
@@ -168,8 +171,10 @@ private function getData()
 		FROM
 			users
 		WHERE
-			id = '.$this->User->getId()
+			id = ?'
 		);
+	$stm->bindInteger($this->User->getId());
+	$data = $stm->getRow();
 
 	$this->realname 	= unhtmlspecialchars($data['realname']);
 	$this->gender		= $data['gender'];
@@ -182,21 +187,31 @@ private function getData()
 
 protected function sendForm()
 	{
-	$this->Sql->query
+	$stm = $this->DB->prepare
 		('
 		UPDATE
 			users
 		SET
-			realname = \''.$this->Sql->formatString($this->realname).'\',
-			gender = '.$this->gender.',
-			birthday = '.$this->birthday.',
-			location = \''.$this->Sql->formatString($this->location).'\',
-			plz = '.$this->plz.',
-			avatar = '.$this->avatar.',
-			text = \''.$this->Sql->escapeString($this->Markup->toHtml($this->text)).'\'
+			realname = ?,
+			gender = ?,
+			birthday = ?,
+			location = ?,
+			plz = ?,
+			avatar = ?,
+			text = ?
 		WHERE
-			id = '.$this->User->getId()
+			id = ?'
 		);
+	$stm->bindString(htmlspecialchars($this->realname));
+	$stm->bindInteger($this->gender);
+	$stm->bindInteger($this->birthday);
+	$stm->bindString(htmlspecialchars($this->location));
+	$stm->bindInteger($this->plz);
+	$stm->bindInteger($this->avatar);
+	$stm->bindString($this->Markup->toHtml($this->text));
+	$stm->bindInteger($this->User->getId());
+
+	$stm->execute();
 
 	$this->Io->redirect('MyProfile');
 	}
@@ -205,7 +220,7 @@ private function listMyFiles()
 	{
 	try
 		{
-		$files = $this->Sql->fetch
+		$stm = $this->DB->prepare
 			('
 			SELECT
 				id,
@@ -213,14 +228,17 @@ private function listMyFiles()
 			FROM
 				files
 			WHERE
-				userid = '.$this->User->getId().'
+				userid = ?
 				AND type LIKE \'image/%\'
-				AND size <= '.$this->Settings->getValue('avatar_size').'
+				AND size <= ?
 			ORDER BY
 				id DESC
 			');
+		$stm->bindInteger($this->User->getId());
+		$stm->bindInteger($this->Settings->getValue('avatar_size'));
+		$files = $stm->getRowSet();
 		}
-	catch (SqlNoDataException $e)
+	catch (DBNoDataException $e)
 		{
 		$files = array();
 		}

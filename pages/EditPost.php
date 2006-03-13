@@ -15,7 +15,7 @@ protected function checkInput()
 	{
 	try
 		{
-		$data = $this->Sql->fetchRow
+		$stm = $this->DB->prepare
 			('
 			SELECT
 				posts.id,
@@ -27,18 +27,20 @@ protected function checkInput()
 				posts,
 				threads
 			WHERE
-				posts.id = '.$this->Io->getInt('post').'
+				posts.id = ?
 				'.($this->allow_deleted ? '' : 'AND posts.deleted = 0').'
 				'.($this->allow_deleted ? '' : 'AND threads.deleted = 0').'
 				'.($this->allow_closed ? '' : 'AND threads.closed = 0').'
 				AND threads.id = posts.threadid
 			');
+		$stm->bindInteger($this->Io->getInt('post'));
+		$data = $stm->getRow();
 		}
 	catch (IoException $e)
 		{
 		$this->showFailure('Kein Beitrag angegeben!');
 		}
-	catch (SqlNoDataException $e)
+	catch (DBNoDataException $e)
 		{
 		$this->showFailure('Beitrag nicht gefunden oder Thema geschlossen!');
 		}
@@ -58,34 +60,38 @@ protected function checkAccess()
 
 	try
 		{
-		$access = $this->Sql->fetchValue
+		$stm = $this->DB->prepare
 			('
 			SELECT
 				userid
 			FROM
 				posts
 			WHERE
-				id = '.$this->post
+				id = ?'
 			);
+		$stm->bindInteger($this->post);
+		$access = $stm->getColumn();
 		}
-	catch (SqlNoDataException $e)
+	catch (DBNoDataException $e)
 		{
 		$this->showFailure('Kein Beitrag gefunden.');
 		}
 
 	try
 		{
-		$mods = $this->Sql->fetchValue
+		$stm = $this->DB->prepare
 			('
 			SELECT
 				mods
 			FROM
 				forums
 			WHERE
-				id ='.$this->forum
+				id =?'
 			);
+		$stm->bindInteger($this->forum);
+		$mods = $stm->getColumn();
 		}
-	catch (SqlNoDataException $e)
+	catch (DBNoDataException $e)
 		{
 		$mods = 0;
 		}
@@ -102,18 +108,24 @@ protected function sendForm()
 	$this->Markup->enableSmilies($this->smilies);
 	$this->text = $this->Markup->toHtml($this->text);
 
-	$this->Sql->query
+	$stm = $this->DB->prepare
 		('
 		UPDATE
 			posts
 		SET
-			text = \''.$this->Sql->escapeString($this->text).'\',
-			editdate = '.$this->time.',
-			editby = '.$this->User->getId().',
-			smilies = '.($this->smilies ? 1 : 0).'
+			text = ?,
+			editdate = ?,
+			editby = ?,
+			smilies = ?
 		WHERE
-			id = '.$this->post
+			id = ?'
 		);
+	$stm->bindString($this->text);
+	$stm->bindInteger($this->time);
+	$stm->bindInteger($this->User->getId());
+	$stm->bindInteger($this->smilies ? 1 : 0);
+	$stm->bindInteger($this->post);
+	$stm->execute();
 
 	$this->sendFile($this->post);
 
@@ -124,23 +136,33 @@ protected function sendFile($postid)
 	{
 	if($this->User->isOnline() && $this->Io->isRequest('addfile'))
 		{
-		$this->Sql->query
-			('
-			DELETE FROM
-				post_file
-			WHERE
-				postid = '.$postid
-			);
+		try
+			{
+			$stm = $this->DB->prepare
+				('
+				DELETE FROM
+					post_file
+				WHERE
+					postid = ?'
+				);
+			$stm->bindInteger($postid);
+			$stm->execute();
+			}
+		catch (DBNoDataException $e)
+			{
+			}
 
-		$this->Sql->query
+		$stm = $this->DB->prepare
 			('
 			UPDATE
 				posts
 			SET
 				file = 0
 			WHERE
-				id ='.$postid
+				id = ?'
 			);
+		$stm->bindInteger($postid);
+		$stm->execute();
 
 		parent::sendFile($postid);
 		}

@@ -18,16 +18,19 @@ protected function setForm()
 		{
 		$this->forum = $this->Io->getInt('forum');
 
-		$this->group = $this->Sql->fetchValue
+		$stm = $this->DB->prepare
 			('
 			SELECT
 				mods
 			FROM
 				forums
 			WHERE
-				id = '.$this->forum.'
-				AND boardid = '.$this->Board->getId()
+				id = ?
+				AND boardid = ?'
 			);
+		$stm->bindInteger($this->forum);
+		$stm->bindInteger($this->Board->getId());
+		$this->group = $stm->getColumn();
 		}
 	catch(Exception $e)
 		{
@@ -38,7 +41,7 @@ protected function setForm()
 
 	try
 		{
-		$mods = $this->Sql->fetchCol
+		$stm = $this->DB->prepare
 			('
 			SELECT
 				users.name
@@ -47,15 +50,17 @@ protected function setForm()
 				user_group
 			WHERE
 				user_group.userid = users.id
-				AND user_group.groupid = '.$this->group
+				AND user_group.groupid = ?'
 			);
-
-		$this->addTextArea('mods', 'Moderatoren', implode("\n", $mods), 80, 5);
+		$stm->bindInteger($this->group);
+		$mods = $stm->getColumnSet();
 		}
-	catch (SqlNoDataException $e)
+	catch (DBNoDataException $e)
 		{
-		$this->addTextArea('mods', 'Moderatoren', '', 80, 5);
+		$mods = array();
 		}
+
+	$this->addTextArea('mods', 'Moderatoren', implode("\n", $mods), 80, 5);
 	}
 
 protected function checkForm()
@@ -70,7 +75,7 @@ protected function checkForm()
 				{
 				$this->mods[] = AdminFunctions::getUserId($mod);
 				}
-			catch (SqlNoDataException $e)
+			catch (DBNoDataException $e)
 				{
 				$this->showWarning('Moderator "'.htmlspecialchars($mod).'" nicht gefunden');
 				}
@@ -96,38 +101,64 @@ private function updateMods()
 		{
 		/** FIXME:
 			Gleichzeitiger Zugriff könnte Überscheindung zur Folge haben -> Tabellen sperren
-			Das hilft so aber auch nciht unbedingt viel :-(
+			Das hilft so aber auch nicht unbedingt viel :-(
 		*/
-		$this->Sql->query('LOCK TABLES user_group WRITE, forums WRITE');
-		$groupid = $this->Sql->fetchValue('SELECT MAX(groupid) FROM user_group') + 1;
-		$this->Sql->query('UPDATE forums SET mods = '.$groupid.' WHERE boardid = '.$this->Board->getId().' AND id = '.$this->forum);
+		$this->DB->execute('LOCK TABLES user_group WRITE, forums WRITE');
+		try
+			{
+			$groupid = $this->DB->getColumn('SELECT MAX(groupid) FROM user_group') + 1;
+			}
+		catch (DBNoDataException $e)
+			{
+			$groupid = 1;
+			}
+
+		$stm = $this->DB->prepare
+			('
+			UPDATE
+				forums
+			SET
+				mods = ?
+			WHERE
+				boardid = ?
+				AND id = ?'
+			);
+		$stm->bindInteger($groupid);
+		$stm->bindInteger($this->Board->getId());
+		$stm->bindInteger($this->forum);
+		$stm->execute();
 		}
 	else
 		{
 		$groupid = $this->group;
 
-		$this->Sql->query
+		$stm = $this->DB->prepare
 			('
 			DELETE FROM
 				user_group
 			WHERE
-				groupid = '.$groupid
+				groupid = ?'
 			);
+		$stm->bindInteger($groupid);
+		$stm->execute();
 		}
 
 	foreach($this->mods as $mod)
 		{
-		$this->Sql->query
+		$stm = $this->DB->prepare
 			('
 			INSERT INTO
 				user_group
 			SET
-				groupid = '.$groupid.',
-				userid = '.$mod
+				groupid = ?,
+				userid = ?'
 			);
+		$stm->bindInteger($groupid);
+		$stm->bindInteger($mod);
+		$stm->execute();
 		}
 
-	$this->Sql->query('UNLOCK TABLES');
+	$this->DB->execute('UNLOCK TABLES');
 	}
 
 }

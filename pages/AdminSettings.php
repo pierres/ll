@@ -14,21 +14,22 @@ protected function setForm()
 
 	$this->addSubmit('Speichern');
 
-	$this->addText('name', 'Name', htmlspecialchars($this->Board->getName()));
+	$this->addText('name', 'Name', $this->Board->getName());
 	$this->requires('name');
 	$this->setLength('name', 3, 100);
 
 	if($this->User->isLevel(User::ADMIN))
 		{
-		$this->addText('admin', 'Administrator', htmlspecialchars(AdminFunctions::getUserName($this->Board->getAdmin())));
+		$this->addText('admin', 'Administrator', AdminFunctions::getUserName($this->Board->getAdmin()));
 		$this->requires('admin');
 		}
 
 	if($this->User->isUser($this->Board->getAdmin()) || $this->User->isLevel(User::ADMIN))
 		{
+		$admins = '';
 		try
 			{
-			$admins = $this->Sql->fetchCol
+			$stm = $this->DB->prepare
 				('
 				SELECT
 					users.name
@@ -37,20 +38,25 @@ protected function setForm()
 					user_group
 				WHERE
 					user_group.userid = users.id
-					AND user_group.groupid = '.$this->Board->getAdmins()
+					AND user_group.groupid = ?'
 				);
+			$stm->bindInteger($this->Board->getAdmins());
 
-			$this->addTextArea('admins', 'Administratoren', implode("\n", $admins), 80, 5);
+			foreach($stm->getColumnSet() as $admin)
+				{
+				$admins .= $admin."\n";
+				}
 			}
-		catch (SqlNoDataException $e)
+		catch (DBNoDataException $e)
 			{
-			$this->addTextArea('admins', 'Administratoren', '', 80, 5);
 			}
+		$this->addTextArea('admins', 'Administratoren', $admins, 80, 5);
 		}
 
+	$mods = '';
 	try
 		{
-		$mods = $this->Sql->fetchCol
+		$stm = $this->DB->prepare
 			('
 			SELECT
 				users.name
@@ -59,17 +65,39 @@ protected function setForm()
 				user_group
 			WHERE
 				user_group.userid = users.id
-				AND user_group.groupid = '.$this->Board->getMods()
+				AND user_group.groupid = ?'
 			);
+		$stm->bindInteger($this->Board->getMods());
 
-		$this->addTextArea('mods', 'Moderatoren', implode("\n", $mods), 80, 5);
+		foreach($stm->getColumnSet() as $mod)
+			{
+			$mods .= $mod."\n";
+			}
 		}
-	catch (SqlNoDataException $e)
+	catch (DBNoDataException $e)
 		{
-		$this->addTextArea('mods', 'Moderatoren', '', 80, 5);
+		}
+	$this->addTextArea('mods', 'Moderatoren', $mods, 80, 5);
+
+	try
+		{
+		$stm = $this->DB->prepare
+			('
+			SELECT
+				description
+			FROM
+				boards
+			WHERE id = ?'
+			);
+		$stm->bindInteger($this->Board->getId());
+		$description = $stm->getColumn();
+		}
+	catch (DBNoDataException $e)
+		{
+		$description = '';
 		}
 
-	$this->addTextArea('description', 'Beschreibung', $this->UnMarkup->fromHtml($this->Sql->fetchValue('SELECT description FROM boards WHERE id = '.$this->Board->getId())));
+	$this->addTextArea('description', 'Beschreibung', $this->UnMarkup->fromHtml($description));
 	}
 
 protected function checkForm()
@@ -80,7 +108,7 @@ protected function checkForm()
 			{
 			$this->admin = AdminFunctions::getUserId($this->Io->getString('admin'));
 			}
-		catch (SqlNoDataException $e)
+		catch (DBNoDataException $e)
 			{
 			$this->showWarning('Administrator nicht gefunden');
 			}
@@ -96,7 +124,7 @@ protected function checkForm()
 				{
 				$this->admins[] = AdminFunctions::getUserId($admin);
 				}
-			catch (SqlNoDataException $e)
+			catch (DBNoDataException $e)
 				{
 				$this->showWarning('Administrator "'.htmlspecialchars($admin).'" nicht gefunden');
 				}
@@ -113,7 +141,7 @@ protected function checkForm()
 				{
 				$this->mods[] = AdminFunctions::getUserId($mod);
 				}
-			catch (SqlNoDataException $e)
+			catch (DBNoDataException $e)
 				{
 				$this->showWarning('Moderator "'.htmlspecialchars($mod).'" nicht gefunden');
 				}
@@ -125,27 +153,34 @@ protected function sendForm()
 	{
 	if($this->User->isLevel(User::ADMIN))
 		{
-		$this->Sql->query
+		$stm = $this->DB->prepare
 			('
 			UPDATE
 				boards
 			SET
-				admin = '.$this->admin.'
+				admin = ?
 			WHERE
-				id = '.$this->Board->getId()
+				id = ?'
 			);
+		$stm->bindInteger($this->admin);
+		$stm->bindInteger($this->Board->getId());
+		$stm->execute();
 		}
 
-	$this->Sql->query
+	$stm = $this->DB->prepare
 		('
 		UPDATE
 			boards
 		SET
-			name = \''.$this->Sql->escapeString($this->Io->getHtml('name')).'\',
-			description = \''.$this->Sql->escapeString($this->Markup->toHtml($this->Io->getString('description'))).'\'
+			name = ?,
+			description = ?
 		WHERE
-			id = '.$this->Board->getId()
+			id = ?'
 		);
+	$stm->bindString($this->Io->getHtml('name'));
+	$stm->bindString($this->Markup->toHtml($this->Io->getString('description')));
+	$stm->bindInteger($this->Board->getId());
+	$stm->execute();
 
 	$this->updateAdmins();
 	$this->updateMods();
@@ -164,38 +199,61 @@ private function updateMods()
 		{
 		/** FIXME:
 			Gleichzeitiger Zugriff könnte Überscheindung zur Folge haben -> Tabellen sperren
-			Das hilft so aber auch nciht unbedingt viel :-(
+			Das hilft so aber auch nicht unbedingt viel :-(
 		*/
-		$this->Sql->query('LOCK TABLES user_group WRITE, boards WRITE');
-		$groupid = $this->Sql->fetchValue('SELECT MAX(groupid) FROM user_group') + 1;
-		$this->Sql->query('UPDATE boards SET mods = '.$groupid.' WHERE id = '.$this->Board->getId());
+		$this->DB->execute('LOCK TABLES user_group WRITE, boards WRITE');
+		$groupid = $this->DB->getColumn
+			('
+			SELECT
+				MAX(groupid)
+			FROM
+				user_group
+			') + 1;
+
+		$stm = $this->DB->prepare
+			('
+			UPDATE
+				boards
+			SET
+				mods = ?
+			WHERE
+				id = ?'
+			);
+		$stm->bindInteger($groupid);
+		$stm->bindInteger($this->Board->getId());
+		$stm->execute();
 		}
 	else
 		{
 		$groupid = $this->Board->getMods();
 
-		$this->Sql->query
+		$stm = $this->DB->prepare
 			('
 			DELETE FROM
 				user_group
 			WHERE
-				groupid = '.$groupid
+				groupid = ?'
 			);
+		$stm->bindInteger($groupid);
+		$stm->execute();
 		}
 
 	foreach($this->mods as $mod)
 		{
-		$this->Sql->query
+		$stm = $this->DB->prepare
 			('
 			INSERT INTO
 				user_group
 			SET
-				groupid = '.$groupid.',
-				userid = '.$mod
+				groupid = ?,
+				userid = ?'
 			);
+		$stm->bindInteger($groupid);
+		$stm->bindInteger($mod);
+		$stm->execute();
 		}
 
-	$this->Sql->query('UNLOCK TABLES');
+	$this->DB->execute('UNLOCK TABLES');
 	}
 
 private function updateAdmins()
@@ -203,36 +261,58 @@ private function updateAdmins()
 	if ($this->Board->getAdmins() == 0 && !empty($this->admins))
 		{
 		/** FIXME: Gleichzeitiger Zugriff könnte Überscheindung zur Folge haben -> Tabellen sperren */
-		$this->Sql->query('LOCK TABLES user_group WRITE, boards WRITE');
-		$groupid = $this->Sql->fetchValue('SELECT MAX(groupid) FROM user_group') + 1;
-		$this->Sql->query('UPDATE boards SET admins = '.$groupid.' WHERE id = '.$this->Board->getId());
+		$this->DB->execute('LOCK TABLES user_group WRITE, boards WRITE');
+		$groupid = $this->DB->getColumn
+				('
+				SELECT
+					MAX(groupid)
+				FROM
+					user_group
+				') + 1;
+		$stm = $this->DB->prepare
+			('
+			UPDATE
+				boards
+			SET
+				admins = ?
+			WHERE
+				id = ?'
+			);
+		$stm->bindInteger($groupid);
+		$stm->bindInteger($this->Board->getId());
+		$stm->execute();
 		}
 	else
 		{
 		$groupid = $this->Board->getAdmins();
 
-		$this->Sql->query
+		$stm = $this->DB->prepare
 			('
 			DELETE FROM
 				user_group
 			WHERE
-				groupid = '.$groupid
+				groupid = ?'
 			);
+		$stm->bindInteger($groupid);
+		$stm->execute();
 		}
 
 	foreach($this->admins as $admin)
 		{
-		$this->Sql->query
+		$stm = $this->DB->prepare
 			('
 			INSERT INTO
 				user_group
 			SET
-				groupid = '.$groupid.',
-				userid = '.$admin
+				groupid = ?,
+				userid = ?'
 			);
+		$stm->bindInteger($groupid);
+		$stm->bindInteger($admin);
+		$stm->execute();
 		}
 
-	$this->Sql->query('UNLOCK TABLES');
+	$this->DB->execute('UNLOCK TABLES');
 	}
 
 }

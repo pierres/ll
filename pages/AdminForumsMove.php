@@ -18,7 +18,7 @@ protected function setForm()
 
 	try
 		{
-		$this->cat = $this->Sql->fetchValue
+		$stm = $this->DB->prepare
 			('
 			SELECT
 				cats.id
@@ -27,11 +27,14 @@ protected function setForm()
 				cats
 			WHERE
 				forum_cat.catid = cats.id
-				AND cats.boardid = '.$this->Board->getId().'
-				AND forum_cat.forumid = '.$this->forum
+				AND cats.boardid = ?
+				AND forum_cat.forumid = ?'
 			);
+		$stm->bindInteger($this->Board->getId());
+		$stm->bindInteger($this->forum);
+		$this->cat = $stm->getColumn();
 		}
-	catch (SqlNoDataException $e)
+	catch (DBNoDataException $e)
 		{
 		$this->Io->redirect('AdminCats');
 		}
@@ -42,7 +45,7 @@ protected function setForm()
 
 	try
 		{
-		$cats = $this->Sql->fetch
+		$stm = $this->DB->prepare
 			('
 			SELECT
 				id,
@@ -50,22 +53,23 @@ protected function setForm()
 			FROM
 				cats
 			WHERE
-				id != '.$this->cat.'
-				AND boardid = '.$this->Board->getId().'
+				id != ?
+				AND boardid = ?
 			');
-		}
-	catch (SqlNoDataException $e)
-		{
-		$cats = array();
-		}
+		$stm->bindInteger($this->cat);
+		$stm->bindInteger($this->Board->getId());
 
-	foreach ($cats as $cat)
+		foreach ($stm->getRowSet() as $cat)
+			{
+			$this->addOutput
+				('
+				<input type="radio" name="newcat" value="'.$cat['id'].'" />'.$cat['name'].'
+				<br />
+				');
+			}
+		}
+	catch (DBNoDataException $e)
 		{
-		$this->addOutput
-			('
-			<input type="radio" name="newcat" value="'.$cat['id'].'" />'.$cat['name'].'
-			<br />
-			');
 		}
 
 	$this->addHidden('forum', $this->forum);
@@ -77,30 +81,36 @@ protected function checkForm()
 		{
 		/** FIXME: Nachprüfen, ob wirklich sicher; es sollte reichen, wenn die Kategorie getestet wird */
 		/*
-		$this->Sql->fetchValue
+		$stm = $this->DB->prepare
 			('
 			SELECT
 				id
 			FROM
 				forums
 			WHERE
-				id = '.$this->forum.'
-				AND boardid = '.$this->Board->getId()
+				id = ?
+				AND boardid = ?'
 			);
+		$stm->bindInteger($this->forum);
+		$stm->bindInteger($this->Board->getId());
+		$stm->getColumn();
 		*/
 
-		$this->Sql->fetchValue
+		$stm = $this->DB->prepare
 			('
 			SELECT
 				id
 			FROM
 				cats
 			WHERE
-				id = '.$this->Io->getInt('newcat').'
-				AND boardid = '.$this->Board->getId()
+				id = ?
+				AND boardid = ?'
 			);
+		$stm->bindInteger($this->Io->getInt('newcat'));
+		$stm->bindInteger($this->Board->getId());
+		$stm->getColumn();
 		}
-	catch(SqlNoDataException $e)
+	catch(DBNoDataException $e)
 		{
 		$this->Io->redirect('AdminCats');
 		}
@@ -112,16 +122,26 @@ protected function checkForm()
 
 protected function sendForm()
 	{
-	$this->Sql->query
-		('
-		UPDATE
-			forum_cat
-		SET
-			catid = '.$this->Io->getInt('newcat').'
-		WHERE
-			catid = '.$this->cat.'
-			AND forumid = '.$this->forum
-		);
+	try
+		{
+		$stm = $this->DB->prepare
+			('
+			UPDATE
+				forum_cat
+			SET
+				catid = ?
+			WHERE
+				catid = ?
+				AND forumid = ?'
+			);
+		$stm->bindInteger($this->Io->getInt('newcat'));
+		$stm->bindInteger($this->cat);
+		$stm->bindInteger($this->forum);
+		$stm->execute();
+		}
+	catch (DBNoDataException $e)
+		{
+		}
 
 	$this->redirect();
 	}

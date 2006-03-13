@@ -12,7 +12,7 @@ protected function checkInput()
 	{
 	try
 		{
-		$data = $this->Sql->fetchRow
+		$stm = $this->DB->prepare
 			('
 			SELECT
 				id,
@@ -22,14 +22,16 @@ protected function checkInput()
 			FROM
 				posts
 			WHERE
-				id = '.$this->Io->getInt('post')
+				id = ?'
 			);
+		$stm->bindInteger($this->Io->getInt('post'));
+		$data = $stm->getRow();
 		}
 	catch (IoException $e)
 		{
 		$this->showFailure('Kein Beitrag angegeben!');
 		}
-	catch (SqlNoDataException $e)
+	catch (DBNoDataException $e)
 		{
 		$this->showFailure('Beitrag nicht gefunden!');
 		}
@@ -48,18 +50,21 @@ protected function checkAccess()
 
 	try
 		{
-		$access = $this->Sql->fetchValue
+		$stm = $this->DB->prepare
 			('
 			SELECT
 				userid
 			FROM
 				posts
 			WHERE
-				id = '.$this->post.'
-				AND userid = '.$this->User->getId()
+				id = ?
+				AND userid = ?'
 			);
+		$stm->bindInteger($this->post);
+		$stm->bindInteger($this->User->getId());
+		$access = $stm->getColumn();
 		}
-	catch (SqlNoDataException $e)
+	catch (DBNoDataException $e)
 		{
 		$this->showFailure('Kein Beitrag gefunden.');
 		}
@@ -70,18 +75,23 @@ protected function sendForm()
 	$this->Markup->enableSmilies($this->smilies);
 	$this->text = $this->Markup->toHtml($this->text);
 
-	$this->Sql->query
+	$stm = $this->DB->prepare
 		('
 		UPDATE
 			posts
 		SET
-			text = \''.$this->Sql->escapeString($this->text).'\',
-			editdate = '.$this->time.',
-			editby = '.$this->User->getId().',
-			smilies = '.($this->smilies ? 1 : 0).'
+			text = ?,
+			editdate = ?,
+			editby = ?,
+			smilies = ?
 		WHERE
-			id = '.$this->post
+			id = ?'
 		);
+	$stm->bindString($this->text);
+	$stm->bindInteger($this->time);
+	$stm->bindInteger($this->User->getId());
+	$stm->bindInteger($this->smilies ? 1 : 0);
+	$stm->bindInteger($this->post);
 
 	$this->sendFile($this->post);
 
@@ -92,23 +102,33 @@ protected function sendFile($postid)
 	{
 	if($this->User->isOnline() && $this->Io->isRequest('addfile'))
 		{
-		$this->Sql->query
-			('
-			DELETE FROM
-				post_file
-			WHERE
-				postid = '.$postid
-			);
+		try
+			{
+			$stm = $this->DB->prepare
+				('
+				DELETE FROM
+					post_file
+				WHERE
+					postid = ?'
+				);
+			$stm->bindInteger($postid);
+			$stm->execute();
+			}
+		catch (DBNoDataException $e)
+			{
+			}
 
-		$this->Sql->query
+		$stm = $this->DB->prepare
 			('
 			UPDATE
 				posts
 			SET
 				file = 0
 			WHERE
-				id ='.$postid
+				id = ?'
 			);
+		$stm->bindInteger($postid);
+		$stm->execute();
 
 		parent::sendFile($postid);
 		}

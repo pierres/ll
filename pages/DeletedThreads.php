@@ -14,7 +14,7 @@ protected function setForm()
 
 	try
 		{
-		$threads = $this->Sql->fetch
+		$threads = $this->DB->getRowSet
 			('
 			SELECT
 				id,
@@ -26,15 +26,14 @@ protected function setForm()
 			ORDER BY
 				lastdate DESC
 			');
-		}
-	catch (SqlNoDataException $e)
-		{
-		$data = array();
-		}
 
-	foreach ($threads as $thread)
+		foreach ($threads as $thread)
+			{
+			$this->addOutput('<input type="checkbox" id="id'.$thread['id'].'" name="thread[]" value="'.$thread['id'].'" /><label for="id'.$thread['id'].'"><a href="?page=Postings;id='.$this->Board->getId().';thread='.$thread['id'].'">'.$thread['name'].'</a></label><br />');
+			}
+		}
+	catch (DBNoDataException $e)
 		{
-		$this->addOutput('<input type="checkbox" id="id'.$thread['id'].'" name="thread[]" value="'.$thread['id'].'" /><label for="id'.$thread['id'].'"><a href="?page=Postings;id='.$this->Board->getId().';thread='.$thread['id'].'">'.$thread['name'].'</a></label><br />');
 		}
 	}
 

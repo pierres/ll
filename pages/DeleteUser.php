@@ -32,17 +32,19 @@ protected function setForm()
 
 	try
 		{
-		$username = $this->Sql->fetchValue
+		$stm = $this->DB->prepare
 			('
 			SELECT
 				name
 			FROM
 				users
 			WHERE
-				id = '.$this->user
+				id = ?'
 			);
+		$stm->bindInteger($this->user);
+		$username = $stm->getColumn();
 		}
-	catch (SqlNoDataException $e)
+	catch (DBNoDataException $e)
 		{
 		$this->showFailure('Kein Benutzer gefunden');
 		}
@@ -65,93 +67,174 @@ protected function sendForm()
 	{
 	if ($this->Io->getInt('confirm') == 1)
 		{
-		$this->Sql->query
-			('
-			DELETE FROM
-				users
-			WHERE
-				id = '.$this->user
-			);
+		try
+			{
+			$stm = $this->DB->prepare
+				('
+				DELETE FROM
+					users
+				WHERE
+					id = ?'
+				);
+			$stm->bindInteger($this->user);
+			$stm->execute();
+			}
+		catch (DBNoDataException $e)
+			{
+			}
 
-		$this->Sql->query
-			('
-			DELETE FROM
-				poll_voters
-			WHERE
-				userid = '.$this->user
-			);
+		try
+			{
+			$stm = $this->DB->prepare
+				('
+				DELETE FROM
+					poll_voters
+				WHERE
+					userid = ?'
+				);
+			$stm->bindInteger($this->user);
+			$stm->execute();
+			}
+		catch (DBNoDataException $e)
+			{
+			}
+	/** FIXME: ggf. müssen dann die Links in posts auch gelöscht werden */
 	/*
-		$this->Sql->query
-			('
-			DELETE FROM
-				files
-			WHERE
-				userid = '.$this->user
-			);
+		try
+			{
+			$stm = $this->DB->prepare
+				('
+				DELETE FROM
+					files
+				WHERE
+					userid = ?'
+				);
+				$stm->bindInteger($this->user);
+				$stm->execute();
+			}
+		catch (DBNoDataException $e)
+			{
+			}
 	*/
-		$this->Sql->query
+		try
+			{
+			$stm = $this->DB->prepare
 			('
 			DELETE FROM
 				thread_user
 			WHERE
-				userid = '.$this->user
+				userid = ?'
 			);
+			$stm->bindInteger($this->user);
+			$stm->execute();
+			}
+		catch (DBNoDataException $e)
+			{
+			}
 
-		$this->Sql->query
+		try
+			{
+			$stm = $this->DB->prepare
 			('
 			DELETE FROM
 				threads_log
 			WHERE
-				userid = '.$this->user
+				userid = ?'
 			);
+			$stm->bindInteger($this->user);
+			$stm->execute();
+			}
+		catch (DBNoDataException $e)
+			{
+			}
 
-		$this->Sql->query
+		try
+			{
+			$stm = $this->DB->prepare
 			('
 			DELETE FROM
 				user_group
 			WHERE
-				userid = '.$this->user
+				userid = ?'
 			);
+			$stm->bindInteger($this->user);
+			$stm->execute();
+			}
+		catch (DBNoDataException $e)
+			{
+			}
 
-		$this->Sql->query
+		try
+			{
+			$stm = $this->DB->prepare
 			('
 			UPDATE
 				threads
 			SET
 				firstuserid = 0
 			WHERE
-				firstuserid = '.$this->user
+				firstuserid = ?'
 			);
+			$stm->bindInteger($this->user);
+			$stm->execute();
+			}
+		catch (DBNoDataException $e)
+			{
+			}
 
-		$this->Sql->query
+		try
+			{
+			$stm = $this->DB->prepare
 			('
 			UPDATE
 				threads
 			SET
 				lastuserid = 0
 			WHERE
-				lastuserid = '.$this->user
+				lastuserid = ?'
 			);
+			$stm->bindInteger($this->user);
+			$stm->execute();
+			}
+		catch (DBNoDataException $e)
+			{
+			}
 
-		$this->Sql->query
+		try
+			{
+			$stm = $this->DB->prepare
 			('
 			UPDATE
 				posts
 			SET
 				userid = 0
 			WHERE
-				userid = '.$this->user
+				userid = ?'
 			);
+			$stm->bindInteger($this->user);
+			$stm->execute();
+			}
+		catch (DBNoDataException $e)
+			{
+			}
 
-		$this->Sql->query
+		try
+			{
+			$stm = $this->DB->prepare
 			('
 			UPDATE
 				posts
 			SET
 				editby = 0
 			WHERE
-				editby = '.$this->user
+				editby = ?'
 			);
+			$stm->bindInteger($this->user);
+			$stm->execute();
+			}
+		catch (DBNoDataException $e)
+			{
+			}
 
 		if ($this->user == $this->User->getId())
 			{

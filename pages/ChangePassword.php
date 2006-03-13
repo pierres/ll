@@ -37,18 +37,21 @@ protected function checkForm()
 
 	try
 		{
-		 $this->Sql->fetchRow
+		$stm = $this->DB->prepare
 			('
 			SELECT
 				id
 			FROM
 				users
 			WHERE
-				id = '.$this->User->getId().'
-				AND password = \''.$this->password.'\''
+				id = ?
+				AND password =?'
 			);
+		$stm->bindInteger($this->User->getId());
+		$stm->bindString($this->password);
+		$stm->getRow();
 		}
-	catch(SqlNoDataException $e)
+	catch(DBNoDataException $e)
 		{
 		$this->showWarning('Passwort ist falsch');
 		}
@@ -63,15 +66,18 @@ protected function checkForm()
 
 protected function sendForm()
 	{
-	$this->Sql->query
+	$stm = $this->DB->prepare
 		('
 		UPDATE
 			users
 		SET
-			password = \''.$this->newpassword.'\'
+			password = ?
 		WHERE
-			id = '.$this->User->getId()
+			id = ?'
 		);
+	$stm->bindString($this->newpassword);
+	$stm->bindInteger($this->User->getId());
+	$stm->execute();
 
 	if($this->Io->isRequest('cookiepw') && $this->Io->getHex('cookiepw') == $this->password)
 		{

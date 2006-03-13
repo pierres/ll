@@ -6,7 +6,7 @@ require (PATH.'modules/Settings.php');
 require (PATH.'modules/Exceptions.php');
 require (PATH.'modules/Functions.php');
 require (PATH.'modules/Io.php');
-require (PATH.'modules/Sql.php');
+require (PATH.'modules/DB.php');
 require (PATH.'modules/User.php');
 require (PATH.'modules/Board.php');
 
@@ -28,7 +28,11 @@ function __autoload($class)
 
 Modul::__set('Settings', new Settings());
 Modul::__set('Io', new Io());
-Modul::__set('Sql', new Sql());
+Modul::__set('DB', new DB(
+	Modul::__get('Settings')->getValue('sql_user'),
+	Modul::__get('Settings')->getValue('sql_password'),
+	Modul::__get('Settings')->getValue('sql_database')
+	));
 Modul::__set('Board', new Board());
 Modul::__set('User', new User());
 
@@ -42,7 +46,7 @@ try
 		}
 	catch (Exception $e)
 		{
-		@include(PATH.'pages/NotFound.php');
+		include(PATH.'pages/NotFound.php');
 		$page = 'NotFound';
 		}
 
@@ -54,10 +58,5 @@ catch(IoRequestException $e)
 	{
 	Modul::__get('Io')->redirect('Portal', 'forum=1', 1);
 	}
-/*
-catch(Exception $e)
-	{
-	die('es ist was passiert...');
-	}
-*/
+
 ?>

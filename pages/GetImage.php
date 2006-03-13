@@ -19,6 +19,7 @@ public function prepare()
 
 	try
 		{
+		/** FIXME: Hier XSS möglich */
 		$this->url = $this->Io->getString('url');
 		}
 	catch (IoRequestException $e)
@@ -42,12 +43,15 @@ public function prepare()
 			$this->Io->redirectToUrl($this->url);
 			}
 		}
-
+/**
+		 FIXME: entsprechende BLOB-Befehle von mysqli verwenden
+		 TODO: evtl. im Dateisystem zwischenspeichern
+*/
 	try
 		{
 		if ($this->thumb)
 			{
-			$this->data = $this->Sql->fetchRow
+			$stm = $this->DB->prepare
 				('
 				(
 				SELECT
@@ -57,7 +61,7 @@ public function prepare()
 				FROM
 					images
 				WHERE
-					url = \''.$this->Sql->escapeString($this->url).'\'
+					url = ?
 					AND thumbsize > 0
 				)
 				UNION
@@ -69,14 +73,17 @@ public function prepare()
 				FROM
 					images
 				WHERE
-					url = \''.$this->Sql->escapeString($this->url).'\'
+					url = ?
 					AND thumbsize = 0
 				)
 				');
+			$stm->bindString($this->url);
+			$stm->bindString($this->url);
+			$this->data = $stm->getRow();
 			}
 		else
 			{
-			$this->data = $this->Sql->fetchRow
+			$stm = $this->DB->prepare
 				('
 				SELECT
 					type,
@@ -85,11 +92,13 @@ public function prepare()
 				FROM
 					images
 				WHERE
-					url = \''.$this->Sql->escapeString($this->url).'\'
+					url = ?
 				');
+			$stm->bindString($this->url);
+			$this->data = $stm->getRow();
 			}
 		}
-	catch (SqlNoDataException $e)
+	catch (DBNoDataException $e)
 		{
 		$this->data = $this->loadImage();
 		}
@@ -127,18 +136,25 @@ private function loadImage()
 	$file['thumbcontent'] = resizeImage($file['content'], $file['type'], $this->thumbsize);
 	$file['thumbsize'] = strlen($file['thumbcontent']);
 
-	$this->Sql->query
+	$stm = $this->DB->prepare
 		('
 		INSERT INTO
 			images
 		SET
-			url = \''.$this->Sql->escapeString($this->url).'\',
-			type = \''.$this->Sql->escapeString($file['type']).'\',
-			size = '.$file['size'].',
-			content = \''.$this->Sql->escapeString($file['content']).'\',
-			thumbcontent = \''.$this->Sql->escapeString($file['thumbcontent']).'\',
-			thumbsize = '.$file['thumbsize']
+			url = ?,
+			type = ?,
+			size = ?,
+			content = ?,
+			thumbcontent = ?,
+			thumbsize = ?'
 		);
+	$stm->bindString($this->url);
+	$stm->bindString($file['type']);
+	$stm->bindInteger($file['size']);
+	$stm->bindString($file['content']);
+	$stm->bindString($file['thumbcontent']);
+	$stm->bindInteger($file['thumbsize']);
+	$stm->execute();
 
 	if ($this->thumb && $file['thumbsize'] > 0)
 		{

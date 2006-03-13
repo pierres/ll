@@ -1,6 +1,6 @@
 <?php
 
-
+require (PATH.'pages/Page.php');
 
 class Portal extends Page{
 
@@ -16,19 +16,21 @@ public function prepare()
 		{
 		try
 			{
-			$this->forum = $this->Sql->fetchValue
+			$stm = $this->DB->prepare
 				('
 				SELECT
 					id
 				FROM
 					forums
 				WHERE
-					boardid = '.$this->Board->getId().'
+					boardid = ?
 				ORDER BY
 					id ASC
 				');
+			$stm->bindInteger($this->Board->getId());
+			$this->forum = $stm->getColumn();
 			}
-		catch(SqlNoDataException $e)
+		catch(DBNoDataException $e)
 			{
 			$this->Io->redirect('Forums');
 			}
@@ -134,7 +136,7 @@ private function getNews()
 	{
 	try
 		{
-		$threads = $this->Sql->fetch
+		$stm = $this->DB->prepare
 			('
 			SELECT
 				threads.id,
@@ -148,7 +150,7 @@ private function getNews()
 					LEFT JOIN posts
 					ON posts.threadid = threads.id AND posts.dat = threads.firstdate
 			WHERE
-				threads.forumid = '.$this->forum.'
+				threads.forumid = ?
 				AND threads.forumid != 0
 				AND threads.deleted = 0
 			ORDER BY
@@ -156,8 +158,10 @@ private function getNews()
 			LIMIT
 				10
 			');
+		$stm->bindInteger($this->forum);
+		$threads = $stm->getRowSet();
 		}
-	catch(SqlNoDataException $e)
+	catch(DBNoDataException $e)
 		{
 		$threads = array();
 		}
@@ -209,7 +213,7 @@ private function getRecent()
 		{
 		if ($this->User->isOnline())
 			{
-			$threads = $this->Sql->fetch
+			$stm = $this->DB->prepare
 				('
 				(
 					SELECT
@@ -224,7 +228,7 @@ private function getRecent()
 						threads.forumid = 0
 						AND threads.deleted = 0
 						AND thread_user.threadid = threads.id
-						AND thread_user.userid = '.$this->User->getId().'
+						AND thread_user.userid = ?
 				)
 				UNION
 				(
@@ -238,17 +242,19 @@ private function getRecent()
 					WHERE
 						deleted = 0
 						AND forumid != 0
-						AND forumid != '.$this->forum.'
+						AND forumid != ?
 				)
 				ORDER BY
 					lastdate DESC
 				LIMIT
 					25
 				');
+
+			$stm->bindInteger($this->User->getId());
 			}
 		else
 			{
-			$threads = $this->Sql->fetch
+			$stm = $this->DB->prepare
 				('
 				SELECT
 					id,
@@ -260,15 +266,18 @@ private function getRecent()
 				WHERE
 					deleted = 0
 					AND forumid != 0
-					AND forumid != '.$this->forum.'
+					AND forumid != ?
 				ORDER BY
 					lastdate DESC
 				LIMIT
 					25
 				');
 			}
+
+		$stm->bindInteger($this->forum);
+		$threads = $stm->getRowSet();
 		}
-	catch(SqlNoDataException $e)
+	catch(DBNoDataException $e)
 		{
 		$threads = array();
 		}
@@ -301,7 +310,7 @@ private function getBoards()
 	{
 	try
 		{
-		$boards = $this->Sql->fetch
+		$boards = $this->DB->getRowSet
 			('
 			SELECT
 				id,
@@ -310,7 +319,7 @@ private function getBoards()
 				boards
 			');
 		}
-	catch(SqlNoDataException $e)
+	catch(DBNoDataException $e)
 		{
 		$boards = array();
 		}
@@ -341,14 +350,33 @@ private function getOnline()
 
 private function getDescription()
 	{
-	return $this->Sql->fetchValue('SELECT description FROM boards WHERE id = '.$this->Board->getId());
+	try
+		{
+		$stm = $this->DB->prepare
+			('
+			SELECT
+				description
+			FROM
+				boards
+			WHERE
+				id = ?'
+			);
+		$stm->bindInteger($this->Board->getId());
+		return $stm->getColumn();
+		}
+	catch(DBNoDataException $e)
+		{
+		return '';
+		}
 	}
 
 private function getActiveMembers()
 	{
+	$result = '<ul style="list-style:square;text-align:left;margin:0px;padding-left:12px;">';
+
 	try
 		{
-		$users = $this->Sql->fetch
+		$users = $this->DB->getRowSet
 			('
 			SELECT
 				id,
@@ -360,17 +388,14 @@ private function getActiveMembers()
 			LIMIT
 				25
 			');
-		}
-	catch(SqlNoDataException $e)
-		{
-		$users = array();
-		}
 
-	$result = '<ul style="list-style:square;text-align:left;margin:0px;padding-left:12px;">';
-
-	foreach ($users as $user)
+		foreach ($users as $user)
+			{
+			$result .= '<li style="margin-bottom:5px;"><a href="?page=ShowUser;user='.$user['id'].';id='.$this->Board->getId().'">'.$user['name'].'</a></li>';
+			}
+		}
+	catch(DBNoDataException $e)
 		{
-		$result .= '<li style="margin-bottom:5px;"><a href="?page=ShowUser;user='.$user['id'].';id='.$this->Board->getId().'">'.$user['name'].'</a></li>';
 		}
 
 	return $result.'</ul>';
@@ -378,9 +403,11 @@ private function getActiveMembers()
 
 private function getNewMembers()
 	{
+	$result = '<ul style="list-style:square;text-align:left;margin:0px;padding-left:12px;">';
+
 	try
 		{
-		$users = $this->Sql->fetch
+		$users = $this->DB->getRowSet
 			('
 			SELECT
 				id,
@@ -392,17 +419,14 @@ private function getNewMembers()
 			LIMIT
 				25
 			');
-		}
-	catch(SqlNoDataException $e)
-		{
-		$users = array();
-		}
 
-	$result = '<ul style="list-style:square;text-align:left;margin:0px;padding-left:12px;">';
-
-	foreach ($users as $user)
+		foreach ($users as $user)
+			{
+			$result .= '<li style="margin-bottom:5px;"><a href="?page=ShowUser;user='.$user['id'].';id='.$this->Board->getId().'">'.$user['name'].'</a></li>';
+			}
+		}
+	catch(DBNoDataException $e)
 		{
-		$result .= '<li style="margin-bottom:5px;"><a href="?page=ShowUser;user='.$user['id'].';id='.$this->Board->getId().'">'.$user['name'].'</a></li>';
 		}
 
 	return $result.'</ul>';

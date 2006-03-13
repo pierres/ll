@@ -21,47 +21,56 @@ protected function setForm()
 	$this->setValue('title', 'Externe Foren hinzufügen');
 	$this->addSubmit('Hinzufügen');
 
-	$forums = $this->Sql->fetch
-		('
-		SELECT
-			forums.id,
-			forums.name,
-			forums.boardid,
-			boards.name AS boardname
-		FROM
-			forums,
-			boards
-		WHERE
-			forums.boardid != '.$this->Board->getId().'
-			AND forums.boardid = boards.id
-			AND forums.id NOT IN
-				(
-				SELECT
-					forum_cat.forumid
-				FROM
-					forum_cat,
-					cats
-				WHERE
-					forum_cat.catid = cats.id
-					AND cats.boardid = '.$this->Board->getId().'
-				)
-		ORDER BY
-			forums.boardid,
-			forums.id
-		');
-	$board = 0;
-	foreach ($forums as $forum)
+	try
 		{
-		if ($board != $forum['boardid'])
-			{
-			$this->addOutput('<div style="margin:8px"><strong>&#171; '.$forum['boardname'].' &#187;</strong></div>');
-			}
-		$board = $forum['boardid'];
-
-		$this->addOutput
+		$stm = $this->DB->prepare
 			('
-			<input type="checkbox" name="forums['.$forum['id'].']" value="1" />'.$forum['name'].'<br />
+			SELECT
+				forums.id,
+				forums.name,
+				forums.boardid,
+				boards.name AS boardname
+			FROM
+				forums,
+				boards
+			WHERE
+				forums.boardid != ?
+				AND forums.boardid = boards.id
+				AND forums.id NOT IN
+					(
+					SELECT
+						forum_cat.forumid
+					FROM
+						forum_cat,
+						cats
+					WHERE
+						forum_cat.catid = cats.id
+						AND cats.boardid = ?
+					)
+			ORDER BY
+				forums.boardid,
+				forums.id
 			');
+		$stm->bindInteger($this->Board->getId());
+		$stm->bindInteger($this->Board->getId());
+
+		$board = 0;
+		foreach ($stm->getRowSet() as $forum)
+			{
+			if ($board != $forum['boardid'])
+				{
+				$this->addOutput('<div style="margin:8px"><strong>&#171; '.$forum['boardname'].' &#187;</strong></div>');
+				}
+			$board = $forum['boardid'];
+
+			$this->addOutput
+				('
+				<input type="checkbox" name="forums['.$forum['id'].']" value="1" />'.$forum['name'].'<br />
+				');
+			}
+		}
+	catch (DBNoDataException $e)
+		{
 		}
 
 	$this->addHidden('cat', $this->cat);
@@ -71,18 +80,21 @@ protected function checkForm()
 	{
 	try
 		{
-		$this->Sql->fetchValue
+		$stm = $this->DB->prepare
 			('
 			SELECT
 				id
 			FROM
 				cats
 			WHERE
-				id = '.$this->cat.'
-				AND boardid = '.$this->Board->getId()
+				id = ?
+				AND boardid = ?'
 			);
+		$stm->bindInteger($this->cat);
+		$stm->bindInteger($this->Board->getId());
+		$stm->getColumn();
 		}
-	catch (SqlNoDataException $e)
+	catch (DBNoDataException $e)
 		{
 		$this->Io->redirect('AdminCats');
 		}
@@ -90,21 +102,47 @@ protected function checkForm()
 
 protected function sendForm()
 	{
-	$forums = $this->Io->getArray();
-
-	foreach($forums as $forum => $value)
+	try
 		{
-		$position = $this->Sql->fetchValue('SELECT COUNT(*)+1 FROM forum_cat WHERE catid = '.$this->cat);
-
-		$this->Sql->query
+		$stm = $this->DB->prepare
 			('
-			INSERT INTO
+			SELECT
+				COUNT(*)+1
+			FROM
 				forum_cat
-			SET
-				forumid = '.intval($forum).',
-				catid = '.$this->cat.',
-				position = '.$position
+			WHERE
+				catid = ?'
 			);
+		$stm->bindInteger($this->cat);
+		$position = $stm->getColumn();
+		}
+	catch (DBNoDataException $e)
+		{
+		$this->redirect();
+		}
+
+	/** FIXME */
+	foreach($this->Io->getArray() as $forum => $value)
+		{
+		try
+			{
+			$stm = $this->DB->prepare
+				('
+				INSERT INTO
+					forum_cat
+				SET
+					forumid = ?,
+					catid = ?,
+					position = ?'
+				);
+			$stm->bindInteger($forum);
+			$stm->bindInteger($this->cat);
+			$stm->bindInteger($position);
+			$stm->execute();
+			}
+		catch (DBNoDataException $e)
+			{
+			}
 		}
 
 	$this->redirect();

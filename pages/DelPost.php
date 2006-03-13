@@ -13,15 +13,17 @@ public function prepare()
 
 protected function sendForm()
 	{
-	$this->Sql->query
+	$stm = $this->DB->prepare
 		('
 		UPDATE
 			posts
 		SET
 			deleted = ABS(deleted - 1)
 		WHERE
-			id = '.$this->post
+			id = ?'
 		);
+	$stm->bindInteger($this->post);
+	$stm->execute();
 
 	$this->updateThread();
 	$this->updateForum();

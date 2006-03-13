@@ -12,7 +12,7 @@ public function prepare()
 		{
 		if ($this->User->isOnline())
 			{
-			$this->result = $this->Sql->fetch
+			$stm = $this->DB->prepare
 				('
 				(
 					SELECT
@@ -38,7 +38,7 @@ public function prepare()
 						threads.forumid = 0
 						AND threads.deleted = 0
 						AND thread_user.threadid = threads.id
-						AND thread_user.userid = '.$this->User->getId().'
+						AND thread_user.userid = ?
 				)
 				UNION
 				(
@@ -70,10 +70,12 @@ public function prepare()
 				LIMIT
 					25
 				');
+			$stm->bindInteger($this->User->getId());
+			$this->result = $stm->getRowSet();
 			}
 		else
 			{
-			$this->result = $this->Sql->fetch
+			$this->result = $this->DB->getRowSet
 				('
 				SELECT
 					threads.id,
@@ -104,7 +106,7 @@ public function prepare()
 				');
 			}
 		}
-	catch (SqlNoDataException $e)
+	catch (DBNoDataException $e)
 		{
 		$this->result = array();
 		}

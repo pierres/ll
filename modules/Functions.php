@@ -61,6 +61,7 @@ function formatDate($time)
 
 function cutString($string, $length)
 	{
+	/** FIXME */
 	// Verhindere das Abschneiden im Entity
 	$string = unhtmlspecialchars($string);
 	$string =  (mb_strlen($string, 'UTF-8') > $length ? mb_substr($string, 0, ($length-3), 'UTF-8').'...' : $string);

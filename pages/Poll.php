@@ -31,55 +31,65 @@ public function __construct($pollid = 0, $target = 'Postings')
 
 	try
 		{
-		$forum = $this->Sql->fetchValue
+		$stm = $this->DB->prepare
 			('
 			SELECT
 				forumid
 			FROM
 				threads
 			WHERE
-				id = '.$this->id
+				id = ?'
 			);
+		$stm->bindInteger($this->id);
+		$forum = $stm->getColumn();
 
 		if ($forum == 0)
 			{
-			$this->Sql->fetchValue
+			$stm = $this->DB->prepare
 				('
 				SELECT
 					userid
 				FROM
 					thread_user
 				WHERE
-					userid = '.$this->User->getId().'
-					AND threadid = '.$this->id
+					userid = ?
+					AND threadid = ?'
 				);
+			$stm->bindInteger($this->User->getId());
+			$stm->bindInteger($this->id);
+			$stm->execute();
 			}
 
-		$this->question = $this->Sql->fetchValue
+		$stm = $this->DB->prepare
 			('
 			SELECT
 				question
 			FROM
 				polls
 			WHERE
-				id = '.$this->id
+				id = ?'
 			);
+		$stm->bindInteger($this->id);
+		$this->question = $stm->getColumn();
 
-		$this->options = $this->Sql->fetch
+		$stm = $this->DB->prepare
 			('
 			SELECT
 				value,
 				votes,
-				id
+				id,
+				(SELECT SUM(votes) FROM poll_values WHERE pollid = p.pollid) AS total
 			FROM
-				poll_values
+				poll_values AS p
 			WHERE
-				pollid = '.$this->id.'
+				pollid = ?
 			ORDER BY
 				votes DESC
 			');
+		$stm->bindInteger($this->id);
+		$this->options = $stm->getRowSet();
 		}
-	catch (SqlNoDataException $e)
+	catch (DBNoDataException $e)
 		{
 		$this->showWarning('Keine Umfrage gefunden.');
 		}
@@ -88,7 +98,7 @@ public function __construct($pollid = 0, $target = 'Postings')
 
 public function showPoll()
 	{
-	if ($this->hasVoted() || $this->Io->isRequest('result'))
+	if ($this->Io->isRequest('result') || $this->hasVoted())
 		{
 		return $this->showResult();
 		}
@@ -101,21 +111,16 @@ public function showPoll()
 private function showResult()
 	{
 	$options = '';
-	$total = 0;
-	foreach ($this->options as $votes)
-		{
-		$total += $votes['votes'];
-		}
 
 	foreach ($this->options as $data)
 		{
-		if ($total == 0)
+		if ($data['total'] == 0)
 			{
 			$percent = 0;
 			}
 		else
 			{
-			$percent = round($data['votes'] / $total * 100, 1);
+			$percent = $data['votes'] / $data['total'] * 100;
 			}
 
 		$options .=
@@ -130,7 +135,7 @@ private function showResult()
 					</div>
 				</td>
 				<td class="main" style="font-size:9px;width:30%">
-					'.$percent.'% ('.$data['votes'].')
+					'.round($percent, 2).'% ('.$data['votes'].')
 				</td>
 			</tr>
 			';
@@ -220,27 +225,33 @@ public function prepare()
 
 	try
 		{
-		$this->Sql->query
+		$stm = $this->DB->prepare
 			('
 			INSERT INTO
 				poll_voters
 			SET
-				pollid = '.$this->id.',
-				userid = '.$this->User->getId()
+				pollid = ?,
+				userid = ?'
 			);
+		$stm->bindInteger($this->id);
+		$stm->bindInteger($this->User->getId());
+		$stm->execute();
 
-		$this->Sql->query
+		$stm = $this->DB->prepare
 			('
 			UPDATE
 				poll_values
 			SET
 				votes = votes + 1
 			WHERE
-				id = '.$valueid.'
-				AND pollid = '.$this->id
+				id = ?
+				AND pollid = ?'
 			);
+		$stm->bindInteger($valueid);
+		$stm->bindInteger($this->id);
+		$stm->execute();
 		}
-	catch (SqlException $e)
+	catch (DBNoDataException $e)
 		{
 		$this->reload();
 		}
@@ -248,7 +259,7 @@ public function prepare()
 
 protected function reload()
 	{
-	$this->Io->redirect($this->target, 'thread='.$this->id.($this->Io->isRequest('result') ? ';result=' : ''));
+	$this->Io->redirect($this->target, 'thread='.$this->id.($this->Io->isRequest('result') ? ';result' : ''));
 	}
 
 public function show()
@@ -265,19 +276,22 @@ private function hasVoted()
 
 	try
 		{
-		$this->Sql->fetchValue
+		$stm = $this->DB->prepare
 			('
 			SELECT
 				userid
 			FROM
 				poll_voters
 			WHERE
-				pollid = '.$this->id.'
-				AND userid = '.$this->User->getId()
+				pollid = ?
+				AND userid = ?'
 			);
+		$stm->bindInteger($this->id);
+		$stm->bindInteger($this->User->getId());
+		$stm->getColumn();
 		return true;
 		}
-	catch (SqlNoDataException $e)
+	catch (DBNoDataException $e)
 		{
 		return false;
 		}

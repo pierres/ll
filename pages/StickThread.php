@@ -17,15 +17,17 @@ protected function showForm()
 
 protected function sendForm()
 	{
-	$this->Sql->query
+	$stm = $this->DB->prepare
 		('
 		UPDATE
 			threads
 		SET
 			sticky = ABS(sticky - 1)
 		WHERE
-			id = '.$this->thread
+			id = ?'
 		);
+	$stm->bindInteger($this->thread);
+	$stm->execute();
 
 	$this->updateForum();
 	$this->redirect();

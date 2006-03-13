@@ -19,23 +19,26 @@ protected function setForm()
 	try
 		{
 		$this->thread = $this->Io->getInt('thread');
-		$this->Sql->fetchValue
+		$stm = $this->DB->prepare
 			('
 			SELECT
 				userid
 			FROM
 				thread_user
 			WHERE
-				threadid = '.$this->thread.'
-				AND userid = '.$this->User->getId()
+				threadid = ?
+				AND userid = ?'
 			);
+		$stm->bindInteger($this->thread);
+		$stm->bindInteger($this->User->getId());
+		$stm->getColumn();
 		}
 	catch (Exception $e)
 		{
 		$this->showFailure('Thema nicht gefunden');
 		}
 
-	$recipients = $this->Sql->fetch
+	$stm = $this->DB->prepare
 		('
 		SELECT
 			users.id,
@@ -44,12 +47,13 @@ protected function setForm()
 			users,
 			thread_user
 		WHERE
-			thread_user.threadid ='.$this->thread.'
+			thread_user.threadid = ?
 			AND thread_user.userid = users.id
 		');
+	$stm->bindInteger($this->thread);
 
 	$users = array();
-	foreach ($recipients as $recipient)
+	foreach ($stm->getRowSet() as $recipient)
 		{
 		$this->oldto[] = $recipient['id'];
 
@@ -80,7 +84,7 @@ protected function checkForm()
 					}
 				}
 			}
-		catch(SqlNoDataException $e)
+		catch(DBNoDataException $e)
 			{
 			$this->showWarning('Empfänger "'.htmlspecialchars($recipient).'" ist unbekannt.');
 			}
@@ -91,14 +95,17 @@ protected function sendForm()
 	{
 	foreach ($this->newto as $user)
 		{
-		$this->Sql->query
+		$stm = $this->DB->prepare
 			('
 			INSERT INTO
 				thread_user
 			SET
-				threadid = '.$this->thread.',
-				userid = '.$user
+				threadid = ?,
+				userid = ?'
 			);
+		$stm->bindInteger($this->thread);
+		$stm->bindInteger($user);
+		$stm->execute();
 		}
 
 	$this->Io->redirect('PrivatePostings', 'thread='.$this->thread);

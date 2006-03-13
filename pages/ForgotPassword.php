@@ -26,24 +26,26 @@ protected function checkForm()
 	{
 	/** FIXME: Hier müssen noch einige Maßnahmen gegen Mißbrauch ergriffen werden */
 
-	$this->name = $this->Io->getString('name');
+	$this->name = $this->Io->getHtml('name');
 	$this->email = $this->Io->getString('email');
 
 	try
 		{
-		$this->id = $this->Sql->fetchValue
+		$stm = $this->DB->prepare
 			('
 			SELECT
 				id
 			FROM
 				users
 			WHERE
-				name = \''.$this->Sql->escapeString($this->name).'\'
-				AND email = \''.$this->Sql->escapeString($this->email).'\'
+				name = ?
+				AND email = ?
 			');
-
+		$stm->bindString($this->name);
+		$stm->bindString($this->email);
+		$this->id = $stm->getColumn();
 		}
-	catch (SqlNoDataException $e)
+	catch (DBNoDataException $e)
 		{
 		$this->showWarning('Name und E-Mail wurden nicht gefunden.');
 		}
@@ -53,15 +55,18 @@ protected function sendForm()
 	{
 	$password = generatePassword();
 
-	$this->Sql->query
+	$stm = $this->DB->prepare
 		('
 		UPDATE
 			users
 		SET
-			password = \''.md5($this->Sql->escapeString($password)).'\'
+			password = ?
 		WHERE
-			id = '.$this->id
+			id = ?'
 		);
+	$stm->bindString(md5($password));
+	$stm->bindInteger($this->id);
+	$stm->execute();
 
 	$this->Mail->setTo($this->email);
 	$this->Mail->setFrom('support@laber-land.de');
@@ -70,7 +75,7 @@ protected function sendForm()
 <<<eot
 Hallo {$this->name}!
 
-Dein Passwort lautet: {$password}
+Dein neues Passwort lautet: {$password}
 eot
 );
 	$this->Mail->send();
