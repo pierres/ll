@@ -205,24 +205,27 @@ private function getPrivateThreads()
 		$stm->bindInteger($this->User->getId());
 		$data = $stm->getRow();
 
-		$stm = $this->DB->prepare
-			('
-			SELECT
-				COUNT(*) AS threads,
-				SUM(posts) AS posts
-			FROM
-				threads,
-				thread_user
-			WHERE
-				threads.forumid = 0
-				AND thread_user.threadid = threads.id
-				AND thread_user.userid = ?'
-			);
-		$stm->bindInteger($this->User->getId());
-		$count = $stm->getRow();
+// 		$stm = $this->DB->prepare
+// 			('
+// 			SELECT
+// 				COUNT(*) AS threads,
+// 				SUM(posts) AS posts
+// 			FROM
+// 				threads,
+// 				thread_user
+// 			WHERE
+// 				threads.forumid = 0
+// 				AND thread_user.threadid = threads.id
+// 				AND thread_user.userid = ?'
+// 			);
+// 		$stm->bindInteger($this->User->getId());
+// 		$count = $stm->getRow();
 
-		$data['posts'] = $count['posts'];
-		$data['threads'] = $count['threads'];
+// 		$data['posts'] = $count['posts'];
+// 		$data['threads'] = $count['threads'];
+
+		$data['posts'] = 0;
+		$data['threads'] = 0;
 		}
 	catch (DBNoDataException $e)
 		{
