@@ -345,9 +345,8 @@ foreach ($result as $data)
 if ($thread['poll'] == 1)
 	{
 	/** Poll sollte extra schließbar sein */
-// 	$thisPoll = new Poll($thread['id']);
-// 	$poll = $thisPoll->showPoll();
-	$poll = '';
+	$thisPoll = new Poll($thread['id']);
+	$poll = $thisPoll->showPoll();
 	}
 else
 	{
