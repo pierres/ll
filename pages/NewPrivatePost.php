@@ -56,6 +56,14 @@ protected function checkAccess()
 
 protected function sendForm()
 	{
+	$this->Markup->enableSmilies($this->smilies);
+	$this->text = $this->Markup->toHtml($this->text);
+	// BugFix for Bug#1
+	if ($length = strlen($this->text) > 65536)
+		{
+		$this->showFailure('Der Text ist '.($length-65536).' Zeichen zu lang!');
+		}
+
 	$stm = $this->DB->prepare
 		('
 		UPDATE
@@ -69,9 +77,6 @@ protected function sendForm()
 	$stm->bindInteger($this->time);
 	$stm->bindInteger($this->User->getId());
 	$stm->execute();
-
-	$this->Markup->enableSmilies($this->smilies);
-	$this->text = $this->Markup->toHtml($this->text);
 
 	$stm = $this->DB->prepare
 		('

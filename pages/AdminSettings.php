@@ -151,6 +151,13 @@ protected function checkForm()
 
 protected function sendForm()
 	{
+	$description = $this->Markup->toHtml($this->Io->getString('description'));
+	// BugFix for Bug#1
+	if ($length = strlen($description) > 65536)
+		{
+		$this->showFailure('Der Text ist '.($length-65536).' Zeichen zu lang!');
+		}
+
 	if($this->User->isLevel(User::ADMIN))
 		{
 		$stm = $this->DB->prepare
@@ -178,7 +185,7 @@ protected function sendForm()
 			id = ?'
 		);
 	$stm->bindString($this->Io->getHtml('name'));
-	$stm->bindString($this->Markup->toHtml($this->Io->getString('description')));
+	$stm->bindString($description);
 	$stm->bindInteger($this->Board->getId());
 	$stm->execute();
 

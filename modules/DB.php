@@ -39,7 +39,7 @@ public function prepare($query)
 		throw new DBException($this->link, $query);
 		}
 
-	return new DBStatement($stm);
+	return new DBStatement($stm, $this->link);
 	}
 
 public function execute($query)
@@ -244,13 +244,15 @@ public function valid()
 
 class DBStatement{
 
+private $link 			= null;
 private $stm 		= null;
 private $bindings 	= array();
 private $types 		= '';
 
-public function __construct($stm)
+public function __construct($stm, $link)
 	{
 	$this->stm = $stm;
+	$this->link = $link;
 	}
 
 public function __destruct()
@@ -307,6 +309,12 @@ private function executeStatement()
 		throw new DBStatementException($this->stm);
 		}
 
+	if (mysqli_warning_count($this->link))
+		{
+		$this->close();
+		throw new DBWarningException($this->link);
+		}
+
 	if (!mysqli_stmt_store_result($this->stm))
 		{
 		throw new DBStatementException($this->stm);
@@ -328,6 +336,12 @@ public function execute()
 	if (!mysqli_stmt_execute($this->stm))
 		{
 		throw new DBStatementException($this->stm);
+		}
+
+	if (mysqli_warning_count($this->link))
+		{
+		$this->close();
+		throw new DBWarningException($this->link);
 		}
 
 	if (mysqli_stmt_affected_rows($this->stm) <= 0)

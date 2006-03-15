@@ -264,16 +264,27 @@ protected function requires($name)
 
 protected function setLength($name, $min, $max)
 	{
+	try
+		{
+		$length = strlen(htmlspecialchars($this->Io->getString($name)));
+		}
+	catch (IoRequestException $e)
+		{
+		$length = 0;
+		}
+
 	if ($this->isSubmit() && $this->Io->isRequest($name))
 		{
-		if ($this->Io->getLength($name) > 0 && $this->Io->getLength($name) < $min)
+		if ($length > 0 && $length < $min)
 			{
-			$this->showWarning('Im Feld "'.$this->descriptions[$name].'" fehlen noch '.($min-$this->Io->getLength($name)).' Zeichen.');
+			$this->showWarning('Im Feld "'.$this->descriptions[$name].'" fehlen noch '.($min-$length).' Zeichen.');
 			$this->elements[$name] = preg_replace('/<\w+? /', '$0style="border-color:yellow" ', $this->elements[$name]);
 			}
-		elseif ($this->Io->getLength($name) > $max)
+		// Workaround for Bug #1 (will not Work for Markup!)
+		elseif ($length > $max)
+		//elseif ($this->Io->getLength($name) > $max)
 			{
-			$this->showWarning('Im Feld "'.$this->descriptions[$name].'" sind '.($this->Io->getLength($name)-$max).' Zeichen zuviel.');
+			$this->showWarning('Im Feld "'.$this->descriptions[$name].'" sind '.($length-$max).' Zeichen zuviel.');
 			$this->elements[$name] = preg_replace('/<\w+? /', '$0style="border-color:orange" ', $this->elements[$name]);
 			}
 		}

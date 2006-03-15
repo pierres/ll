@@ -187,6 +187,13 @@ private function getData()
 
 protected function sendForm()
 	{
+	$text = $this->Markup->toHtml($this->text);
+	// BugFix for Bug#1
+	if ($length = strlen($text) > 65536)
+		{
+		$this->showFailure('Der Text ist '.($length-65536).' Zeichen zu lang!');
+		}
+
 	$stm = $this->DB->prepare
 		('
 		UPDATE
@@ -208,7 +215,7 @@ protected function sendForm()
 	$stm->bindString(htmlspecialchars($this->location));
 	$stm->bindInteger($this->plz);
 	$stm->bindInteger($this->avatar);
-	$stm->bindString($this->Markup->toHtml($this->text));
+	$stm->bindString($text);
 	$stm->bindInteger($this->User->getId());
 
 	$stm->execute();
