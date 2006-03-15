@@ -155,7 +155,9 @@ protected function sendForm()
 	// BugFix for Bug#1
 	if ($length = strlen($description) > 65536)
 		{
-		$this->showFailure('Der Text ist '.($length-65536).' Zeichen zu lang!');
+		$this->showWarning('Der Text ist '.($length-65536).' Zeichen zu lang!');
+		$this->showForm();
+		return;
 		}
 
 	if($this->User->isLevel(User::ADMIN))
