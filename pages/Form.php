@@ -264,17 +264,10 @@ protected function requires($name)
 
 protected function setLength($name, $min, $max)
 	{
-	try
-		{
-		$length = strlen(htmlspecialchars($this->Io->getString($name)));
-		}
-	catch (IoRequestException $e)
-		{
-		$length = 0;
-		}
-
 	if ($this->isSubmit() && $this->Io->isRequest($name))
 		{
+		$length = strlen(htmlspecialchars($this->Io->getString($name)));
+
 		if ($length > 0 && $length < $min)
 			{
 			$this->showWarning('Im Feld "'.$this->descriptions[$name].'" fehlen noch '.($min-$length).' Zeichen.');
