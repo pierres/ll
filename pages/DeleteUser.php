@@ -67,106 +67,70 @@ protected function sendForm()
 	{
 	if ($this->Io->getInt('confirm') == 1)
 		{
-		try
-			{
-			$stm = $this->DB->prepare
-				('
-				DELETE FROM
-					users
-				WHERE
-					id = ?'
-				);
-			$stm->bindInteger($this->user);
-			$stm->execute();
-			}
-		catch (DBNoDataException $e)
-			{
-			}
+		$stm = $this->DB->prepare
+			('
+			DELETE FROM
+				users
+			WHERE
+				id = ?'
+			);
+		$stm->bindInteger($this->user);
+		$stm->execute();
 
-		try
-			{
-			$stm = $this->DB->prepare
-				('
-				DELETE FROM
-					poll_voters
-				WHERE
-					userid = ?'
-				);
-			$stm->bindInteger($this->user);
-			$stm->execute();
-			}
-		catch (DBNoDataException $e)
-			{
-			}
+		$stm = $this->DB->prepare
+			('
+			DELETE FROM
+				poll_voters
+			WHERE
+				userid = ?'
+			);
+		$stm->bindInteger($this->user);
+		$stm->execute();
+
 	/** FIXME: ggf. müssen dann die Links in posts auch gelöscht werden */
 	/*
-		try
-			{
-			$stm = $this->DB->prepare
-				('
-				DELETE FROM
-					files
-				WHERE
-					userid = ?'
-				);
-				$stm->bindInteger($this->user);
-				$stm->execute();
-			}
-		catch (DBNoDataException $e)
-			{
-			}
+		$stm = $this->DB->prepare
+			('
+			DELETE FROM
+				files
+			WHERE
+				userid = ?'
+			);
+		$stm->bindInteger($this->user);
+		$stm->execute();
 	*/
-		try
-			{
-			$stm = $this->DB->prepare
+
+		$stm = $this->DB->prepare
 			('
 			DELETE FROM
 				thread_user
 			WHERE
 				userid = ?'
 			);
-			$stm->bindInteger($this->user);
-			$stm->execute();
-			}
-		catch (DBNoDataException $e)
-			{
-			}
+		$stm->bindInteger($this->user);
+		$stm->execute();
 
-		try
-			{
-			$stm = $this->DB->prepare
+		$stm = $this->DB->prepare
 			('
 			DELETE FROM
 				threads_log
 			WHERE
 				userid = ?'
 			);
-			$stm->bindInteger($this->user);
-			$stm->execute();
-			}
-		catch (DBNoDataException $e)
-			{
-			}
+		$stm->bindInteger($this->user);
+		$stm->execute();
 
-		try
-			{
-			$stm = $this->DB->prepare
+		$stm = $this->DB->prepare
 			('
 			DELETE FROM
 				user_group
 			WHERE
 				userid = ?'
 			);
-			$stm->bindInteger($this->user);
-			$stm->execute();
-			}
-		catch (DBNoDataException $e)
-			{
-			}
+		$stm->bindInteger($this->user);
+		$stm->execute();
 
-		try
-			{
-			$stm = $this->DB->prepare
+		$stm = $this->DB->prepare
 			('
 			UPDATE
 				threads
@@ -175,16 +139,10 @@ protected function sendForm()
 			WHERE
 				firstuserid = ?'
 			);
-			$stm->bindInteger($this->user);
-			$stm->execute();
-			}
-		catch (DBNoDataException $e)
-			{
-			}
+		$stm->bindInteger($this->user);
+		$stm->execute();
 
-		try
-			{
-			$stm = $this->DB->prepare
+		$stm = $this->DB->prepare
 			('
 			UPDATE
 				threads
@@ -193,16 +151,10 @@ protected function sendForm()
 			WHERE
 				lastuserid = ?'
 			);
-			$stm->bindInteger($this->user);
-			$stm->execute();
-			}
-		catch (DBNoDataException $e)
-			{
-			}
+		$stm->bindInteger($this->user);
+		$stm->execute();
 
-		try
-			{
-			$stm = $this->DB->prepare
+		$stm = $this->DB->prepare
 			('
 			UPDATE
 				posts
@@ -211,16 +163,10 @@ protected function sendForm()
 			WHERE
 				userid = ?'
 			);
-			$stm->bindInteger($this->user);
-			$stm->execute();
-			}
-		catch (DBNoDataException $e)
-			{
-			}
+		$stm->bindInteger($this->user);
+		$stm->execute();
 
-		try
-			{
-			$stm = $this->DB->prepare
+		$stm = $this->DB->prepare
 			('
 			UPDATE
 				posts
@@ -229,12 +175,8 @@ protected function sendForm()
 			WHERE
 				editby = ?'
 			);
-			$stm->bindInteger($this->user);
-			$stm->execute();
-			}
-		catch (DBNoDataException $e)
-			{
-			}
+		$stm->bindInteger($this->user);
+		$stm->execute();
 
 		if ($this->user == $this->User->getId())
 			{

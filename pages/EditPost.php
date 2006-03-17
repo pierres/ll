@@ -143,21 +143,15 @@ protected function sendFile($postid)
 	{
 	if($this->User->isOnline() && $this->Io->isRequest('addfile'))
 		{
-		try
-			{
-			$stm = $this->DB->prepare
-				('
-				DELETE FROM
-					post_file
-				WHERE
-					postid = ?'
-				);
-			$stm->bindInteger($postid);
-			$stm->execute();
-			}
-		catch (DBNoDataException $e)
-			{
-			}
+		$stm = $this->DB->prepare
+			('
+			DELETE FROM
+				post_file
+			WHERE
+				postid = ?'
+			);
+		$stm->bindInteger($postid);
+		$stm->execute();
 
 		$stm = $this->DB->prepare
 			('

@@ -42,7 +42,7 @@ public function prepare($query)
 	return new DBStatement($stm, $this->link);
 	}
 
-public function execute($query)
+public function execute($query, $ignore = true)
 	{
 	$result = mysqli_query($this->link, $query);
 
@@ -57,13 +57,11 @@ public function execute($query)
 		throw new DBWarningException($this->link);
 		}
 
-	if (mysqli_affected_rows($this->link) <= 0)
+	if (!$ignore && mysqli_affected_rows($this->link) <= 0)
 		{
 		@mysqli_free_result($result);
 		throw new DBNoDataException();
 		}
-
-	return $result;
 	}
 
 private function query($query)
@@ -348,7 +346,7 @@ private function executeStatement()
 		}
 	}
 
-public function execute()
+public function execute($ignore = true)
 	{
 	if (!empty($this->types))
 		{
@@ -366,7 +364,7 @@ public function execute()
 		throw new DBWarningException($this->link);
 		}
 
-	if (mysqli_stmt_affected_rows($this->stm) <= 0)
+	if (!$ignore && mysqli_stmt_affected_rows($this->stm) <= 0)
 		{
 		throw new DBNoDataException();
 		}

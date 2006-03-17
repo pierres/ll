@@ -62,56 +62,43 @@ protected function sendForm()
 	/** FIXME */
 	$cats = $this->Io->getArray();
 
-	try
+	foreach($cats as $cat => $value)
 		{
-		foreach($cats as $cat => $value)
-			{
-			$stm = $this->DB->prepare
-				('
-				UPDATE
-					cats
-				SET
-					position = ?,
-					name = ?
-				WHERE
-					boardid = ?
-					AND id = ?'
-				);
-			$stm->bindInteger($value['position']);
-			$stm->bindString(htmlspecialchars($value['name']));
-			$stm->bindInteger($this->Board->getId());
-			$stm->bindInteger($cat);
-			$stm->execute();
-			}
+		$stm = $this->DB->prepare
+			('
+			UPDATE
+				cats
+			SET
+				position = ?,
+				name = ?
+			WHERE
+				boardid = ?
+				AND id = ?'
+			);
+		$stm->bindInteger($value['position']);
+		$stm->bindString(htmlspecialchars($value['name']));
+		$stm->bindInteger($this->Board->getId());
+		$stm->bindInteger($cat);
+		$stm->execute();
 		}
-	catch(DBException $e)
-		{
-		/** FIXME */
-		}
+
 
 	if (!$this->Io->isEmpty('newname'))
 		{
-		try
-			{
-			$stm = $this->DB->prepare
-				('
-				INSERT INTO
-					cats
-				SET
-					position = ?,
-					name = ?,
-					boardid = ?'
-				);
+		$stm = $this->DB->prepare
+			('
+			INSERT INTO
+				cats
+			SET
+				position = ?,
+				name = ?,
+				boardid = ?'
+			);
 
-			$stm->bindInteger($this->Io->isEmpty('position') ? 0 : $this->Io->getInt('newposition'));
-			$stm->bindString($this->Io->getHtml('newname'));
-			$stm->bindInteger($this->Board->getId());
-			$stm->execute();
-			}
-		catch(DBException $e)
-			{
-			/** FIXME */
-			}
+		$stm->bindInteger($this->Io->isEmpty('position') ? 0 : $this->Io->getInt('newposition'));
+		$stm->bindString($this->Io->getHtml('newname'));
+		$stm->bindInteger($this->Board->getId());
+		$stm->execute();
 		}
 
 	$this->redirect();

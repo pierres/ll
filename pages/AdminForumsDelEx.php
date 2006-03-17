@@ -45,23 +45,17 @@ public function prepare()
 		$this->Io->redirect('AdminCats');
 		}
 
-	try
-		{
-		$stm = $this->DB->prepare
-			('
-			DELETE FROM
-				forum_cat
-			WHERE
-				forumid = ?
-				AND catid = ?'
-			);
-		$stm->bindInteger($this->forum);
-		$stm->bindInteger($this->cat);
-		$stm->execute();
-	catch (DBNoDataException $e)
-		{
-		/** FIXME */
-		}
+	$stm = $this->DB->prepare
+		('
+		DELETE FROM
+			forum_cat
+		WHERE
+			forumid = ?
+			AND catid = ?'
+		);
+	$stm->bindInteger($this->forum);
+	$stm->bindInteger($this->cat);
+	$stm->execute();
 	}
 
 public function show()

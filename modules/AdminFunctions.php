@@ -35,134 +35,85 @@ public static function delThread($thread)
 
 private static function removeThread($thread)
 	{
-	try
-		{
-		$stm = self::__get('DB')->prepare
-			('
-			DELETE FROM
-				post_file
-			WHERE
-				postid IN (SELECT id FROM posts WHERE threadid = ?)
-			');
-		$stm->bindInteger($thread);
-		$stm->execute();
-		}
-	catch (DBNoDataException $e)
-		{
-		}
-
-	try
-		{
-		$stm = self::__get('DB')->prepare
-			('
-			DELETE FROM
-				posts
-			WHERE
-				threadid = ?'
-			);
-		$stm->bindInteger($thread);
-		$stm->execute();
-		}
-	catch (DBNoDataException $e)
-		{
-		}
-
-	try
-		{
-		$stm = self::__get('DB')->prepare
-			('
-			DELETE FROM
-				polls
-			WHERE
-				id = ?'
-			);
-		$stm->bindInteger($thread);
-		$stm->execute();
-		}
-	catch (DBNoDataException $e)
-		{
-		}
-
-	try
-		{
-		$stm = self::__get('DB')->prepare
-			('
-			DELETE FROM
-				poll_values
-			WHERE
-				pollid = ?'
-			);
-		$stm->bindInteger($thread);
-		$stm->execute();
-		}
-	catch (DBNoDataException $e)
-		{
-		}
-
-	try
-		{
-		$stm = self::__get('DB')->prepare
-			('
-			DELETE FROM
-				poll_voters
-			WHERE
-				pollid = ?'
-			);
-		$stm->bindInteger($thread);
-		$stm->execute();
-		}
-	catch (DBNoDataException $e)
-		{
-		}
-
-	try
-		{
-		$stm = self::__get('DB')->prepare
-			('
-			DELETE FROM
-				threads
-			WHERE
-				id = ?'
-			);
-		$stm->bindInteger($thread);
-		$stm->execute();
-		}
-	catch (DBNoDataException $e)
-		{
-		}
-
-
-	try
-		{
-		$stm = self::__get('DB')->prepare
-			('
-			DELETE FROM
-				threads_log
-			WHERE
-				threadid = ?'
-			);
-		$stm->bindInteger($thread);
-		$stm->execute();
-		}
-	catch (DBNoDataException $e)
-		{
-		}
-
- 	try
-		{
-		$stm = self::__get('DB')->prepare
+	$stm = self::__get('DB')->prepare
 		('
 		DELETE FROM
-			thread_user
+			post_file
+		WHERE
+			postid IN (SELECT id FROM posts WHERE threadid = ?)
+		');
+	$stm->bindInteger($thread);
+	$stm->execute();
+
+	$stm = self::__get('DB')->prepare
+		('
+		DELETE FROM
+			posts
 		WHERE
 			threadid = ?'
 		);
-		$stm->bindInteger($thread);
-		$stm->execute();
-		}
-	catch (DBNoDataException $e)
-		{
-		}
+	$stm->bindInteger($thread);
+	$stm->execute();
+
+	$stm = self::__get('DB')->prepare
+		('
+		DELETE FROM
+			polls
+		WHERE
+			id = ?'
+		);
+	$stm->bindInteger($thread);
+	$stm->execute();
+
+	$stm = self::__get('DB')->prepare
+		('
+		DELETE FROM
+			poll_values
+		WHERE
+			pollid = ?'
+		);
+	$stm->bindInteger($thread);
+	$stm->execute();
+
+	$stm = self::__get('DB')->prepare
+		('
+		DELETE FROM
+			poll_voters
+		WHERE
+			pollid = ?'
+		);
+	$stm->bindInteger($thread);
+	$stm->execute();
+
+	$stm = self::__get('DB')->prepare
+		('
+		DELETE FROM
+			threads
+		WHERE
+			id = ?'
+		);
+	$stm->bindInteger($thread);
+	$stm->execute();
+
+	$stm = self::__get('DB')->prepare
+		('
+		DELETE FROM
+			threads_log
+		WHERE
+			threadid = ?'
+		);
+	$stm->bindInteger($thread);
+	$stm->execute();
+
+	$stm = self::__get('DB')->prepare
+	('
+	DELETE FROM
+		thread_user
+	WHERE
+		threadid = ?'
+	);
+	$stm->bindInteger($thread);
+	$stm->execute();
 	}
 
 public static function delForum($forum)
@@ -189,37 +140,25 @@ public static function delForum($forum)
 		{
 		}
 
- 	try
-		{
-		$stm = self::__get('DB')->prepare
-			('
-			DELETE FROM
-				forums
-			WHERE
-				id = ?'
-			);
-		$stm->bindInteger($forum);
-		$stm->execute();
-		}
-	catch(DBNoDataException $e)
-		{
-		}
+	$stm = self::__get('DB')->prepare
+		('
+		DELETE FROM
+			forums
+		WHERE
+			id = ?'
+		);
+	$stm->bindInteger($forum);
+	$stm->execute();
 
- 	try
-		{
-		$stm = self::__get('DB')->prepare
-			('
-			DELETE FROM
-				forum_cat
-			WHERE
-				forumid = ?'
-			);
-		$stm->bindInteger($forum);
-		$stm->execute();
-		}
-	catch(DBNoDataException $e)
-		{
-		}
+	$stm = self::__get('DB')->prepare
+		('
+		DELETE FROM
+			forum_cat
+		WHERE
+			forumid = ?'
+		);
+	$stm->bindInteger($forum);
+	$stm->execute();
 	}
 
 public static function delCat($cat)
@@ -251,37 +190,25 @@ public static function delCat($cat)
 		{
 		}
 
-	try
-		{
- 		$stm = self::__get('DB')->prepare
-			('
-			DELETE FROM
-				forum_cat
-			WHERE
-				catid = ?'
-			);
-		$stm->bindInteger($cat);
-		$stm->execute();
-		}
-	catch (DBNoDataException $e)
-		{
-		}
+	$stm = self::__get('DB')->prepare
+		('
+		DELETE FROM
+			forum_cat
+		WHERE
+			catid = ?'
+		);
+	$stm->bindInteger($cat);
+	$stm->execute();
 
- 	try
-		{
- 		$stm = self::__get('DB')->prepare
-			('
-			DELETE FROM
-				cats
-			WHERE
-				id = ?'
-			);
-		$stm->bindInteger($cat);
-		$stm->execute();
-		}
-	catch (DBNoDataException $e)
-		{
-		}
+	$stm = self::__get('DB')->prepare
+		('
+		DELETE FROM
+			cats
+		WHERE
+			id = ?'
+		);
+	$stm->bindInteger($cat);
+	$stm->execute();
 	}
 
 public static function delBoard($board)
@@ -308,21 +235,15 @@ public static function delBoard($board)
 		{
 		}
 
- 	try
-		{
-		$stm = self::__get('DB')->prepare
-			('
-			DELETE FROM
-				boards
-			WHERE
-				id = ?'
-			);
-		$stm->bindInteger($board);
-		$stm->execute();
-		}
-	catch (DBNoDataException $e)
-		{
-		}
+	$stm = self::__get('DB')->prepare
+		('
+		DELETE FROM
+			boards
+		WHERE
+			id = ?'
+		);
+	$stm->bindInteger($board);
+	$stm->execute();
 
 	unlink(PATH.'html'.$board.'.html');
 	unlink(PATH.'html'.$board.'.css');
@@ -415,25 +336,19 @@ public static function updateThread($thread)
 
 public static function updateForum($forum)
 	{
-	try
-		{
-		$stm = self::__get('DB')->prepare
-			('
-			UPDATE
-				forums AS f
-			SET
-				lastthread = (SELECT id FROM threads WHERE forumid = f.id AND deleted = 0 ORDER BY lastdate DESC LIMIT 1),
-				threads = (SELECT COUNT(*) FROM threads WHERE forumid = f.id AND deleted = 0),
-				posts = (SELECT SUM(posts) FROM threads WHERE forumid = f.id AND deleted = 0)
-			WHERE
-				id = ?'
-			);
-		$stm->bindInteger($forum);
-		$stm->execute();
-		}
-	catch (DBNoDataException $e)
-		{
-		}
+	$stm = self::__get('DB')->prepare
+		('
+		UPDATE
+			forums AS f
+		SET
+			lastthread = (SELECT id FROM threads WHERE forumid = f.id AND deleted = 0 ORDER BY lastdate DESC LIMIT 1),
+			threads = (SELECT COUNT(*) FROM threads WHERE forumid = f.id AND deleted = 0),
+			posts = (SELECT SUM(posts) FROM threads WHERE forumid = f.id AND deleted = 0)
+		WHERE
+			id = ?'
+		);
+	$stm->bindInteger($forum);
+	$stm->execute();
 	}
 
 public static function buildPositionMenu($name, $values, $marked)

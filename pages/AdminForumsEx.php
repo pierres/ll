@@ -124,25 +124,19 @@ protected function sendForm()
 	/** FIXME */
 	foreach($this->Io->getArray() as $forum => $value)
 		{
-		try
-			{
-			$stm = $this->DB->prepare
-				('
-				INSERT INTO
-					forum_cat
-				SET
-					forumid = ?,
-					catid = ?,
-					position = ?'
-				);
-			$stm->bindInteger($forum);
-			$stm->bindInteger($this->cat);
-			$stm->bindInteger($position);
-			$stm->execute();
-			}
-		catch (DBNoDataException $e)
-			{
-			}
+		$stm = $this->DB->prepare
+			('
+			INSERT INTO
+				forum_cat
+			SET
+				forumid = ?,
+				catid = ?,
+				position = ?'
+			);
+		$stm->bindInteger($forum);
+		$stm->bindInteger($this->cat);
+		$stm->bindInteger($position);
+		$stm->execute();
 		}
 
 	$this->redirect();

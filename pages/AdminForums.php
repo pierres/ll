@@ -177,86 +177,72 @@ protected function sendForm()
 	/** FIXME */
 	$forums = $this->Io->getArray();
 
-	try
+	foreach($forums as $forum => $value)
 		{
-		foreach($forums as $forum => $value)
+		if(isset($value['name']) && isset($value['description']))
 			{
-			if(isset($value['name']) && isset($value['description']))
-				{
-				$stm = $this->DB->prepare
-					('
-					UPDATE
-						forums
-					SET
-						name = ?,
-						description = ?
-					WHERE
-						boardid = ?
-						AND id = ?'
-					);
-				$stm->bindString(htmlspecialchars($value['name']));
-				$stm->bindString(htmlspecialchars($value['description']));
-				$stm->bindInteger($this->Board->getId());
-				$stm->bindInteger($forum);
-				$stm->execute();
-				}
-
 			$stm = $this->DB->prepare
 				('
 				UPDATE
-					forum_cat
+					forums
 				SET
-					position = ?
+					name = ?,
+					description = ?
 				WHERE
-					forumid = ?
-					AND catid = ?'
+					boardid = ?
+					AND id = ?'
 				);
-			$stm->bindInteger($value['position']);
+			$stm->bindString(htmlspecialchars($value['name']));
+			$stm->bindString(htmlspecialchars($value['description']));
+			$stm->bindInteger($this->Board->getId());
 			$stm->bindInteger($forum);
-			$stm->bindInteger($this->cat);
 			$stm->execute();
 			}
-		}
-	catch(DBException $e)
-		{
-		/** FIXME */
+
+		$stm = $this->DB->prepare
+			('
+			UPDATE
+				forum_cat
+			SET
+				position = ?
+			WHERE
+				forumid = ?
+				AND catid = ?'
+			);
+		$stm->bindInteger($value['position']);
+		$stm->bindInteger($forum);
+		$stm->bindInteger($this->cat);
+		$stm->execute();
 		}
 
 	if (!$this->Io->isEmpty('newname'))
 		{
-		try
-			{
-			$stm = $this->DB->prepare
-				('
-				INSERT INTO
-					forums
-				SET
-					name = ?,
-					description = ?,
-					boardid = ?'
-				);
-			$stm->bindString($this->Io->getHtml('newname'));
-			$stm->bindString($this->Io->getHtml('newdescription'));
-			$stm->bindInteger($this->Board->getId());
-			$stm->execute();
+		$stm = $this->DB->prepare
+			('
+			INSERT INTO
+				forums
+			SET
+				name = ?,
+				description = ?,
+				boardid = ?'
+			);
+		$stm->bindString($this->Io->getHtml('newname'));
+		$stm->bindString($this->Io->getHtml('newdescription'));
+		$stm->bindInteger($this->Board->getId());
+		$stm->execute();
 
-			$stm = $this->DB->prepare
-				('
-				INSERT INTO
-					forum_cat
-				SET
-					forumid = LAST_INSERT_ID(),
-					position = ?,
-					catid = ?'
-				);
-			$stm->bindInteger($this->Io->getInt('newposition'));
-			$stm->bindInteger($this->cat);
-			$stm->execute();
-			}
-		catch(DBException $e)
-			{
-			/** FIXME */
-			}
+		$stm = $this->DB->prepare
+			('
+			INSERT INTO
+				forum_cat
+			SET
+				forumid = LAST_INSERT_ID(),
+				position = ?,
+				catid = ?'
+			);
+		$stm->bindInteger($this->Io->getInt('newposition'));
+		$stm->bindInteger($this->cat);
+		$stm->execute();
 		}
 
 	$this->redirect();

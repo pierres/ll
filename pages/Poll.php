@@ -235,7 +235,7 @@ public function prepare()
 			);
 		$stm->bindInteger($this->id);
 		$stm->bindInteger($this->User->getId());
-		$stm->execute();
+		$stm->execute(false);
 
 		$stm = $this->DB->prepare
 			('
@@ -249,7 +249,7 @@ public function prepare()
 			);
 		$stm->bindInteger($valueid);
 		$stm->bindInteger($this->id);
-		$stm->execute();
+		$stm->execute(false);
 		}
 	catch (DBNoDataException $e)
 		{

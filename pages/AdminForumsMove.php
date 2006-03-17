@@ -122,26 +122,20 @@ protected function checkForm()
 
 protected function sendForm()
 	{
-	try
-		{
-		$stm = $this->DB->prepare
-			('
-			UPDATE
-				forum_cat
-			SET
-				catid = ?
-			WHERE
-				catid = ?
-				AND forumid = ?'
-			);
-		$stm->bindInteger($this->Io->getInt('newcat'));
-		$stm->bindInteger($this->cat);
-		$stm->bindInteger($this->forum);
-		$stm->execute();
-		}
-	catch (DBNoDataException $e)
-		{
-		}
+	$stm = $this->DB->prepare
+		('
+		UPDATE
+			forum_cat
+		SET
+			catid = ?
+		WHERE
+			catid = ?
+			AND forumid = ?'
+		);
+	$stm->bindInteger($this->Io->getInt('newcat'));
+	$stm->bindInteger($this->cat);
+	$stm->bindInteger($this->forum);
+	$stm->execute();
 
 	$this->redirect();
 	}
