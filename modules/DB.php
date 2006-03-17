@@ -125,6 +125,28 @@ public function getColumn($query)
 		}
 	}
 
+public function getColumnSet($query)
+	{
+	$result = $this->query($query);
+	$columns = array();
+	if ($row = mysqli_fetch_array($result, MYSQLI_NUM))
+		{
+		$columns[] = $row[0];
+		while ($row = mysqli_fetch_array($result, MYSQLI_NUM))
+			{
+			$columns[] = $row[0];
+			}
+
+		mysqli_free_result($result);
+		return $columns;
+		}
+	else
+		{
+		@mysqli_free_result($result);
+		throw new DBNoDataException($this->link);
+		}
+	}
+
 public function getNumRows()
 	{
 	return mysqli_num_rows($this->link);

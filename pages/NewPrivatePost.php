@@ -103,7 +103,7 @@ protected function sendForm()
 
 	$this->sendFile($this->DB->getInsertId());
 
-	$this->UpdateThread();
+	$this->updateThread();
 	//$this->updateForum();
 
 	$stm = $this->DB->prepare
