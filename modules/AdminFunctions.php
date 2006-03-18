@@ -106,12 +106,12 @@ private static function removeThread($thread)
 	$stm->execute();
 
 	$stm = self::__get('DB')->prepare
-	('
-	DELETE FROM
-		thread_user
-	WHERE
-		threadid = ?'
-	);
+		('
+		DELETE FROM
+			thread_user
+		WHERE
+			threadid = ?'
+		);
 	$stm->bindInteger($thread);
 	$stm->execute();
 	}

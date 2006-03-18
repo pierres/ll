@@ -57,7 +57,7 @@ public function __construct($pollid = 0, $target = 'Postings')
 				);
 			$stm->bindInteger($this->User->getId());
 			$stm->bindInteger($this->id);
-			$stm->execute();
+			$stm->getColumn();
 			}
 
 		$stm = $this->DB->prepare
@@ -223,38 +223,31 @@ public function prepare()
 		$this->reload();
 		}
 
-	try
-		{
-		$stm = $this->DB->prepare
-			('
-			INSERT INTO
-				poll_voters
-			SET
-				pollid = ?,
-				userid = ?'
-			);
-		$stm->bindInteger($this->id);
-		$stm->bindInteger($this->User->getId());
-		$stm->execute(false);
+	$stm = $this->DB->prepare
+		('
+		INSERT INTO
+			poll_voters
+		SET
+			pollid = ?,
+			userid = ?'
+		);
+	$stm->bindInteger($this->id);
+	$stm->bindInteger($this->User->getId());
+	$stm->execute();
 
-		$stm = $this->DB->prepare
-			('
-			UPDATE
-				poll_values
-			SET
-				votes = votes + 1
-			WHERE
-				id = ?
-				AND pollid = ?'
-			);
-		$stm->bindInteger($valueid);
-		$stm->bindInteger($this->id);
-		$stm->execute(false);
-		}
-	catch (DBNoDataException $e)
-		{
-		$this->reload();
-		}
+	$stm = $this->DB->prepare
+		('
+		UPDATE
+			poll_values
+		SET
+			votes = votes + 1
+		WHERE
+			id = ?
+			AND pollid = ?'
+		);
+	$stm->bindInteger($valueid);
+	$stm->bindInteger($this->id);
+	$stm->execute();
 	}
 
 protected function reload()
