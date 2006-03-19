@@ -280,7 +280,7 @@ private function closeQuote()
 		{
 		return '';
 		}
-		else
+	else
 		{
 		$this->quotes--;
 		return '</div></blockquote>';
@@ -343,12 +343,7 @@ private function makeList($in)
 		/* eine oder mehrere Ebene höher */
 		elseif ($cur < $last)
 			{
-			$out .= '</li>';
-
-			for ($j = $last; $j > $cur; $j--)
-				{
-				$out .= '</ul></li>';
-				}
+			$out .= '</li>'.str_repeat('</ul></li>', $last-$cur);
 			}
 		else
 			{
@@ -362,11 +357,7 @@ private function makeList($in)
 		}
 
 	/* Alle geöffneten Tags auf jeden Fall schließen */
-	while ($cur > 0)
-		{
-		$out .= '</li></ul>';
-		$cur--;
-		}
+	$out .= str_repeat('</li></ul>', $cur);
 
 	return $out;
 	}
