@@ -63,9 +63,7 @@ function __construct()
 	$this->replace[] = '$this->makeQuote(\'$0\')';
 
 	/** Listen */
-// 	$this->search[]  = '/(?:^\*+\s.+$\n)*^\*+\s.+$/em';
-	$this->search[]  = '/(?:^\*+ [^\n]+$\n)+/em';
-// 	$this->replace[] = '$this->makeList(\'$0\')."\n"';
+	$this->search[]  = '/(?:^\*+ [^\n]+$\n?)+/em';
 	$this->replace[] = '$this->makeList(\'$0\')';
 
 	/** Überschriften */
