@@ -65,7 +65,8 @@ function __construct()
 	/** Listen */
 // 	$this->search[]  = '/(?:^\*+\s.+$\n)*^\*+\s.+$/em';
 	$this->search[]  = '/(?:^\*+ [^\n]+$\n)+/em';
-	$this->replace[] = '$this->makeList(\'$0\')."\n"';
+// 	$this->replace[] = '$this->makeList(\'$0\')."\n"';
+	$this->replace[] = '$this->makeList(\'$0\')';
 
 	/** Überschriften */
 	$this->search[]  = '/^=(={1,6})=*(.+?)=*$/me';
@@ -321,12 +322,10 @@ private function makeList($in)
 	{
 	$in = trim(str_replace('\"', '"', $in));
 
-	$lines = explode("\n", $in);
-
 	$out = '';
 	$last = 0;
 
-	foreach ($lines as $line)
+	foreach (explode("\n", $in) as $line)
 		{
 		$cur = 0;
 

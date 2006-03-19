@@ -76,9 +76,9 @@ public function fromHtml($text)
 	$preg_search[] = '#<ul>.+</ul>#es';
 	$preg_replace[] = '$this->unmakeList(\'$0\')';
 
-	$text = preg_replace($preg_search, $preg_replace, $text);
+	/** FIXME: Prüfe, ob Reihenfolge relevant sein kann */
 	$text = str_replace($search, $replace, $text);
-
+	$text = preg_replace($preg_search, $preg_replace, $text);
 
 	$text = unhtmlspecialchars($text);
 
@@ -89,12 +89,7 @@ private function unmakeHeading($text, $level)
 	{
 	$text = str_replace('\"', '"', $text);
 
-	$eq = '=';
-
-	for ($i=0; $i < $level; $i++)
-		{
-		$eq .= '=';
-		}
+	$eq = str_repeat('=', $level);
 
 	return $eq.$text.$eq;
 	}
@@ -158,50 +153,39 @@ private function unmakeExtraSmiley($smiley)
 	return ':'.$smiley.':';
 	}
 
-private function unmakeList($list)
+private function unmakeList($in)
 	{
-	$list = str_replace('\"', '"', $list);
-
-
-	$list = str_replace('<li>', '', $list);
-	$list = str_replace('<ul>', '</li><ul>', $list);
-	$list = str_replace('</ul></li>', '</ul>', $list);
-	$list = substr($list, 5);
-
-	$lines = explode("</li>", $list);
+	$in = str_replace('\"', '"', $in);
+	$in = str_replace('</li>', '', $in);
 
 	$out = '';
+	$depth = 0;
 
-	$cur = 0;
-	$last = 0;
-	$blubb = array(); //die Variable brauchen wir nicht ;-)
-
-	foreach ($lines as $line)
+	while (preg_match('/<([^>]*)>([^<]*)(.*)/sS', $in, $matches))
 		{
-		if (strpos($line, '</ul>') < strpos($line, '<ul>'))
+		switch ($matches[1])
 			{
-			$line = preg_replace('#</ul>#', '', $line);
-			$last = 1;
-			$line = preg_replace('#<ul>#', "\n* ", $line);
-			$out .= $line."\n";
-			continue;
+			case 'ul' :
+				$depth++;
+			break;
+
+			case 'li' :
+				$out .= str_repeat('*', $depth).' '.$matches[2]."\n";
+			break;
+
+			case '/ul' :
+				$depth--;
+				if ($depth == 0)
+					{
+					$out .= $matches[2];
+					}
+			break;
 			}
 
-		$cur = $last + preg_match_all('/<ul>/', $line, $blubb) - preg_match_all('#</ul>#', $line, $blubb);
-
-		$line = preg_replace('#</?ul>#', '', $line);
-
-		for ($i=0; $i < $cur; $i++)
-			{
-			$out .= '*';
-			}
-
-		$out .= ' '.$line."\n";
-
-		$last = $cur;
+		$in = $matches[3];
 		}
 
-	return trim($out);
+	return $out;
 	}
 
 }
