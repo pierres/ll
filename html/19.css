@@ -11,10 +11,7 @@ a		{
 		color:#182263;
 		}
 
-a:hover		{
-		color:#FFCC00;
-		text-decoration:none;
-		}
+a:hover{color:#FFCC00;}
 
 table     	{
 		empty-cells:show;

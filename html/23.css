@@ -82,10 +82,11 @@ table     	{
 
 #logo		{
 		float:left;
-		background-image:url(http://deshalbfrei.org/data/media/logo.png);
+		background-image:url(http://www.laber-land.de/~pierre/deshalbfrei.org.png);
 		background-repeat:no-repeat;
-		width:328px;
-		height:116px;
+		width:300px;
+		height:73px;
+		margin-right:20px;
 		}
 #logo:hover{cursor:pointer;}
 #title		{
