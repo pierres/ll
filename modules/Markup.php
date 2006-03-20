@@ -22,6 +22,8 @@ private $linkNumber 		= 1;
 */
 private $search 		= array();
 private $replace 		= array();
+private $codeSearch 		= '';
+private $codeReplace 		= '';
 private $smilies_search		= array();
 private $smilies_replace	= array();
 
@@ -56,10 +58,10 @@ function __construct()
 
 
 	/** Code muß am Zeilenanfang beginnen */
-	$this->search[]  = '#^&lt;code(?: (\w{3,8}))?&gt;$(.+?)^&lt;/code&gt;$#esm';//<code>.+</code>
-	$this->replace[] = '$this->makeCode(\'$2\', \'$1\')';
+	$this->codeSearch  = '#^<code(?: (\w{3,8}))?>$(.+?)^</code>$#esm';//<code>.+</code>
+	$this->codeReplace = '$this->makeCode(\'$2\', \'$1\')';
 
-	$this->search[]  = '#^&lt;quote(?:=.+?)?&gt;$.+^&lt;/quote&gt;$#esm';//<quote=...>...</quote>
+	$this->search[]  = '#&lt;quote(?:=.+?)?&gt;.+&lt;/quote&gt;#es';//<quote=...>...</quote>
 	$this->replace[] = '$this->makeQuote(\'$0\')';
 
 	/** Listen */
@@ -68,7 +70,7 @@ function __construct()
 
 	/** Überschriften */
 	$this->search[]  = '/^=(={1,6})=*(.+?)=*$/me';
-	$this->replace[] = '$this->makeHeading(\'$2\', \'$1\')';
+	$this->replace[] = '$this->makeHeading(\'$2\', strlen(\'$1\'))';
 
 	/** neu: Hervorhebungen */
 	$this->search[]  = '/\'\'(.+?)\'\'/';
@@ -196,10 +198,10 @@ public function toHtml($text)
 	// Man weiß ja nie ....
 	$text = str_replace($this->sep, '', $text);
 	$text = str_replace($this->sepc, '', $text);
-
 	$text = str_replace("\r", '', $text);	//Wer braucht schon Windows-Zeilenumbrche?
+
+	$text = preg_replace($this->codeSearch, $this->codeReplace, $text);
 	$text = htmlspecialchars($text, ENT_COMPAT, 'UTF-8');
-	//$text = htmlentities($text, ENT_COMPAT, 'UTF-8');
 	$text = preg_replace($this->search, $this->replace, $text);
 
 	if ($this->smiliesenabled)
@@ -222,10 +224,7 @@ public function toHtml($text)
 
 	$text = preg_replace('/\n{2,}/', '<br /><br />', $text);
 	/** Altes Verhalten bei Zeilenumbrüchen */
-	$text = preg_replace('/\n/', '<br />', $text);
-
-	/** Keine Zeilenumbrüche entfernen; Das macht sonst Probleme bei UnMarkup z.B. bei Listen */
-	//$text = preg_replace('/[^\n\S]{1,}/', ' ', $text);
+	$text = str_replace("\n", '<br />', $text);
 	$text = preg_replace('/\s{1,}/', ' ', $text);
 
 	while ($this->Codes->hasNext())
@@ -243,33 +242,38 @@ public function toHtml($text)
 
 private function makeCode($in, $type = '')
 	{
-	/** FIXME Vielleicht kann man dieses blöde Veerhalten von PHP ausschalten */
+	/** FIXME Vielleicht kann man dieses blöde Veerhalten von PHP ausschalten
+		-> preg_replace_callback
+	*/
 	$in = str_replace('\"', '"', $in);
 
-	$type = ucfirst(strtolower($type));
+	$type = strtolower($type);
 
-	if (!empty($type) && file_exists(PATH.'/modules/highlight/'.$type.'.php'))
-		{
-		require_once(PATH.'/modules/highlight/'.$type.'.php');
-
-		$highlight = new $type();
-		//den Code bunt einfärben
-		$highlight->toHtml($in);
-
-		$this->Codes->push('<pre class="'.strtolower($type).'">'.$in.'</pre>');
-		}
-	else
-		{
-		$this->Codes->push('<pre>'.$in.'</pre>');
-		}
+// 	if (!empty($type) && file_exists(PATH.'/external/geshi/geshi/languages/'.$type))
+// 		{
+// 		$errorLevel = error_reporting(E_ALL);
+//
+// 		include_once(PATH.'/external/geshi/class.geshi.php');
+//
+// 		$geshi = new GeSHi($in, $type);
+// // 		$geshi->setHeaderType(GESHI_HEADER_PRE);
+// // 		$geshi->setEncoding('utf-8');
+// // 		$geshi->enableClasses();
+//
+// 		$this->Codes->push($geshi->parseCode());
+//
+// 		error_reporting($errorLevel);
+// 		}
+// 	else
+// 		{
+		$this->Codes->push('<pre>'.htmlspecialchars($in).'</pre>');
+// 		}
 
 	return $this->sepc.$this->Codes->lastID().$this->sepc;
 	}
 // -------------------------------------------------------
 private function openQuote($cite = '')
 	{
-	$cite = str_replace('\"', '"', $cite);
-
 	$this->quotes++;
 	return (empty($cite) ? '' : '<cite>'.$cite.'</cite>').'<blockquote><div>';
 	}
@@ -293,13 +297,12 @@ private function closeQuote()
 	sind noch Tags zu schließen.
 	Das sollte eigentlich immer zuverlässig funktionieren.
 */
+/** FIXME: Vereinfachnung wie unmakeList() */
 private function makeQuote($in)
 	{
-	$in = str_replace('\"', '"', $in);
-
 	$in = preg_replace
 		(
-		array('#&lt;quote(?:=(.+?))?&gt;#em'  , '#&lt;/quote&gt;#em'),
+		array('#&lt;quote(?:=(.+?))?&gt;#e'  , '#&lt;/quote&gt;#e'),
 		array('$this->openQuote(\'$1\')', '$this->closeQuote()'),
 		$in
 		);
@@ -318,8 +321,6 @@ private function makeQuote($in)
 */
 private function makeList($in)
 	{
-	$in = trim(str_replace('\"', '"', $in));
-
 	$out = '';
 	$last = 0;
 
@@ -334,8 +335,13 @@ private function makeList($in)
 			}
 
 		/* eine Ebene tiefer */
-		if ($cur > $last)
+		if ($cur == $last+1)
 			{
+			$out .= '<ul>';
+			}
+		elseif ($cur > $last)
+			{
+			$line = substr($line, $cur-$last-1);
 			$cur = $last + 1;
 
 			$out .= '<ul>';
@@ -364,18 +370,11 @@ private function makeList($in)
 
 private function makeHeading($text, $level)
 	{
-	$text = str_replace('\"', '"', $text);
-
-	$level = strlen($level);
-
 	return '<h'.$level.'>'.$text.'</h'.$level.'>';
 	}
 
 private function makeLink($url, $name = '')
 	{
-	$url = str_replace('\"', '"', $url);
-	$name = str_replace('\"', '"', $name);
-
 	if (empty($name))
 		{
 		$name = '['.$this->linkNumber.']';
@@ -406,8 +405,6 @@ private function makeLink($url, $name = '')
 
 private function makeImage($url)
 	{
-	$url = str_replace('\"', '"', $url);
-
 	$this->Stack->push('<img src="'.rehtmlspecialchars($url).'" alt="" class="image" onclick="openImage(this)" />');
 	//$this->Stack->push('<img src="?page=GetImage;thumb;url='.rehtmlspecialchars($url).'" alt="" class="image" onclick="openImage(this)" />');
 
@@ -416,7 +413,7 @@ private function makeImage($url)
 
 private function makeEmail($email)
 	{
-	$email = rehtmlspecialchars(str_replace('\"', '"', $email));
+	$email = rehtmlspecialchars($email);
 
 	$this->Stack->push('<a href="mailto:'.$email.'">'.$email.'</a>');
 
@@ -425,8 +422,6 @@ private function makeEmail($email)
 
 private function makeSmiley($smiley)
 	{
-	$smiley = str_replace('\"', '"', $smiley);
-
 	$this->Stack->push('<img src="images/smilies/'.$smiley.'.gif" alt="'.$smiley.'" class="smiley" />');
 
 	return $this->sep.$this->Stack->lastID().$this->sep;
@@ -434,8 +429,6 @@ private function makeSmiley($smiley)
 
 private function makeExtraSmiley($smiley)
 	{
-	$smiley = str_replace('\"', '"', $smiley);
-
 	if (file_exists(PATH.'images/smilies/extra/'.$smiley.'.gif'))
 		{
 		$this->Stack->push('<img src="images/smilies/extra/'.$smiley.'.gif" alt="'.$smiley.'" class="smiley" />');

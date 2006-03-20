@@ -2,7 +2,7 @@
 
 ini_set('docref_root', 'http://www.php.net/');
 set_exception_handler('ExceptionHandler');
-set_error_handler('ErrorHandler');
+// set_error_handler('ErrorHandler');
 
 function ExceptionHandler(Exception $e)
 	{
