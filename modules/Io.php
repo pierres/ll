@@ -92,6 +92,7 @@ public function getString($name)
 	{
 	if (isset($this->request[$name]))
 		{
+		/** FIXME: trim wird hier evtl. nicht erwartet! */
 		$this->request[$name] = trim($this->request[$name]);
 		return $this->request[$name];
 		}

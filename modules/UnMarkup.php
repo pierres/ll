@@ -186,7 +186,7 @@ private function unmakeList($in)
 		$in = $matches[3];
 		}
 
-	return trim($out);
+	return $out;
 	}
 
 }

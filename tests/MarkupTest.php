@@ -12,16 +12,16 @@ public function testEmpty()
 
 public function testCode()
 	{
-	$in = <<<eot
+	$in =
+'-
 <code>
 test"<code>
 </code>
-eot;
-	$out = <<<eot
-<pre>
+-';
+	$out =
+'-<br /><pre>
 test&quot;&lt;code&gt;
-</pre>
-eot;
+</pre><br />-';
 	$this->assertEquals($out, $this->Markup->toHtml($in));
 	}
 
@@ -54,8 +54,8 @@ public function testQuote()
 
 public function testList()
 	{
-	$in = <<<eot
-* 1
+	$in =
+'* 1
 * 2
 ** 2a
 ** 2b
@@ -63,13 +63,12 @@ public function testList()
 **** 2bii
 ** 2c
 * 3
-** 4
-eot;
+** 4';
 	$out = '<ul><li>1</li><li>2<ul><li>2a</li><li>2b<ul><li>2bi<ul><li>2bii</li></ul></li></ul></li><li>2c</li></ul></li><li>3<ul><li>4</li></ul></li></ul>';
 	$this->assertEquals($out, $this->Markup->toHtml($in));
 
-$in = <<<eot
-* 1
+$in =
+'* 1
 * 2
 ** 2a
 ** 2b
@@ -78,14 +77,13 @@ $in = <<<eot
 ** 2c
 * 3
 ** 4
-abc
-eot;
-	$out = '<ul><li>1</li><li>2<ul><li>2a</li><li>2b<ul><li>2bi<ul><li>2bii</li></ul></li></ul></li><li>2c</li></ul></li><li>3<ul><li>4</li></ul></li></ul><br />abc';
+abc';
+	$out = '<ul><li>1</li><li>2<ul><li>2a</li><li>2b<ul><li>2bi<ul><li>2bii</li></ul></li></ul></li><li>2c</li></ul></li><li>3<ul><li>4</li></ul></li></ul>abc';
 	$this->assertEquals($out, $this->Markup->toHtml($in));
 
 	/** Teste Robustheit */
-	$in = <<<eot
-*** 1
+	$in =
+'*** 1
 * 2
 ** 2a
 ** 2b
@@ -93,9 +91,32 @@ eot;
 ******* 2bii
 ** 2c
 * 3
-****** 4
-eot;
+****** 4';
 	$out = '<ul><li>1</li><li>2<ul><li>2a</li><li>2b<ul><li>2bi<ul><li>2bii</li></ul></li></ul></li><li>2c</li></ul></li><li>3<ul><li>4</li></ul></li></ul>';
+	$this->assertEquals($out, $this->Markup->toHtml($in));
+
+	$in =
+'* 1
+* 2
+** 2a
+** 2b
+*** 2bi
+**** 2bii
+** 2c
+* 3
+** 4
+abcd
+* 1
+* 2
+** 2a
+** 2b
+*** 2bi
+**** 2bii
+** 2c
+* 3
+** 4
+abc';
+	$out = '<ul><li>1</li><li>2<ul><li>2a</li><li>2b<ul><li>2bi<ul><li>2bii</li></ul></li></ul></li><li>2c</li></ul></li><li>3<ul><li>4</li></ul></li></ul>abcd<br /><ul><li>1</li><li>2<ul><li>2a</li><li>2b<ul><li>2bi<ul><li>2bii</li></ul></li></ul></li><li>2c</li></ul></li><li>3<ul><li>4</li></ul></li></ul>abc';
 	$this->assertEquals($out, $this->Markup->toHtml($in));
 	}
 
