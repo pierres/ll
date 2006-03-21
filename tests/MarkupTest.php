@@ -35,8 +35,8 @@ public function testQuote()
 	$out = '<blockquote><div>test</div></blockquote>';
 	$this->assertEquals($out, $this->Markup->toHtml($in));
 
-	$in = '<quote>test<quote>test</quote></quote>';
-	$out = '<blockquote><div>test<blockquote><div>test</div></blockquote></div></blockquote>';
+	$in = '<quote>test<quote>test2</quote></quote>';
+	$out = '<blockquote><div>test<blockquote><div>test2</div></blockquote></div></blockquote>';
 	$this->assertEquals($out, $this->Markup->toHtml($in));
 
 	$in = '<quote=></quote>';
@@ -47,8 +47,8 @@ public function testQuote()
 	$out = '<cite>author</cite><blockquote><div>test</div></blockquote>';
 	$this->assertEquals($out, $this->Markup->toHtml($in));
 
-	$in = '<quote=author>test<quote=author>test</quote></quote>';
-	$out = '<cite>author</cite><blockquote><div>test<cite>author</cite><blockquote><div>test</div></blockquote></div></blockquote>';
+	$in = '<quote=author>test<quote=author2>test2</quote></quote>';
+	$out = '<cite>author</cite><blockquote><div>test<cite>author2</cite><blockquote><div>test2</div></blockquote></div></blockquote>';
 	$this->assertEquals($out, $this->Markup->toHtml($in));
 	}
 

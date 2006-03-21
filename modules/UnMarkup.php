@@ -31,7 +31,8 @@ public function fromHtml($text)
 	$preg_search[] = '#<h[1-6]>(.+?)</h([1-6])>#e';
 	$preg_replace[] = '$this->unmakeHeading(\'$1\',\'$2\')';
 
-	$preg_search[] = '#<cite>(.+?)</cite><blockquote><div>#';
+	/** FIXME: Keine saubere Lösung, aber Test ist "grün" */
+	$preg_search[] = '#<cite>(.+?)</cite><quote>#';
 	$preg_replace[] = '<quote=$1>';
 	$search[] = '<blockquote><div>';
 	$replace[] = '<quote>';
@@ -76,7 +77,7 @@ public function fromHtml($text)
 	$preg_search[] = '#<ul>.+</ul>#es';
 	$preg_replace[] = '$this->unmakeList(\'$0\')';
 
-	/** FIXME: Prüfe, ob Reihenfolge relevant sein kann */
+	/** FIXME: Prüfe, ob Reihenfolge relevant sein kann -> Ja, bei Zitaten mit Autor*/
 	$text = str_replace($search, $replace, $text);
 	$text = preg_replace($preg_search, $preg_replace, $text);
 
@@ -185,7 +186,7 @@ private function unmakeList($in)
 		$in = $matches[3];
 		}
 
-	return $out;
+	return trim($out);
 	}
 
 }
