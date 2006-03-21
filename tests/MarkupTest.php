@@ -68,6 +68,21 @@ eot;
 	$out = '<ul><li>1</li><li>2<ul><li>2a</li><li>2b<ul><li>2bi<ul><li>2bii</li></ul></li></ul></li><li>2c</li></ul></li><li>3<ul><li>4</li></ul></li></ul>';
 	$this->assertEquals($out, $this->Markup->toHtml($in));
 
+$in = <<<eot
+* 1
+* 2
+** 2a
+** 2b
+*** 2bi
+**** 2bii
+** 2c
+* 3
+** 4
+abc
+eot;
+	$out = '<ul><li>1</li><li>2<ul><li>2a</li><li>2b<ul><li>2bi<ul><li>2bii</li></ul></li></ul></li><li>2c</li></ul></li><li>3<ul><li>4</li></ul></li></ul><br />abc';
+	$this->assertEquals($out, $this->Markup->toHtml($in));
+
 	/** Teste Robustheit */
 	$in = <<<eot
 *** 1
@@ -80,6 +95,7 @@ eot;
 * 3
 ****** 4
 eot;
+	$out = '<ul><li>1</li><li>2<ul><li>2a</li><li>2b<ul><li>2bi<ul><li>2bii</li></ul></li></ul></li><li>2c</li></ul></li><li>3<ul><li>4</li></ul></li></ul>';
 	$this->assertEquals($out, $this->Markup->toHtml($in));
 	}
 

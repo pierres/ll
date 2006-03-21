@@ -323,8 +323,17 @@ private function makeList($in)
 	{
 	$out = '';
 	$last = 0;
+	/** FIXME: das geht besser... */
+	if (substr($in, -1) == "\n")
+		{
+		$append = "\n";
+		}
+	else
+		{
+		$append = '';
+		}
 
-	foreach (explode("\n", $in) as $line)
+	foreach (explode("\n", trim($in)) as $line)
 		{
 		$cur = 0;
 
@@ -365,7 +374,7 @@ private function makeList($in)
 	/* Alle geöffneten Tags auf jeden Fall schließen */
 	$out .= str_repeat('</li></ul>', $cur);
 
-	return $out;
+	return $out.$append;
 	}
 
 private function makeHeading($text, $level)
