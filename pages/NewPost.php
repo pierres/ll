@@ -51,6 +51,11 @@ protected function setForm()
 	$this->addCheckbox('smilies', 'grafische Smilies', $this->smilies);
 
 	$this->setFile();
+
+	if (!empty($this->thread))
+		{
+		$this->addOutput($this->getLastPosts());
+		}
 	}
 
 protected function setFile()
@@ -105,6 +110,45 @@ protected function setFile()
 			$this->addButton('addfile', 'Dateien');
 			}
 		}
+	}
+
+protected function getLastPosts()
+	{
+	$posts = '<div class="frame" style="padding:5px;width:500px;height:200px;overflow:auto;">';
+
+	try
+		{
+		$stm = $this->DB->prepare
+			('
+			SELECT
+				posts.userid,
+				posts.username,
+				users.name,
+				posts.text
+			FROM
+				posts LEFT JOIN users
+					ON posts.userid = users.id
+			WHERE
+				posts.threadid = ?
+				AND posts.deleted = 0
+			ORDER BY
+				posts.id DESC
+			LIMIT 5
+			');
+		$stm->bindInteger($this->thread);
+
+		foreach ($stm->getRowSet() as $post)
+			{
+			$poster = (!empty($post['userid']) ? '<a href="?page=ShowUser;id='.$this->Board->getId().';user='.$post['userid'].'">'.$post['name'].'</a>' : $post['username']);
+
+			$posts .= '<cite>'.$poster.'</cite><blockquote>'.$post['text'].'</blockquote>';
+			}
+		}
+	catch (DBNoDataException $e)
+		{
+		}
+
+	return $posts.'</div>';
 	}
 
 protected function sendFile($postid)
