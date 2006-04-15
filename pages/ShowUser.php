@@ -33,7 +33,8 @@ public function prepare()
 				avatar,
 				location,
 				plz,
-				text
+				text,
+				email
 			FROM
 				users
 			WHERE
@@ -77,6 +78,7 @@ public function prepare()
 				</td>
 				<td class="main">
 					'.$data['realname'].'
+					'.($this->User->isLevel(User::ROOT) ? '(<a href="mailto:'.$data['email'].'">'.$data['email'].'</a>)' : '').'
 				</td>
 				<td class="main" rowspan="7">
 					<div style="height:100px;width:150px;overflow:hidden;">'.$avatar.'</div>
