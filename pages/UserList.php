@@ -46,33 +46,47 @@ public function prepare()
 		$this->sort = 1;
 		}
 
-	$users = $this->DB->getRowSet
-		('
-		SELECT
-			id,
-			name,
-			realname,
-			posts,
-			regdate
-		FROM
-			users
-		ORDER BY
-			'.$this->orderby.' '.($this->sort > 0 ? 'DESC' : 'ASC').'
-		LIMIT
-			'.$limit
-		);
+	try
+		{
+		$users = $this->DB->getRowSet
+			('
+			SELECT
+				id,
+				name,
+				realname,
+				posts,
+				regdate
+			FROM
+				users
+			ORDER BY
+				'.$this->orderby.' '.($this->sort > 0 ? 'DESC' : 'ASC').'
+			LIMIT
+				'.$limit
+			);
+		}
+	catch (DBNoDataException $e)
+		{
+		$users = array();
+		}
 
 
 	$link = '?page=UserList;id='.$this->Board->getId().';user='.$this->user;
 	$curlink = '?page=UserList;id='.$this->Board->getId().';orderby='.$this->orderby.';sort='.$this->sort;
 
-	$this->users = $this->DB->getColumn
-		('
-		SELECT
-			COUNT(*)
-		FROM
-			users
-		');
+	try
+		{
+		$this->users = $this->DB->getColumn
+			('
+			SELECT
+				COUNT(*)
+			FROM
+				users
+			');
+		}
+	catch (DBNoDataException $e)
+		{
+		$this->users = 0;
+		}
 
 	$pages = $this->getPages();
 
