@@ -186,6 +186,17 @@ table     	{
 		width:30px;
 		}
 
+.summary{
+		position:absolute;
+		width:300px;
+		overflow:hidden;
+		margin:5px;
+		padding:2px;
+		background-color:#FFCC00;
+		color:#182263;
+		border:solid 1px #182263;
+		}
+
 .threadiconcol	{
 		background-color:#dddddd;
 		text-align:center;

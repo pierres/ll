@@ -81,6 +81,19 @@ table     	{
 		content:url(../images/sticky.png);
 		}
 
+.summary{
+		position:absolute;
+		width:300px;
+		overflow:hidden;
+		margin:5px;
+		padding:2px;
+		background-image:url(../images/bg.png);
+		background-repeat:repeat-x;
+		background-color:#FFCC00;
+		color:#182263;
+		border:solid 1px #182263;
+		}
+
 #logo		{
 		float:left;
 background-image:url(http://www.laber-land.de/~akai/mangacenter/mclogo.jpg);
@@ -90,7 +103,7 @@ background-image:url(http://www.laber-land.de/~akai/mangacenter/mclogo.jpg);
 		}
 
 #title		{
-		
+
 		font-size:16px;
 		font-weight:bold;
 		}
@@ -225,7 +238,7 @@ background-image:url(http://www.laber-land.de/~akai/mangacenter/mclogo.jpg);
 		padding-bottom:2px;
 		padding-left:8px;
 		padding-right:8px;
-		background-image:url(http://www.laber-land.de/~akai/mangacenter/dings.jpg); 
+		background-image:url(http://www.laber-land.de/~akai/mangacenter/dings.jpg);
 background-repeat:repeat-x;
 
 		}

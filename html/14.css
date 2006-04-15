@@ -80,6 +80,19 @@ table     	{
 		content:url(../images/sticky.png);
 		}
 
+.summary{
+		position:absolute;
+		width:300px;
+		overflow:hidden;
+		margin:5px;
+		padding:2px;
+		background-image:url(../images/bg.png);
+		background-repeat:repeat-x;
+		background-color:#FFCC00;
+		color:#182263;
+		border:solid 1px #182263;
+		}
+
 #logo		{
 		float:left;
 		background-image:url(http://home.arcor.de/fu924/ytmtitle.jpg);
