@@ -257,6 +257,9 @@ foreach ($result as $data)
 
 				$del_button = ($this->ismod ?
 							' <a href="?page=DelThread;id='.$this->Board->getId().';thread='.$this->thread.'"><span class="button">Thema löschen</span></a>' : '');
+
+				$split_button = '';
+
 				$first = false;
 				}
 			else
@@ -266,12 +269,16 @@ foreach ($result as $data)
 
 				$del_button = ($this->ismod ?
 							' <a href="?page=DelPost;id='.$this->Board->getId().';post='.$data['id'].'"><span class="button">löschen</span></a>' : '');
+
+				$split_button = ($this->ismod ?
+							' <a href="?page=SplitThread;id='.$this->Board->getId().';post='.$data['id'].'"><span class="button">abzweigen</span></a>' : '');
 				}
 			}
 		else
 			{
 			$edit_button = '';
 			$del_button = '';
+			$split_button = '';
 			}
 
 		$quote_button = '<a href="?page=QuotePost;id='.$this->Board->getId().';post='.$postid.'"><span class="button">zitieren</span></a>';
@@ -281,11 +288,13 @@ foreach ($result as $data)
 		$edit_button = '';
 		$quote_button = '';
 		$del_button = '';
+		$split_button = '';
 		}
 	else
 		{
 		$edit_button = '';
 		$quote_button = '';
+		$split_button = '';
 
 		if ($this->User->isOnline() && $deleted && !$closed)
 			{
@@ -321,7 +330,7 @@ foreach ($result as $data)
 				<div class="postdate">'.$data['dat'].'</div>
 			</td>
 			<td '.$style.'>
-				<div class="postbuttons">'.$quote_button.$edit_button.$del_button.'</div>
+				<div class="postbuttons">'.$quote_button.$edit_button.$del_button.$split_button.'</div>
 			</td>
 		</tr>
 		<tr>
