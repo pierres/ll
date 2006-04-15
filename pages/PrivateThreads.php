@@ -63,7 +63,8 @@ try
 			threads.firstdate,
 			threads.firstuserid,
 			threads.firstusername,
-			threads.posts
+			threads.posts,
+			(SELECT text FROM posts WHERE threadid = threads.id AND dat = threads.firstdate) AS summary
 		FROM
 			threads,
 			thread_user
@@ -186,7 +187,9 @@ protected function listThreads()
 				<td class="threadiconcol">
 					'.$status.'
 				</td>
-				<td class="forumcol">
+				<td class="forumcol"
+					 onmouseover="javascript:document.getElementById(\'summary'.$data['id'].'\').style.visibility=\'visible\'"
+					 onmouseout="javascript:document.getElementById(\'summary'.$data['id'].'\').style.visibility=\'hidden\'">
 					<div class="thread">
 					<a href="?page=PrivatePostings;id='.$this->Board->getId().';thread='.$data['id'].'">'.$data['name'].'</a>
 					</div>
@@ -195,6 +198,9 @@ protected function listThreads()
 					</div>
 				</td>
 				<td class="lastpost">
+					<div class="summary" style="visibility:hidden;" id="summary'.$data['id'].'">
+						'.cutString(strip_tags($data['summary']),  300).'
+					</div>
 					<div>von '.$firstposter.'</div>
 					<div>'.$data['firstdate'].'</div>
 				</td>
