@@ -117,7 +117,8 @@ public function prepare()
 					threads.poll,
 					threads.posts,
 					forums.id AS forumid,
-					forums.name AS forumname
+					forums.name AS forumname,
+					(SELECT text FROM posts WHERE threadid = threads.id AND dat = threads.firstdate) AS summary
 				FROM
 					forums,
 					threads,
