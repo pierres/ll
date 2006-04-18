@@ -282,9 +282,11 @@ protected function listThreads()
 					</div>
 				</td>
 				<td class="lastpost">
-					<div class="summary" style="visibility:hidden;" id="summary'.$data['id'].'">
-						'.cutString(strip_tags($data['summary']),  300).'
-					</div>
+					<script type="text/javascript">
+						<!--
+						document.write("<div class=\"summary\" style=\"visibility:hidden;\" id=\"summary'.$data['id'].'\">'.cutString(str_replace("\n", ' ', strip_tags($data['summary'])),  300).'<\/div>");
+						-->
+					</script>
 					<div>von '.$firstposter.'</div>
 					<div>'.$data['firstdate'].'</div>
 				</td>
