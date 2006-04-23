@@ -6,6 +6,7 @@ class EditThread extends NewThread{
 protected $post 		= 0;
 protected $allow_closed 	= false;
 protected $allow_deleted 	= false;
+protected $thread	= 0;
 
 private $db_poll_question 	= '';
 private $db_poll_options 	= '';
@@ -38,7 +39,8 @@ protected function checkInput()
 			ORDER BY
 				posts.dat ASC
 			');
-		$stm->bindInteger($this->Io->getInt('thread'));
+		$this->thread = $this->Io->getInt('thread'):
+		$stm->bindInteger($this->thread);
 		$data = $stm->getRow();
 		}
 	catch (IoException $e)
