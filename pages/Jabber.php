@@ -42,7 +42,7 @@ Um Jabber nutzen zu können ist ein sog. Instant-Messenger notwenidg. Die meiste
 <p>
 Nach dem Start von PSI muß ein neues Konto angelegt werden.<br /><img src="images/jabber/1.png" alt="" /><br />
 Nun mußt Du Deine Jabber-ID angeben, die "<em>DeinBenutzername</em>@jabber.laber-land.de" lautet. Das Passwort ist ebenfalls das gleiche wie im Forum. <br /><br /><img src="images/jabber/2.png" alt="" /><br />
-Unter &quot;Verbindung&quot; mußt Du noch &quot;Kennwort unverschlüsselt übermitteln&quot; aktivieren.<br /><img src="images/jabber/3.png" alt="" /><br />
+Unter &quot;Verbindung&quot; mußt Du noch &quot;Kennwort unverschlüsselt übermitteln&quot; aktivieren. Wenn Du möchtest, kannst Du hier auch die SSL-Unterstützung aktivieren, um eine verschlüsselte Verbindung zum Server zu verwenden.<br /><img src="images/jabber/3.png" alt="" /><br />
 Optinal kann unter &quot;Details&quot; noch die Visitenkarte angelegt werden. Diese Informationen können von anderen Nutzern abgerufen werden.
 Hiernnach brauchst Du nur noch Deinen Status auf &quot;Online&quot; zu ändern und Du bist &quot;drin&quot;. (Man kann sich auch beim Programmstart automatisch verbinden lassen)
 <br /><img src="images/jabber/4.png" alt="" /><br />
