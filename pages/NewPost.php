@@ -368,6 +368,13 @@ protected function checkForm()
 			}
 		}
 
+	if (!$this->User->isOnline() && $this->AntiSpam->isSpam($this->text))
+		{
+		$this->AntiSpam->addSpam($this->text);
+		sleep(5);
+		$this->showFailure('No Spam please!');
+		}
+
 	$this->checkNewFile();
 	}
 

@@ -340,3 +340,8 @@ CREATE TABLE `users` (
   KEY `realname` (`realname`(10)),
   KEY `lastpost` (`lastpost`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE domain_blacklist (
+		`domain` varchar(255) NOT NULL,
+		PRIMARY KEY  (`domain`)) ENGINE=MyISAM DEFAULT CHARSET=utf8;
