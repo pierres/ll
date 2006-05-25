@@ -1,14 +1,64 @@
 -- phpMyAdmin SQL Dump
--- version 2.7.0-pl2
+-- version 2.8.0.3
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 26. Februar 2006 um 15:19
--- Server Version: 5.0.18
+-- Erstellungszeit: 25. Mai 2006 um 12:06
+-- Server Version: 5.0.21
 -- PHP-Version: 5.1.2
 --
--- Datenbank: `current`
+-- Datenbank: `develop`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `attachment_thumbnails`
+--
+
+CREATE TABLE `attachment_thumbnails` (
+  `id` mediumint(8) unsigned NOT NULL auto_increment,
+  `name` varchar(200) NOT NULL default '',
+  `size` mediumint(6) unsigned NOT NULL default '0',
+  `type` varchar(100) NOT NULL default '',
+  `content` mediumblob NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `attachments`
+--
+
+CREATE TABLE `attachments` (
+  `id` mediumint(8) unsigned NOT NULL auto_increment,
+  `name` varchar(200) NOT NULL default '',
+  `size` mediumint(6) unsigned NOT NULL default '0',
+  `type` varchar(100) NOT NULL default '',
+  `userid` mediumint(8) unsigned NOT NULL default '0',
+  `uploaded` int(11) unsigned NOT NULL default '0',
+  `content` mediumblob NOT NULL,
+  PRIMARY KEY  (`id`),
+  KEY `type` (`type`),
+  KEY `userid` (`userid`),
+  KEY `uploaded` (`uploaded`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `avatars`
+--
+
+CREATE TABLE `avatars` (
+  `id` mediumint(8) unsigned NOT NULL auto_increment,
+  `name` varchar(200) NOT NULL default '',
+  `size` mediumint(6) unsigned NOT NULL default '0',
+  `type` varchar(100) NOT NULL default '',
+  `content` mediumblob NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -42,28 +92,19 @@ CREATE TABLE `cats` (
   `name` varchar(100) NOT NULL default '',
   `position` tinyint(3) unsigned NOT NULL default '0',
   PRIMARY KEY  (`id`),
-  KEY `boardid` (`boardid`)
+  KEY `boardid` (`boardid`),
   KEY `position` (`position`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `files`
+-- Tabellenstruktur für Tabelle `domain_blacklist`
 --
 
-CREATE TABLE `files` (
-  `id` mediumint(8) unsigned NOT NULL auto_increment,
-  `name` varchar(200) NOT NULL default '',
-  `size` mediumint(6) unsigned NOT NULL default '0',
-  `type` varchar(100) NOT NULL default '',
-  `userid` mediumint(8) unsigned NOT NULL default '0',
-  `uploaded` int(11) unsigned NOT NULL default '0',
-  `content` mediumblob NOT NULL,
-  PRIMARY KEY  (`id`)
-  KEY `type` (`type`)
-  KEY `userid` (`userid`)
-  KEY `uploaded` (`uploaded`)
+CREATE TABLE `domain_blacklist` (
+  `domain` varchar(255) NOT NULL,
+  PRIMARY KEY  (`domain`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -77,7 +118,7 @@ CREATE TABLE `forum_cat` (
   `forumid` mediumint(8) unsigned NOT NULL default '0',
   `position` tinyint(3) unsigned NOT NULL default '0',
   KEY `catid` (`catid`),
-  KEY `forumid` (`forumid`)
+  KEY `forumid` (`forumid`),
   KEY `position` (`position`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -115,7 +156,7 @@ CREATE TABLE `images` (
   `size` mediumint(6) unsigned NOT NULL,
   `thumbcontent` mediumblob NOT NULL,
   `thumbsize` mediumint(6) unsigned NOT NULL,
-  PRIMARY KEY  (`url`(100))
+  PRIMARY KEY  (`url`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -132,8 +173,8 @@ CREATE TABLE `plz` (
   `width` varchar(5) NOT NULL default '',
   `x` smallint(3) unsigned NOT NULL default '0',
   `y` smallint(3) unsigned NOT NULL default '0',
-  KEY `code` (`code`)
-  KEY `location` (`location` (10))
+  KEY `code` (`code`),
+  KEY `location` (`location`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -179,14 +220,14 @@ CREATE TABLE `polls` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `post_file`
+-- Tabellenstruktur für Tabelle `post_attachments`
 --
 
-CREATE TABLE `post_file` (
+CREATE TABLE `post_attachments` (
   `postid` mediumint(8) unsigned NOT NULL default '0',
-  `fileid` mediumint(8) unsigned NOT NULL default '0',
+  `attachment_id` mediumint(8) unsigned NOT NULL default '0',
   KEY `postid` (`postid`),
-  KEY `fileid` (`fileid`)
+  KEY `fileid` (`attachment_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -268,14 +309,15 @@ CREATE TABLE `threads` (
   `firstusername` varchar(25) NOT NULL default '',
   `lastusername` varchar(25) NOT NULL default '',
   `movedfrom` mediumint(8) unsigned NOT NULL default '0',
+  `summary` text NOT NULL default '',
   PRIMARY KEY  (`id`),
   KEY `forumid` (`forumid`),
   KEY `deleted` (`deleted`),
+  KEY `lastuserid` (`lastuserid`),
+  KEY `firstuserid` (`firstuserid`),
   KEY `sticky` (`sticky`),
   KEY `movedfrom` (`movedfrom`),
   KEY `closed` (`closed`),
-  KEY `lastuserid` (`lastuserid`),
-  KEY `firstuserid` (`firstuserid`),
   KEY `firstdate` (`firstdate`),
   KEY `lastdate` (`lastdate`),
   FULLTEXT KEY `name` (`name`)
@@ -327,16 +369,14 @@ CREATE TABLE `users` (
   `level` tinyint(1) unsigned NOT NULL default '0',
   `gender` tinyint(1) unsigned NOT NULL default '0',
   `lastpost` int(11) unsigned NOT NULL default '0',
-  `avatar` mediumint(8) unsigned NOT NULL default '0',
+  `avatar` tinyint(1) unsigned NOT NULL default '0',
   `location` varchar(255) default NULL,
   `plz` mediumint(5) unsigned default NULL,
   `text` text NOT NULL,
-  `svn` tinyint(1) unsigned NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `name` (`name`(10)),
-  KEY `regdate` (`regdate`),
   KEY `posts` (`posts`),
-  KEY `svn` (`svn`),
-  KEY `realname` (`realname`(10)),
+  KEY `regdate` (`regdate`),
+  KEY `realname` (`realname`),
   KEY `lastpost` (`lastpost`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
