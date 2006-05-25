@@ -2,7 +2,7 @@
 * { margin: 0; padding: 0; }
 * ul { padding: 20px; }
 body {
-	background: url("../../archlinux/images/title_back.png") repeat-x top left #fbf8f1;
+	background: url("http://archlinux.laber-land.de/images/title_back.png") repeat-x top left #fbf8f1;
 	padding: 0 30px;
 	color: #46494d;
 	font-family: sans-serif;
@@ -30,7 +30,7 @@ body {
 	height: 20px;
 	padding-top: 2px;
 	margin-left: 3px;
-	background: url("../../archlinux/images/tab.png") repeat-x bottom left #fbf8f1;
+	background: url("http://archlinux.laber-land.de/images/tab.png") repeat-x bottom left #fbf8f1;
 	text-align: center;
 	font-size: 13px;
 }
@@ -138,19 +138,19 @@ table     	{
 		}
 
 .new:before	{
-		content:url(../../archlinux/images/new.png);
+		content:url(http://archlinux.laber-land.de/images/new.png);
 		}
 
 .old:before	{
-		content:url(../../archlinux/images//old.png);
+		content:url(http://archlinux.laber-land.de/images//old.png);
 		}
 
 .newex:before	{
-		content:url(../../archlinux/images/new.png);
+		content:url(http://archlinux.laber-land.de/images/new.png);
 		}
 
 .oldex:before	{
-		content:url(../../archlinux/images/old.png);
+		content:url(http://archlinux.laber-land.de/images/old.png);
 		}
 
 .poll:before	{
