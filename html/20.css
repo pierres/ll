@@ -1,20 +1,103 @@
-body		{
-		font-family:sans-serif;
-		font-size:12px;
-		text-align:left;
-		color:#002468;
-		background-color:#ffffff;
-		}
 
-a		{
-		text-decoration:none;
-		color:#182263;
-		}
+* { margin: 0; padding: 0; }
+* ul { padding: 20px; }
+body {
+	background: url("../../archlinux/images/title_back.png") repeat-x top left #fbf8f1;
+	padding: 0 30px;
+	color: #46494d;
+	font-family: sans-serif;
+	font-size:12px;
+}
+#head_container { height: 140px; }
+.right {
+	float: right;
+	width: 360px;
+	padding: 0 10px 10px 0;
+}
+.clear { clear: both; margin: 0; padding: 0; }
+#main_nav ul {
+	list-style: none;
+	padding-right: 10px;
+	padding-top: 48px;
+}
+.right ul {
+	list-style: none;
+}
+#main_nav ul li {
+	display: block;
+	float: right;
+	width: 67px;
+	height: 20px;
+	padding-top: 2px;
+	margin-left: 3px;
+	background: url("../../archlinux/images/tab.png") repeat-x bottom left #fbf8f1;
+	text-align: center;
+	font-size: 13px;
+}
+#main_nav ul li[class~=selected] {
+	background: #fbf8f1;
+}
+#main_nav ul li a {
+	text-decoration: none;
+}
 
-a:hover		{
-		color:#3366CC;
-		text-decoration:none;
-		}
+.updates {
+	position: relative;
+	top: -30px;
+	background: #f6efe0;
+	border: 1px solid #eee4cb;
+	padding: 10px;
+	font-size:10px;
+}
+
+.left {
+	padding: 10px;
+	margin: 0 400px 0 0;
+}
+.left p { text-align: justify; }
+#title {
+	height: 140px;
+	float: left;
+}
+#logo {
+	float: left;
+	width: 140px;
+	height: 140px;
+}
+.box {
+	padding: 10px;
+	background: #e1e3e6;
+	border: 1px solid #8faecd;
+}
+h2 {
+	margin-bottom: 10px;
+	font-size:18px;
+}
+h1 {
+	margin: 20px 0 10px 0;
+	font-size:20px;
+}
+
+h3{font-size:16px;margin-bottom: 5px;}
+
+a {
+	color: #35526f;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+a:hover	{
+	text-decoration:underline;
+}
+
+img { border: none; }
+.foot {
+	clear: both;
+	text-align: center;
+	font-size: 0.8em;
+}
+
+
 
 table     	{
 		empty-cells:show;
@@ -27,11 +110,11 @@ table     	{
 .frame		{
 		border-style:solid;
 		border-width:1px;
-		border-color:#182263;
+		border-color:#35526f;
 		}
 
 .button		{
-		background-color:#6c83af;
+		background-color:#35526f;
 		color:#FFFFFF;
 		font-size:10px;
 		font-family:sans-serif;
@@ -41,31 +124,33 @@ table     	{
 		padding-bottom:0px;
 		margin:0px;
 		border-style:dotted;
-		border-color:#182263;
+		border-color:#35526f;
 		border-width:1px;
 		background-image:url(../images/button.png);
 		background-repeat:repeat-x;
+		text-decoration: none;
 		}
 
 .button:hover	{
-		background-color:#3366CC;
+		background-color:#6D8AA9;
 		color:#FFFFFF;
+		text-decoration: none;
 		}
 
 .new:before	{
-		content:url(../images/archlinux/new.png);
+		content:url(../../archlinux/images/new.png);
 		}
 
 .old:before	{
-		content:url(../images/archlinux/old.png);
+		content:url(../../archlinux/images//old.png);
 		}
 
 .newex:before	{
-		content:url(../images/archlinux/new.png);
+		content:url(../../archlinux/images/new.png);
 		}
 
 .oldex:before	{
-		content:url(../images/archlinux/old.png);
+		content:url(../../archlinux/images/old.png);
 		}
 
 .poll:before	{
@@ -88,25 +173,9 @@ table     	{
 		padding:2px;
 		background-image:url(../images/bg.png);
 		background-repeat:repeat-x;
-		background-color:#FFCC00;
-		color:#182263;
-		border:solid 1px #182263;
-		}
-
-#logo		{
-		float:left;
-		background-image:url(../images/archlinux/logo.png);
-		background-repeat:no-repeat;
-		width:150px;
-		height:132px;
-		}
-#logo:hover{cursor:pointer;}
-
-#title		{
-		padding-left:250px;
-		padding-top:10px;
-		font-size:16px;
-		font-weight:bold;
+		background-color:#35526f;
+		color:#fbf8f1;
+		border:solid 1px #35526f;
 		}
 
 #welcome	{
@@ -119,7 +188,7 @@ table     	{
 #menu		{
 		clear:left;
 		text-align:center;
-		margin:10px;
+		margin-bottom:10px;
 		}
 
 #body		{
@@ -135,10 +204,10 @@ table     	{
 		color:#FFFFFF;
 		font-weight:bold;
 		font-size:12px;
-		background-color:#6c83af;
+		background-color:#6D8AA9;
 		padding:1px;
 		padding-left:100px;
-		border-color:#182263;
+		border-color:#35526f;
 		border-width:1px;
 		border-top-style:solid;
 		border-bottom-style:solid;
@@ -150,13 +219,14 @@ table     	{
 
 .catname:hover	{
 		color:#FFFFFF;
+		text-decoration: none;
 		}
 
 .path		{
 		color:#FFFFFF;
 		font-weight:bold;
 		font-size:10px;
-		background-color:#6c83af;
+		background-color:#6D8AA9;
 		padding:1px;
 		}
 
@@ -165,7 +235,7 @@ table     	{
 		}
 
 .pathlink:hover	{
-		color:#3366CC;
+/* 		color:#3366CC; */
 		}
 
 .iconcol	{
@@ -233,7 +303,7 @@ table     	{
 .title		{
 		color:#ffffff;
 		font-size:12px;
-		background-color:#182263;
+		background-color:#35526f;
 		text-align:center;
 		padding-top:2px;
 		padding-bottom:2px;
@@ -278,7 +348,7 @@ table     	{
 		padding-bottom:0px;
 		margin-right:10px;
 		border-style:dotted;
-		border-color:#182263;
+		border-color:#35526f;
 		border-width:1px;
 		background-image:url(../images/button.png);
 		background-repeat:repeat-x;
@@ -388,7 +458,7 @@ input		{
 		background-color:#dbdbdb;
 		border-style:solid;
 		border-width:1px;
-		border-color:#182263;
+		border-color:#35526f;
 		}
 
 textarea	{
@@ -398,7 +468,7 @@ textarea	{
 		background-color:#dbdbdb;
 		border-style:solid;
 		border-width:1px;
-		border-color:#182263;
+		border-color:#35526f;
 		}
 
 select		{
@@ -408,7 +478,7 @@ select		{
 		background-color:#dbdbdb;
 		border-style:solid;
 		border-width:1px;
-		border-color:#182263;
+		border-color:#35526f;
 		}
 
 .avatar 	{
@@ -430,12 +500,13 @@ select		{
 		max-height:300px;
 		border-style:solid;
 		border-width:1px;
-		border-color:#182263;
+		border-color:#35526f;
 		}
 
 .image:hover	{
 		cursor:pointer;
 		border-color:#3366CC;
+		text-decoration: none;
 		}
 
 h1{font-size:20px;}

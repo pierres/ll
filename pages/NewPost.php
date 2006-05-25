@@ -408,6 +408,14 @@ protected function checkForm()
 		}
 
 	$this->checkNewFile();
+
+	$this->Markup->enableSmilies($this->smilies);
+	$this->text = $this->Markup->toHtml($this->text);
+	// BugFix for Bug#1
+	if ($length = strlen($this->text) > 65536)
+		{
+		$this->showWarning('Der Text ist '.($length-65536).' Zeichen zu lang!');
+		}
 	}
 
 protected function checkAccess()
@@ -417,16 +425,6 @@ protected function checkAccess()
 
 protected function sendForm()
 	{
-	$this->Markup->enableSmilies($this->smilies);
-	$this->text = $this->Markup->toHtml($this->text);
-	// BugFix for Bug#1
-	if ($length = strlen($this->text) > 65536)
-		{
-		$this->showWarning('Der Text ist '.($length-65536).' Zeichen zu lang!');
-		$this->showForm();
-		return;
-		}
-
 	if($this->User->isOnline())
 		{
 		$username = $this->User->getName();
