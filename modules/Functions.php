@@ -31,11 +31,12 @@ function unhtmlspecialchars($string)
 
 	return $string;
 	}
-
+/** TODO: Wozu war das bloß gut? */
+/*
 function rehtmlspecialchars($string)
 	{
-	return htmlspecialchars(unhtmlspecialchars($string));
-	}
+	return htmlspecialchars(unhtmlspecialchars($string), ENT_COMPAT, 'UTF-8');
+	}*/
 
 /**
 * gibt die Tageszeit aus
@@ -67,11 +68,11 @@ function cutString($string, $length)
 	$string =  (mb_strlen($string, 'UTF-8') > $length ? mb_substr($string, 0, ($length-3), 'UTF-8').'...' : $string);
 	return htmlspecialchars($string);
 	}
-
+/*
 function gzdecode($string)
 	{
 	return gzinflate(substr($string, 10));
-	}
+	}*/
 
 function generatePassword($length = 8)
 	{
@@ -89,17 +90,27 @@ function generatePassword($length = 8)
 
 	return $password;
 	}
-
+/** @TODO: Sollte in eigene Klasse */
 function resizeImage($image, $type, $size)
 	{
-	$src = imagecreatefromstring($image);
+	try
+		{
+		$src = imagecreatefromstring($image);
+		}
+	catch (Exception $e)
+		{
+		throw new Exception('wrong format');
+		}
+
 	$width = imagesx($src);
 	$height = imagesy($src);
 	$aspect_ratio = $height/$width;
 
-	if ($width <= $size)
+	if ($width <= $size && $height <= $size)
 		{
-		return '';
+		/** FIXME: ungeeignete Rückgabe; besser Exception */
+// 		return '';
+		throw new Exception('we do not need to resize');
 		}
 	else
 		{
@@ -126,8 +137,10 @@ function resizeImage($image, $type, $size)
 	switch ($type)
 		{
 		case 'image/jpeg' 	: imagejpeg($img, '', 80); 	break;
+		case 'image/pjpeg' 	: imagejpeg($img, '', 80); 	break;
 		case 'image/png' 	: imagepng($img); 		break;
 		case 'image/gif' 	: imagegif($img); 		break;
+		default 		: throw new Exception('unknown image-type');
 		}
 
 	$thumb = ob_get_contents();

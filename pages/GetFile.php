@@ -1,76 +1,63 @@
 <?php
 
+require (PATH.'modules/IOutput.php');
 
-class GetFile extends Page{
-
-private $data = array();
+abstract class GetFile extends Modul implements IOutput{
 
 public function prepare()
 	{
-	if (!$this->User->isOnline())
+	$this->exitIfCached();
+
+	if (!$this->isUser())
 		{
 		$this->showWarning('Nur für Mitglieder!');
 		}
 
-	try
-		{
-		$file = $this->Io->getInt('file');
-		}
-	catch (IoRequestException $e)
-		{
-		$this->showWarning('keine Datei angegeben');
-		}
+	$this->getParams();
+	$this->initDB();
+	}
 
-	try
+protected function isUser()
+	{
+	return $this->Io->isRequest('sessionid');
+	}
+
+protected function exitIfCached()
+	{
+	$headers = apache_request_headers();
+
+	if (isset($headers['If-Modified-Since']))
 		{
-		/**
-		 FIXME: entsprechende BLOB-Befehle von mysqli verwenden
-		 TODO: evtl. im Dateisystem zwischenspeichern
-		*/
-		$stm = $this->DB->prepare
-			('
-			SELECT
-				name,
-				type,
-				content,
-				size
-			FROM
-				files
-			WHERE
-				id = ?'
-			);
-		$stm->bindInteger($file);
-		$this->data = $stm->getRow();
+		header('HTTP/1.1 304 Not Modified');
+		exit;
 		}
-	catch (DBNoDataException $e)
-		{
-		$this->showWarning('Datei nicht gefunden');
-		}
+	}
+
+protected function getParams()
+	{
+	}
+
+protected function initDB()
+	{
+	self::__set('DB', new DB(
+		$this->Settings->getValue('sql_user'),
+		$this->Settings->getValue('sql_password'),
+		$this->Settings->getValue('sql_database')
+		));
 	}
 
 public function showWarning($text)
 	{
-	$this->setValue('title', 'Warnung');
-	$this->setValue('body', '<div class="warning">'.$text.'</div>');
-	parent::show();
+	die($text);
 	}
 
-public function show()
+protected function sendFile($type, $name, $size, $content)
 	{
-	If (strpos($this->Io->getEnv('HTTP_ACCEPT_ENCODING'), 'gzip') !== false)
-		{
-		header('Content-Encoding: gzip');
-		}
-	else
-		{
-		$this->data['content'] = gzdecode($this->data['content']);
-		}
-
-	header('Content-Type: '.$this->data['type'].'; name='.$this->data['name']);
-	header('Content-Disposition: inline; filename="'.$this->data['name'].'"');
-	header('Content-length: '.$this->data['size']);
-
-	echo $this->data['content'];
+	header('Content-Type: '.$type.'; name='.$name);
+	header('Content-Disposition: inline; filename="'.$name.'"');
+	header('Content-length: '.$size);
+	header('Last-Modified: '.date('r'));
+	echo $content;
 	exit();
 	}
 

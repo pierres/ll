@@ -13,8 +13,6 @@ public function __construct($pollid = 0, $target = 'Postings')
 	{
 	$this->target = ($this->Io->isRequest('target') ? $this->Io->getString('target') : $target);
 
-	parent::__construct();
-
 	if ($pollid == 0)
 		{
 		try

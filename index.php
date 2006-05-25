@@ -2,13 +2,12 @@
 
 define('PATH', './');
 
+require (PATH.'modules/Modul.php');
 require (PATH.'modules/Settings.php');
 require (PATH.'modules/Exceptions.php');
 require (PATH.'modules/Functions.php');
 require (PATH.'modules/Io.php');
-require (PATH.'modules/DB.php');
-require (PATH.'modules/User.php');
-require (PATH.'modules/Board.php');
+
 
 function __autoload($class)
 	{
@@ -27,18 +26,12 @@ function __autoload($class)
 	}
 
 Modul::__set('Settings', new Settings());
-Modul::__set('Io', new Io());
-Modul::__set('DB', new DB(
-	Modul::__get('Settings')->getValue('sql_user'),
-	Modul::__get('Settings')->getValue('sql_password'),
-	Modul::__get('Settings')->getValue('sql_database')
-	));
-Modul::__set('Board', new Board());
-Modul::__set('User', new User());
+$Io = Modul::__set('Io', new Io());
+
 
 try
 	{
-	$page = preg_replace('/\W/', '', Modul::__get('Io')->getString('page'));
+	$page = preg_replace('/\W/', '', $Io->getString('page'));
 
 	try
 		{
@@ -56,7 +49,7 @@ try
 	}
 catch(IoRequestException $e)
 	{
-	Modul::__get('Io')->redirect('Portal', 'forum=1', 1);
+	$Io->redirect('Portal', 'forum=1', 1);
 	}
 
 ?>

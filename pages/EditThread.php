@@ -238,6 +238,7 @@ protected function sendForm()
 	$stm->execute();
 
 	$this->sendFile($this->post);
+	$this->sendThreadSummary();
 
 	$this->redirect();
 	}
@@ -249,7 +250,7 @@ protected function sendFile($postid)
 		$stm = $this->DB->prepare
 			('
 			DELETE FROM
-				post_file
+				post_attachments
 			WHERE
 				postid = ?'
 			);

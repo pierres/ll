@@ -1,0 +1,551 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de">
+<head>
+	<meta http-equiv="content-type" content="application/xhtml+xml; charset=UTF-8" />
+	<meta http-equiv="content-language" content="de" />
+	<style type="text/css">
+	body	{
+		font-family:sans-serif;
+		font-size:12px;
+		text-align:left;
+		color:#002468;
+		background-color:#ffffff;
+		}
+
+	a	{
+		text-decoration:none;
+		color:#182263;
+		}
+
+	a:hover	{
+		color:#FFCC00;
+		text-decoration:none;
+		}
+
+	table	{
+		empty-cells:show;
+		text-align:left;
+		border-collapse:collapse;
+		margin-left:auto;
+		margin-right:auto;
+		}
+
+	.main	{
+		border-style:solid;
+		border-width:1px;
+		border-color:#182263;
+ 		}
+
+	.code	{
+		color:#002468;
+		background-color:#eeeeee;
+		border-width:1px;
+		border-style:dotted;
+		width:300px;
+		padding:5px;
+		}
+
+	.preview{
+		color:#002468;
+		background-color:#dddddd;
+		border-width:1px;
+		border-style:dotted;
+		width:300px;
+		padding:5px;
+		}
+
+	.link	{
+		text-decoration:underline;
+		color:#6c83af;
+		}
+
+	.extlink{
+		text-decoration:underline;
+		}
+
+	.image	{
+		max-width:300px;
+		max-height:300px;
+		border-style:solid;
+		border-width:1px;
+		border-color:#182263;
+		}
+
+	.image:hover{
+		cursor:pointer;
+		border-color:#6c83af;
+		}
+
+	.hint	{
+		color:darkred;
+		font-size:8px;
+		}
+
+	h1{font-size:20px;}
+	h2{font-size:18px;}
+	h3{font-size:16px;}
+	h4{font-size:14px;}
+	h5{font-size:12px;}
+	h6{font-size:10px;}
+	</style>
+	<title>
+		LL-Codes
+	</title>
+</head>
+<body>
+	<table class="main">
+		<tr>
+			<td class="code">
+<pre>
+&lt;code&gt;
+Quellcode
+&lt;/code&gt;
+</pre>
+<div class="hint">Tags m&uuml;ssen jeweils in einer Zeile stehen; nicht schachtelbar</div>
+			</td>
+			<td class="preview">
+<pre>
+Quellcode
+</pre>
+			</td>
+		</tr><tr>
+			<td class="code">
+<pre>
+&lt;quote&gt;Zitat&lt;/quote&gt;
+</pre>
+<div class="hint">schachtelbar</div>
+			</td>
+			<td class="preview">
+<blockquote><div>Zitat</div></blockquote>
+			</td>
+		</tr><tr>
+			<td class="code">
+<pre>
+&lt;quote Autor/Quelle&gt;Zitat&lt;/quote&gt;
+</pre>
+<div class="hint">schachtelbar</div>
+			</td>
+			<td class="preview">
+<cite>Autor/Quelle</cite><blockquote><div>Zitat</div></blockquote>
+			</td>
+		</tr><tr>
+			<td class="code">
+<pre>
+* 1
+* 2
+** 2a
+** 2b
+*** 2bi
+* 3
+* 4
+</pre>
+<div class="hint">schachtelbar</div>
+			</td>
+			<td class="preview">
+<ul><li>1</li><li>2<ul><li>2a</li><li>2b<ul><li>2bi</li></ul></li></ul></li><li>3</li><li>4</li></ul>
+			</td>
+		</tr><tr>
+			<td class="code">
+<pre>
+!&Uuml;berschrift 1
+!!&Uuml;berschrift 2
+!!!&Uuml;berschrift 3
+!!!!&Uuml;berschrift 4
+!!!!!&Uuml;berschrift 5
+!!!!!!&Uuml;berschrift 6
+</pre>
+<div class="hint">Die Reihenfolge 1-6 sollte beibehalten werden</div>
+			</td>
+			<td class="preview">
+<h1>&Uuml;berschrift 1</h1><h2>&Uuml;berschrift 2</h2><h3>&Uuml;berschrift 3</h3><h4>&Uuml;berschrift 4</h4><h5>&Uuml;berschrift 5</h5><h6>&Uuml;berschrift 6</h6>
+			</td>
+		</tr><tr>
+			<td class="code">
+<pre>
+//Hervorhebung//
+</pre>
+			</td>
+			<td class="preview">
+<em>Hervorhebung</em>
+			</td>
+		</tr><tr>
+			<td class="code">
+<pre>
+**Betonung**
+</pre>
+			</td>
+			<td class="preview">
+<strong>Betonung</strong>
+			</td>
+		</tr><tr>
+			<td class="code">
+<pre>
+==inline Code==
+</pre>
+			</td>
+			<td class="preview">
+<code>inline Code</code>
+			</td>
+		</tr><tr>
+			<td class="code">
+<pre>
+&quot;inline Zitat&quot;
+</pre>
+			</td>
+			<td class="preview">
+<q>inline Zitat</q>
+			</td>
+		</tr><tr>
+			<td class="code">
+<pre>
+----
+</pre>
+			</td>
+			<td class="preview">
+<hr />
+			</td>
+		</tr><tr>
+			<td class="code">
+<pre>
+--gel&ouml;scht--
+</pre>
+			</td>
+			<td class="preview">
+<pre>
+<span><del>gel&ouml;scht</del></span>
+</pre>
+			</td>
+		</tr><tr>
+			<td class="code">
+<pre>
+++eingef&uuml;gt++
+</pre>
+			</td>
+			<td class="preview">
+<pre>
+<span><ins>eingef&uuml;gt</ins></span>
+</pre>
+			</td>
+		</tr><tr>
+			<td class="code">
+<pre>
+www.laber-land.de
+&lt;www.laber-land.de Laber-Land&gt;
+&lt;www.laber-land.de&gt;
+</pre>
+<div class="hint">beliebige Protokolle werden unterst&uuml;tzt. Bei www. und ftp.-Domains ist die Angabe des Protokolls optional. Auch E-Mail-Adressen werden erkannt.</div>
+			</td>
+			<td class="preview">
+<a href="http://www.laber-land.de" onclick="return !window.open(this.href);" rel="nofollow" class="extlink">www.laber-land.de</a><br /><a href="http://www.laber-land.de" onclick="return !window.open(this.href);" rel="nofollow" class="extlink">Laber-Land</a><br /><a href="http://www.laber-land.de" onclick="return !window.open(this.href);" rel="nofollow" class="extlink">[1]</a>
+			</td>
+		</tr><tr>
+			<td class="code">
+<pre>
+www.laber-land.de/images/logo.png
+</pre>
+<div class="hint">Unterst&uuml;tzte Dateiendungen: png, gif, jpg, jpeg</div>
+			</td>
+			<td class="preview">
+<img src="../images/logo.png" alt="" class="image" />
+			</td>
+		</tr><tr>
+			<td class="code">
+<pre>
+;-)
+;)
+;D
+::)
+:-)
+:)
+:-\
+:-/
+:-X
+:-x
+:-[
+:-*
+>:(
+:P
+:p
+:D
+:-(
+:(
+:o
+:O
+8)
+???
+'(
+:'(
+</pre>
+			</td>
+			<td class="preview">
+<img src="../images/smilies/wink.gif" alt="wink" class="smiley" /> <br /><img src="../images/smilies/wink.gif" alt="wink" class="smiley" /><br /><img src="../images/smilies/grin.gif" alt="grin" class="smiley" /><br /><img src="../images/smilies/rolleyes.gif" alt="rolleyes" class="smiley" /><br /><img src="../images/smilies/smiley.gif" alt="smiley" class="smiley" /> <br /><img src="../images/smilies/smiley.gif" alt="smiley" class="smiley" /><br /><img src="../images/smilies/undecided.gif" alt="undecided" class="smiley" /> <br /><img src="../images/smilies/undecided.gif" alt="undecided" class="smiley" /> <br /><img src="../images/smilies/lipsrsealed.gif" alt="lipsrsealed" class="smiley" /> <br /><img src="../images/smilies/lipsrsealed.gif" alt="lipsrsealed" class="smiley" /><br /><img src="../images/smilies/embarassed.gif" alt="embarassed" class="smiley" /><br /><img src="../images/smilies/kiss.gif" alt="kiss" class="smiley" /><br /><img src="../images/smilies/angry.gif" alt="angry" class="smiley" /><br /><img src="../images/smilies/tongue.gif" alt="tongue" class="smiley" /> <br /><img src="../images/smilies/tongue.gif" alt="tongue" class="smiley" /><br /><img src="../images/smilies/cheesy.gif" alt="cheesy" class="smiley" /><br /><img src="../images/smilies/sad.gif" alt="sad" class="smiley" /> <br /><img src="../images/smilies/sad.gif" alt="sad" class="smiley" /><br /><img src="../images/smilies/shocked.gif" alt="shocked" class="smiley" /> <br /><img src="../images/smilies/shocked.gif" alt="shocked" class="smiley" /><br /><img src="../images/smilies/cool.gif" alt="cool" class="smiley" /><br /><img src="../images/smilies/huh.gif" alt="huh" class="smiley" /><br /><img src="../images/smilies/cry.gif" alt="cry" class="smiley" /> <br /><img src="../images/smilies/cry.gif" alt="cry" class="smiley" />
+			</td>
+		</tr><tr>
+			<td class="code">
+<pre>
+&lt;Mr-T&gt;
+&lt;afro&gt;
+&lt;alien&gt;
+&lt;angel&gt;
+&lt;angry&gt;
+&lt;annoyed&gt;
+&lt;antlers&gt;
+&lt;anxious&gt;
+&lt;argue&gt;
+&lt;army&gt;
+&lt;artist&gt;
+&lt;baby&gt;
+&lt;balloon&gt;
+&lt;balloon2&gt;
+&lt;balloon3&gt;
+&lt;bandana&gt;
+&lt;batman&gt;
+&lt;beadyeyes&gt;
+&lt;beadyeyes2&gt;
+&lt;beam&gt;
+&lt;beatnik&gt;
+&lt;beatnik2&gt;
+&lt;behead&gt;
+&lt;behead2&gt;
+&lt;bigcry&gt;
+&lt;biker&gt;
+&lt;blank&gt;
+&lt;blush&gt;
+&lt;bobby&gt;
+&lt;bobby2&gt;
+&lt;bomb&gt;
+&lt;bomb2&gt;
+&lt;book&gt;
+&lt;book2&gt;
+&lt;bow&gt;
+&lt;brood&gt;
+&lt;bucktooth&gt;
+&lt;builder&gt;
+&lt;builder2&gt;
+&lt;bulb&gt;
+&lt;bulb2&gt;
+&lt;charming&gt;
+&lt;cheesy&gt;
+&lt;chef&gt;
+&lt;chinese&gt;
+&lt;clown&gt;
+&lt;computer&gt;
+&lt;confused&gt;
+&lt;cool&gt;
+&lt;cool2&gt;
+&lt;cool3&gt;
+&lt;cool4&gt;
+&lt;cowboy&gt;
+&lt;crown&gt;
+&lt;crowngrin&gt;
+&lt;cry&gt;
+&lt;cry2&gt;
+&lt;curtain&gt;
+&lt;cyclist&gt;
+&lt;daisy&gt;
+&lt;dead&gt;
+&lt;deal&gt;
+&lt;deal2&gt;
+&lt;devil&gt;
+&lt;devilish&gt;
+&lt;disappointed&gt;
+&lt;disguise&gt;
+&lt;dizzy&gt;
+&lt;dizzy2&gt;
+&lt;dozey&gt;
+&lt;drummer&gt;
+&lt;drunk&gt;
+&lt;dunce&gt;
+&lt;dunce2&gt;
+&lt;earmuffs&gt;
+&lt;ears&gt;
+&lt;egypt&gt;
+&lt;elf&gt;
+&lt;elvis&gt;
+&lt;embarassed&gt;
+&lt;end&gt;
+&lt;evil&gt;
+&lt;evil2&gt;
+&lt;evil3&gt;
+&lt;evilgrin&gt;
+&lt;fireman&gt;
+&lt;freak&gt;
+&lt;furious&gt;
+&lt;furious2&gt;
+&lt;furious3&gt;
+&lt;glasses&gt;
+&lt;glasses2&gt;
+&lt;goofy&gt;
+&lt;gorgeous&gt;
+&lt;gossip&gt;
+&lt;greedy&gt;
+&lt;grin&gt;
+&lt;grin2&gt;
+&lt;grin3&gt;
+&lt;guitarist&gt;
+&lt;hair&gt;
+&lt;hair2&gt;
+&lt;hanged&gt;
+&lt;happy&gt;
+&lt;happy2&gt;
+&lt;hat&gt;
+&lt;hat2&gt;
+&lt;heart&gt;
+&lt;helmet&gt;
+&lt;help&gt;
+&lt;hippy&gt;
+&lt;huh2&gt;
+&lt;idea&gt;
+&lt;idea2&gt;
+&lt;idea3&gt;
+&lt;iloveyou&gt;
+&lt;indian_brave&gt;
+&lt;indian_chief&gt;
+&lt;inquisitive&gt;
+&lt;jester&gt;
+&lt;joker&gt;
+&lt;juggle&gt;
+&lt;juggle2&gt;
+&lt;karate&gt;
+&lt;kid&gt;
+&lt;kiss&gt;
+&lt;kiss2&gt;
+&lt;klingon&gt;
+&lt;knife&gt;
+&lt;laugh&gt;
+&lt;laugh2&gt;
+&lt;laugh3&gt;
+&lt;laugh4&gt;
+&lt;leer&gt;
+&lt;lips&gt;
+&lt;lips2&gt;
+&lt;lipsrsealed&gt;
+&lt;lipsrsealed2&gt;
+&lt;lost&gt;
+&lt;love&gt;
+&lt;mad&gt;
+&lt;mask&gt;
+&lt;mean&gt;
+&lt;mellow&gt;
+&lt;mickey&gt;
+&lt;moustache&gt;
+&lt;nice&gt;
+&lt;no&gt;
+&lt;oops&gt;
+&lt;operator&gt;
+&lt;party&gt;
+&lt;party2&gt;
+&lt;party3&gt;
+&lt;pimp&gt;
+&lt;pimp2&gt;
+&lt;pirate&gt;
+&lt;pleased&gt;
+&lt;policeman&gt;
+&lt;pumpkin&gt;
+&lt;punk&gt;
+&lt;rifle&gt;
+&lt;rockstar&gt;
+&lt;rolleyes&gt;
+&lt;rolleyes2&gt;
+&lt;rolleyes3&gt;
+&lt;rolleyes4&gt;
+&lt;rolleyes5&gt;
+&lt;sad&gt;
+&lt;sad2&gt;
+&lt;sad3&gt;
+&lt;santa&gt;
+&lt;santa2&gt;
+&lt;santa3&gt;
+&lt;scholar&gt;
+&lt;shame&gt;
+&lt;shifty&gt;
+&lt;shocked&gt;
+&lt;shocked2&gt;
+&lt;shocked3&gt;
+&lt;shout&gt;
+&lt;shy&gt;
+&lt;sick&gt;
+&lt;sick2&gt;
+&lt;singer&gt;
+&lt;skull&gt;
+&lt;sleep&gt;
+&lt;sleeping&gt;
+&lt;sleepy&gt;
+&lt;smart&gt;
+&lt;smartass&gt;
+&lt;smartass2&gt;
+&lt;smash&gt;
+&lt;smile&gt;
+&lt;smiley&gt;
+&lt;smiley2&gt;
+&lt;smitten&gt;
+&lt;smoking&gt;
+&lt;smug&gt;
+&lt;smug2&gt;
+&lt;sneaky&gt;
+&lt;snobby&gt;
+&lt;snore&gt;
+&lt;sombrero&gt;
+&lt;speechless&gt;
+&lt;square&gt;
+&lt;stare&gt;
+&lt;stars&gt;
+&lt;stooge_curly&gt;
+&lt;stooge_larry&gt;
+&lt;stooge_moe&gt;
+&lt;stop&gt;
+&lt;stunned&gt;
+&lt;stupid&gt;
+&lt;sultan&gt;
+&lt;sunny&gt;
+&lt;surprised&gt;
+&lt;sweatdrop&gt;
+&lt;sweetheart&gt;
+&lt;thinking&gt;
+&lt;thinking2&gt;
+&lt;thumbsdown&gt;
+&lt;thumbsup&gt;
+&lt;tiny&gt;
+&lt;tired&gt;
+&lt;toff&gt;
+&lt;toilet&gt;
+&lt;tongue&gt;
+&lt;tongue2&gt;
+&lt;tongue3&gt;
+&lt;uhoh&gt;
+&lt;uhoh2&gt;
+&lt;undecided&gt;
+&lt;uneasy&gt;
+&lt;vampire&gt;
+&lt;vanish&gt;
+&lt;veryangry&gt;
+&lt;veryangry2&gt;
+&lt;vulcan&gt;
+&lt;wacko&gt;
+&lt;wacky&gt;
+&lt;wall&gt;
+&lt;whip&gt;
+&lt;wideeyed&gt;
+&lt;wings&gt;
+&lt;wink&gt;
+&lt;wink2&gt;
+&lt;wink3&gt;
+&lt;wiseguy&gt;
+&lt;withclever&gt;
+&lt;worried&gt;
+&lt;worried2&gt;
+&lt;wreck&gt;
+&lt;wry&gt;
+&lt;xmas&gt;
+&lt;yes&gt;
+&lt;zzz&gt;
+</pre>
+			</td>
+			<td class="preview">
+<img src="../images/smilies/extra/Mr-T.gif" alt="Mr-T" class="smiley" /><br /><img src="../images/smilies/extra/afro.gif" alt="afro" class="smiley" /><br /><img src="../images/smilies/extra/alien.gif" alt="alien" class="smiley" /><br /><img src="../images/smilies/extra/angel.gif" alt="angel" class="smiley" /><br /><img src="../images/smilies/extra/angry.gif" alt="angry" class="smiley" /><br /><img src="../images/smilies/extra/annoyed.gif" alt="annoyed" class="smiley" /><br /><img src="../images/smilies/extra/antlers.gif" alt="antlers" class="smiley" /><br /><img src="../images/smilies/extra/anxious.gif" alt="anxious" class="smiley" /><br /><img src="../images/smilies/extra/argue.gif" alt="argue" class="smiley" /><br /><img src="../images/smilies/extra/army.gif" alt="army" class="smiley" /><br /><img src="../images/smilies/extra/artist.gif" alt="artist" class="smiley" /><br /><img src="../images/smilies/extra/baby.gif" alt="baby" class="smiley" /><br /><img src="../images/smilies/extra/balloon.gif" alt="balloon" class="smiley" /><br /><img src="../images/smilies/extra/balloon2.gif" alt="balloon2" class="smiley" /><br /><img src="../images/smilies/extra/balloon3.gif" alt="balloon3" class="smiley" /><br /><img src="../images/smilies/extra/bandana.gif" alt="bandana" class="smiley" /><br /><img src="../images/smilies/extra/batman.gif" alt="batman" class="smiley" /><br /><img src="../images/smilies/extra/beadyeyes.gif" alt="beadyeyes" class="smiley" /><br /><img src="../images/smilies/extra/beadyeyes2.gif" alt="beadyeyes2" class="smiley" /><br /><img src="../images/smilies/extra/beam.gif" alt="beam" class="smiley" /><br /><img src="../images/smilies/extra/beatnik.gif" alt="beatnik" class="smiley" /><br /><img src="../images/smilies/extra/beatnik2.gif" alt="beatnik2" class="smiley" /><br /><img src="../images/smilies/extra/behead.gif" alt="behead" class="smiley" /><br /><img src="../images/smilies/extra/behead2.gif" alt="behead2" class="smiley" /><br /><img src="../images/smilies/extra/bigcry.gif" alt="bigcry" class="smiley" /><br /><img src="../images/smilies/extra/biker.gif" alt="biker" class="smiley" /><br /><img src="../images/smilies/extra/blank.gif" alt="blank" class="smiley" /><br /><img src="../images/smilies/extra/blush.gif" alt="blush" class="smiley" /><br /><img src="../images/smilies/extra/bobby.gif" alt="bobby" class="smiley" /><br /><img src="../images/smilies/extra/bobby2.gif" alt="bobby2" class="smiley" /><br /><img src="../images/smilies/extra/bomb.gif" alt="bomb" class="smiley" /><br /><img src="../images/smilies/extra/bomb2.gif" alt="bomb2" class="smiley" /><br /><img src="../images/smilies/extra/book.gif" alt="book" class="smiley" /><br /><img src="../images/smilies/extra/book2.gif" alt="book2" class="smiley" /><br /><img src="../images/smilies/extra/bow.gif" alt="bow" class="smiley" /><br /><img src="../images/smilies/extra/brood.gif" alt="brood" class="smiley" /><br /><img src="../images/smilies/extra/bucktooth.gif" alt="bucktooth" class="smiley" /><br /><img src="../images/smilies/extra/builder.gif" alt="builder" class="smiley" /><br /><img src="../images/smilies/extra/builder2.gif" alt="builder2" class="smiley" /><br /><img src="../images/smilies/extra/bulb.gif" alt="bulb" class="smiley" /><br /><img src="../images/smilies/extra/bulb2.gif" alt="bulb2" class="smiley" /><br /><img src="../images/smilies/extra/charming.gif" alt="charming" class="smiley" /><br /><img src="../images/smilies/extra/cheesy.gif" alt="cheesy" class="smiley" /><br /><img src="../images/smilies/extra/chef.gif" alt="chef" class="smiley" /><br /><img src="../images/smilies/extra/chinese.gif" alt="chinese" class="smiley" /><br /><img src="../images/smilies/extra/clown.gif" alt="clown" class="smiley" /><br /><img src="../images/smilies/extra/computer.gif" alt="computer" class="smiley" /><br /><img src="../images/smilies/extra/confused.gif" alt="confused" class="smiley" /><br /><img src="../images/smilies/extra/cool.gif" alt="cool" class="smiley" /><br /><img src="../images/smilies/extra/cool2.gif" alt="cool2" class="smiley" /><br /><img src="../images/smilies/extra/cool3.gif" alt="cool3" class="smiley" /><br /><img src="../images/smilies/extra/cool4.gif" alt="cool4" class="smiley" /><br /><img src="../images/smilies/extra/cowboy.gif" alt="cowboy" class="smiley" /><br /><img src="../images/smilies/extra/crown.gif" alt="crown" class="smiley" /><br /><img src="../images/smilies/extra/crowngrin.gif" alt="crowngrin" class="smiley" /><br /><img src="../images/smilies/extra/cry.gif" alt="cry" class="smiley" /><br /><img src="../images/smilies/extra/cry2.gif" alt="cry2" class="smiley" /><br /><img src="../images/smilies/extra/curtain.gif" alt="curtain" class="smiley" /><br /><img src="../images/smilies/extra/cyclist.gif" alt="cyclist" class="smiley" /><br /><img src="../images/smilies/extra/daisy.gif" alt="daisy" class="smiley" /><br /><img src="../images/smilies/extra/dead.gif" alt="dead" class="smiley" /><br /><img src="../images/smilies/extra/deal.gif" alt="deal" class="smiley" /><br /><img src="../images/smilies/extra/deal2.gif" alt="deal2" class="smiley" /><br /><img src="../images/smilies/extra/devil.gif" alt="devil" class="smiley" /><br /><img src="../images/smilies/extra/devilish.gif" alt="devilish" class="smiley" /><br /><img src="../images/smilies/extra/disappointed.gif" alt="disappointed" class="smiley" /><br /><img src="../images/smilies/extra/disguise.gif" alt="disguise" class="smiley" /><br /><img src="../images/smilies/extra/dizzy.gif" alt="dizzy" class="smiley" /><br /><img src="../images/smilies/extra/dizzy2.gif" alt="dizzy2" class="smiley" /><br /><img src="../images/smilies/extra/dozey.gif" alt="dozey" class="smiley" /><br /><img src="../images/smilies/extra/drummer.gif" alt="drummer" class="smiley" /><br /><img src="../images/smilies/extra/drunk.gif" alt="drunk" class="smiley" /><br /><img src="../images/smilies/extra/dunce.gif" alt="dunce" class="smiley" /><br /><img src="../images/smilies/extra/dunce2.gif" alt="dunce2" class="smiley" /><br /><img src="../images/smilies/extra/earmuffs.gif" alt="earmuffs" class="smiley" /><br /><img src="../images/smilies/extra/ears.gif" alt="ears" class="smiley" /><br /><img src="../images/smilies/extra/egypt.gif" alt="egypt" class="smiley" /><br /><img src="../images/smilies/extra/elf.gif" alt="elf" class="smiley" /><br /><img src="../images/smilies/extra/elvis.gif" alt="elvis" class="smiley" /><br /><img src="../images/smilies/extra/embarassed.gif" alt="embarassed" class="smiley" /><br /><img src="../images/smilies/extra/end.gif" alt="end" class="smiley" /><br /><img src="../images/smilies/extra/evil.gif" alt="evil" class="smiley" /><br /><img src="../images/smilies/extra/evil2.gif" alt="evil2" class="smiley" /><br /><img src="../images/smilies/extra/evil3.gif" alt="evil3" class="smiley" /><br /><img src="../images/smilies/extra/evilgrin.gif" alt="evilgrin" class="smiley" /><br /><img src="../images/smilies/extra/fireman.gif" alt="fireman" class="smiley" /><br /><img src="../images/smilies/extra/freak.gif" alt="freak" class="smiley" /><br /><img src="../images/smilies/extra/furious.gif" alt="furious" class="smiley" /><br /><img src="../images/smilies/extra/furious2.gif" alt="furious2" class="smiley" /><br /><img src="../images/smilies/extra/furious3.gif" alt="furious3" class="smiley" /><br /><img src="../images/smilies/extra/glasses.gif" alt="glasses" class="smiley" /><br /><img src="../images/smilies/extra/glasses2.gif" alt="glasses2" class="smiley" /><br /><img src="../images/smilies/extra/goofy.gif" alt="goofy" class="smiley" /><br /><img src="../images/smilies/extra/gorgeous.gif" alt="gorgeous" class="smiley" /><br /><img src="../images/smilies/extra/gossip.gif" alt="gossip" class="smiley" /><br /><img src="../images/smilies/extra/greedy.gif" alt="greedy" class="smiley" /><br /><img src="../images/smilies/extra/grin.gif" alt="grin" class="smiley" /><br /><img src="../images/smilies/extra/grin2.gif" alt="grin2" class="smiley" /><br /><img src="../images/smilies/extra/grin3.gif" alt="grin3" class="smiley" /><br /><img src="../images/smilies/extra/guitarist.gif" alt="guitarist" class="smiley" /><br /><img src="../images/smilies/extra/hair.gif" alt="hair" class="smiley" /><br /><img src="../images/smilies/extra/hair2.gif" alt="hair2" class="smiley" /><br /><img src="../images/smilies/extra/hanged.gif" alt="hanged" class="smiley" /><br /><img src="../images/smilies/extra/happy.gif" alt="happy" class="smiley" /><br /><img src="../images/smilies/extra/happy2.gif" alt="happy2" class="smiley" /><br /><img src="../images/smilies/extra/hat.gif" alt="hat" class="smiley" /><br /><img src="../images/smilies/extra/hat2.gif" alt="hat2" class="smiley" /><br /><img src="../images/smilies/extra/heart.gif" alt="heart" class="smiley" /><br /><img src="../images/smilies/extra/helmet.gif" alt="helmet" class="smiley" /><br /><img src="../images/smilies/extra/help.gif" alt="help" class="smiley" /><br /><img src="../images/smilies/extra/hippy.gif" alt="hippy" class="smiley" /><br /><img src="../images/smilies/extra/huh2.gif" alt="huh2" class="smiley" /><br /><img src="../images/smilies/extra/idea.gif" alt="idea" class="smiley" /><br /><img src="../images/smilies/extra/idea2.gif" alt="idea2" class="smiley" /><br /><img src="../images/smilies/extra/idea3.gif" alt="idea3" class="smiley" /><br /><img src="../images/smilies/extra/iloveyou.gif" alt="iloveyou" class="smiley" /><br /><img src="../images/smilies/extra/indian_brave.gif" alt="indian_brave" class="smiley" /><br /><img src="../images/smilies/extra/indian_chief.gif" alt="indian_chief" class="smiley" /><br /><img src="../images/smilies/extra/inquisitive.gif" alt="inquisitive" class="smiley" /><br /><img src="../images/smilies/extra/jester.gif" alt="jester" class="smiley" /><br /><img src="../images/smilies/extra/joker.gif" alt="joker" class="smiley" /><br /><img src="../images/smilies/extra/juggle.gif" alt="juggle" class="smiley" /><br /><img src="../images/smilies/extra/juggle2.gif" alt="juggle2" class="smiley" /><br /><img src="../images/smilies/extra/karate.gif" alt="karate" class="smiley" /><br /><img src="../images/smilies/extra/kid.gif" alt="kid" class="smiley" /><br /><img src="../images/smilies/extra/kiss.gif" alt="kiss" class="smiley" /><br /><img src="../images/smilies/extra/kiss2.gif" alt="kiss2" class="smiley" /><br /><img src="../images/smilies/extra/klingon.gif" alt="klingon" class="smiley" /><br /><img src="../images/smilies/extra/knife.gif" alt="knife" class="smiley" /><br /><img src="../images/smilies/extra/laugh.gif" alt="laugh" class="smiley" /><br /><img src="../images/smilies/extra/laugh2.gif" alt="laugh2" class="smiley" /><br /><img src="../images/smilies/extra/laugh3.gif" alt="laugh3" class="smiley" /><br /><img src="../images/smilies/extra/laugh4.gif" alt="laugh4" class="smiley" /><br /><img src="../images/smilies/extra/leer.gif" alt="leer" class="smiley" /><br /><img src="../images/smilies/extra/lips.gif" alt="lips" class="smiley" /><br /><img src="../images/smilies/extra/lips2.gif" alt="lips2" class="smiley" /><br /><img src="../images/smilies/extra/lipsrsealed.gif" alt="lipsrsealed" class="smiley" /><br /><img src="../images/smilies/extra/lipsrsealed2.gif" alt="lipsrsealed2" class="smiley" /><br /><img src="../images/smilies/extra/lost.gif" alt="lost" class="smiley" /><br /><img src="../images/smilies/extra/love.gif" alt="love" class="smiley" /><br /><img src="../images/smilies/extra/mad.gif" alt="mad" class="smiley" /><br /><img src="../images/smilies/extra/mask.gif" alt="mask" class="smiley" /><br /><img src="../images/smilies/extra/mean.gif" alt="mean" class="smiley" /><br /><img src="../images/smilies/extra/mellow.gif" alt="mellow" class="smiley" /><br /><img src="../images/smilies/extra/mickey.gif" alt="mickey" class="smiley" /><br /><img src="../images/smilies/extra/moustache.gif" alt="moustache" class="smiley" /><br /><img src="../images/smilies/extra/nice.gif" alt="nice" class="smiley" /><br /><img src="../images/smilies/extra/no.gif" alt="no" class="smiley" /><br /><img src="../images/smilies/extra/oops.gif" alt="oops" class="smiley" /><br /><img src="../images/smilies/extra/operator.gif" alt="operator" class="smiley" /><br /><img src="../images/smilies/extra/party.gif" alt="party" class="smiley" /><br /><img src="../images/smilies/extra/party2.gif" alt="party2" class="smiley" /><br /><img src="../images/smilies/extra/party3.gif" alt="party3" class="smiley" /><br /><img src="../images/smilies/extra/pimp.gif" alt="pimp" class="smiley" /><br /><img src="../images/smilies/extra/pimp2.gif" alt="pimp2" class="smiley" /><br /><img src="../images/smilies/extra/pirate.gif" alt="pirate" class="smiley" /><br /><img src="../images/smilies/extra/pleased.gif" alt="pleased" class="smiley" /><br /><img src="../images/smilies/extra/policeman.gif" alt="policeman" class="smiley" /><br /><img src="../images/smilies/extra/pumpkin.gif" alt="pumpkin" class="smiley" /><br /><img src="../images/smilies/extra/punk.gif" alt="punk" class="smiley" /><br /><img src="../images/smilies/extra/rifle.gif" alt="rifle" class="smiley" /><br /><img src="../images/smilies/extra/rockstar.gif" alt="rockstar" class="smiley" /><br /><img src="../images/smilies/extra/rolleyes.gif" alt="rolleyes" class="smiley" /><br /><img src="../images/smilies/extra/rolleyes2.gif" alt="rolleyes2" class="smiley" /><br /><img src="../images/smilies/extra/rolleyes3.gif" alt="rolleyes3" class="smiley" /><br /><img src="../images/smilies/extra/rolleyes4.gif" alt="rolleyes4" class="smiley" /><br /><img src="../images/smilies/extra/rolleyes5.gif" alt="rolleyes5" class="smiley" /><br /><img src="../images/smilies/extra/sad.gif" alt="sad" class="smiley" /><br /><img src="../images/smilies/extra/sad2.gif" alt="sad2" class="smiley" /><br /><img src="../images/smilies/extra/sad3.gif" alt="sad3" class="smiley" /><br /><img src="../images/smilies/extra/santa.gif" alt="santa" class="smiley" /><br /><img src="../images/smilies/extra/santa2.gif" alt="santa2" class="smiley" /><br /><img src="../images/smilies/extra/santa3.gif" alt="santa3" class="smiley" /><br /><img src="../images/smilies/extra/scholar.gif" alt="scholar" class="smiley" /><br /><img src="../images/smilies/extra/shame.gif" alt="shame" class="smiley" /><br /><img src="../images/smilies/extra/shifty.gif" alt="shifty" class="smiley" /><br /><img src="../images/smilies/extra/shocked.gif" alt="shocked" class="smiley" /><br /><img src="../images/smilies/extra/shocked2.gif" alt="shocked2" class="smiley" /><br /><img src="../images/smilies/extra/shocked3.gif" alt="shocked3" class="smiley" /><br /><img src="../images/smilies/extra/shout.gif" alt="shout" class="smiley" /><br /><img src="../images/smilies/extra/shy.gif" alt="shy" class="smiley" /><br /><img src="../images/smilies/extra/sick.gif" alt="sick" class="smiley" /><br /><img src="../images/smilies/extra/sick2.gif" alt="sick2" class="smiley" /><br /><img src="../images/smilies/extra/singer.gif" alt="singer" class="smiley" /><br /><img src="../images/smilies/extra/skull.gif" alt="skull" class="smiley" /><br /><img src="../images/smilies/extra/sleep.gif" alt="sleep" class="smiley" /><br /><img src="../images/smilies/extra/sleeping.gif" alt="sleeping" class="smiley" /><br /><img src="../images/smilies/extra/sleepy.gif" alt="sleepy" class="smiley" /><br /><img src="../images/smilies/extra/smart.gif" alt="smart" class="smiley" /><br /><img src="../images/smilies/extra/smartass.gif" alt="smartass" class="smiley" /><br /><img src="../images/smilies/extra/smartass2.gif" alt="smartass2" class="smiley" /><br /><img src="../images/smilies/extra/smash.gif" alt="smash" class="smiley" /><br /><img src="../images/smilies/extra/smile.gif" alt="smile" class="smiley" /><br /><img src="../images/smilies/extra/smiley.gif" alt="smiley" class="smiley" /><br /><img src="../images/smilies/extra/smiley2.gif" alt="smiley2" class="smiley" /><br /><img src="../images/smilies/extra/smitten.gif" alt="smitten" class="smiley" /><br /><img src="../images/smilies/extra/smoking.gif" alt="smoking" class="smiley" /><br /><img src="../images/smilies/extra/smug.gif" alt="smug" class="smiley" /><br /><img src="../images/smilies/extra/smug2.gif" alt="smug2" class="smiley" /><br /><img src="../images/smilies/extra/sneaky.gif" alt="sneaky" class="smiley" /><br /><img src="../images/smilies/extra/snobby.gif" alt="snobby" class="smiley" /><br /><img src="../images/smilies/extra/snore.gif" alt="snore" class="smiley" /><br /><img src="../images/smilies/extra/sombrero.gif" alt="sombrero" class="smiley" /><br /><img src="../images/smilies/extra/speechless.gif" alt="speechless" class="smiley" /><br /><img src="../images/smilies/extra/square.gif" alt="square" class="smiley" /><br /><img src="../images/smilies/extra/stare.gif" alt="stare" class="smiley" /><br /><img src="../images/smilies/extra/stars.gif" alt="stars" class="smiley" /><br /><img src="../images/smilies/extra/stooge_curly.gif" alt="stooge_curly" class="smiley" /><br /><img src="../images/smilies/extra/stooge_larry.gif" alt="stooge_larry" class="smiley" /><br /><img src="../images/smilies/extra/stooge_moe.gif" alt="stooge_moe" class="smiley" /><br /><img src="../images/smilies/extra/stop.gif" alt="stop" class="smiley" /><br /><img src="../images/smilies/extra/stunned.gif" alt="stunned" class="smiley" /><br /><img src="../images/smilies/extra/stupid.gif" alt="stupid" class="smiley" /><br /><img src="../images/smilies/extra/sultan.gif" alt="sultan" class="smiley" /><br /><img src="../images/smilies/extra/sunny.gif" alt="sunny" class="smiley" /><br /><img src="../images/smilies/extra/surprised.gif" alt="surprised" class="smiley" /><br /><img src="../images/smilies/extra/sweatdrop.gif" alt="sweatdrop" class="smiley" /><br /><img src="../images/smilies/extra/sweetheart.gif" alt="sweetheart" class="smiley" /><br /><img src="../images/smilies/extra/thinking.gif" alt="thinking" class="smiley" /><br /><img src="../images/smilies/extra/thinking2.gif" alt="thinking2" class="smiley" /><br /><img src="../images/smilies/extra/thumbsdown.gif" alt="thumbsdown" class="smiley" /><br /><img src="../images/smilies/extra/thumbsup.gif" alt="thumbsup" class="smiley" /><br /><img src="../images/smilies/extra/tiny.gif" alt="tiny" class="smiley" /><br /><img src="../images/smilies/extra/tired.gif" alt="tired" class="smiley" /><br /><img src="../images/smilies/extra/toff.gif" alt="toff" class="smiley" /><br /><img src="../images/smilies/extra/toilet.gif" alt="toilet" class="smiley" /><br /><img src="../images/smilies/extra/tongue.gif" alt="tongue" class="smiley" /><br /><img src="../images/smilies/extra/tongue2.gif" alt="tongue2" class="smiley" /><br /><img src="../images/smilies/extra/tongue3.gif" alt="tongue3" class="smiley" /><br /><img src="../images/smilies/extra/uhoh.gif" alt="uhoh" class="smiley" /><br /><img src="../images/smilies/extra/uhoh2.gif" alt="uhoh2" class="smiley" /><br /><img src="../images/smilies/extra/undecided.gif" alt="undecided" class="smiley" /><br /><img src="../images/smilies/extra/uneasy.gif" alt="uneasy" class="smiley" /><br /><img src="../images/smilies/extra/vampire.gif" alt="vampire" class="smiley" /><br /><img src="../images/smilies/extra/vanish.gif" alt="vanish" class="smiley" /><br /><img src="../images/smilies/extra/veryangry.gif" alt="veryangry" class="smiley" /><br /><img src="../images/smilies/extra/veryangry2.gif" alt="veryangry2" class="smiley" /><br /><img src="../images/smilies/extra/vulcan.gif" alt="vulcan" class="smiley" /><br /><img src="../images/smilies/extra/wacko.gif" alt="wacko" class="smiley" /><br /><img src="../images/smilies/extra/wacky.gif" alt="wacky" class="smiley" /><br /><img src="../images/smilies/extra/wall.gif" alt="wall" class="smiley" /><br /><img src="../images/smilies/extra/whip.gif" alt="whip" class="smiley" /><br /><img src="../images/smilies/extra/wideeyed.gif" alt="wideeyed" class="smiley" /><br /><img src="../images/smilies/extra/wings.gif" alt="wings" class="smiley" /><br /><img src="../images/smilies/extra/wink.gif" alt="wink" class="smiley" /><br /><img src="../images/smilies/extra/wink2.gif" alt="wink2" class="smiley" /><br /><img src="../images/smilies/extra/wink3.gif" alt="wink3" class="smiley" /><br /><img src="../images/smilies/extra/wiseguy.gif" alt="wiseguy" class="smiley" /><br /><img src="../images/smilies/extra/withclever.gif" alt="withclever" class="smiley" /><br /><img src="../images/smilies/extra/worried.gif" alt="worried" class="smiley" /><br /><img src="../images/smilies/extra/worried2.gif" alt="worried2" class="smiley" /><br /><img src="../images/smilies/extra/wreck.gif" alt="wreck" class="smiley" /><br /><img src="../images/smilies/extra/wry.gif" alt="wry" class="smiley" /><br /><img src="../images/smilies/extra/xmas.gif" alt="xmas" class="smiley" /><br /><img src="../images/smilies/extra/yes.gif" alt="yes" class="smiley" /><br /><img src="../images/smilies/extra/zzz.gif" alt="zzz" class="smiley" />
+			</td>
+		</tr>
+	</table>
+</body>
+</html>

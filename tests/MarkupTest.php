@@ -21,7 +21,17 @@ test"<code>
 	$out =
 '-<br /><pre>
 test&quot;&lt;code&gt;
-</pre><br />-';
+</pre>-';
+	$this->assertEquals($out, $this->Markup->toHtml($in));
+
+	$in =
+'<code>
+test"<code>
+</code>';
+	$out =
+'<pre>
+test&quot;&lt;code&gt;
+</pre>';
 	$this->assertEquals($out, $this->Markup->toHtml($in));
 	}
 
@@ -39,15 +49,15 @@ public function testQuote()
 	$out = '<blockquote><div>test<blockquote><div>test2</div></blockquote></div></blockquote>';
 	$this->assertEquals($out, $this->Markup->toHtml($in));
 
-	$in = '<quote=></quote>';
-	$out = htmlspecialchars('<quote=></quote>');
+	$in = '<quote ></quote>';
+	$out = htmlspecialchars('<quote ></quote>');
 	$this->assertEquals($out, $this->Markup->toHtml($in));
 
-	$in = '<quote=author>test</quote>';
+	$in = '<quote author>test</quote>';
 	$out = '<cite>author</cite><blockquote><div>test</div></blockquote>';
 	$this->assertEquals($out, $this->Markup->toHtml($in));
 
-	$in = '<quote=author>test<quote=author2>test2</quote></quote>';
+	$in = '<quote author>test<quote author2>test2</quote></quote>';
 	$out = '<cite>author</cite><blockquote><div>test<cite>author2</cite><blockquote><div>test2</div></blockquote></div></blockquote>';
 	$this->assertEquals($out, $this->Markup->toHtml($in));
 	}
@@ -120,21 +130,72 @@ abc';
 	$this->assertEquals($out, $this->Markup->toHtml($in));
 	}
 
-public function testDel()
+public function testHeading()
 	{
-	$this->assertEquals('<del>test</del>', $this->Markup->toHtml('--test--'));
+	$this->assertEquals('<h1>test</h1>', $this->Markup->toHtml('!test'));
+	$this->assertEquals('<h2>test</h2>', $this->Markup->toHtml('!!test'));
+	$this->assertEquals('<h3>test</h3>', $this->Markup->toHtml('!!!test'));
+	$this->assertEquals('<h4>test</h4>', $this->Markup->toHtml('!!!!test'));
+	$this->assertEquals('<h5>test</h5>', $this->Markup->toHtml('!!!!!test'));
+	$this->assertEquals('<h6>test</h6>', $this->Markup->toHtml('!!!!!!test'));
 	}
 
-public function testIns()
+public function testEm()
 	{
-	$this->assertEquals('<ins>test</ins>', $this->Markup->toHtml('++test++'));
+	$this->assertEquals('<em>test</em>', $this->Markup->toHtml('//test//'));
 	}
 
 public function testStrong()
 	{
-	$this->assertEquals('<strong>test</strong>', $this->Markup->toHtml('!!test!!'));
+	$this->assertEquals('<strong>test</strong>', $this->Markup->toHtml('**test**'));
 	}
 
+public function testInlineCode()
+	{
+	$this->assertEquals('<code>//test//</code>', $this->Markup->toHtml('==//test//=='));
+	}
+
+public function testInlineQuote()
+	{
+	$this->assertEquals('<q>test</q>', $this->Markup->toHtml('"test"'));
+	}
+
+public function testHr()
+	{
+	$this->assertEquals('<hr />', $this->Markup->toHtml('----'));
+	}
+
+public function testDel()
+	{
+	$this->assertEquals('<span><del>test</del></span>', $this->Markup->toHtml('--test--'));
+	}
+
+public function testIns()
+	{
+	$this->assertEquals('<span><ins>test</ins></span>', $this->Markup->toHtml('++test++'));
+	}
+
+public function testURL()
+	{
+	$this->assertEquals('<a href="http://www.laber-land.de" onclick="return !window.open(this.href);" rel="nofollow" class="extlink">Laber-Land</a>', $this->Markup->toHtml('<http://www.laber-land.de Laber-Land>'));
+	$this->assertEquals('<a href="http://www.laber-land.de" onclick="return !window.open(this.href);" rel="nofollow" class="extlink">Laber-Land</a>', $this->Markup->toHtml('<www.laber-land.de Laber-Land>'));
+	$this->assertEquals('<a href="ftp://ftp.laber-land.de" onclick="return !window.open(this.href);" rel="nofollow" class="extlink">Laber-Land</a>', $this->Markup->toHtml('<ftp.laber-land.de Laber-Land>'));
+	$this->assertEquals('<a href="http://www.laber-land.de" onclick="return !window.open(this.href);" rel="nofollow" class="extlink">[1]</a>', $this->Markup->toHtml('<http://www.laber-land.de>'));
+	$this->assertEquals('<a href="http://www.laber-land.de" onclick="return !window.open(this.href);" rel="nofollow" class="extlink">[2]</a>', $this->Markup->toHtml('<www.laber-land.de>'));
+	$this->assertEquals('<a href="ftp://ftp.laber-land.de" onclick="return !window.open(this.href);" rel="nofollow" class="extlink">[3]</a>', $this->Markup->toHtml('<ftp.laber-land.de>'));
+	$this->assertEquals('<a href="mailto:support@laber-land.de">support@laber-land.de</a>', $this->Markup->toHtml('support@laber-land.de'));
+// 	$this->assertEquals('<img src="http://www.laber-land.de/images/logo.png" alt="" class="image" onclick="openImage(this)" />', $this->Markup->toHtml('http://www.laber-land.de/images/logo.png'));
+// 	$this->assertEquals('<img src="http://www.laber-land.de/images/logo.png" alt="" class="image" onclick="openImage(this)" />', $this->Markup->toHtml('www.laber-land.de/images/logo.png'));
+// 	$this->assertEquals('<img src="ftp://ftp.laber-land.de/images/logo.png" alt="" class="image" onclick="openImage(this)" />', $this->Markup->toHtml('ftp.laber-land.de/images/logo.png'));
+	$this->assertEquals('<a href="http://www.laber-land.de" onclick="return !window.open(this.href);" rel="nofollow" class="extlink">http://www.laber-land.de</a>', $this->Markup->toHtml('http://www.laber-land.de'));
+	$this->assertEquals('<a href="http://www.laber-land.de" onclick="return !window.open(this.href);" rel="nofollow" class="extlink">www.laber-land.de</a>', $this->Markup->toHtml('www.laber-land.de'));
+	$this->assertEquals('<a href="ftp://ftp.laber-land.de" onclick="return !window.open(this.href);" rel="nofollow" class="extlink">ftp.laber-land.de</a>', $this->Markup->toHtml('ftp.laber-land.de'));
+	}
+
+public function testSmilies()
+	{
+	$this->assertEquals('<img src="images/smilies/wink.gif" alt="wink" class="smiley" />',$this->Markup->toHtml(';-)'));
+	}
 
 }
 

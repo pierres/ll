@@ -7,12 +7,12 @@ class NewPrivatePost extends NewPost {
 
 public function __construct()
 	{
+	parent::__construct();
+
 	if (!$this->User->isOnline())
 		{
 		$this->showFailure('Nur für Mitglieder');
 		}
-
-	parent::__construct();
 	}
 
 

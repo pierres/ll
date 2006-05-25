@@ -146,7 +146,7 @@ protected function sendFile($postid)
 		$stm = $this->DB->prepare
 			('
 			DELETE FROM
-				post_file
+				post_attachments
 			WHERE
 				postid = ?'
 			);

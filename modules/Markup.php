@@ -22,8 +22,8 @@ private $linkNumber 		= 1;
 */
 private $search 		= array();
 private $replace 		= array();
-private $codeSearch 		= '';
-private $codeReplace 		= '';
+private $codeSearch 		= array();
+private $codeReplace 		= array();
 private $smilies_search		= array();
 private $smilies_replace	= array();
 
@@ -58,32 +58,11 @@ function __construct()
 
 
 	/** Code muß am Zeilenanfang beginnen */
-	$this->codeSearch  = '#^<code(?: (\w{3,8}))?>$(.+?)^</code>$#esm';//<code>.+</code>
-	$this->codeReplace = '$this->makeCode(\'$2\', \'$1\')';
-
-	$this->search[]  = '#&lt;quote(?:=.+?)?&gt;.+&lt;/quote&gt;#es';//<quote=...>...</quote>
-	$this->replace[] = '$this->makeQuote(\'$0\')';
-
-	/** Listen */
-	$this->search[]  = '/(?:^\*+ [^\n]+$\n?)+/em';
-	$this->replace[] = '$this->makeList(\'$0\')';
-
-	/** Überschriften */
-	$this->search[]  = '/^=(={1,6})=*(.+?)=*$/me';
-	$this->replace[] = '$this->makeHeading(\'$2\', strlen(\'$1\'))';
-
-	/** neu: Hervorhebungen */
-	$this->search[]  = '/\'\'(.+?)\'\'/';
-	$this->replace[] = '<em>$1</em>';
-
-	$this->search[]  = '/!!(.+?)!!/';
-	$this->replace[] = '<strong>$1</strong>';
-
-	$this->search[]  = '/--(.+?)--/';
-	$this->replace[] = '<del>$1</del>';
-
-	$this->search[]  = '/\+\+(.+?)\+\+/';
-	$this->replace[] = '<ins>$1</ins>';
+	$this->codeSearch[]  = '#^<code>$(.+?)^</code>$\n?#esm';
+	$this->codeReplace[] = '$this->makeCode(\'$1\')';
+	/** Inline Code */
+	$this->codeSearch[]  = '/==(.+?)==/e';
+	$this->codeReplace[] = '$this->makeCode(\'$1\', \'code\')';
 
 
 	/** komplette URL mit Namen */
@@ -133,6 +112,35 @@ function __construct()
 	$this->replace[] = '$this->makeLink(\'ftp://$0\', \'$0\')';
 
 
+	/** Zitate */
+	$this->search[]  = '#&lt;quote(?: .+?)?&gt;.+&lt;/quote&gt;#es';
+	$this->replace[] = '$this->makeQuote(\'$0\')';
+	/** Überschriften */
+	$this->search[]  = '/^(!{1,6})(.+?)$(\n?)/me';
+	$this->replace[] = '$this->makeHeading(\'$2\', strlen(\'$1\')).\'$3\'';
+	/** Hervorhebungen */
+	$this->search[]  = '#//([^/\n]+?)//#';
+	$this->replace[] = '<em>$1</em>';
+
+	$this->search[]  = '/\*\*([^\*\n]+?)\*\*/';
+	$this->replace[] = '<strong>$1</strong>';
+
+	$this->search[]  = '/&quot;(.+?)&quot;/';
+	$this->replace[] = '<q>$1</q>';
+
+	$this->search[]  = '/^----+$(\n?)/m';
+	$this->replace[] = '<hr />$1';
+
+	$this->search[]  = '/--(.+?)--/';
+	$this->replace[] = '<span><del>$1</del></span>';
+
+	$this->search[]  = '/\+\+(.+?)\+\+/';
+	$this->replace[] = '<span><ins>$1</ins></span>';
+
+	/** Listen */
+	$this->search[]  = '/(?:^\*+ [^\n]+$\n?)+/em';
+	$this->replace[] = '$this->makeList(\'$0\')';
+
 	$this->smilies_search[] = '/(^|\s)(;-?\))($|\W)/e';		//;-) ;)
 	$this->smilies_replace[]   = '\'$1\'.$this->makeSmiley(\'wink\').\'$3\'';
 
@@ -145,7 +153,7 @@ function __construct()
 	$this->smilies_search[] = '/(^|\s)(:-?\))($|\W)/e';		//:-) :)
 	$this->smilies_replace[]   = '\'$1\'.$this->makeSmiley(\'smiley\').\'$3\'';
 
-	$this->smilies_search[] = '/(^|\s)(:-\\\|:-\/)($|\W)/e';	//:-\ ;-/
+	$this->smilies_search[] = '/(^|\s)(:-\\\|:-\/)($|\W)/e';	//:-\ :-/
 	$this->smilies_replace[]   = '\'$1\'.$this->makeSmiley(\'undecided\').\'$3\'';
 
 	$this->smilies_search[] = '/(^|\s)(:-X)($|\W)/ie';		//:-X :-x
@@ -181,8 +189,8 @@ function __construct()
 	$this->smilies_search[] = '/(^|\s)(:?\'\()($|\W)/e';		//'( :'(
 	$this->smilies_replace[]   = '\'$1\'.$this->makeSmiley(\'cry\').\'$3\'';
 
-	$this->smilies_search[] = '/(^|\s):(\w{2,15}):($|\W)/e';
-	$this->smilies_replace[] = '\'$1\'.$this->makeExtraSmiley(\'$2\').\'$3\'';
+	$this->smilies_search[] = '/&lt;(\w{2,15})&gt;/e';
+	$this->smilies_replace[] = '$this->makeExtraSmiley(\'$1\')';
 	}
 
 /**
@@ -240,34 +248,14 @@ public function toHtml($text)
 	return $text;
 	}
 
-private function makeCode($in, $type = '')
+private function makeCode($in, $tag = 'pre')
 	{
 	/** FIXME Vielleicht kann man dieses blöde Veerhalten von PHP ausschalten
 		-> preg_replace_callback
 	*/
 	$in = str_replace('\"', '"', $in);
 
-	$type = strtolower($type);
-
-// 	if (!empty($type) && file_exists(PATH.'/external/geshi/geshi/languages/'.$type))
-// 		{
-// 		$errorLevel = error_reporting(E_ALL);
-//
-// 		include_once(PATH.'/external/geshi/class.geshi.php');
-//
-// 		$geshi = new GeSHi($in, $type);
-// // 		$geshi->setHeaderType(GESHI_HEADER_PRE);
-// // 		$geshi->setEncoding('utf-8');
-// // 		$geshi->enableClasses();
-//
-// 		$this->Codes->push($geshi->parseCode());
-//
-// 		error_reporting($errorLevel);
-// 		}
-// 	else
-// 		{
-		$this->Codes->push('<pre>'.htmlspecialchars($in).'</pre>');
-// 		}
+	$this->Codes->push('<'.$tag.'>'.htmlspecialchars($in, ENT_COMPAT, 'UTF-8').'</'.$tag.'>');
 
 	return $this->sepc.$this->Codes->lastID().$this->sepc;
 	}
@@ -302,7 +290,7 @@ private function makeQuote($in)
 	{
 	$in = preg_replace
 		(
-		array('#&lt;quote(?:=(.+?))?&gt;#e'  , '#&lt;/quote&gt;#e'),
+		array('#&lt;quote(?: (.+?))?&gt;\s*#e'  , '#\s*&lt;/quote&gt;#e'),
 		array('$this->openQuote(\'$1\')', '$this->closeQuote()'),
 		$in
 		);
@@ -385,7 +373,7 @@ private function makeLink($url, $name = '')
 		// Verhindere das Abschneiden im Entity
 		$name = unhtmlspecialchars($name);
 		$name = substr($name, 0, 37).'...'.substr($name, -10);
-		$name = htmlspecialchars($name);
+		$name = htmlspecialchars($name, ENT_COMPAT, 'UTF-8');
 		}
 
 	/** FIXME: externer oder interner Link? */
@@ -395,25 +383,24 @@ private function makeLink($url, $name = '')
 		}
 	else
 		{
-		$target = ' onclick="openLink(this)" rel="nofollow" class="extlink"';
+		$target = ' onclick="return !window.open(this.href);" rel="nofollow" class="extlink"';
 		}
 
-	$this->Stack->push('<a href="'.rehtmlspecialchars($url).'"'.$target.'>'.rehtmlspecialchars($name).'</a>');
+	$this->Stack->push('<a href="'.$url.'"'.$target.'>'.$name.'</a>');
 
 	return $this->sep.$this->Stack->lastID().$this->sep;
 	}
 
 private function makeImage($url)
 	{
-	$this->Stack->push('<img src="'.rehtmlspecialchars($url).'" alt="" class="image" onclick="openImage(this)" />');
-	//$this->Stack->push('<img src="?page=GetImage;thumb;url='.rehtmlspecialchars($url).'" alt="" class="image" onclick="openImage(this)" />');
+	$this->Stack->push('<a href="?page=GetImage;url='.urlencode($url).'" onclick="return !window.open(this.href);" rel="nofollow"><img src="?page=GetImage;thumb;url='.urlencode($url).'" alt="" class="image" /></a>');
 
 	return $this->sep.$this->Stack->lastID().$this->sep;
 	}
 
 private function makeEmail($email)
 	{
-	$email = rehtmlspecialchars($email);
+// 	$email = rehtmlspecialchars($email);
 
 	$this->Stack->push('<a href="mailto:'.$email.'">'.$email.'</a>');
 
@@ -429,14 +416,16 @@ private function makeSmiley($smiley)
 
 private function makeExtraSmiley($smiley)
 	{
-	if (file_exists(PATH.'images/smilies/extra/'.$smiley.'.gif'))
+	$smilies = array('Mr-T','afro','alien','angel','angry','annoyed','antlers','anxious','argue','army','artist','baby','balloon','balloon2','balloon3','bandana','batman','beadyeyes','beadyeyes2','beam','beatnik','beatnik2','behead','behead2','bigcry','biker','blank','blush','bobby','bobby2','bomb','bomb2','book','book2','bow','brood','bucktooth','builder','builder2','bulb','bulb2','charming','cheesy','chef','chinese','clown','computer','confused','cool','cool2','cool3','cool4','cowboy','crown','crowngrin','cry','cry2','curtain','cyclist','daisy','dead','deal','deal2','devil','devilish','disappointed','disguise','dizzy','dizzy2','dozey','drummer','drunk','dunce','dunce2','earmuffs','ears','egypt','elf','elvis','embarassed','end','evil','evil2','evil3','evilgrin','fireman','freak','furious','furious2','furious3','glasses','glasses2','goofy','gorgeous','gossip','greedy','grin','grin2','grin3','guitarist','hair','hair2','hanged','happy','happy2','hat','hat2','heart','helmet','help','hippy','huh2','idea','idea2','idea3','iloveyou','indian_brave','indian_chief','inquisitive','jester','joker','juggle','juggle2','karate','kid','kiss','kiss2','klingon','knife','laugh','laugh2','laugh3','laugh4','leer','lips','lips2','lipsrsealed','lipsrsealed2','lost','love','mad','mask','mean','mellow','mickey','moustache','nice','no','oops','operator','party','party2','party3','pimp','pimp2','pirate','pleased','policeman','pumpkin','punk','rifle','rockstar','rolleyes','rolleyes2','rolleyes3','rolleyes4','rolleyes5','sad','sad2','sad3','santa','santa2','santa3','scholar','shame','shifty','shocked','shocked2','shocked3','shout','shy','sick','sick2','singer','skull','sleep','sleeping','sleepy','smart','smartass','smartass2','smash','smile','smiley','smiley2','smitten','smoking','smug','smug2','sneaky','snobby','snore','sombrero','speechless','square','stare','stars','stooge_curly','stooge_larry','stooge_moe','stop','stunned','stupid','sultan','sunny','surprised','sweatdrop','sweetheart','thinking','thinking2','thumbsdown','thumbsup','tiny','tired','toff','toilet','tongue','tongue2','tongue3','uhoh','uhoh2','undecided','uneasy','vampire','vanish','veryangry','veryangry2','vulcan','wacko','wacky','wall','whip','wideeyed','wings','wink','wink2','wink3','wiseguy','withclever','worried','worried2','wreck','wry','xmas','yes','zzz');
+
+	if (in_array($smiley, $smilies))
 		{
 		$this->Stack->push('<img src="images/smilies/extra/'.$smiley.'.gif" alt="'.$smiley.'" class="smiley" />');
 		return $this->sep.$this->Stack->lastID().$this->sep;
 		}
 	else
 		{
-		return ':'.$smiley.':';
+		return '&lt;'.$smiley.'&gt;';
 		}
 	}
 

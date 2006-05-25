@@ -31,7 +31,7 @@ public function prepare()
 						threads.posts,
 						0 AS forumid,
 						0 AS forumname,
-						(SELECT text FROM posts WHERE threadid = threads.id AND dat = threads.firstdate) AS summary
+						summary
 					FROM
 						threads,
 						thread_user
@@ -59,7 +59,7 @@ public function prepare()
 						threads.posts,
 						forums.id AS forumid,
 						forums.name AS forumname,
-						(SELECT text FROM posts WHERE threadid = threads.id AND dat = threads.firstdate) AS summary
+						summary
 					FROM
 						forums,
 						threads
@@ -95,7 +95,7 @@ public function prepare()
 					threads.posts,
 					forums.id AS forumid,
 					forums.name AS forumname,
-					(SELECT text FROM posts WHERE threadid = threads.id AND dat = threads.firstdate) AS summary
+					summary
 				FROM
 					forums,
 					threads

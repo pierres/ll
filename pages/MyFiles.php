@@ -22,9 +22,10 @@ protected function setForm()
 				id,
 				name,
 				size,
-				uploaded
+				uploaded,
+				type
 			FROM
-				files
+				attachments
 			WHERE
 				userid = ?
 			ORDER BY
@@ -49,9 +50,28 @@ protected function setForm()
 
 	foreach ($files as $file)
 		{
+		if (strpos($file['type'], 'image/jpeg') === 0 ||
+			strpos($file['type'], 'image/pjpeg') === 0 ||
+			strpos($file['type'], 'image/png') === 0 ||
+			strpos($file['type'], 'image/gif') === 0)
+			{
+			$hover = '  onmouseover="javascript:document.getElementById(\'thumb'.$file['id'].'\').style.visibility=\'visible\'"
+			onmouseout="javascript:document.getElementById(\'thumb'.$file['id'].'\').style.visibility=\'hidden\'" ';
+			$preview = '<script type="text/javascript">
+						<!--
+						document.write("<img style=\"visibility:hidden;width:auto;height:auto;position:absolute;\" id=\"thumb'.$file['id'].'\" src=\"?page=GetAttachmentThumb;file='.$file['id'].'\"  alt=\"'.$file['name'].'\" class=\"image\" />");
+						-->
+					</script>';
+			}
+		else
+			{
+			$hover ='';
+			$preview ='';
+			}
+
 		$list .= '<tr>
-		<td><a onclick="openLink(this)" class="link" href="?page=GetFile;file='.$file['id'].'">'.$file['name'].'</a></td>
-		<td style="text-align:right;">'.round($file['size'] / 1024, 2).'</td>
+		<td'.$hover.'><a  onclick="return !window.open(this.href);" class="link" href="?page=GetAttachment;file='.$file['id'].'">'.$file['name'].'</a></td>
+		<td style="text-align:right;">'.$preview.round($file['size'] / 1024, 2).'</td>
 		<td style="text-align:right;">'.formatDate($file['uploaded']).'</td>
 		<td style="text-align:right;"><a href="?page=DelFile;id='.$this->Board->getId().';file='.$file['id'].'"><span class="button" style="background-color:#CC0000">X</span></a></td>
 		</tr>';
@@ -65,7 +85,7 @@ protected function setForm()
 				COUNT(*) AS files,
 				SUM(size) AS quota
 			FROM
-				files
+				attachments
 			WHERE
 				userid = ?'
 			);
@@ -118,7 +138,7 @@ protected function checkForm()
 				COUNT(*) AS files,
 				SUM(size) AS quota
 			FROM
-				files
+				attachments
 			WHERE
 				userid = ?'
 			);
@@ -144,12 +164,12 @@ protected function checkForm()
 
 protected function sendForm()
 	{
-	$content = gzencode(file_get_contents($this->file['tmp_name']), 9);
+	$content = file_get_contents($this->file['tmp_name']);
 
 	$stm = $this->DB->prepare
 		('
 		INSERT INTO
-			files
+			attachments
 		SET
 			name = ?,
 			type = ?,
@@ -167,6 +187,36 @@ protected function sendForm()
 	$stm->execute();
 
 	unlink($this->file['tmp_name']);
+
+	if (strpos($this->file['type'], 'image/jpeg') === 0 ||
+			strpos($this->file['type'], 'image/pjpeg') === 0 ||
+			strpos($this->file['type'], 'image/png') === 0 ||
+			strpos($this->file['type'], 'image/gif') === 0)
+			{
+			try
+				{
+				$thumbcontent = resizeImage($content, $this->file['type'], $this->Settings->getValue('thumb_size'));
+				}
+			catch (Exception $e)
+				{
+				$this->Io->redirect('MyFiles');
+				}
+
+			$stm = $this->DB->prepare
+				('
+				INSERT INTO
+					attachment_thumbnails
+				SET
+					id = ?,
+					size = ?,
+					content = ?'
+				);
+			$stm->bindInteger($this->DB->getInsertId());
+			$stm->bindInteger(strlen($thumbcontent));
+			$stm->bindString($thumbcontent);
+
+			$stm->execute();
+			}
 
 	$this->Io->redirect('MyFiles');
 	}

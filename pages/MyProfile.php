@@ -4,13 +4,15 @@
 class MyProfile extends Form{
 
 private $realname 	= '';
-private $gender 	= 0;
-private $birthday 	= 0;
+private $gender 		= 0;
+private $birthday 		= 0;
 private $email 		= '';
-private $location 	= '';
-private $plz		= '';
-private $avatar		= '';
-private $text		= '';
+private $location 		= '';
+private $plz			= '';
+private $deleteavatar	= false;
+private $avatar 		= array();
+private $hasavatar	= false;
+private $text			= '';
 
 
 protected function setForm()
@@ -41,7 +43,7 @@ protected function setForm()
 	$this->addText('plz', 'Deine Postleitzahl', !empty($this->plz) ? $this->plz : '', 5);
 	$this->setLength('plz', 5, 5);
 
-	$this->listMyFiles();
+	$this->showAvatar();
 
 	$this->addTextarea('text', 'Freier Text', $this->text);
 	$this->setLength('text', 3, 65536);
@@ -138,13 +140,24 @@ protected function checkForm()
 		$this->birthday = 0;
 		}
 
+	$this->deleteavatar = $this->Io->isRequest('deleteavatar');
+
 	try
 		{
-		$this->avatar = $this->Io->getInt('avatar');
+		$this->avatar = $this->Io->getUploadedFile('avatar');
+
+		if ($this->avatar['size'] >= $this->Settings->getValue('file_size'))
+			{
+			$this->showWarning('Neuer Avatar ist zu groß!');
+			}
+
+		if (strpos($this->avatar['type'], 'image/') !== 0)
+			{
+			$this->showWarning('Neuer Avatar ist kein Bild!');
+			}
 		}
-	catch (IoRequestException $e)
+	catch (IoException $e)
 		{
-		$this->avatar = 0;
 		}
 
 	try
@@ -166,7 +179,7 @@ private function getData()
 			birthday,
 			location,
 			plz,
-			avatar,
+			(SELECT id FROM avatars WHERE id = users.id) AS avatar,
 			text
 		FROM
 			users
@@ -181,7 +194,7 @@ private function getData()
 	$this->birthday		= $data['birthday'];
 	$this->location 	= unhtmlspecialchars($data['location']);
 	$this->plz 		= $data['plz'];
-	$this->avatar 		= $data['avatar'];
+ 	$this->hasavatar 	= !empty($data['avatar']) ;
 	$this->text 		= $this->UnMarkup->fromHtml($data['text']);
 	}
 
@@ -206,7 +219,6 @@ protected function sendForm()
 			birthday = ?,
 			location = ?,
 			plz = ?,
-			avatar = ?,
 			text = ?
 		WHERE
 			id = ?'
@@ -216,50 +228,121 @@ protected function sendForm()
 	$stm->bindInteger($this->birthday);
 	$stm->bindString(htmlspecialchars($this->location));
 	$stm->bindInteger($this->plz);
-	$stm->bindInteger($this->avatar);
 	$stm->bindString($text);
 	$stm->bindInteger($this->User->getId());
 
 	$stm->execute();
 
+	if (!empty($this->avatar) && !$this->Io->isRequest('deleteavatar'))
+		{
+		$this->sendAvatar();
+		}
+	elseif($this->hasavatar && $this->Io->isRequest('deleteavatar'))
+		{
+		$this->deleteAvatar();
+		}
+
 	$this->Io->redirect('MyProfile');
 	}
 
-private function listMyFiles()
+private function showAvatar()
 	{
-	try
+	$this->addOutput('<fieldset><legend>Avatar</legend>');
+	if ($this->hasavatar)
+		{
+		$this->addOutput('<img src="?page=GetAvatar;user='.$this->User->getId().'" class="avatar" alt="" />');
+		$this->addCheckbox('deleteavatar', 'Avatar löschen');
+		$this->addOutput('<br />');
+		}
+	$this->addFile('avatar', 'neuer Avatar', 25);
+	$this->addOutput('</fieldset>');
+	}
+/** FIXME: Exception-Handling hinzufügen */
+private function sendAvatar()
+	{
+	$content = resizeImage(file_get_contents($this->avatar['tmp_name']), $this->avatar['type'], $this->Settings->getValue('avatar_size'));
+
+	if (empty($content))
+		{
+		$content = $this->avatar['tmp_name'];
+		}
+
+	if ($this->hasavatar)
 		{
 		$stm = $this->DB->prepare
 			('
-			SELECT
-				id,
-				name
-			FROM
-				files
+			UPDATE
+				avatars
+			SET
+				name = ?,
+				type = ?,
+				size = ?,
+				content = ?
 			WHERE
-				userid = ?
-				AND type LIKE \'image/%\'
-				AND size <= ?
-			ORDER BY
-				id DESC
-			');
-		$stm->bindInteger($this->User->getId());
-		$stm->bindInteger($this->Settings->getValue('avatar_size'));
-		$files = $stm->getRowSet();
+				id = ?'
+			);
 		}
-	catch (DBNoDataException $e)
+	else
 		{
-		$files = array();
+		$stm = $this->DB->prepare
+			('
+			INSERT INTO
+				avatars
+			SET
+				name = ?,
+				type = ?,
+				size = ?,
+				content = ?,
+				id = ?'
+			);
 		}
 
-	$list = array('<em>kein Avatar</em>' => 0);
+	$stm->bindString(htmlspecialchars($this->avatar['name']));
+	$stm->bindString($this->avatar['type']);
+	$stm->bindInteger(strlen($content));
+	$stm->bindString($content);
+	$stm->bindInteger($this->User->getId());
+	$stm->execute();
 
-	foreach ($files as $file)
-		{
-		$list['<a class="link" onclick="openLink(this)" href="?page=GetFile;file='.$file['id'].'">'.$file['name'].'</a>'] = $file['id'];
-		}
+	unlink($this->avatar['tmp_name']);
 
-	$this->addRadio('avatar', 'Avatar', $list, $this->avatar);
+	$stm = $this->DB->prepare
+		('
+		UPDATE
+			users
+		SET
+			avatar = 1
+		WHERE
+			id = ?'
+		);
+	$stm->bindInteger($this->User->getId());
+	$stm->execute();
+	}
+
+private function deleteAvatar()
+	{
+	$stm = $this->DB->prepare
+		('
+		DELETE FROM
+			avatars
+		WHERE
+			id = ?'
+		);
+
+	$stm->bindInteger($this->User->getId());
+	$stm->execute();
+
+	$stm = $this->DB->prepare
+		('
+		UPDATE
+			users
+		SET
+			avatar = 0
+		WHERE
+			id = ?'
+		);
+	$stm->bindInteger($this->User->getId());
+	$stm->execute();
 	}
 
 }

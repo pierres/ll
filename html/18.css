@@ -1,6 +1,6 @@
 body		{
 
-	font-family : Verdana;	
+	font-family : Verdana;
 	border : none;
 	height : auto;
 	letter-spacing : normal;
@@ -132,7 +132,7 @@ background-image:url(http://www.meinungsschreiber.net/images/logo_neu_1.gif);
 
 #welcome	{
 		padding-left:250px;
-		padding-top:20px;		
+		padding-top:20px;
 		font-size:12px;
 		font-weight:bold;
 		}
@@ -459,65 +459,9 @@ select		{
 		border-color:#6c83af;
 		}
 
-
-.comment		{
-			color:#808080;
-			}
-
-.doc			{
-			color:blue;
-			}
-
-.doctag			{
-			color:green;
-			}
-
-.docfixme		{
-			color:red;
-			}
-
-.docparam		{
-			color:yellow;
-			}
-
-.escape			{
-			color:#0F0F8F;
-			}
-
-.variable		{
-			color:#5555FF;
-			}
-
-.string			{
-			color:#008000;
-			}
-
-.char			{
-			color:#00C000;
-			}
-
-.integer		{
-			color:#0000FF;
-			}
-
-.boolean		{
-			color:#800080;
-			}
-
-.tag			{
-			color:#0000C0;
-			}
-
-.keyword		{
-			color:#800000;
-			font-weight:bold;
-			}
-
-.operator		{
-			color:#00FF00;
-			}
-
-.function		{
-			color:#000080;
-			font-weight:bold;
-			}
+h1{font-size:20px;}
+h2{font-size:18px;}
+h3{font-size:16px;}
+h4{font-size:14px;}
+h5{font-size:12px;}
+h6{font-size:10px;}

@@ -1,7 +1,7 @@
 <?php
 
 
-class UnMarkup extends Modul{
+class UpgradeUnMarkup extends Modul{
 
 private $sep;
 private $sepc;
@@ -23,20 +23,51 @@ public function fromHtml($text)
 		{
 		return '';
 		}
+	/** alte Code-Übereste */
+	$search[] = '[url]';
+	$replace[] = '';
+
+	$search[] = '[/url]';
+	$replace[] = '';
+
+	$search[] = '[URL]';
+	$replace[] = '';
+
+	$search[] = '[/URL]';
+	$replace[] = '';
+
+	$search[] = '[img]';
+	$replace[] = '';
+
+	$search[] = '[/img]';
+	$replace[] = '';
+
+	$search[] = '[url=';
+	$replace[] = '';
+
+	$search[] = '[URL=';
+	$replace[] = '';
+
+	$search[] = '[img=';
+	$replace[] = '';
+
+	$search[] = '[b]';
+	$replace[] = '';
+
+	$search[] = '[/b]';
+	$replace[] = '';
 
 	/** LL3.1-Kompatibilität */
 	$search[] = '<br />';
 	$replace[] = "\n";
 
-	$search[] = '<code>';
-	$replace[] = '==';
-	$search[] = '</code>';
-	$replace[] = '==';
-
 	$search[] = '<pre>';
 	$replace[] = '<code>';
 	$search[] = '</pre>';
 	$replace[] = "</code>\n";
+
+	$preg_search[] = '/<pre class="(\w{3,8})">/';
+	$preg_replace[] = '<code>';
 
 	$preg_search[] = '/<span class="\w+?">/';
 	$preg_replace[] = '';
@@ -64,22 +95,12 @@ public function fromHtml($text)
 	$search[] = '</strong>';
 	$replace[] = '**';
 
-	$search[] = '<hr />';
-	$replace[] = "----\n";
-
-
-
-	$search[] = '<q>';
-	$replace[] = '"';
-	$search[] = '</q>';
-	$replace[] = '"';
-
-	$search[] = '<span><del>';
+	$search[] = '<del>';
 	$replace[] = '--';
 	$search[] = '</del>';
 	$replace[] = '--';
 
-	$search[] = '<span><ins>';
+	$search[] = '<ins>';
 	$replace[] = '++';
 	$search[] = '</ins>';
 	$replace[] = '++';
@@ -87,7 +108,7 @@ public function fromHtml($text)
 	$preg_search[] = '#<a href="mailto:(.+?)">.+?</a>#';
 	$preg_replace[] = '$1';
 
-	$preg_search[] = '#<a href="(.+?)"(?: onclick="return !window\.open\(this\.href\);" rel="nofollow" class="extlink"| class="link")>(.+?)</a>#e';
+	$preg_search[] = '#<a href="(.+?)"(?: onclick="openLink\(this\)" rel="nofollow" class="extlink"| class="link")?>(.+?)</a>#e';
 	$preg_replace[] = '$this->unmakeLink(\'$1\', \'$2\')';
 
 	$preg_search[] = '#<img src="images/smilies/\w+.gif" alt="(\w+)" class="smiley" />#e';
@@ -96,8 +117,8 @@ public function fromHtml($text)
 	$preg_search[] = '#<img src="images/smilies/extra/\w+.gif" alt="(\w+)" class="smiley" />#e';
 	$preg_replace[] ='$this->unmakeExtraSmiley(\'$1\')';
 
-	$preg_search[] = '#<a href="\?page=GetImage;url=(.+?)" onclick="return !window\.open\(this\.href\);" rel="nofollow"><img src="\?page=GetImage;thumb;url=(.+?)" alt="" class="image" /></a>#e';
-	$preg_replace[] = 'urldecode(\'$1\')';
+	$preg_search[] = '#<img src="(.+?)" alt="" class="image" (?:onclick="openImage\(this\)" )?/>#';
+	$preg_replace[] = '$1';
 
 	$preg_search[] = '#<ul>.+</ul>#es';
 	$preg_replace[] = '$this->unmakeList(\'$0\')';

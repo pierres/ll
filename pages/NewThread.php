@@ -202,8 +202,30 @@ protected function sendForm()
 	$stm->execute();
 
 	$this->sendPoll();
+	$this->sendThreadSummary();
 
 	parent::sendForm();
+	}
+
+protected function sendThreadSummary()
+	{
+	$summary = str_replace('<br />', ' ', $this->text);
+	$summary = str_replace("\n", ' ', strip_tags($summary));
+	$summary = cutString($summary,  300);
+
+	$stm = $this->DB->prepare
+		('
+		UPDATE
+			threads
+		SET
+			summary = ?
+		WHERE
+			id = ?
+		');
+
+	$stm->bindString($summary);
+	$stm->bindInteger($this->thread);
+	$stm->execute();
 	}
 }
 

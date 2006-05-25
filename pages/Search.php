@@ -56,7 +56,7 @@ protected function checkForm()
 				MATCH (threads.name) AGAINST (? IN BOOLEAN MODE) AS score,
 				forums.id AS forumid,
 				forums.name AS forumname,
-				(SELECT text FROM posts WHERE threadid = threads.id AND dat = threads.firstdate) AS summary
+				summary
 			FROM
 				threads,
 				forums
@@ -86,7 +86,7 @@ protected function checkForm()
 				MATCH (posts.text) AGAINST (? IN BOOLEAN MODE) as score,
 				forums.id AS forumid,
 				forums.name AS forumname,
-				(SELECT text FROM posts WHERE threadid = threads.id AND dat = threads.firstdate) AS summary
+				summary
 			FROM
 				posts,
 				threads,
@@ -226,7 +226,7 @@ protected function listThreads()
 				<td class="lastpost">
 					<script type="text/javascript">
 						<!--
-						document.write("<div class=\"summary\" style=\"visibility:hidden;\" id=\"summary'.$data['id'].'\">'.cutString(str_replace("\n", ' ',strip_tags($data['summary'])),  300).'<\/div>");
+						document.write("<div class=\"summary\" style=\"visibility:hidden;\" id=\"summary'.$data['id'].'\">'.$data['summary'].'<\/div>");
 						-->
 					</script>
 					<div>von '.$firstposter.'</div>

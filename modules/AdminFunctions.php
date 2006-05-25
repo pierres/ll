@@ -38,7 +38,7 @@ private static function removeThread($thread)
 	$stm = self::__get('DB')->prepare
 		('
 		DELETE FROM
-			post_file
+			post_attachments
 		WHERE
 			postid IN (SELECT id FROM posts WHERE threadid = ?)
 		');
@@ -250,6 +250,7 @@ public static function delBoard($board)
 	unlink(PATH.'html'.$board.'.js');
 	}
 
+/** FIXME: Summary erstellen; Änderungen optimieren (nur falls nötig) */
 //---------------------------------------------------------------------------------------------------------
 public static function updateThread($thread)
 	{

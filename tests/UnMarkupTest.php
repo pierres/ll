@@ -15,13 +15,25 @@ public function testCode()
 	$in =
 '<pre>
 test&quot;&lt;code&gt;
-</pre>
-';
+</pre>';
 	$out =
 '<code>
 test"<code>
 </code>
 ';
+
+	$this->assertEquals($out, $this->UnMarkup->fromHtml($in));
+
+	$in =
+'-<br /><pre>
+test&quot;&lt;code&gt;
+</pre>-';
+	$out =
+'-
+<code>
+test"<code>
+</code>
+-';
 
 	$this->assertEquals($out, $this->UnMarkup->fromHtml($in));
 	}
@@ -40,15 +52,15 @@ public function testQuote()
 	$in = '<blockquote><div>test<blockquote><div>test2</div></blockquote></div></blockquote>';
 	$this->assertEquals($out, $this->UnMarkup->fromHtml($in));
 
-	$out = '<quote=></quote>';
-	$in = htmlspecialchars('<quote=></quote>');
+	$out = '<quote ></quote>';
+	$in = htmlspecialchars('<quote ></quote>');
 	$this->assertEquals($out, $this->UnMarkup->fromHtml($in));
 
-	$out = '<quote=author>test</quote>';
+	$out = '<quote author>test</quote>';
 	$in = '<cite>author</cite><blockquote><div>test</div></blockquote>';
 	$this->assertEquals($out, $this->UnMarkup->fromHtml($in));
 
-	$out = '<quote=author>test<quote=author2>test2</quote></quote>';
+	$out = '<quote author>test<quote author2>test2</quote></quote>';
 	$in = '<cite>author</cite><blockquote><div>test<cite>author2</cite><blockquote><div>test2</div></blockquote></div></blockquote>';
 	$this->assertEquals($out, $this->UnMarkup->fromHtml($in));
 	}
@@ -115,24 +127,25 @@ public function testLinkInList()
 '* <http://www.heise.de Heise>
 * 2gg
 ';
-	$in = '<ul><li><a href="http://www.heise.de" onclick="openLink(this)" rel="nofollow" class="extlink">Heise</a></li><li>2gg</li></ul>';
+	$in = '<ul><li><a href="http://www.heise.de" onclick="return !window.open(this.href);" rel="nofollow" class="extlink">Heise</a></li><li>2gg</li></ul>';
   	$this->assertEquals($out, $this->UnMarkup->fromHtml($in));
 	}
 
 public function testDel()
 	{
-	$this->assertEquals('--test--', $this->UnMarkup->fromHtml('<del>test</del>'));
+	$this->assertEquals('--test--', $this->UnMarkup->fromHtml('<span><del>test</del></span>'));
 	}
 
 public function testIns()
 	{
-	$this->assertEquals('++test++', $this->UnMarkup->fromHtml('<ins>test</ins>'));
+	$this->assertEquals('++test++', $this->UnMarkup->fromHtml('<span><ins>test</ins></span>'));
 	}
 
 public function testStrong()
 	{
-	$this->assertEquals('!!test!!', $this->UnMarkup->fromHtml('<strong>test</strong>'));
+	$this->assertEquals('**test**', $this->UnMarkup->fromHtml('<strong>test</strong>'));
 	}
+
 
 
 }

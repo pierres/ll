@@ -317,7 +317,7 @@ foreach ($result as $data)
 				' <a href="?page=DelPost;id='.$this->Board->getId().';post='.$data['id'].'"><span class="button">wiederherstellen</span></a>' : '');
 
 			$spam_button = ($this->ismod ?
-				' <a href="?page=SpamPost;id='.$this->Board->getId().';post='.$data['id'].'"><span class="button">Spam</span></a>' : '');
+							' <a href="?page=SpamPost;id='.$this->Board->getId().';post='.$data['id'].'"><span class="button">Spam</span></a>' : '');
 			}
 		else
 			{
@@ -328,7 +328,7 @@ foreach ($result as $data)
 
 	$poster = (!empty($data['userid']) ? '<a href="?page=ShowUser;id='.$this->Board->getId().';user='.$data['userid'].'">'.$data['name'].'</a>' : $data['username']);
 
-	$avatar = (empty($data['avatar']) || !$this->User->isOnline() ? '' : '<img src="?page=GetFile;file='.$data['avatar'].'" class="avatar" alt="" />');
+	$avatar = (empty($data['avatar']) || !$this->User->isOnline() ? '' : '<img src="?page=GetAvatar;user='.$data['userid'].'" class="avatar" alt="" />');
 
 	if ($data['file'] == 1 && $this->User->isOnline())
 		{
@@ -477,18 +477,18 @@ protected function getFiles($post)
 		$stm = $this->DB->prepare
 			('
 			SELECT
-				files.id,
-				files.name,
-				files.size,
-				files.type
+				attachments.id,
+				attachments.name,
+				attachments.size,
+				attachments.type
 			FROM
-				files,
-				post_file
+				attachments,
+				post_attachments
 			WHERE
-				post_file.postid = ?
-				AND post_file.fileid = files.id
+				post_attachments.postid = ?
+				AND post_attachments.attachment_id = attachments.id
 			ORDER BY
-				files.id DESC
+				attachments.id DESC
 			');
 		$stm->bindInteger($post);
 		$files = $stm->getRowSet();
@@ -503,18 +503,21 @@ protected function getFiles($post)
 
 	foreach ($files as $file)
 		{
-		if ($file['size'] <= $this->Settings->getValue('avatar_size') && strpos($file['type'], 'image/') === 0)
+		if (strpos($file['type'], 'image/jpeg') === 0 ||
+			strpos($file['type'], 'image/pjpeg') === 0 ||
+			strpos($file['type'], 'image/png') === 0 ||
+			strpos($file['type'], 'image/gif') === 0)
 			{
 			$list .= '<tr>
  			<td style="padding:5px;" colspan="2">
-			<img src="?page=GetFile;file='.$file['id'].'" alt="'.$file['name'].'" class="image" onclick="openImage(this)" />
+			<a href="?page=GetAttachment;file='.$file['id'].'" onclick="return !window.open(this.href);" rel="nofollow"><img src="?page=GetAttachmentThumb;file='.$file['id'].'" alt="'.$file['name'].'" class="image" /></a>
  			</td>
 			</tr>';
 			}
 		else
 			{
 			$list .= '<tr>
- 			<td style="padding:5px;"><a class="link" onclick="openLink(this)" href="?page=GetFile;file='.$file['id'].'">'.$file['name'].'</a></td>
+ 			<td style="padding:5px;"><a class="link" onclick="return !window.open(this.href);" href="?page=GetAttachment;file='.$file['id'].'">'.$file['name'].'</a></td>
 			<td style="text-align:right;padding:5px;">'.round($file['size'] / 1024, 2).' KByte</td>
 			</tr>';
 			}

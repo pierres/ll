@@ -1,13 +1,26 @@
 <?php
 
+require (PATH.'modules/DB.php');
+require (PATH.'modules/User.php');
+require (PATH.'modules/Board.php');
+require (PATH.'modules/IOutput.php');
 
-abstract class Page extends Modul{
+abstract class Page extends Modul implements IOutput{
 
 protected $variables = array();
 
 
 public function __construct()
 	{
+	self::__set('DB', new DB(
+		$this->Settings->getValue('sql_user'),
+		$this->Settings->getValue('sql_password'),
+		$this->Settings->getValue('sql_database')
+		));
+
+	self::__set('Board', new Board());
+	self::__set('User', new User());
+
 	$this->variables['body']	 = '';
 	$this->variables['title']	 = '';
 	}

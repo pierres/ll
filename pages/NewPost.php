@@ -48,6 +48,8 @@ protected function setForm()
 	$this->requires('text');
 	$this->setLength('text', 3, 65536);
 
+	$this->addOutput('<a href="html/LLCodes.html" onclick="return !window.open(this.href,\'_blank\',\'dependent=yes,location=no,menubar=no,status=no,toolbar=no,scrollbars=yes,width=610\');" rel="nofollow" class="link"><span class="button">LL-Codes</span></a><br /><br />');
+
 	$this->addCheckbox('smilies', 'grafische Smilies', $this->smilies);
 
 	$this->setFile();
@@ -75,7 +77,7 @@ protected function setFile()
 						name,
 						size
 					FROM
-						files
+						attachments
 					WHERE
 						userid = ?
 					ORDER BY
@@ -175,7 +177,7 @@ protected function sendFile($postid)
 					SELECT
 						id
 					FROM
-						files
+						attachments
 					WHERE
 						id = ?
 						AND userid = ?'
@@ -192,7 +194,7 @@ protected function sendFile($postid)
 			$stm = $this->DB->prepare
 				('
 				INSERT INTO
-					post_file
+					post_attachments
 				SET
 					postid = ?,
 					fileid = ?'
@@ -245,7 +247,7 @@ protected function checkNewFile()
 				COUNT(*) AS files,
 				SUM(size) AS quota
 			FROM
-				files
+				attachments
 			WHERE
 				userid = ?'
 			);
@@ -268,12 +270,12 @@ protected function sendNewFile($files)
 	{
 	if ($this->User->isOnline() && !empty($this->file))
 		{
-		$content = gzencode(file_get_contents($this->file['tmp_name']), 9);
+		$content = file_get_contents($this->file['tmp_name']);
 
 		$stm = $this->DB->prepare
 			('
 			INSERT INTO
-				files
+				attachments
 			SET
 				name = ?,
 				type = ?,
@@ -294,6 +296,36 @@ protected function sendNewFile($files)
 		$files[$this->DB->getInsertId()] = '';
 
 		unlink($this->file['tmp_name']);
+
+		if (strpos($file['type'], 'image/jpeg') === 0 ||
+			strpos($file['type'], 'image/pjpeg') === 0 ||
+			strpos($file['type'], 'image/png') === 0 ||
+			strpos($file['type'], 'image/gif') === 0)
+			{
+			try
+				{
+				$thumbcontent = resizeImage($content, $this->file['type'], $this->Settings->getValue('thumb_size'));
+				}
+			catch (Exception $e)
+				{
+				return $files;
+				}
+
+			$stm = $this->DB->prepare
+				('
+				INSERT INTO
+					attachment_thumbnails
+				SET
+					id = ?,
+					size = ?,
+					content = ?'
+				);
+			$stm->bindInteger($this->DB->getInsertId());
+			$stm->bindInteger(strlen($thumbcontent));
+			$stm->bindString($thumbcontent);
+
+			$stm->execute();
+			}
 		}
 
 	return $files;

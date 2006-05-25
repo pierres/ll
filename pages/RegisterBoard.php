@@ -139,7 +139,6 @@ protected function sendForm()
 
 	copy(PATH.'/html/default.html', PATH.'/html/'.$id.'.html');
 	copy(PATH.'/html/default.css', PATH.'/html/'.$id.'.css');
-	copy(PATH.'/html/default.js', PATH.'/html/'.$id.'.js');
 
 
 	$body =

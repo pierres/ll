@@ -28,10 +28,6 @@ public function prepare()
 				<a href="?page=AdminCss;id='.$this->Board->getId().'"><span class="button">CSS-Vorlage</span></a>
 				Farben, Schriften, Bilder etc. werden mittels Stylesheet festgelegt.
 				</li>
-				<li style="margin:20px;">
-				<a href="?page=AdminJs;id='.$this->Board->getId().'"><span class="button">JS-Vorlage</span></a>
-				Einige JavaScript-Funktionen kannst Du hier anpassen.
-				</li>
 			</ul>
 		</td>
 	</tr>

@@ -92,7 +92,7 @@ protected function sendForm()
 		$stm = $this->DB->prepare
 			('
 			DELETE FROM
-				files
+				attachments
 			WHERE
 				userid = ?'
 			);

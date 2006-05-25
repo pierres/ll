@@ -27,7 +27,7 @@ public function prepare()
 			SELECT
 				id
 			FROM
-				files
+				attachments
 			WHERE
 				id = ?
 				AND userid = ?'
@@ -44,7 +44,17 @@ public function prepare()
 	$stm = $this->DB->prepare
 		('
 		DELETE FROM
-			files
+			attachments
+		WHERE
+			id = ?'
+		);
+	$stm->bindInteger($file);
+	$stm->execute();
+
+	$stm = $this->DB->prepare
+		('
+		DELETE FROM
+			attachment_thumbnails
 		WHERE
 			id = ?'
 		);
@@ -58,7 +68,7 @@ public function prepare()
 			SELECT
 				postid
 			FROM
-				post_file
+				post_attachments
 			WHERE
 				fileid = ?'
 			);
@@ -72,7 +82,7 @@ public function prepare()
 				SELECT
 					COUNT(*)
 				FROM
-					post_file
+					post_attachments
 				WHERE
 					postid = ?'
 				);
@@ -101,26 +111,26 @@ public function prepare()
 	$stm = $this->DB->prepare
 		('
 		DELETE FROM
-			post_file
+			post_attachments
 		WHERE
 			fileid = ?'
 		);
 	$stm->bindInteger($file);
 	$stm->execute();
 
-	$stm = $this->DB->prepare
-		('
-		UPDATE
-			users
-		SET
-			avatar = 0
-		WHERE
-			id = ?
-			AND avatar = ?'
-		);
-	$stm->bindInteger($this->User->getId());
-	$stm->bindInteger($file);
-	$stm->execute();
+// 	$stm = $this->DB->prepare
+// 		('
+// 		UPDATE
+// 			users
+// 		SET
+// 			avatar = 0
+// 		WHERE
+// 			id = ?
+// 			AND avatar = ?'
+// 		);
+// 	$stm->bindInteger($this->User->getId());
+// 	$stm->bindInteger($file);
+// 	$stm->execute();
 	}
 
 public function show()

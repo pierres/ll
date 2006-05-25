@@ -64,7 +64,7 @@ try
 			threads.firstuserid,
 			threads.firstusername,
 			threads.posts,
-			(SELECT text FROM posts WHERE threadid = threads.id AND dat = threads.firstdate) AS summary
+			summary
 		FROM
 			threads,
 			thread_user
@@ -200,7 +200,7 @@ protected function listThreads()
 				<td class="lastpost">
 					<script type="text/javascript">
 						<!--
-						document.write("<div class=\"summary\" style=\"visibility:hidden;\" id=\"summary'.$data['id'].'\">'.cutString(str_replace("\n", ' ',strip_tags($data['summary'])),  300).'<\/div>");
+						document.write("<div class=\"summary\" style=\"visibility:hidden;\" id=\"summary'.$data['id'].'\">'.$data['summary'].'<\/div>");
 						-->
 					</script>
 					<div>von '.$firstposter.'</div>

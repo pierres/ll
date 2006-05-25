@@ -4,6 +4,7 @@ class SplitThread extends Form{
 
 private $post 		= 0;
 private $oldthread 	= 0;
+private $newthread 	= 0;
 private $forum	 	= 0;
 private $newtopic 	= '';
 protected $title 		= 'Beiträge abzweigen';
@@ -99,7 +100,7 @@ protected function sendForm()
 	$stm->bindInteger($this->forum);
 	$stm->execute();
 
-	$newThread = $this->DB->getInsertId();
+	$this->newthread = $this->DB->getInsertId();
 
 	$stm = $this->DB->prepare
 		('
@@ -123,16 +124,51 @@ protected function sendForm()
 			threadid = ?
 			AND id >= ?'
 		);
-	$stm->bindInteger($newThread);
+	$stm->bindInteger($this->newthread);
 	$stm->bindInteger($this->oldthread);
 	$stm->bindInteger($this->post);
 	$stm->execute();
 
 	AdminFunctions::updateThread($this->oldthread);
-	AdminFunctions::updateThread($newThread);
+	AdminFunctions::updateThread($this->newthread);
 	AdminFunctions::updateForum($this->forum);
 
+	$this->sendThreadSummary();
+
 	$this->redirect();
+	}
+
+protected function sendThreadSummary()
+	{
+	$stm = $this->DB->prepare
+		('
+		SELECT
+			text
+		FROM
+			posts
+		WHERE
+			id = ?
+		');
+	$stm->BindInteger($this->post);
+	$text = $stm->GetColumn();
+
+	$summary = str_replace('<br />', ' ', $text);
+	$summary = str_replace("\n", ' ', strip_tags($summary));
+	$summary = cutString($summary,  300);
+
+	$stm = $this->DB->prepare
+		('
+		UPDATE
+			threads
+		SET
+			summary = ?
+		WHERE
+			id = ?
+		');
+
+	$stm->bindString($summary);
+	$stm->bindInteger($this->newthread);
+	$stm->execute();
 	}
 
 protected function redirect()
