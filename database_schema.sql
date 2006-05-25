@@ -309,7 +309,7 @@ CREATE TABLE `threads` (
   `firstusername` varchar(25) NOT NULL default '',
   `lastusername` varchar(25) NOT NULL default '',
   `movedfrom` mediumint(8) unsigned NOT NULL default '0',
-  `summary` text NOT NULL default '',
+  `summary` text NULL,
   PRIMARY KEY  (`id`),
   KEY `forumid` (`forumid`),
   KEY `deleted` (`deleted`),
