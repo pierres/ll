@@ -109,6 +109,16 @@ abc';
   	$this->assertEquals($out, $this->UnMarkup->fromHtml($in));
 	}
 
+public function testLinkInList()
+	{
+	$out =
+'* <http://www.heise.de Heise>
+* 2gg
+';
+	$in = '<ul><li><a href="http://www.heise.de" onclick="openLink(this)" rel="nofollow" class="extlink">Heise</a></li><li>2gg</li></ul>';
+  	$this->assertEquals($out, $this->UnMarkup->fromHtml($in));
+	}
+
 public function testDel()
 	{
 	$this->assertEquals('--test--', $this->UnMarkup->fromHtml('<del>test</del>'));
