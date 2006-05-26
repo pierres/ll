@@ -125,7 +125,7 @@ public function show()
 
 	$this->setValue('webring', $this->getWebring());
 
-	$this->setValue('body', $this->getValue('body').'<div style="text-align:right;font-size:8px;"><a href="?page=Impressum">Impressum</a></div>');
+	$this->setValue('body', $this->getValue('body').'<div style="text-align:right;font-size:8px;"><a href="?page=Impressum;id='.$this->Board->getId().'">Impressum</a></div>');
 
 	foreach ($this->variables as $key => $value)
 		{
