@@ -17,14 +17,14 @@ public function prepare()
 			</tr>
 			<tr>
 				<td class="main">
-					<a href="?page=ShowUser;id=1;user=486" class="link">Pierre Schmitz</a>
+					<a href="?page=ShowUser;id='.$this->Board->getId().';user=486" class="link">Pierre Schmitz</a>
 					<p>
 					Clemens-August-Straße 76<br />
 					53115 Bonn<br /><br />
 					<table>
 						<tr>
 							<td style="padding-right:20px;">E-Mail</td>
-							<td><a href="?page=Contact;id=1" class="link">pschmitz&#64;laber-land.de</a></td>
+							<td><a href="?page=Contact;id='.$this->Board->getId().'" class="link">pschmitz&#64;laber-land.de</a></td>
 						</tr>
 						<tr>
 							<td style="padding-right:20px;">Telefon</td>
