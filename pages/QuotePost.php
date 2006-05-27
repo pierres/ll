@@ -51,6 +51,20 @@ protected function checkInput()
 	$this->addHidden('post', $data['post']);
 	}
 
+protected function checkForm()
+	{
+	if (!$this->User->isOnline())
+		{
+		$text = preg_replace('/\s*<quote .+?>.+<\/quote>\s*/s', '', $this->Io->getString('text'));
+		if (empty($text))
+			{
+			$this->showWarning('Du mußt auch selbst etwas dazu schreiben!');
+			}
+		}
+
+	parent::checkForm();
+	}
+
 }
 
 ?>
