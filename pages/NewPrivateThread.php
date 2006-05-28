@@ -152,6 +152,11 @@ protected function checkRecipients()
 		{
 		$this->showWarning('Empfänger "'.htmlspecialchars($recipient).'" ist unbekannt.');
 		}
+
+	if (count($this->tousers) < 2)
+		{
+		$this->showWarning('keine Empfänger angegeben.');
+		}
 	}
 
 protected function sendPoll()

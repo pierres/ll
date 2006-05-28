@@ -57,7 +57,10 @@ protected function setForm()
 		{
 		$this->oldto[] = $recipient['id'];
 
-		$users[] = '<a href="?page=ShowUser;id='.$this->Board->getId().';user='.$recipient['id'].'">'.$recipient['name'].'</a>';
+		if ($recipient['id'] != $this->User->getId())
+			{
+			$users[] = '<a href="?page=ShowUser;id='.$this->Board->getId().';user='.$recipient['id'].'">'.$recipient['name'].'</a>';
+			}
 		}
 
 	$this->addOutput('Schon dabei: '.implode(', ', $users).'<br /><br />');
@@ -65,6 +68,7 @@ protected function setForm()
 	$this->addSubmit('Hinzufügen');
 	$this->addHidden('thread', $this->thread);
 	$this->addText('recipients', 'Neue Empfänger');
+	$this->requires('recipients');
 	}
 
 protected function checkForm()
@@ -78,7 +82,7 @@ protected function checkForm()
 			foreach ($recipients as $recipient)
 				{
 				$user = AdminFunctions::getUserId($recipient);
-				if (!in_array($user, $this->oldto) && !in_array($user, $this->newto))
+				if (!in_array($user, $this->oldto) && !in_array($user, $this->newto) &&$user != $this->User->getId())
 					{
 					$this->newto[] = $user;
 					}
@@ -87,6 +91,11 @@ protected function checkForm()
 		catch(DBNoDataException $e)
 			{
 			$this->showWarning('Empfänger "'.htmlspecialchars($recipient).'" ist unbekannt.');
+			}
+
+		if (empty($this->newto))
+			{
+			$this->showWarning('keine Empfänger angegeben.');
 			}
 		}
 	}
