@@ -1,6 +1,7 @@
 <?php
 
 
+
 class NewPrivatePost extends NewPost {
 
 public function __construct()
