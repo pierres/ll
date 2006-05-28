@@ -94,7 +94,6 @@ protected function sendForm()
 	$this->sendFile($this->DB->getInsertId());
 
 	$this->updateThread();
-	//$this->updateForum();
 
 	$stm = $this->DB->prepare
 		('
@@ -122,7 +121,6 @@ protected function updateThread()
 
 protected function updateForum()
 	{
-	//AdminFunctions::updateForum($this->forum);
 	}
 
 protected function redirect()
