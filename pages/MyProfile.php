@@ -260,11 +260,13 @@ private function showAvatar()
 /** FIXME: Exception-Handling hinzufügen */
 private function sendAvatar()
 	{
-	$content = resizeImage(file_get_contents($this->avatar['tmp_name']), $this->avatar['type'], $this->Settings->getValue('avatar_size'));
-
-	if (empty($content))
+	try
 		{
-		$content = $this->avatar['tmp_name'];
+		$content = resizeImage(file_get_contents($this->avatar['tmp_name']), $this->avatar['type'], $this->Settings->getValue('avatar_size'));
+		}
+	catch (Exception $e)
+		{
+		$content = file_get_contents($this->avatar['tmp_name']);
 		}
 
 	if ($this->hasavatar)
