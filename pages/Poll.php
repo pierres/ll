@@ -89,7 +89,6 @@ public function __construct($pollid = 0, $target = 'Postings')
 			');
 		$stm->bindInteger($this->id);
 		$this->options = $stm->getRowSet();
-		$stm->close();
 		}
 	catch (DBNoDataException $e)
 		{
