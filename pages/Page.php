@@ -32,7 +32,7 @@ protected function makeMenu()
 	if ($this->User->isOnline())
 		{
 		$menu .=
-			' <a href="?page=MyProfile;id='.$this->Board->getId().'"><span class="button" id="myprofile">Mein Profil</span></a> <a href="?page=UserRecent;id='.$this->Board->getId().'"><span class="button" id="userrecent">Meine Favoriten</span></a> <a href="?page=Logout;id='.$this->Board->getId().'"><span class="button" id="logout">Abmelden</span></a>';
+			' <a href="?page=MyProfile;id='.$this->Board->getId().'"><span class="button" id="myprofile">Mein Profil</span></a> <a href="?page=Logout;id='.$this->Board->getId().'"><span class="button" id="logout">Abmelden</span></a>';
 
 		if ($this->User->isAdmin())
 			{

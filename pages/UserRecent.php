@@ -14,128 +14,43 @@ public function prepare()
 		}
 	catch (IoRequestException $e)
 		{
-		if($this->User->isOnline())
-			{
-			$user = $this->User->getId();
-			$this->setValue('title', 'Meine aktuellen Beiträge');
-			}
-		else
-			{
-			$this->Io->redirect('Recent');
-			}
+		$this->Io->redirect('Recent');
 		}
 
 	try
 		{
-		if ($user == $this->User->getId())
-			{
-			$stm = $this->DB->prepare
-				('
-				(
-					SELECT
-						threads.id,
-						threads.name,
-						threads.lastdate,
-						threads.posts,
-						threads.lastuserid,
-						threads.lastusername,
-						threads.firstdate,
-						threads.firstuserid,
-						threads.firstusername,
-						threads.closed,
-						threads.sticky,
-						threads.poll,
-						threads.posts,
-						0 AS forumid,
-						0 AS forumname,
-						summary
-					FROM
-						threads,
-						thread_user
-					WHERE
-						threads.forumid = 0
-						AND threads.deleted = 0
-						AND thread_user.threadid = threads.id
-						AND thread_user.userid = ?
-					GROUP BY
-						threads.id
-				)
-				UNION
-				(
-					SELECT
-						threads.id,
-						threads.name,
-						threads.lastdate,
-						threads.posts,
-						threads.lastuserid,
-						threads.lastusername,
-						threads.firstdate,
-						threads.firstuserid,
-						threads.firstusername,
-						threads.closed,
-						threads.sticky,
-						threads.poll,
-						threads.posts,
-						forums.id AS forumid,
-						forums.name AS forumname,
-						summary
-					FROM
-						forums,
-						threads,
-						posts
-					WHERE
-						threads.forumid = forums.id
-						AND threads.deleted = 0
-						AND posts.threadid = threads.id
-						AND posts.userid = ?
-					GROUP BY
-						threads.id
-				)
-				ORDER BY
-					lastdate DESC
-				LIMIT
-					25
-				');
-			$stm->bindInteger($this->User->getId());
-			}
-		else
-			{
-			$stm = $this->DB->prepare
-				('
-				SELECT
-					threads.id,
-					threads.name,
-					threads.lastdate,
-					threads.posts,
-					threads.lastuserid,
-					threads.lastusername,
-					threads.firstdate,
-					threads.firstuserid,
-					threads.firstusername,
-					threads.closed,
-					threads.sticky,
-					threads.poll,
-					threads.posts,
-					forums.id AS forumid,
-					forums.name AS forumname,
-					summary
-				FROM
-					forums,
-					threads,
-					posts
-				WHERE
-					threads.forumid = forums.id
-					AND threads.deleted = 0
-					AND posts.threadid = threads.id
-					AND posts.userid = ?
-				GROUP BY
-					threads.id
-				ORDER BY
-					threads.lastdate DESC
-				LIMIT
-					25
-				');
-			}
+		$stm = $this->DB->prepare
+			('
+			SELECT
+				threads.id,
+				threads.name,
+				threads.lastdate,
+				threads.posts,
+				threads.lastuserid,
+				threads.lastusername,
+				threads.firstdate,
+				threads.firstuserid,
+				threads.firstusername,
+				threads.closed,
+				threads.sticky,
+				threads.poll,
+				threads.posts,
+				forums.id AS forumid,
+				forums.name AS forumname,
+				summary
+			FROM
+				forums 	JOIN threads ON threads.forumid = forums.id
+					JOIN posts ON posts.threadid = threads.id AND  posts.userid = ?
+			WHERE
+				threads.deleted = 0
+			GROUP BY
+				threads.id
+			ORDER BY
+				threads.lastdate DESC
+			LIMIT
+				25
+			');
+
 		$stm->bindInteger($user);
 		$this->result = $stm->getRowSet();
 		}
@@ -145,6 +60,7 @@ public function prepare()
 		}
 
 	$threads = $this->listThreads();
+	$stm->close();
 
 	$body =
 		'

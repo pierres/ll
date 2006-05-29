@@ -33,12 +33,10 @@ public function prepare()
 						0 AS forumname,
 						summary
 					FROM
-						threads,
-						thread_user
+						threads JOIN thread_user ON thread_user.threadid = threads.id
 					WHERE
 						threads.forumid = 0
 						AND threads.deleted = 0
-						AND thread_user.threadid = threads.id
 						AND thread_user.userid = ?
 				)
 				UNION
@@ -61,11 +59,9 @@ public function prepare()
 						forums.name AS forumname,
 						summary
 					FROM
-						forums,
-						threads
+						forums JOIN threads ON threads.forumid = forums.id
 					WHERE
-						threads.forumid = forums.id
-						AND threads.deleted = 0
+						threads.deleted = 0
 				)
 				ORDER BY
 					lastdate DESC
@@ -97,11 +93,9 @@ public function prepare()
 					forums.name AS forumname,
 					summary
 				FROM
-					forums,
-					threads
+					forums JOIN threads ON threads.forumid = forums.id
 				WHERE
-					threads.forumid = forums.id
-					AND threads.deleted = 0
+					threads.deleted = 0
 				ORDER BY
 					threads.lastdate DESC
 				LIMIT
@@ -115,6 +109,10 @@ public function prepare()
 		}
 
 	$threads = $this->listThreads();
+	if (isset($stm))
+		{
+		$stm->close();
+		}
 
 	$body =
 		'
