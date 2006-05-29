@@ -274,7 +274,7 @@ class DBStatement{
 private $link 		= null;
 private $stm 		= null;
 private $bindings 	= array();
-private $types 	= '';
+private $types 		= '';
 
 public function __construct($stm, $link)
 	{
@@ -321,11 +321,18 @@ private function bindParams($types, $values)
 		}
 	}
 
+private function resetBindings()
+	{
+	$this->bindings = array();
+	$this->types = '';
+	}
+
 private function executeStatement()
 	{
 	if (!empty($this->types))
 		{
 		$this->bindParams($this->types, $this->bindings);
+		$this->resetBindings();
 		}
 
 	if (!mysqli_stmt_execute($this->stm))
@@ -354,6 +361,7 @@ public function execute()
 	if (!empty($this->types))
 		{
 		$this->bindParams($this->types, $this->bindings);
+		$this->resetBindings();
 		}
 
 	if (!mysqli_stmt_execute($this->stm))
