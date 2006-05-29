@@ -78,6 +78,7 @@ protected function checkForm()
 				);
 			$stm->bindInteger($this->plz);
 			$location = $stm->getColumn();
+			$stm->close();
 
 			if (empty($this->location))
 				{
@@ -86,6 +87,7 @@ protected function checkForm()
 			}
 		catch (DBNoDataException $e)
 			{
+			$stm->close();
 			/** FIXME */
 			if (!empty($this->plz))
 				{
@@ -188,10 +190,11 @@ private function getData()
 		);
 	$stm->bindInteger($this->User->getId());
 	$data = $stm->getRow();
+	$stm->close();
 
 	$this->realname 	= unhtmlspecialchars($data['realname']);
 	$this->gender		= $data['gender'];
-	$this->birthday		= $data['birthday'];
+	$this->birthday	= $data['birthday'];
 	$this->location 	= unhtmlspecialchars($data['location']);
 	$this->plz 		= $data['plz'];
  	$this->hasavatar 	= !empty($data['avatar']) ;
@@ -232,6 +235,7 @@ protected function sendForm()
 	$stm->bindInteger($this->User->getId());
 
 	$stm->execute();
+	$stm->close();
 
 	if (!empty($this->avatar) && !$this->Io->isRequest('deleteavatar'))
 		{
@@ -305,6 +309,7 @@ private function sendAvatar()
 	$stm->bindString($content);
 	$stm->bindInteger($this->User->getId());
 	$stm->execute();
+	$stm->close();
 
 	unlink($this->avatar['tmp_name']);
 
@@ -319,6 +324,7 @@ private function sendAvatar()
 		);
 	$stm->bindInteger($this->User->getId());
 	$stm->execute();
+	$stm->close();
 	}
 
 private function deleteAvatar()
@@ -333,6 +339,7 @@ private function deleteAvatar()
 
 	$stm->bindInteger($this->User->getId());
 	$stm->execute();
+	$stm->close();
 
 	$stm = $this->DB->prepare
 		('
@@ -345,6 +352,7 @@ private function deleteAvatar()
 		);
 	$stm->bindInteger($this->User->getId());
 	$stm->execute();
+	$stm->close();
 	}
 
 }

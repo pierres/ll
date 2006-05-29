@@ -42,10 +42,12 @@ protected function checkForm()
 		$stm->bindInteger($this->Board->getId());
 		$stm->bindInteger($this->cat);
 		$stm->getColumn();
+		$stm->close();
 		}
 	catch (DBNoDataException $e)
 		{
 		$this->redirect();
+		$stm->close();
 		}
 	}
 

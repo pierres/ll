@@ -6,13 +6,13 @@
 class NewPost extends Form {
 
 
-protected $text 	= '';
-protected $thread	= 0;
-protected $forum	= 0;
+protected $text 		= '';
+protected $thread		= 0;
+protected $forum		= 0;
 
-protected $time 	= 0;
+protected $time 		= 0;
 protected $smilies 	= true;
-protected $title 	= 'Beitrag schreiben';
+protected $title 		= 'Beitrag schreiben';
 
 protected $file		= array();
 
@@ -88,6 +88,7 @@ protected function setFile()
 				}
 			catch (DBNoDataException $e)
 				{
+				$stm->close();
 				$files = array();
 				}
 
@@ -100,6 +101,7 @@ protected function setFile()
 				'<a class="link" onclick="openLink(this)" href="?page=GetFile;file='.$file['id'].'">'.$file['name'].'</a>');
 				$this->addOutput('</td><td style="text-align:right;padding:5px;vertical-align:bottom;">'.round($file['size'] / 1024, 2).' KByte</td></tr>');
 				}
+			$stm->close();
 
 			$this->addOutput('</table><br />');
 			$this->addFile('file', 'Neue Datei hinzufügen');
@@ -145,9 +147,11 @@ protected function getLastPosts()
 
 			$posts .= '<cite>'.$poster.'</cite><blockquote>'.$post['text'].'</blockquote>';
 			}
+		$stm->close();
 		}
 	catch (DBNoDataException $e)
 		{
+		$stm->close();
 		}
 
 	return $posts.'</div>';
@@ -168,20 +172,29 @@ protected function sendFile($postid)
 
 		$success = false;
 
+		$stm = $this->DB->prepare
+			('
+			SELECT
+				id
+			FROM
+				attachments
+			WHERE
+				id = ?
+				AND userid = ?'
+			);
+
+		$stm2 = $this->DB->prepare
+			('
+			INSERT INTO
+				post_attachments
+			SET
+				postid = ?,
+				fileid = ?'
+			);
 		foreach($files as $file => $blubb)
 			{
 			try
 				{
-				$stm = $this->DB->prepare
-					('
-					SELECT
-						id
-					FROM
-						attachments
-					WHERE
-						id = ?
-						AND userid = ?'
-					);
 				$stm->bindInteger($file);
 				$stm->bindInteger($this->User->getId());
 				$stm->getColumn();
@@ -191,20 +204,14 @@ protected function sendFile($postid)
 				continue;
 				}
 
-			$stm = $this->DB->prepare
-				('
-				INSERT INTO
-					post_attachments
-				SET
-					postid = ?,
-					fileid = ?'
-				);
-			$stm->bindInteger($postid);
-			$stm->bindInteger($file);
-			$stm->execute();
+			$stm2->bindInteger($postid);
+			$stm2->bindInteger($file);
+			$stm2->execute();
 
 			$success = true;
 			}
+		$stm->close();
+		$stm2->close();
 
 		if ($success)
 			{
@@ -219,6 +226,7 @@ protected function sendFile($postid)
 				);
 			$stm->bindInteger($postid);
 			$stm->execute();
+			$stm->close();
 			}
 		}
 	}
@@ -253,6 +261,7 @@ protected function checkNewFile()
 			);
 		$stm->bindInteger($this->User->getId());
 		$data = $stm->getRow();
+		$stm->close();
 
 		if ($data['quota'] + $this->file['size'] >=  $this->Settings->getValue('quota'))
 			{
@@ -292,6 +301,7 @@ protected function sendNewFile($files)
 		$stm->bindInteger(time());
 
 		$stm->execute();
+		$stm->close();
 
 		$files[$this->DB->getInsertId()] = '';
 
@@ -350,13 +360,16 @@ protected function checkInput()
 			);
 		$stm->bindInteger($this->Io->getInt('thread'));
 		$data = $stm->getRow();
+		$stm->close();
 		}
 	catch (IoException $e)
 		{
+		$stm->close();
 		$this->showFailure('Kein Thema angegeben!');
 		}
 	catch (DBNoDataException $e)
 		{
+		$stm->close();
 		$this->showFailure('Thema nicht gefunden!');
 		}
 
@@ -392,11 +405,13 @@ protected function checkForm()
 				);
 			$stm->bindString($this->Io->getHtml('name'));
 			$user = $stm->getRow();
+			$stm->close();
 
 			$this->showWarning('Der Name <strong><a href="?page=ShowUser;user='.$user['id'].';id='.$this->Board->getId().'">'.$user['name'].'</a></strong> wurde bereits registriert. <strong><a href="?page=Login;id='.$this->Board->getId().';name='.urlencode($this->Io->getHtml('name')).'">Melde Dich an</a></strong>, falls dies Dein Benutzer-Konto ist.');
 			}
 		catch (DBNoDataException $e)
 			{
+			$stm->close();
 			}
 		}
 
@@ -443,6 +458,7 @@ protected function sendForm()
 		$stm->bindInteger($this->time);
 		$stm->bindInteger($userid);
 		$stm->execute();
+		$stm->close();
 		}
 	else
 		{
@@ -478,6 +494,7 @@ protected function sendForm()
 	$stm->bindInteger($this->smilies ? 1 : 0);
 
 	$stm->execute();
+	$stm->close();
 
 	$this->sendFile($this->DB->getInsertId());
 
@@ -497,6 +514,7 @@ protected function sendForm()
 	$stm->bindInteger($this->time);
 	$stm->bindInteger($this->Board->getId());
 	$stm->execute();
+	$stm->close();
 
 	$this->Log->insert($this->thread, $this->time);
 
@@ -532,9 +550,11 @@ protected function redirect()
 			');
 		$stm->bindInteger($this->thread);
 		$data = $stm->getRow();
+		$stm->close();
 		}
 	catch (DBNoDataException $e)
 		{
+		$stm->close();
 		$data['thread'] = '';
 		$data['forum'] = '';
 		$data['forumid'] = 0;

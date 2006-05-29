@@ -50,9 +50,11 @@ try
 	$stm->bindInteger($this->thread);
 	$stm->bindInteger($this->User->getId());
 	$thread = $stm->getRow();
+	$stm->close();
 	}
 catch (DBNoDataException $e)
 	{
+	$stm->close();
 	$this->showWarning('Thema nicht gefunden.');
 	}
 
@@ -69,9 +71,11 @@ try
 		);
 	$stm->bindInteger($this->thread);
 	$this->posts = $stm->getColumn();
+	$stm->close();
 	}
 catch (DBNoDataException $e)
 	{
+	$stm->close();
 	$this->posts = 0;
 	}
 
@@ -94,9 +98,11 @@ if ($this->post == -1)
 			$stm->bindInteger($this->thread);
 			$stm->bindInteger($this->Log->getTime($this->thread));
 			$this->post = $this->posts - $stm->getColumn();
+			$stm->close();
 			}
 		catch (DBNoDataException $e)
 			{
+			$stm->close();
 			$this->post = $this->posts;
 			}
 		}
@@ -140,11 +146,13 @@ try
 		{
 		$users[] = '<a href="?page=ShowUser;id='.$this->Board->getId().';user='.$recipient['id'].'">'.$recipient['name'].'</a>';
 		}
+	$stm->close();
 
 	$recipients = implode(', ', $users);
 	}
 catch (DBNoDataException $e)
 	{
+	$stm->close();
 	$recipients = '';
 	}
 
@@ -187,7 +195,7 @@ catch (DBNoDataException $e)
 
 
 $postings 	= '';
-$i 		= 2;
+$i 			= 2;
 $first 		= true;
 
 
@@ -274,6 +282,7 @@ foreach ($result as $data)
 		</tr>
 		';
 		}
+$stm->close();
 
 if ($thread['poll'] == 1)
 	{

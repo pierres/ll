@@ -39,6 +39,7 @@ protected function setForm()
 				<br /><br />
 				');
 			}
+		$stm->close();
 		}
 	catch (DBNoDataException $e)
 		{
@@ -62,25 +63,27 @@ protected function sendForm()
 	/** FIXME */
 	$cats = $this->Io->getArray();
 
+	$stm = $this->DB->prepare
+		('
+		UPDATE
+			cats
+		SET
+			position = ?,
+			name = ?
+		WHERE
+			boardid = ?
+			AND id = ?'
+		);
+
 	foreach($cats as $cat => $value)
 		{
-		$stm = $this->DB->prepare
-			('
-			UPDATE
-				cats
-			SET
-				position = ?,
-				name = ?
-			WHERE
-				boardid = ?
-				AND id = ?'
-			);
 		$stm->bindInteger($value['position']);
 		$stm->bindString(htmlspecialchars($value['name']));
 		$stm->bindInteger($this->Board->getId());
 		$stm->bindInteger($cat);
 		$stm->execute();
 		}
+	$stm->close();
 
 
 	if (!$this->Io->isEmpty('newname'))
@@ -99,6 +102,7 @@ protected function sendForm()
 		$stm->bindString($this->Io->getHtml('newname'));
 		$stm->bindInteger($this->Board->getId());
 		$stm->execute();
+		$stm->close();
 		}
 
 	$this->redirect();

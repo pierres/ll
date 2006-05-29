@@ -2,8 +2,6 @@
 
 class AntiSpam extends Modul{
 
-/** TODO: Test sschreiben ! */
-
 
 public function isSpam($text)
 	{
@@ -24,7 +22,7 @@ public function isSpam($text)
 
 	return $this->isInBlacklist($this->getDomains($text), $blacklist);
 	}
-/** TODO: hier kann man prepared Statements besser verwenden -> Änderung in DB nötig */
+
 public function addSpam($text)
 	{
 	try
@@ -42,18 +40,19 @@ public function addSpam($text)
 		$blacklist = array();
 		}
 
+	$stm = $this->DB->prepare
+		('
+		INSERT INTO
+			domain_blacklist
+		SET
+			domain = ?
+		');
 	foreach (array_diff($this->getDomains($text), $blacklist) as $domain)
 		{
-		$stm = $this->DB->prepare
-			('
-			INSERT INTO
-				domain_blacklist
-			SET
-				domain = ?
-			');
 		$stm->bindString($domain);
 		$stm->execute();
 		}
+	$stm->close();
 	}
 
 
@@ -61,9 +60,9 @@ private function getDomains($text)
 	{
 	$protocoll 	= '(?:https?|ftp):\/\/';
 	$name 		= '[a-z0-9](?:[a-z0-9_\-\.]*[a-z0-9])?';
-	$tld 		= '[a-z]{2,5}';
+	$tld 			= '[a-z]{2,5}';
 	$domain		=  $name.'\.'.$tld;
-// 	$address	= '(?:'.$domain.'|[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})';
+// 	$address		= '(?:'.$domain.'|[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})';
 
 	preg_match_all('/(?:'.$protocoll.'(?:www\.)?|www\.)('.$domain.')/', $text, $domains);
 

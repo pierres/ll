@@ -4,7 +4,7 @@
 class Postings extends Page{
 
 protected $ismod 		= false;
-protected $thread 		= 0;
+protected $thread		= 0;
 protected $post 		= 0;
 protected $posts 		= 0;
 
@@ -59,9 +59,11 @@ try
 	$stm->bindInteger($this->thread);
 	$stm->bindInteger($this->Board->getId());
 	$thread = $stm->getRow();
+	$stm->close();
 	}
 catch (DBNoDataException $e)
 	{
+	$stm->close();
 	// Falls das Thema nicht (mehr) im aktuellen Board ist versuchen wir es zu finden.
 	// (und wir stellen sicher, daß wir nicht auf die gleiche Seite weiterleiten.)
 	try
@@ -81,11 +83,13 @@ catch (DBNoDataException $e)
 		$stm->bindInteger($this->thread);
 		$stm->bindInteger($this->Board->getId());
 		$boardid = $stm->getColumn();
+		$stm->close();
 
 		$this->Io->redirect('Postings','thread='.$this->thread.';post='.$this->post, $boardid);
 		}
 	catch (DBNoDataException $e)
 		{
+		$stm->close();
 		$this->showWarning('Thema nicht gefunden.');
 		}
 	}
@@ -105,9 +109,11 @@ try
 			' posts.threadid = ?');
 	$stm->bindInteger($this->thread);
 	$this->posts = $stm->getColumn();
+	$stm->close();
 	}
 catch (DBNoDataException $e)
 	{
+	$stm->close();
 	$this->posts = 0;
 	}
 
@@ -132,9 +138,11 @@ if ($this->post == -1)
 			$stm->bindInteger($this->thread);
 			$stm->bindInteger($this->Log->getTime($this->thread));
 			$this->post = $this->posts - $stm->getColumn();
+			$stm->close();
 			}
 		catch (DBNoDataException $e)
 			{
+			$stm->close();
 			$this->post = $this->posts;
 			}
 		}
@@ -206,7 +214,7 @@ catch (DBNoDataException $e)
 
 $postings	= '';
 $i 		= 2;
-$first 		= true;
+$first 	= true;
 $closed 	= (empty($thread['closed']) ? false : true);
 $deleted 	= false;
 
@@ -369,7 +377,7 @@ foreach ($result as $data)
 		</tr>
 		';
 		}
-
+$stm->close();
 if ($thread['poll'] == 1)
 	{
 	/** Poll sollte extra schließbar sein */
@@ -522,6 +530,7 @@ protected function getFiles($post)
 			</tr>';
 			}
 		}
+	$stm->close();
 
 	return $list.'</table>';
 	}

@@ -38,11 +38,13 @@ protected function checkForm()
 			');
 		$stm->bindString(htmlspecialchars($this->name));
 		$stm->getColumn();
+		$stm->close();
 
 		$this->showWarning('Name bereits vergeben!');
 		}
 	catch (DBNoDataException $e)
 		{
+		$stm->close();
 		}
 	}
 
@@ -61,6 +63,7 @@ protected function sendForm()
 	$stm->bindString(htmlspecialchars($this->name));
 	$stm->bindInteger(time());
 	$stm->execute();
+	$stm->close();
 
 	$id = $this->DB->getInsertId();
 
@@ -74,6 +77,7 @@ protected function sendForm()
 		);
 	$stm->bindInteger($id);
 	$stm->execute();
+	$stm->close();
 
 	$cat = $this->DB->getInsertId();
 
@@ -88,6 +92,7 @@ protected function sendForm()
 		');
 	$stm->bindInteger($cat);
 	$stm->execute();
+	$stm->close();
 
 	$stm = $this->DB->prepare
 		('
@@ -100,6 +105,7 @@ protected function sendForm()
 		');
 	$stm->bindInteger($cat);
 	$stm->execute();
+	$stm->close();
 
 	$stm = $this->DB->prepare
 		('
@@ -112,6 +118,7 @@ protected function sendForm()
 		');
 	$stm->bindInteger($cat);
 	$stm->execute();
+	$stm->close();
 
 	$stm = $this->DB->prepare
 		('
@@ -124,6 +131,7 @@ protected function sendForm()
 		');
 	$stm->bindInteger($cat);
 	$stm->execute();
+	$stm->close();
 
 	$stm = $this->DB->prepare
 		('
@@ -136,6 +144,7 @@ protected function sendForm()
 		');
 	$stm->bindInteger($cat);
 	$stm->execute();
+	$stm->close();
 
 	copy(PATH.'/html/default.html', PATH.'/html/'.$id.'.html');
 	copy(PATH.'/html/default.css', PATH.'/html/'.$id.'.css');

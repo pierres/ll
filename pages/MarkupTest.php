@@ -2,9 +2,9 @@
 
 class MarkupTest extends Form{
 
-protected $text 	= '';
+protected $text 		= '';
 protected $smilies 	= true;
-protected $title 	= 'Markup-Test';
+protected $title 		= 'Markup-Test';
 
 
 protected function setForm()

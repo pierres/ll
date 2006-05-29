@@ -31,9 +31,11 @@ protected function setForm()
 		$stm->bindInteger($this->forum);
 		$stm->bindInteger($this->Board->getId());
 		$this->group = $stm->getColumn();
+		$stm->close();
 		}
 	catch(Exception $e)
 		{
+		$stm->close();
 		$this->Io->redirect('AdminCats');
 		}
 
@@ -54,9 +56,11 @@ protected function setForm()
 			);
 		$stm->bindInteger($this->group);
 		$mods = $stm->getColumnSet();
+		$stm->close();
 		}
 	catch (DBNoDataException $e)
 		{
+		$stm->close();
 		$mods = array();
 		}
 
@@ -127,6 +131,7 @@ private function updateMods()
 		$stm->bindInteger($this->Board->getId());
 		$stm->bindInteger($this->forum);
 		$stm->execute();
+		$stm->close();
 		}
 	else
 		{
@@ -141,11 +146,10 @@ private function updateMods()
 			);
 		$stm->bindInteger($groupid);
 		$stm->execute();
+		$stm->close();
 		}
 
-	foreach($this->mods as $mod)
-		{
-		$stm = $this->DB->prepare
+	$stm = $this->DB->prepare
 			('
 			INSERT INTO
 				user_group
@@ -153,10 +157,15 @@ private function updateMods()
 				groupid = ?,
 				userid = ?'
 			);
+
+	foreach($this->mods as $mod)
+		{
 		$stm->bindInteger($groupid);
 		$stm->bindInteger($mod);
 		$stm->execute();
 		}
+
+	$stm->close();
 
 	$this->DB->execute('UNLOCK TABLES');
 	}

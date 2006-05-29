@@ -68,9 +68,11 @@ protected function setForm()
 				<input type="checkbox" name="forums['.$forum['id'].']" value="1" />'.$forum['name'].'<br />
 				');
 			}
+		$stm->close();
 		}
 	catch (DBNoDataException $e)
 		{
+		$stm->close();
 		}
 
 	$this->addHidden('cat', $this->cat);
@@ -93,9 +95,11 @@ protected function checkForm()
 		$stm->bindInteger($this->cat);
 		$stm->bindInteger($this->Board->getId());
 		$stm->getColumn();
+		$stm->close();
 		}
 	catch (DBNoDataException $e)
 		{
+		$stm->close();
 		$this->Io->redirect('AdminCats');
 		}
 	}
@@ -115,16 +119,15 @@ protected function sendForm()
 			);
 		$stm->bindInteger($this->cat);
 		$position = $stm->getColumn();
+		$stm->close();
 		}
 	catch (DBNoDataException $e)
 		{
+		$stm->close();
 		$this->redirect();
 		}
 
-	/** FIXME */
-	foreach($this->Io->getArray() as $forum => $value)
-		{
-		$stm = $this->DB->prepare
+	$stm = $this->DB->prepare
 			('
 			INSERT INTO
 				forum_cat
@@ -133,11 +136,15 @@ protected function sendForm()
 				catid = ?,
 				position = ?'
 			);
+	/** FIXME */
+	foreach($this->Io->getArray() as $forum => $value)
+		{
 		$stm->bindInteger($forum);
 		$stm->bindInteger($this->cat);
 		$stm->bindInteger($position);
 		$stm->execute();
 		}
+	$stm->close();
 
 	$this->redirect();
 	}

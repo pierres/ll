@@ -33,13 +33,16 @@ protected function checkInput()
 		$stm->bindInteger($this->User->getId());
 		$stm->bindInteger($this->Io->getInt('post'));
 		$data = $stm->getRow();
+		$stm->close();
 		}
 	catch (IoException $e)
 		{
+		$stm->close();
 		$this->showFailure('Kein Beitrag angegeben!');
 		}
 	catch (DBNoDataException $e)
 		{
+		$stm->close();
 		$this->showFailure('Beitrag nicht gefunden!');
 		}
 

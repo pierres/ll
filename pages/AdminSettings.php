@@ -46,9 +46,11 @@ protected function setForm()
 				{
 				$admins .= $admin."\n";
 				}
+			$stm->close();
 			}
 		catch (DBNoDataException $e)
 			{
+			$stm->close();
 			}
 		$this->addTextArea('admins', 'Administratoren', $admins, 80, 5);
 		}
@@ -73,9 +75,11 @@ protected function setForm()
 			{
 			$mods .= $mod."\n";
 			}
+		$stm->close();
 		}
 	catch (DBNoDataException $e)
 		{
+		$stm->close();
 		}
 	$this->addTextArea('mods', 'Moderatoren', $mods, 80, 5);
 
@@ -96,6 +100,7 @@ protected function setForm()
 		{
 		$description = '';
 		}
+	$stm->close();
 
 	$this->addTextArea('description', 'Beschreibung', $this->UnMarkup->fromHtml($description));
 	}
@@ -174,6 +179,7 @@ protected function sendForm()
 		$stm->bindInteger($this->admin);
 		$stm->bindInteger($this->Board->getId());
 		$stm->execute();
+		$stm->close();
 		}
 
 	$stm = $this->DB->prepare
@@ -190,6 +196,7 @@ protected function sendForm()
 	$stm->bindString($description);
 	$stm->bindInteger($this->Board->getId());
 	$stm->execute();
+	$stm->close();
 
 	$this->updateAdmins();
 	$this->updateMods();
@@ -231,6 +238,7 @@ private function updateMods()
 		$stm->bindInteger($groupid);
 		$stm->bindInteger($this->Board->getId());
 		$stm->execute();
+		$stm->close();
 		}
 	else
 		{
@@ -245,22 +253,24 @@ private function updateMods()
 			);
 		$stm->bindInteger($groupid);
 		$stm->execute();
+		$stm->close();
 		}
 
+	$stm = $this->DB->prepare
+		('
+		INSERT INTO
+			user_group
+		SET
+			groupid = ?,
+			userid = ?'
+		);
 	foreach($this->mods as $mod)
 		{
-		$stm = $this->DB->prepare
-			('
-			INSERT INTO
-				user_group
-			SET
-				groupid = ?,
-				userid = ?'
-			);
 		$stm->bindInteger($groupid);
 		$stm->bindInteger($mod);
 		$stm->execute();
 		}
+	$stm->close();
 
 	$this->DB->execute('UNLOCK TABLES');
 	}
@@ -290,6 +300,7 @@ private function updateAdmins()
 		$stm->bindInteger($groupid);
 		$stm->bindInteger($this->Board->getId());
 		$stm->execute();
+		$stm->close();
 		}
 	else
 		{
@@ -304,22 +315,24 @@ private function updateAdmins()
 			);
 		$stm->bindInteger($groupid);
 		$stm->execute();
+		$stm->close();
 		}
 
+	$stm = $this->DB->prepare
+		('
+		INSERT INTO
+			user_group
+		SET
+			groupid = ?,
+			userid = ?'
+		);
 	foreach($this->admins as $admin)
 		{
-		$stm = $this->DB->prepare
-			('
-			INSERT INTO
-				user_group
-			SET
-				groupid = ?,
-				userid = ?'
-			);
 		$stm->bindInteger($groupid);
 		$stm->bindInteger($admin);
 		$stm->execute();
 		}
+	$stm->close();
 
 	$this->DB->execute('UNLOCK TABLES');
 	}

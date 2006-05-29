@@ -38,9 +38,11 @@ protected function setForm()
 		$stm->bindInteger($this->Board->getId());
 		$stm->bindInteger($this->forum);
 		$this->cat = $stm->getColumn();
+		$stm->close();
 		}
 	catch (DBNoDataException $e)
 		{
+		$stm->close();
 		$this->Io->redirect('AdminCats');
 		}
 

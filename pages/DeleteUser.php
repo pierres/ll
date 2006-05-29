@@ -43,9 +43,11 @@ protected function setForm()
 			);
 		$stm->bindInteger($this->user);
 		$username = $stm->getColumn();
+		$stm->close();
 		}
 	catch (DBNoDataException $e)
 		{
+		$stm->close();
 		$this->showFailure('Kein Benutzer gefunden');
 		}
 
@@ -76,6 +78,7 @@ protected function sendForm()
 			);
 		$stm->bindInteger($this->user);
 		$stm->execute();
+		$stm->close();
 
 		$stm = $this->DB->prepare
 			('
@@ -86,6 +89,7 @@ protected function sendForm()
 			);
 		$stm->bindInteger($this->user);
 		$stm->execute();
+		$stm->close();
 
 	/** FIXME: ggf. müssen dann die Links in posts auch gelöscht werden */
 	/*
@@ -98,6 +102,7 @@ protected function sendForm()
 			);
 		$stm->bindInteger($this->user);
 		$stm->execute();
+		$stm->close();
 	*/
 
 		$stm = $this->DB->prepare
@@ -109,6 +114,7 @@ protected function sendForm()
 			);
 		$stm->bindInteger($this->user);
 		$stm->execute();
+		$stm->close();
 
 		$stm = $this->DB->prepare
 			('
@@ -119,6 +125,7 @@ protected function sendForm()
 			);
 		$stm->bindInteger($this->user);
 		$stm->execute();
+		$stm->close();
 
 		$stm = $this->DB->prepare
 			('
@@ -129,6 +136,7 @@ protected function sendForm()
 			);
 		$stm->bindInteger($this->user);
 		$stm->execute();
+		$stm->close();
 
 		$stm = $this->DB->prepare
 			('
@@ -141,6 +149,7 @@ protected function sendForm()
 			);
 		$stm->bindInteger($this->user);
 		$stm->execute();
+		$stm->close();
 
 		$stm = $this->DB->prepare
 			('
@@ -153,6 +162,7 @@ protected function sendForm()
 			);
 		$stm->bindInteger($this->user);
 		$stm->execute();
+		$stm->close();
 
 		$stm = $this->DB->prepare
 			('
@@ -165,6 +175,7 @@ protected function sendForm()
 			);
 		$stm->bindInteger($this->user);
 		$stm->execute();
+		$stm->close();
 
 		$stm = $this->DB->prepare
 			('
@@ -177,7 +188,9 @@ protected function sendForm()
 			);
 		$stm->bindInteger($this->user);
 		$stm->execute();
+		$stm->close();
 
+		/** FIXME löscht der Admin einen eingeloggten User, so wird dieser nicht ausgeloggt */
 		if ($this->user == $this->User->getId())
 			{
 			$this->User->logout();

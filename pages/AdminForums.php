@@ -100,6 +100,7 @@ protected function setForm()
 				');
 			}
 		}
+	$stm->close();
 
 	$this->addOutput
 		(
@@ -135,11 +136,13 @@ private function getMods($group)
 				AND user_group.groupid = ?'
 			);
 		$stm->bindInteger($group);
-		$t = $stm->getColumnSet();
-		foreach($t as $mod)
+
+		foreach($stm->getColumnSet() as $mod)
 			{
 			$mods[] = $mod;
 			}
+
+		$stm->close();
 		}
 	catch (DBNoDataException $e)
 		{
@@ -165,9 +168,11 @@ protected function checkForm()
 		$stm->bindInteger($this->cat);
 		$stm->bindInteger($this->Board->getId());
 		$stm->getColumn();
+		$stm->close();
 		}
 	catch(DBNoDataException $e)
 		{
+		$stm->close();
 		$this->Io->redirect('AdminCats');
 		}
 	}
@@ -177,21 +182,32 @@ protected function sendForm()
 	/** FIXME */
 	$forums = $this->Io->getArray();
 
+	$stm = $this->DB->prepare
+		('
+		UPDATE
+			forums
+		SET
+			name = ?,
+			description = ?
+		WHERE
+			boardid = ?
+			AND id = ?'
+		);
+
+	$stm2 = $this->DB->prepare
+		('
+		UPDATE
+			forum_cat
+		SET
+			position = ?
+		WHERE
+			forumid = ?
+			AND catid = ?'
+		);
 	foreach($forums as $forum => $value)
 		{
 		if(isset($value['name']) && isset($value['description']))
 			{
-			$stm = $this->DB->prepare
-				('
-				UPDATE
-					forums
-				SET
-					name = ?,
-					description = ?
-				WHERE
-					boardid = ?
-					AND id = ?'
-				);
 			$stm->bindString(htmlspecialchars($value['name']));
 			$stm->bindString(htmlspecialchars($value['description']));
 			$stm->bindInteger($this->Board->getId());
@@ -199,21 +215,13 @@ protected function sendForm()
 			$stm->execute();
 			}
 
-		$stm = $this->DB->prepare
-			('
-			UPDATE
-				forum_cat
-			SET
-				position = ?
-			WHERE
-				forumid = ?
-				AND catid = ?'
-			);
-		$stm->bindInteger($value['position']);
-		$stm->bindInteger($forum);
-		$stm->bindInteger($this->cat);
-		$stm->execute();
+		$stm2->bindInteger($value['position']);
+		$stm2->bindInteger($forum);
+		$stm2->bindInteger($this->cat);
+		$stm2->execute();
 		}
+	$stm->close();
+	$stm2->close();
 
 	if (!$this->Io->isEmpty('newname'))
 		{
@@ -230,6 +238,7 @@ protected function sendForm()
 		$stm->bindString($this->Io->getHtml('newdescription'));
 		$stm->bindInteger($this->Board->getId());
 		$stm->execute();
+		$stm->close();
 
 		$stm = $this->DB->prepare
 			('
@@ -243,6 +252,7 @@ protected function sendForm()
 		$stm->bindInteger($this->Io->getInt('newposition'));
 		$stm->bindInteger($this->cat);
 		$stm->execute();
+		$stm->close();
 		}
 
 	$this->redirect();

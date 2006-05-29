@@ -53,9 +53,11 @@ protected function checkForm()
 			);
 		$stm->bindString($this->email);
 		$stm->getColumn();
+		$stm->close();
 		}
 	catch (DBNoDataException $e)
 		{
+		$stm->close();
 		return;
 		}
 
@@ -80,6 +82,7 @@ protected function sendForm()
 	$stm->bindString(md5($password));
 	$stm->bindInteger($this->User->getId());
 	$stm->execute();
+	$stm->close();
 
 	$this->Mail->setTo($this->email);
 	$this->Mail->setFrom('support@laber-land.de');

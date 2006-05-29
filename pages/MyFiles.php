@@ -76,7 +76,7 @@ protected function setForm()
 		<td style="text-align:right;"><a href="?page=DelFile;id='.$this->Board->getId().';file='.$file['id'].'"><span class="button" style="background-color:#CC0000">X</span></a></td>
 		</tr>';
 		}
-
+	$stm->close();
 	try
 		{
 		$stm = $this->DB->prepare
@@ -91,9 +91,11 @@ protected function setForm()
 			);
 		$stm->bindInteger($this->User->getId());
 		$data = $stm->getRow();
+		$stm->close();
 		}
 	catch (DBNoDataException $e)
 		{
+		$stm->close();
 		$data['files'] = 0;
 		$data['quota'] = 0;
 		}
@@ -144,9 +146,11 @@ protected function checkForm()
 			);
 		$stm->bindInteger($this->User->getId());
 		$data = $stm->getRow();
+		$stm->close();
 		}
 	catch (DBNoDataException $e)
 		{
+		$stm->close();
 		$data['files'] = 0;
 		$data['quota'] = 0;
 		}
@@ -185,6 +189,7 @@ protected function sendForm()
 	$stm->bindInteger($this->User->getId());
 	$stm->bindInteger(time());
 	$stm->execute();
+	$stm->close();
 
 	unlink($this->file['tmp_name']);
 
@@ -216,6 +221,7 @@ protected function sendForm()
 			$stm->bindString($thumbcontent);
 
 			$stm->execute();
+			$stm->close();
 			}
 
 	$this->Io->redirect('MyFiles');

@@ -42,9 +42,11 @@ public function prepare()
 			);
 		$stm->bindInteger($this->id);
 		$data = $stm->getRow();
+		$stm->close();
 		}
 	catch (DBNoDataException $e)
 		{
+		$stm->close();
 		$this->showWarning('Kein Benutzer gefunden!');
 		}
 

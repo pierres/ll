@@ -60,9 +60,11 @@ protected function checkAccessMoveto()
 			');
 		$stm->bindInteger($this->moveto);
 		$mods = $stm->getColumn();
+		$stm->close();
 		}
 	catch (DBNoDataException $e)
 		{
+		$stm->close();
 		$this->showFailure('Thema nicht gefunden oder geschlossen!');
 		}
 
@@ -96,12 +98,14 @@ protected function checkAccess()
 			');
 		$stm->bindInteger($this->post);
 		$forum = $stm->getRow();
+		$stm->close();
 
 		$this->forum = $forum['id'];
 		$this->oldthread = $forum['threadid'];
 		}
 	catch (DBNoDataException $e)
 		{
+		$stm->close();
 		$this->showFailure('Thema nicht gefunden oder geschlossen!');
 		}
 
@@ -140,9 +144,11 @@ protected function buildList()
 			$this->addElement('thread'.$data['id'],
 				'<input class="radio" type="radio" name="moveto" value="'.$data['id'].'" />&nbsp;'.$data['name']);
 			}
+		$stm->close();
 		}
 	catch (DBNoDataException $e)
 		{
+		$stm->close();
 		}
 	}
 
@@ -160,6 +166,7 @@ protected function sendForm()
 	$stm->bindInteger($this->moveto);
 	$stm->bindInteger($this->post);
 	$stm->execute();
+	$stm->close();
 
 	AdminFunctions::updateThread($this->oldthread);
 	AdminFunctions::updateThread($this->moveto);

@@ -54,9 +54,11 @@ protected function checkAccess($forum = 0)
 			);
 		$stm->bindInteger($forum);
 		$mods = $stm->getColumn();
+		$stm->close();
 		}
 	catch (DBNoDataException $e)
 		{
+		$stm->close();
 		$this->showFailure('Kein Forum gefunden.');
 		}
 
@@ -116,9 +118,12 @@ protected function buildList()
 
 			$cat = $data['catid'];
 			}
+
+		$stm->close();
 		}
 	catch (DBNoDataException $e)
 		{
+		$stm->close();
 		}
 	}
 
@@ -138,6 +143,7 @@ protected function sendForm()
 	$stm->bindInteger($this->forum);
 	$stm->bindInteger($this->thread);
 	$stm->execute();
+	$stm->close();
 
 	$this->updateForum();
 	// Auch das neue Forum muß aktualisiert werden

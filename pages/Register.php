@@ -48,11 +48,13 @@ protected function checkForm()
 		$stm->bindString(htmlspecialchars($this->name));
 		$stm->bindString($this->email);
 		$stm->getColumn();
+		$stm->close();
 
 		$this->showWarning('Name oder E-Mail bereits vergeben!');
 		}
 	catch (DBNoDataException $e)
 		{
+		$stm->close();
 		}
 	}
 
@@ -75,6 +77,7 @@ protected function sendForm()
 	$stm->bindString(md5($password));
 	$stm->bindInteger(time());
 	$stm->execute();
+	$stm->close();
 
 	$this->Mail->setTo($this->email);
 	$this->Mail->setFrom('support@laber-land.de');

@@ -132,6 +132,7 @@ else
 
 	$cat = $data['catid'];
 	}
+$stm->close();
 
 $online = array();
 foreach($this->User->getOnline() as $user)
@@ -204,6 +205,7 @@ private function getPrivateThreads()
 			');
 		$stm->bindInteger($this->User->getId());
 		$data = $stm->getRow();
+		$stm->close();
 
 		$stm = $this->DB->prepare
 			('
@@ -220,12 +222,14 @@ private function getPrivateThreads()
 			);
 		$stm->bindInteger($this->User->getId());
 		$count = $stm->getRow();
+		$stm->close();
 
 		$data['posts'] = $count['posts'];
 		$data['threads'] = $count['threads'];
 		}
 	catch (DBNoDataException $e)
 		{
+		$stm->close();
 		$data['lastthread'] = '';
 		$data['lastusername'] = '';
 		$data['lastuserid'] = 0;

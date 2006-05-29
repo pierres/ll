@@ -1,6 +1,6 @@
 <?php
 
-
+/** TODO Dies kann man auch benutzerfreundlicher realisieren */
 class NotFound extends Page{
 
 

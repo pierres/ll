@@ -4,13 +4,13 @@
 class User extends Modul{
 
 
-const ROOT		= 3;
-const ADMIN		= 2;
-const MOD		= 1;
+const ROOT			= 3;
+const ADMIN			= 2;
+const MOD			= 1;
 
-private $sessionid	= 0;
-private $id 		= 0;
-private $level		= 0;
+private $sessionid		= 0;
+private $id 			= 0;
+private $level			= 0;
 private $name		= '';
 private $groups		= array();
 
@@ -43,9 +43,11 @@ function __construct()
 			);
 		$stm->bindString($sessionid);
 		$data = $stm->getRow();
+		$stm->close();
 		}
 	catch (DBNoDataException $e)
 		{
+		$stm->close();
 		$this->Io->setCookie('sessionid', '');
 		return $this->cookieLogin();
 		}
@@ -72,9 +74,11 @@ function __construct()
 			$stm->bindInteger(time());
 			$stm->bindString($this->sessionid);
 			$stm->execute();
+			$stm->close();
 			}
 		catch (DBException $e)
 			{
+			$stm->close();
 			$this->logout();
 			}
 		}
@@ -110,9 +114,11 @@ public function logout()
 			);
 		$stm->bindInteger($this->id);
 		$stm->execute();
+		$stm->close();
 		}
 	catch (DBException $e)
 		{
+		$stm->close();
 		}
 
 	$this->Io->setCookie('sessionid', '');
@@ -165,9 +171,11 @@ public function login($name, $password, $cookie = false)
 			}
 
 		$data = $stm->getRow();
+		$stm->close();
 		}
 	catch (DBNoDataException $e)
 		{
+		$stm->close();
 		throw new LoginException('Falsche Benutzername/Passwort-Kombination');
 		}
 
@@ -185,16 +193,16 @@ public function login($name, $password, $cookie = false)
 				userid = ?'
 			);
 		$stm->bindInteger($data['id']);
-		$groups = $stm->getColumnSet();
 
-		/** @FIXME: Warum enthält das Array nur 0? */
-		foreach ($groups as $group)
+		foreach ($stm->getColumnSet() as $group)
 			{
 			$gruopArray[] = $group;
 			}
+		$stm->close();
 		}
 	catch (DBNoDataException $e)
 		{
+		$stm->close();
 		}
 
 	$this->start($data['id'], $data['name'], $data['level'], $gruopArray);
@@ -206,7 +214,7 @@ private function start($id, $name ,$level, $groups)
 
 	$this->sessionid = md5(uniqid(rand(), true));
 
-	$this->id 	= $id;
+	$this->id 		= $id;
 	$this->name 	= $name;
 	$this->level 	= $level;
 	$this->groups 	= $groups;
@@ -222,9 +230,11 @@ private function start($id, $name ,$level, $groups)
 			);
 		$stm->bindInteger($this->id);
 		$stm->execute();
+		$stm->close();
 		}
 	catch (DBNoDataException $e)
 		{
+		$stm->close();
 		}
 
 	$stm = $this->DB->prepare
@@ -246,6 +256,7 @@ private function start($id, $name ,$level, $groups)
 	$stm->bindString(implode(',', $this->groups));
 	$stm->bindInteger(time());
 	$stm->execute();
+	$stm->close();
 
 	$this->Io->setCookie('sessionid', $this->sessionid);
 	}
@@ -263,9 +274,11 @@ private function collectGarbage()
 			);
 		$stm->bindInteger(time() - $this->Settings->getValue('session_timeout'));
 		$stm->execute();
+		$stm->close();
 		}
 	catch (DBNoDataException $e)
 		{
+		$stm->close();
 		}
 	}
 

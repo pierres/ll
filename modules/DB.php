@@ -17,7 +17,16 @@ function __construct($user, $password, $database)
 
 function __destruct()
 	{
+	if (isset($this->link))
+		{
+		$this->close();
+		}
+	}
+
+public function close()
+	{
 	@mysqli_close($this->link);
+	unset($this->link);
 	}
 
 public function getInsertId()
@@ -42,7 +51,7 @@ public function prepare($query)
 	return new DBStatement($stm, $this->link);
 	}
 
-public function execute($query, $ignore = true)
+public function execute($query)
 	{
 	$result = mysqli_query($this->link, $query);
 
@@ -53,13 +62,11 @@ public function execute($query, $ignore = true)
 
 	if (mysqli_warning_count($this->link))
 		{
-		@mysqli_free_result($result);
 		throw new DBWarningException($this->link);
 		}
 
-	if (!$ignore && mysqli_affected_rows($this->link) <= 0)
+	if (mysqli_affected_rows($this->link) <= 0)
 		{
-		@mysqli_free_result($result);
 		throw new DBNoDataException();
 		}
 	}
@@ -75,13 +82,11 @@ private function query($query)
 
 	if (mysqli_warning_count($this->link))
 		{
-		@mysqli_free_result($result);
 		throw new DBWarningException($this->link);
 		}
 
 	if (mysqli_num_rows($result) == 0)
 		{
-		@mysqli_free_result($result);
 		throw new DBNoDataException();
 		}
 
@@ -103,7 +108,6 @@ public function getRow($query)
 		}
 	else
 		{
-		@mysqli_free_result($result);
 		throw new DBNoDataException($this->link);
 		}
 	}
@@ -118,7 +122,6 @@ public function getColumn($query)
 		}
 	else
 		{
-		@mysqli_free_result($result);
 		throw new DBNoDataException($this->link);
 		}
 	}
@@ -140,7 +143,6 @@ public function getColumnSet($query)
 		}
 	else
 		{
-		@mysqli_free_result($result);
 		throw new DBNoDataException($this->link);
 		}
 	}
@@ -210,13 +212,18 @@ interface IDBResult extends Iterator{}
 
 class DBResult implements IDBResult{
 
-private $result		= null;
+private $result	= null;
 private $row 		= null;
 private $current 	= 0;
 
 public function __construct($result)
 	{
 	$this->result = $result;
+	}
+
+public function __destruct()
+	{
+	$this->rewind();
 	}
 
 public function current()
@@ -264,10 +271,10 @@ public function valid()
 
 class DBStatement{
 
-private $link 			= null;
+private $link 		= null;
 private $stm 		= null;
 private $bindings 	= array();
-private $types 		= '';
+private $types 	= '';
 
 public function __construct($stm, $link)
 	{
@@ -275,13 +282,10 @@ public function __construct($stm, $link)
 	$this->link = $link;
 	}
 
-public function __destruct()
-	{
-	}
-
 public function close()
 	{
 	mysqli_stmt_close($this->stm);
+	unset($this->stm);
 	}
 
 public function bindString($value)
@@ -331,7 +335,6 @@ private function executeStatement()
 
 	if (mysqli_warning_count($this->link))
 		{
-		$this->close();
 		throw new DBWarningException($this->link);
 		}
 
@@ -346,7 +349,7 @@ private function executeStatement()
 		}
 	}
 
-public function execute($ignore = true)
+public function execute()
 	{
 	if (!empty($this->types))
 		{
@@ -360,16 +363,13 @@ public function execute($ignore = true)
 
 	if (mysqli_warning_count($this->link))
 		{
-		$this->close();
 		throw new DBWarningException($this->link);
 		}
 
-	if (!$ignore && mysqli_stmt_affected_rows($this->stm) <= 0)
+	if (mysqli_stmt_affected_rows($this->stm) <= 0)
 		{
 		throw new DBNoDataException();
 		}
-
-	$this->close();
 	}
 
 private function bindResult()
@@ -407,12 +407,10 @@ public function getRow()
 
 	if ($result == true)
 		{
-		$this->close();
 		return $row;
 		}
 	elseif($result == null)
 		{
-		$this->close();
 		throw new DBNoDataException();
 		}
 	else
@@ -438,12 +436,10 @@ public function getColumn()
 
 	if ($result == true)
 		{
-		$this->close();
 		return $column;
 		}
 	elseif($result == null)
 		{
-		$this->close();
 		throw new DBNoDataException();
 		}
 	else
@@ -473,6 +469,11 @@ public function __construct($stm, &$row)
 	$this->row = &$row;
 	}
 
+public function __destruct()
+	{
+	$this->rewind();
+	}
+
 public function current()
 	{
 	return $this->row;
@@ -491,7 +492,7 @@ public function rewind()
 	{
 	if ($this->current > 0)
 		{
-		mysqli_stmt_close($this->stm);
+		mysqli_stmt_free_result($this->stm);
 		$this->current = 0;
 		}
 	}

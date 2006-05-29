@@ -40,6 +40,7 @@ public function __construct($pollid = 0, $target = 'Postings')
 			);
 		$stm->bindInteger($this->id);
 		$forum = $stm->getColumn();
+		$stm->close();
 
 		if ($forum == 0)
 			{
@@ -56,6 +57,7 @@ public function __construct($pollid = 0, $target = 'Postings')
 			$stm->bindInteger($this->User->getId());
 			$stm->bindInteger($this->id);
 			$stm->getColumn();
+			$stm->close();
 			}
 
 		$stm = $this->DB->prepare
@@ -69,6 +71,7 @@ public function __construct($pollid = 0, $target = 'Postings')
 			);
 		$stm->bindInteger($this->id);
 		$this->question = $stm->getColumn();
+		$stm->close();
 
 		$stm = $this->DB->prepare
 			('
@@ -86,6 +89,7 @@ public function __construct($pollid = 0, $target = 'Postings')
 			');
 		$stm->bindInteger($this->id);
 		$this->options = $stm->getRowSet();
+		$stm->close();
 		}
 	catch (DBNoDataException $e)
 		{
@@ -232,6 +236,7 @@ public function prepare()
 	$stm->bindInteger($this->id);
 	$stm->bindInteger($this->User->getId());
 	$stm->execute();
+	$stm->close();
 
 	$stm = $this->DB->prepare
 		('
@@ -246,6 +251,7 @@ public function prepare()
 	$stm->bindInteger($valueid);
 	$stm->bindInteger($this->id);
 	$stm->execute();
+	$stm->close();
 	}
 
 protected function reload()
@@ -280,10 +286,12 @@ private function hasVoted()
 		$stm->bindInteger($this->id);
 		$stm->bindInteger($this->User->getId());
 		$stm->getColumn();
+		$stm->close();
 		return true;
 		}
 	catch (DBNoDataException $e)
 		{
+		$stm->close();
 		return false;
 		}
 	}

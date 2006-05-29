@@ -113,6 +113,7 @@ private function loadImage()
 	$stm->bindString($file['thumbcontent']);
 	$stm->bindInteger($file['thumbsize']);
 	$stm->execute();
+	$stm->close();
 
 	if ($this->thumb && $file['thumbsize'] > 0)
 		{
@@ -191,6 +192,7 @@ public function show()
 			$stm->bindString($this->url);
 			$stm->bindString($this->url);
 			$data = $stm->getRow();
+			$stm->close();
 			}
 		else
 			{
@@ -207,10 +209,12 @@ public function show()
 				');
 			$stm->bindString($this->url);
 			$data = $stm->getRow();
+			$stm->close();
 			}
 		}
 	catch (DBNoDataException $e)
 		{
+		$stm->close();
 		$data = $this->loadImage();
 		}
 

@@ -26,13 +26,16 @@ protected function checkInput()
 			);
 		$stm->bindInteger($this->Io->getInt('post'));
 		$data = $stm->getRow();
+		$stm->close();
 		}
 	catch (IoException $e)
 		{
+		$stm->close();
 		$this->showFailure('Kein Beitrag angegeben!');
 		}
 	catch (DBNoDataException $e)
 		{
+		$stm->close();
 		$this->showFailure('Beitrag nicht gefunden!');
 		}
 
@@ -63,9 +66,11 @@ protected function checkAccess()
 		$stm->bindInteger($this->post);
 		$stm->bindInteger($this->User->getId());
 		$access = $stm->getColumn();
+		$stm->close();
 		}
 	catch (DBNoDataException $e)
 		{
+		$stm->close();
 		$this->showFailure('Kein Beitrag gefunden.');
 		}
 	}
@@ -90,6 +95,7 @@ protected function sendForm()
 	$stm->bindInteger($this->smilies ? 1 : 0);
 	$stm->bindInteger($this->post);
 	$stm->execute();
+	$stm->close();
 
 	$this->sendFile($this->post);
 
@@ -109,6 +115,7 @@ protected function sendFile($postid)
 			);
 		$stm->bindInteger($postid);
 		$stm->execute();
+		$stm->close();
 
 		$stm = $this->DB->prepare
 			('
@@ -121,6 +128,7 @@ protected function sendFile($postid)
 			);
 		$stm->bindInteger($postid);
 		$stm->execute();
+		$stm->close();
 
 		parent::sendFile($postid);
 		}

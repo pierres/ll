@@ -35,13 +35,16 @@ protected function checkInput()
 		$stm->bindInteger($this->User->getId());
 		$stm->bindInteger($this->Io->getInt('thread'));
 		$this->thread = $stm->getColumn();
+		$stm->close();
 		}
 	catch (IoException $e)
 		{
+		$stm->close();
 		$this->showFailure('Kein Thema angegeben!');
 		}
 	catch (DBNoDataException $e)
 		{
+		$stm->close();
 		$this->showFailure('Thema nicht gefunden!');
 		}
 
@@ -68,6 +71,7 @@ protected function sendForm()
 	$stm->bindInteger($this->time);
 	$stm->bindInteger($this->User->getId());
 	$stm->execute();
+	$stm->close();
 
 	$stm = $this->DB->prepare
 		('
@@ -89,6 +93,7 @@ protected function sendForm()
 	$stm->bindInteger($this->smilies ? 1 : 0);
 
 	$stm->execute();
+	$stm->close();
 
 	$this->sendFile($this->DB->getInsertId());
 
@@ -107,6 +112,7 @@ protected function sendForm()
 	$stm->bindInteger($this->time);
 	$stm->bindInteger($this->Board->getId());
 	$stm->execute();
+	$stm->close();
 
 	$this->Log->insert($this->thread, $this->time);
 
@@ -137,9 +143,11 @@ protected function redirect()
 			);
 		$stm->bindInteger($this->thread);
 		$threadName = $stm->getColumn();
+		$stm->close();
 		}
 	catch (DBNoDataException $e)
 		{
+		$stm->close();
 		$threadName = '';
 		}
 

@@ -43,9 +43,11 @@ public function __construct()
 			{
 			$this->log[$thread['threadid']] = $thread['dat'];
 			}
+		$stm->close();
 		}
 	catch (DBNoDataException $e)
 		{
+		$stm->close();
 		}
 	}
 
@@ -78,7 +80,6 @@ public function insert($threadid, $threadtime)
 				threadid = ?,
 				userid = ?'
 			);
-
 		}
 	else
 		{
@@ -98,6 +99,7 @@ public function insert($threadid, $threadtime)
 	$stm->bindInteger($threadid);
 	$stm->bindInteger($this->User->getId());
 	$stm->execute();
+	$stm->close();
 
 	/** FIXME: kann man beim Neuerstellen/Löschen eines Beitrags starten.*/
 	$this->collectGarbage();
@@ -148,9 +150,11 @@ public function delete($threadid)
 			);
 		$stm->bindInteger($threadid);
 		$stm->execute();
+		$stm->close();
 		}
 	catch (DBNoDataException $e)
 		{
+		$stm->close();
 		}
 	}
 
@@ -167,9 +171,11 @@ private function collectGarbage()
 			);
 		$stm->bindInteger(time() - $this->timeout);
 		$stm->execute();
+		$stm->close();
 		}
 	catch (DBNoDataException $e)
 		{
+		$stm->close();
 		}
 	}
 

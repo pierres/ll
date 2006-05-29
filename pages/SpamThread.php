@@ -16,6 +16,7 @@ protected function sendForm()
 		);
 	$stm->bindInteger($this->thread);
 	$stm->execute();
+	$stm->close();
 
 	$this->updateForum();
 

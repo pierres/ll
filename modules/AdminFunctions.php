@@ -23,9 +23,11 @@ public static function delThread($thread)
 			);
 		$stm->bindInteger($thread);
 		$forum = $stm->getColumn();
+		$stm->close();
 		}
 	catch (DBNoDataException $e)
 		{
+		$stm->close();
 		return;
 		}
 
@@ -44,6 +46,7 @@ private static function removeThread($thread)
 		');
 	$stm->bindInteger($thread);
 	$stm->execute();
+	$stm->close();
 
 	$stm = self::__get('DB')->prepare
 		('
@@ -54,6 +57,7 @@ private static function removeThread($thread)
 		);
 	$stm->bindInteger($thread);
 	$stm->execute();
+	$stm->close();
 
 	$stm = self::__get('DB')->prepare
 		('
@@ -64,6 +68,7 @@ private static function removeThread($thread)
 		);
 	$stm->bindInteger($thread);
 	$stm->execute();
+	$stm->close();
 
 	$stm = self::__get('DB')->prepare
 		('
@@ -74,6 +79,7 @@ private static function removeThread($thread)
 		);
 	$stm->bindInteger($thread);
 	$stm->execute();
+	$stm->close();
 
 	$stm = self::__get('DB')->prepare
 		('
@@ -84,6 +90,7 @@ private static function removeThread($thread)
 		);
 	$stm->bindInteger($thread);
 	$stm->execute();
+	$stm->close();
 
 	$stm = self::__get('DB')->prepare
 		('
@@ -94,6 +101,7 @@ private static function removeThread($thread)
 		);
 	$stm->bindInteger($thread);
 	$stm->execute();
+	$stm->close();
 
 	$stm = self::__get('DB')->prepare
 		('
@@ -104,6 +112,7 @@ private static function removeThread($thread)
 		);
 	$stm->bindInteger($thread);
 	$stm->execute();
+	$stm->close();
 
 	$stm = self::__get('DB')->prepare
 		('
@@ -114,6 +123,7 @@ private static function removeThread($thread)
 		);
 	$stm->bindInteger($thread);
 	$stm->execute();
+	$stm->close();
 	}
 
 public static function delForum($forum)
@@ -135,6 +145,7 @@ public static function delForum($forum)
 			{
 			self::removeThread($thread);
 			}
+		$stm->close();
 		}
 	catch(DBNoDataException $e)
 		{
@@ -149,6 +160,7 @@ public static function delForum($forum)
 		);
 	$stm->bindInteger($forum);
 	$stm->execute();
+	$stm->close();
 
 	$stm = self::__get('DB')->prepare
 		('
@@ -159,6 +171,7 @@ public static function delForum($forum)
 		);
 	$stm->bindInteger($forum);
 	$stm->execute();
+	$stm->close();
 	}
 
 public static function delCat($cat)
@@ -185,9 +198,11 @@ public static function delCat($cat)
 			{
 			self::delForum($forum);
 			}
+		$stm->close();
 		}
 	catch (DBNoDataException $e)
 		{
+		$stm->close();
 		}
 
 	$stm = self::__get('DB')->prepare
@@ -199,6 +214,7 @@ public static function delCat($cat)
 		);
 	$stm->bindInteger($cat);
 	$stm->execute();
+	$stm->close();
 
 	$stm = self::__get('DB')->prepare
 		('
@@ -209,6 +225,7 @@ public static function delCat($cat)
 		);
 	$stm->bindInteger($cat);
 	$stm->execute();
+	$stm->close();
 	}
 
 public static function delBoard($board)
@@ -230,9 +247,11 @@ public static function delBoard($board)
 			{
 			self::delCat($cat);
 			}
+		$stm->close();
 		}
 	catch (DBNoDataException $e)
 		{
+		$stm->close();
 		}
 
 	$stm = self::__get('DB')->prepare
@@ -244,6 +263,7 @@ public static function delBoard($board)
 		);
 	$stm->bindInteger($board);
 	$stm->execute();
+	$stm->close();
 
 	unlink(PATH.'html'.$board.'.html');
 	unlink(PATH.'html'.$board.'.css');
@@ -272,6 +292,7 @@ public static function updateThread($thread)
 			');
 		$stm->bindInteger($thread);
 		$lastpost = $stm->getRow();
+		$stm->close();
 
 		$stm = self::__get('DB')->prepare
 			('
@@ -289,6 +310,7 @@ public static function updateThread($thread)
 			');
 		$stm->bindInteger($thread);
 		$firstpost = $stm->getRow();
+		$stm->close();
 
 		$stm = self::__get('DB')->prepare
 			('
@@ -317,9 +339,11 @@ public static function updateThread($thread)
 		$stm->bindInteger($thread);
 
 		$stm->execute();
+		$stm->close();
 		}
 	catch (DBNoDataException $e)
 		{
+		$stm->close();
 		/** Ein Thread ohne Postings können wir auch als gelöscht markieren */
 		$stm = self::__get('DB')->prepare
 			('
@@ -332,24 +356,33 @@ public static function updateThread($thread)
 			);
 		$stm->bindInteger($thread);
 		$stm->execute();
+		$stm->close();
 		}
 	}
 
 public static function updateForum($forum)
 	{
-	$stm = self::__get('DB')->prepare
-		('
-		UPDATE
-			forums AS f
-		SET
-			lastthread = (SELECT id FROM threads WHERE forumid = f.id AND deleted = 0 ORDER BY lastdate DESC LIMIT 1),
-			threads = (SELECT COUNT(*) FROM threads WHERE forumid = f.id AND deleted = 0),
-			posts = (SELECT SUM(posts) FROM threads WHERE forumid = f.id AND deleted = 0)
-		WHERE
-			id = ?'
-		);
-	$stm->bindInteger($forum);
-	$stm->execute();
+	try
+		{
+		$stm = self::__get('DB')->prepare
+			('
+			UPDATE
+				forums AS f
+			SET
+				lastthread = (SELECT id FROM threads WHERE forumid = f.id AND deleted = 0 ORDER BY lastdate DESC LIMIT 1),
+				threads = (SELECT COUNT(*) FROM threads WHERE forumid = f.id AND deleted = 0),
+				posts = (SELECT SUM(posts) FROM threads WHERE forumid = f.id AND deleted = 0)
+			WHERE
+				id = ?'
+			);
+		$stm->bindInteger($forum);
+		$stm->execute();
+		$stm->close();
+		}
+	catch (DBNoDataException $e)
+		{
+		$stm->close();
+		}
 	}
 
 public static function buildPositionMenu($name, $values, $marked)
@@ -376,7 +409,10 @@ public static function getUserId($name)
 			name = ?
 		');
 	$stm->bindString(htmlspecialchars($name));
-	return $stm->getColumn();
+
+	$id = $stm->getColumn();
+	$stm->close();
+	return $id;
 	}
 
 public static function getUserName($id)
@@ -391,7 +427,10 @@ public static function getUserName($id)
 			id = ?'
 		);
 	$stm->bindInteger($id);
-	return $stm->getColumn();
+
+	$name =  $stm->getColumn();
+	$stm->close();
+	return $name;
 	}
 
 

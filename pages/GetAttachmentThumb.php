@@ -39,9 +39,11 @@ public function show()
 		$stm->bindInteger($this->file);
 		$stm->bindInteger($this->file);
 		$data = $stm->getRow();
+		$stm->close();
 		}
 	catch (DBNoDataException $e)
 		{
+		$stm->close();
 		$this->showWarning('Datei nicht gefunden');
 		}
 

@@ -50,9 +50,11 @@ protected function checkForm()
 		$stm->bindInteger($this->User->getId());
 		$stm->bindString($this->password);
 		$stm->getRow();
+		$stm->close();
 		}
 	catch(DBNoDataException $e)
 		{
+		$stm->close();
 		$this->showWarning('Passwort ist falsch');
 		}
 
@@ -78,6 +80,7 @@ protected function sendForm()
 	$stm->bindString($this->newpassword);
 	$stm->bindInteger($this->User->getId());
 	$stm->execute();
+	$stm->close();
 
 	if($this->Io->isRequest('cookiepw') && $this->Io->getHex('cookiepw') == $this->password)
 		{

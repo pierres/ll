@@ -37,9 +37,11 @@ public function prepare()
 				{
 				$this->Log->insert($thread['id'], $thread['lastdate']);
 				}
+			$stm->close();
 			}
 		catch (DBNoDataException $e)
 			{
+			$stm->close();
 			}
 		}
 	}

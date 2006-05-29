@@ -27,6 +27,7 @@ protected function setForm()
 				);
 			$stm->bindInteger($this->User->getId());
 			$data = $stm->getRow();
+			$stm->close();
 
 			if (!empty($data['realname']))
 				{
@@ -41,6 +42,7 @@ protected function setForm()
 			}
 		catch (DBNoDataException $e)
 			{
+			$stm->close();
 			}
 		}
 

@@ -4,10 +4,10 @@
 class UserList extends Page{
 
 
-private $user 		= 0;
+private $user 			= 0;
 private $users 		= 0;
-private $orderby 	= 'posts';
-private $sort		= 1;
+private $orderby 		= 'posts';
+private $sort			= 1;
 
 public function prepare()
 	{

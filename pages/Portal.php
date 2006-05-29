@@ -29,9 +29,11 @@ public function prepare()
 				');
 			$stm->bindInteger($this->Board->getId());
 			$this->forum = $stm->getColumn();
+			$stm->close();
 			}
 		catch(DBNoDataException $e)
 			{
+			$stm->close();
 			$this->Io->redirect('Forums');
 			}
 		}
@@ -203,6 +205,7 @@ private function getNews()
 			</table>
 			';
 		}
+	$stm->close();
 
 	return $result;
 	}
@@ -302,6 +305,7 @@ private function getRecent()
 			$result .= '<li style="margin-bottom:5px;"><a href="?page=Postings;thread='.$thread['id'].';post=-1;id='.$this->Board->getId().'">'.$thread['name'].'</a></li>';
 			}
 		}
+	$stm->close();
 
 	return $result.'</ul>';
 	}

@@ -6,7 +6,7 @@ class EditThread extends NewThread{
 protected $post 			= 0;
 protected $allow_closed 	= false;
 protected $allow_deleted 	= false;
-protected $thread		= 0;
+protected $thread			= 0;
 
 private $db_poll_question 	= '';
 private $db_poll_options 	= '';
@@ -42,13 +42,16 @@ protected function checkInput()
 		$this->thread = $this->Io->getInt('thread');
 		$stm->bindInteger($this->thread);
 		$data = $stm->getRow();
+		$stm->close();
 		}
 	catch (IoException $e)
 		{
+		$stm->close();
 		$this->showFailure('Kein Thema angegeben!');
 		}
 	catch (DBNoDataException $e)
 		{
+		$stm->close();
 		$this->showFailure('Thema nicht gefunden oder geschlossen!');
 		}
 
@@ -65,6 +68,7 @@ protected function checkInput()
 			);
 		$stm->bindInteger($this->Io->getInt('thread'));
 		$this->poll_question = $stm->getColumn();
+		$stm->close();
 
 		$stm = $this->DB->prepare
 			('
@@ -82,9 +86,11 @@ protected function checkInput()
 			{
 			$this->poll_options .= $poll_option."\n";
 			}
+		$stm->close();
 		}
 	catch (DBNoDataException $e)
 		{
+		$stm->close();
 		}
 
 	$this->post = $data['id'];
@@ -120,9 +126,11 @@ protected function checkAccess()
 			);
 		$stm->bindInteger($this->post);
 		$access = $stm->getColumn();
+		$stm->close();
 		}
 	catch (DBNoDataException $e)
 		{
+		$stm->close();
 		$this->showFailure('Kein Beitrag gefunden.');
 		}
 
@@ -139,9 +147,11 @@ protected function checkAccess()
 			);
 		$stm->bindInteger($this->forum);
 		$mods = $stm->getColumn();
+		$stm->close();
 		}
 	catch (DBNoDataException $e)
 		{
+		$stm->close();
 		$mods = 0;
 		}
 
@@ -166,6 +176,7 @@ protected function sendForm()
 	$stm->bindString(htmlspecialchars($this->topic));
 	$stm->bindInteger($this->thread);
 	$stm->execute();
+	$stm->close();
 
 	if ($this->Io->isRequest('poll_question') && $this->Io->isRequest('poll_options'))
 		{
@@ -182,6 +193,7 @@ protected function sendForm()
 				);
 			$stm->bindInteger($this->thread);
 			$stm->execute();
+			$stm->close();
 
 			$stm = $this->DB->prepare
 				('
@@ -192,6 +204,7 @@ protected function sendForm()
 				);
 			$stm->bindInteger($this->thread);
 			$stm->execute();
+			$stm->close();
 
 			$stm = $this->DB->prepare
 				('
@@ -202,6 +215,7 @@ protected function sendForm()
 				);
 			$stm->bindInteger($this->thread);
 			$stm->execute();
+			$stm->close();
 
 			parent::sendPoll();
 			}
@@ -225,6 +239,7 @@ protected function sendForm()
 	$stm->bindInteger($this->smilies ? 1 : 0);
 	$stm->bindInteger($this->post);
 	$stm->execute();
+	$stm->close();
 
 	$this->sendFile($this->post);
 	$this->sendThreadSummary();
@@ -245,6 +260,7 @@ protected function sendFile($postid)
 			);
 		$stm->bindInteger($postid);
 		$stm->execute();
+		$stm->close();
 
 		$stm = $this->DB->prepare
 			('
@@ -257,6 +273,7 @@ protected function sendFile($postid)
 			);
 		$stm->bindInteger($postid);
 		$stm->execute();
+		$stm->close();
 
 		parent::sendFile($postid);
 		}

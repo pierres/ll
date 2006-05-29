@@ -39,9 +39,11 @@ public function prepare()
 		$stm->bindInteger($this->Board->getId());
 		$stm->bindInteger($this->forum);
 		$this->cat = $stm->getColumn();
+		$stm->close();
 		}
 	catch (DBNoDataException $e)
 		{
+		$stm->close();
 		$this->Io->redirect('AdminCats');
 		}
 
@@ -56,6 +58,7 @@ public function prepare()
 	$stm->bindInteger($this->forum);
 	$stm->bindInteger($this->cat);
 	$stm->execute();
+	$stm->close();
 	}
 
 public function show()

@@ -3,12 +3,12 @@
 
 class NewThread extends NewPost{
 
-protected $topic 		= '';
+protected $topic 			= '';
 protected $poll_question 	= '';
 protected $poll_options 	= '';
-protected $forum 		= 0;
+protected $forum 			= 0;
 
-protected $title 		= 'Neues Thema erstellen';
+protected $title 			= 'Neues Thema erstellen';
 
 
 protected function setForm()
@@ -138,26 +138,28 @@ protected function sendPoll()
 		$stm->bindInteger($this->thread);
 		$stm->bindString(htmlspecialchars($this->poll_question));
 		$stm->execute();
+		$stm->close();
 
+		$stm = $this->DB->prepare
+			('
+			INSERT INTO
+				poll_values
+			SET
+				pollid = ?,
+				value = ?
+			');
 		foreach ($poll_options as $option)
 			{
 			$option = trim($option);
 
 			if(!empty($option))
 				{
-				$stm = $this->DB->prepare
-					('
-					INSERT INTO
-						poll_values
-					SET
-						pollid = ?,
-						value = ?
-					');
 				$stm->bindInteger($this->thread);
 				$stm->bindString(htmlspecialchars($option));
 				$stm->execute();
 				}
 			}
+		$stm->close();
 
 		$stm = $this->DB->prepare
 			('
@@ -168,8 +170,9 @@ protected function sendPoll()
 			WHERE
 				id = ?'
 			);
-			$stm->bindInteger($this->thread);
-			$stm->execute();
+		$stm->bindInteger($this->thread);
+		$stm->execute();
+		$stm->close();
 		}
 	}
 
@@ -186,6 +189,7 @@ protected function sendForm()
 	$stm->bindString(htmlspecialchars($this->topic));
 	$stm->bindInteger($this->forum);
 	$stm->execute();
+	$stm->close();
 
 	$this->thread = $this->DB->getInsertId();
 
@@ -200,6 +204,7 @@ protected function sendForm()
 		);
 	$stm->bindInteger($this->Board->getId());
 	$stm->execute();
+	$stm->close();
 
 	$this->sendPoll();
 	$this->sendThreadSummary();
@@ -226,6 +231,7 @@ protected function sendThreadSummary()
 	$stm->bindString($summary);
 	$stm->bindInteger($this->thread);
 	$stm->execute();
+	$stm->close();
 	}
 }
 

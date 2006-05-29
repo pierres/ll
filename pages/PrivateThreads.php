@@ -6,7 +6,7 @@ class PrivateThreads extends Page{
 
 protected $thread 	= 0;
 protected $threads 	= 0;
-protected $result 	= array();
+protected $result 		= array();
 
 public function prepare(){
 
@@ -43,9 +43,11 @@ try
 		);
 	$stm->bindInteger($this->User->getId());
 	$this->threads = $stm->getColumn();
+	$stm->close();
 	}
 catch (DBNoDataException $e)
 	{
+	$stm->close();
 	$this->threads = 0;
 	}
 
@@ -96,6 +98,7 @@ $last = ($this->thread > 0
 	: '');
 
 $threads = $this->listThreads();
+$stm->close();
 
 $body =
 	'

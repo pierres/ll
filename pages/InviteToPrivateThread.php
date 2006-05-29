@@ -32,9 +32,11 @@ protected function setForm()
 		$stm->bindInteger($this->thread);
 		$stm->bindInteger($this->User->getId());
 		$stm->getColumn();
+		$stm->close();
 		}
 	catch (Exception $e)
 		{
+		$stm->close();
 		$this->showFailure('Thema nicht gefunden');
 		}
 
@@ -62,6 +64,7 @@ protected function setForm()
 			$users[] = '<a href="?page=ShowUser;id='.$this->Board->getId().';user='.$recipient['id'].'">'.$recipient['name'].'</a>';
 			}
 		}
+	$stm->close();
 
 	$this->addOutput('Schon dabei: '.implode(', ', $users).'<br /><br />');
 
@@ -102,20 +105,21 @@ protected function checkForm()
 
 protected function sendForm()
 	{
+	$stm = $this->DB->prepare
+		('
+		INSERT INTO
+			thread_user
+		SET
+			threadid = ?,
+			userid = ?'
+		);
 	foreach ($this->newto as $user)
 		{
-		$stm = $this->DB->prepare
-			('
-			INSERT INTO
-				thread_user
-			SET
-				threadid = ?,
-				userid = ?'
-			);
 		$stm->bindInteger($this->thread);
 		$stm->bindInteger($user);
 		$stm->execute();
 		}
+	$stm->close();
 
 	$this->Io->redirect('PrivatePostings', 'thread='.$this->thread);
 	}

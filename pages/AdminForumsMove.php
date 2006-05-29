@@ -33,9 +33,11 @@ protected function setForm()
 		$stm->bindInteger($this->Board->getId());
 		$stm->bindInteger($this->forum);
 		$this->cat = $stm->getColumn();
+		$stm->close();
 		}
 	catch (DBNoDataException $e)
 		{
+		$stm->close();
 		$this->Io->redirect('AdminCats');
 		}
 
@@ -67,9 +69,11 @@ protected function setForm()
 				<br />
 				');
 			}
+		$stm->close();
 		}
 	catch (DBNoDataException $e)
 		{
+		$stm->close();
 		}
 
 	$this->addHidden('forum', $this->forum);
@@ -94,6 +98,7 @@ protected function checkForm()
 		$stm->bindInteger($this->forum);
 		$stm->bindInteger($this->Board->getId());
 		$stm->getColumn();
+		$stm->close();
 		*/
 
 		$stm = $this->DB->prepare
@@ -109,13 +114,16 @@ protected function checkForm()
 		$stm->bindInteger($this->Io->getInt('newcat'));
 		$stm->bindInteger($this->Board->getId());
 		$stm->getColumn();
+		$stm->close();
 		}
 	catch(DBNoDataException $e)
 		{
+		$stm->close();
 		$this->Io->redirect('AdminCats');
 		}
 	catch(IoRequestException $e)
 		{
+		$stm->close();
 		$this->Io->redirect('AdminCats');
 		}
 	}
@@ -136,6 +144,7 @@ protected function sendForm()
 	$stm->bindInteger($this->cat);
 	$stm->bindInteger($this->forum);
 	$stm->execute();
+	$stm->close();
 
 	$this->redirect();
 	}

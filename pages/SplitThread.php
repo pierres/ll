@@ -2,11 +2,11 @@
 
 class SplitThread extends Form{
 
-private $post 		= 0;
-private $oldthread 	= 0;
+private $post 			= 0;
+private $oldthread 		= 0;
 private $newthread 	= 0;
 private $forum	 	= 0;
-private $newtopic 	= '';
+private $newtopic 		= '';
 protected $title 		= 'Beiträge abzweigen';
 
 
@@ -71,12 +71,14 @@ protected function checkAccess()
 			');
 		$stm->bindInteger($this->post);
 		$forum = $stm->getRow();
+		$stm->close();
 
 		$this->forum = $forum['id'];
 		$this->oldthread = $forum['threadid'];
 		}
 	catch (DBNoDataException $e)
 		{
+		$stm->close();
 		$this->showFailure('Thema nicht gefunden oder geschlossen!');
 		}
 
@@ -99,6 +101,7 @@ protected function sendForm()
 	$stm->bindString(htmlspecialchars($this->newtopic));
 	$stm->bindInteger($this->forum);
 	$stm->execute();
+	$stm->close();
 
 	$this->newthread = $this->DB->getInsertId();
 
@@ -113,6 +116,7 @@ protected function sendForm()
 		);
 	$stm->bindInteger($this->Board->getId());
 	$stm->execute();
+	$stm->close();
 
 	$stm = $this->DB->prepare
 		('
@@ -128,6 +132,7 @@ protected function sendForm()
 	$stm->bindInteger($this->oldthread);
 	$stm->bindInteger($this->post);
 	$stm->execute();
+	$stm->close();
 
 	AdminFunctions::updateThread($this->oldthread);
 	AdminFunctions::updateThread($this->newthread);
@@ -151,6 +156,7 @@ protected function sendThreadSummary()
 		');
 	$stm->BindInteger($this->post);
 	$text = $stm->GetColumn();
+	$stm->close();
 
 	$summary = str_replace('<br />', ' ', $text);
 	$summary = str_replace("\n", ' ', strip_tags($summary));
@@ -169,6 +175,7 @@ protected function sendThreadSummary()
 	$stm->bindString($summary);
 	$stm->bindInteger($this->newthread);
 	$stm->execute();
+	$stm->close();
 	}
 
 protected function redirect()

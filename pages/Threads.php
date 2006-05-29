@@ -4,11 +4,11 @@
 class Threads extends Page{
 
 
-protected $ismod 	= false;
-protected $forum 	= 0;
+protected $ismod 		= false;
+protected $forum 		= 0;
 protected $thread 	= 0;
 protected $threads 	= 0;
-protected $result 	= array();
+protected $result 		= array();
 
 public function prepare(){
 
@@ -55,9 +55,11 @@ try
 	$stm->bindInteger($this->forum);
 	$stm->bindInteger($this->Board->getId());
 	$forum = $stm->getRow();
+	$stm->close();
 	}
 catch (DBException $e)
 	{
+	$stm->close();
 	// Falls das Forum nicht (mehr) im aktuellen Board ist versuchen wir es zu finden.
 	// (und wir stellen sicher, daß wir nicht auf die gleiche Seite weiterleiten.)
 	try
@@ -75,11 +77,13 @@ catch (DBException $e)
 		$stm->bindInteger($this->forum);
 		$stm->bindInteger($this->Board->getId());
 		$boardid = $stm->getColumn();
+		$stm->close();
 
 		$this->Io->redirect('Threads','forum='.$this->forum.';thread='.$this->thread, $boardid);
 		}
 	catch (DBException $e)
 		{
+		$stm->close();
 		$this->showWarning('Forum nicht gefunden.');
 		}
 	}
@@ -100,11 +104,14 @@ try
 	$stm->bindInteger($this->forum);
 	$stm->bindInteger($this->forum);
 	$this->threads = $stm->getColumn();
+	$stm->close();
 	}
 catch (DBException $e)
 	{
+	$stm->close();
 	$this->threads = 0;
 	}
+
 try
 	{
 	/** TODO: summary zwischenspeichern */
@@ -159,6 +166,7 @@ $last = ($this->thread > 0
 	: '');
 
 $threads = $this->listThreads();
+$stm->close();
 
 $body =
 	'

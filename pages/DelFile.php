@@ -35,9 +35,11 @@ public function prepare()
 		$stm->bindInteger($file);
 		$stm->bindInteger($this->User->getId());
 		$file =$stm->getColumn();
+		$stm->close();
 		}
 	catch (DBNoDataException $e)
 		{
+		$stm->close();
 		return;
 		}
 
@@ -50,17 +52,26 @@ public function prepare()
 		);
 	$stm->bindInteger($file);
 	$stm->execute();
+	$stm->close();
 
-	$stm = $this->DB->prepare
-		('
-		DELETE FROM
-			attachment_thumbnails
-		WHERE
-			id = ?'
-		);
-	$stm->bindInteger($file);
-	$stm->execute();
+	try
+		{
+		$stm = $this->DB->prepare
+			('
+			DELETE FROM
+				attachment_thumbnails
+			WHERE
+				id = ?'
+			);
+		$stm->bindInteger($file);
+		$stm->execute();
+		$stm->close();
+		}
+	catch (DBNoDataException $e)
+		{
+		}
 
+	/** TODO Stement-Schatelung aufräumen */
 	try
 		{
 		$stm = $this->DB->prepare
@@ -70,14 +81,14 @@ public function prepare()
 			FROM
 				post_attachments
 			WHERE
-				fileid = ?'
+				attachment_id = ?'
 			);
 		$stm->bindInteger($file);
 
 		foreach($stm->getColumnSet() as $post)
 			{
 			// Das ist also die letzte Datei für diesen Beitrag ...
-			$stm = $this->DB->prepare
+			$stm2 = $this->DB->prepare
 				('
 				SELECT
 					COUNT(*)
@@ -86,11 +97,11 @@ public function prepare()
 				WHERE
 					postid = ?'
 				);
-			$stm->bindInteger($post);
+			$stm2->bindInteger($post);
 
-			if ($stm->getColumn() == 1)
+			if ($stm2->getColumn() == 1)
 				{
-				$stm = $this->DB->prepare
+				$stm3 = $this->DB->prepare
 					('
 					UPDATE
 						posts
@@ -99,24 +110,34 @@ public function prepare()
 					WHERE
 						id = ?'
 					);
-				$stm->bindInteger($post);
-				$stm->execute();
+				$stm3->bindInteger($post);
+				$stm3->execute();
+				$stm3->close();
 				}
+			$stm2->close();
 			}
+		$stm->close();
 		}
 	catch (DBNoDataException $e)
 		{
 		}
-
-	$stm = $this->DB->prepare
-		('
-		DELETE FROM
-			post_attachments
-		WHERE
-			fileid = ?'
-		);
-	$stm->bindInteger($file);
-	$stm->execute();
+	try
+		{
+		$stm = $this->DB->prepare
+			('
+			DELETE FROM
+				post_attachments
+			WHERE
+				attachment_id = ?'
+			);
+		$stm->bindInteger($file);
+		$stm->execute();
+		$stm->close();
+		}
+	catch (DBNoDataException $e)
+		{
+		$stm->close();
+		}
 
 // 	$stm = $this->DB->prepare
 // 		('
@@ -131,6 +152,7 @@ public function prepare()
 // 	$stm->bindInteger($this->User->getId());
 // 	$stm->bindInteger($file);
 // 	$stm->execute();
+//	 $stm->close();
 	}
 
 public function show()
