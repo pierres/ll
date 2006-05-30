@@ -65,10 +65,10 @@ public function execute($query)
 		throw new DBWarningException($this->link);
 		}
 
-	if (mysqli_affected_rows($this->link) <= 0)
-		{
-		throw new DBNoDataException();
-		}
+// 	if (mysqli_affected_rows($this->link) <= 0)
+// 		{
+// 		throw new DBNoDataException();
+// 		}
 	}
 
 private function query($query)
@@ -212,7 +212,7 @@ interface IDBResult extends Iterator{}
 
 class DBResult implements IDBResult{
 
-private $result	= null;
+private $result		= null;
 private $row 		= null;
 private $current 	= 0;
 
@@ -374,10 +374,10 @@ public function execute()
 		throw new DBWarningException($this->link);
 		}
 
-	if (mysqli_stmt_affected_rows($this->stm) <= 0)
-		{
-		throw new DBNoDataException();
-		}
+// 	if (mysqli_stmt_affected_rows($this->stm) <= 0)
+// 		{
+// 		throw new DBNoDataException();
+// 		}
 	}
 
 private function bindResult()
