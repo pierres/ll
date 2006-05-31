@@ -200,7 +200,7 @@ try
 			posts.threadid = ?
 			'.($this->ismod ? '' : 'AND posts.deleted = 0').'
 		ORDER BY
-			posts.dat ASC
+			posts.id ASC
 		LIMIT
 			'.$limit
 		);

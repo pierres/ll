@@ -425,9 +425,8 @@ protected function checkForm()
 
 	if (!$this->User->isOnline() && $this->AntiSpam->isSpam($this->text))
 		{
-		$this->AntiSpam->addSpam($this->text);
 		sleep(5);
-		$this->showFailure('No Spam please!');
+		$this->showFailure('Dein Beitrag wurde als Spam eingestuft. Falls dies eine Falschmeldung ist, benachrichtige uns bitte.');
 		}
 
 	$this->checkNewFile();
