@@ -150,13 +150,13 @@ private function updateMods()
 		}
 
 	$stm = $this->DB->prepare
-			('
-			INSERT INTO
-				user_group
-			SET
-				groupid = ?,
-				userid = ?'
-			);
+		('
+		INSERT INTO
+			user_group
+		SET
+			groupid = ?,
+			userid = ?'
+		);
 
 	foreach($this->mods as $mod)
 		{

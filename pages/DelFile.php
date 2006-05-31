@@ -54,22 +54,16 @@ public function prepare()
 	$stm->execute();
 	$stm->close();
 
-	try
-		{
-		$stm = $this->DB->prepare
-			('
-			DELETE FROM
-				attachment_thumbnails
-			WHERE
-				id = ?'
-			);
-		$stm->bindInteger($file);
-		$stm->execute();
-		$stm->close();
-		}
-	catch (DBNoDataException $e)
-		{
-		}
+	$stm = $this->DB->prepare
+		('
+		DELETE FROM
+			attachment_thumbnails
+		WHERE
+			id = ?'
+		);
+	$stm->bindInteger($file);
+	$stm->execute();
+	$stm->close();
 
 	/** TODO Stement-Schatelung aufräumen */
 	try
@@ -121,23 +115,18 @@ public function prepare()
 	catch (DBNoDataException $e)
 		{
 		}
-	try
-		{
-		$stm = $this->DB->prepare
-			('
-			DELETE FROM
-				post_attachments
-			WHERE
-				attachment_id = ?'
-			);
-		$stm->bindInteger($file);
-		$stm->execute();
-		$stm->close();
-		}
-	catch (DBNoDataException $e)
-		{
-		$stm->close();
-		}
+
+	$stm = $this->DB->prepare
+		('
+		DELETE FROM
+			post_attachments
+		WHERE
+			attachment_id = ?'
+		);
+	$stm->bindInteger($file);
+	$stm->execute();
+	$stm->close();
+
 
 // 	$stm = $this->DB->prepare
 // 		('

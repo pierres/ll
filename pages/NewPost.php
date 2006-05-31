@@ -249,19 +249,27 @@ protected function checkNewFile()
 			$this->showWarning('Datei ist zu groß!');
 			}
 
-		$stm = $this->DB->prepare
-			('
-			SELECT
-				COUNT(*) AS files,
-				SUM(size) AS quota
-			FROM
-				attachments
-			WHERE
-				userid = ?'
-			);
-		$stm->bindInteger($this->User->getId());
-		$data = $stm->getRow();
-		$stm->close();
+		try
+			{
+			$stm = $this->DB->prepare
+				('
+				SELECT
+					COUNT(*) AS files,
+					SUM(size) AS quota
+				FROM
+					attachments
+				WHERE
+					userid = ?'
+				);
+			$stm->bindInteger($this->User->getId());
+			$data = $stm->getRow();
+			$stm->close();
+			}
+		catch (DBNoDataException $e)
+			{
+			$stm->close();
+			return;
+			}
 
 		if ($data['quota'] + $this->file['size'] >=  $this->Settings->getValue('quota'))
 			{

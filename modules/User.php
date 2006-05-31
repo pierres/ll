@@ -60,27 +60,19 @@ function __construct()
 
 	if (time() - $data['lastupdate'] > $this->Settings->getValue('session_refresh'))
 		{
-		try
-			{
-			$stm = $this->DB->prepare
-				('
-				UPDATE
-					session
-				SET
-					lastupdate = ?
-				WHERE
-					sessionid = ?'
-				);
-			$stm->bindInteger(time());
-			$stm->bindString($this->sessionid);
-			$stm->execute();
-			$stm->close();
-			}
-		catch (DBException $e)
-			{
-			$stm->close();
-			$this->logout();
-			}
+		$stm = $this->DB->prepare
+			('
+			UPDATE
+				session
+			SET
+				lastupdate = ?
+			WHERE
+				sessionid = ?'
+			);
+		$stm->bindInteger(time());
+		$stm->bindString($this->sessionid);
+		$stm->execute();
+		$stm->close();
 		}
 	}
 
@@ -103,23 +95,16 @@ public function logout()
 	{
 	$this->collectGarbage();
 
-	try
-		{
-		$stm = $this->DB->prepare
-			('
-			DELETE FROM
-				session
-			WHERE
-				id = ?'
-			);
-		$stm->bindInteger($this->id);
-		$stm->execute();
-		$stm->close();
-		}
-	catch (DBException $e)
-		{
-		$stm->close();
-		}
+	$stm = $this->DB->prepare
+		('
+		DELETE FROM
+			session
+		WHERE
+			id = ?'
+		);
+	$stm->bindInteger($this->id);
+	$stm->execute();
+	$stm->close();
 
 	$this->Io->setCookie('sessionid', '');
 	$this->Io->setCookie('cookieid', '');
@@ -219,23 +204,16 @@ private function start($id, $name ,$level, $groups)
 	$this->level 	= $level;
 	$this->groups 	= $groups;
 
-	try
-		{
-		$stm = $this->DB->prepare
-			('
-			DELETE FROM
-				session
-			WHERE
-				id = ?'
-			);
-		$stm->bindInteger($this->id);
-		$stm->execute();
-		$stm->close();
-		}
-	catch (DBNoDataException $e)
-		{
-		$stm->close();
-		}
+	$stm = $this->DB->prepare
+		('
+		DELETE FROM
+			session
+		WHERE
+			id = ?'
+		);
+	$stm->bindInteger($this->id);
+	$stm->execute();
+	$stm->close();
 
 	$stm = $this->DB->prepare
 		('
@@ -263,23 +241,16 @@ private function start($id, $name ,$level, $groups)
 
 private function collectGarbage()
 	{
-	try
-		{
-		$stm = $this->DB->prepare
-			('
-			DELETE FROM
-				session
-			WHERE
-				lastupdate <= ?'
-			);
-		$stm->bindInteger(time() - $this->Settings->getValue('session_timeout'));
-		$stm->execute();
-		$stm->close();
-		}
-	catch (DBNoDataException $e)
-		{
-		$stm->close();
-		}
+	$stm = $this->DB->prepare
+		('
+		DELETE FROM
+			session
+		WHERE
+			lastupdate <= ?'
+		);
+	$stm->bindInteger(time() - $this->Settings->getValue('session_timeout'));
+	$stm->execute();
+	$stm->close();
 	}
 
 private function cookieLogin()

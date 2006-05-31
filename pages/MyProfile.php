@@ -173,24 +173,32 @@ protected function checkForm()
 
 private function getData()
 	{
-	$stm = $this->DB->prepare
-		('
-		SELECT
-			realname,
-			gender,
-			birthday,
-			location,
-			plz,
-			(SELECT id FROM avatars WHERE id = users.id) AS avatar,
-			text
-		FROM
-			users
-		WHERE
-			id = ?'
-		);
-	$stm->bindInteger($this->User->getId());
-	$data = $stm->getRow();
-	$stm->close();
+	try
+		{
+		$stm = $this->DB->prepare
+			('
+			SELECT
+				realname,
+				gender,
+				birthday,
+				location,
+				plz,
+				(SELECT id FROM avatars WHERE id = users.id) AS avatar,
+				text
+			FROM
+				users
+			WHERE
+				id = ?'
+			);
+		$stm->bindInteger($this->User->getId());
+		$data = $stm->getRow();
+		$stm->close();
+		}
+	catch (DBNoDataException $e)
+		{
+		$stm->close();
+		$this->showFailure('Es wurde kein Benutzerkonto gefunden!');
+		}
 
 	$this->realname 	= unhtmlspecialchars($data['realname']);
 	$this->gender		= $data['gender'];

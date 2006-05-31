@@ -282,12 +282,12 @@ private function updateAdmins()
 		/** FIXME: Gleichzeitiger Zugriff könnte Überscheindung zur Folge haben -> Tabellen sperren */
 		$this->DB->execute('LOCK TABLES user_group WRITE, boards WRITE');
 		$groupid = $this->DB->getColumn
-				('
-				SELECT
-					MAX(groupid)
-				FROM
-					user_group
-				') + 1;
+			('
+			SELECT
+				MAX(groupid)
+			FROM
+				user_group
+			') + 1;
 		$stm = $this->DB->prepare
 			('
 			UPDATE

@@ -139,44 +139,30 @@ public function getTime($threadid)
 
 public function delete($threadid)
 	{
-	try
-		{
-		$stm = $this->DB->prepare
-			('
-			DELETE FROM
-				threads_log
-			WHERE
-				threadid = ?'
-			);
-		$stm->bindInteger($threadid);
-		$stm->execute();
-		$stm->close();
-		}
-	catch (DBNoDataException $e)
-		{
-		$stm->close();
-		}
+	$stm = $this->DB->prepare
+		('
+		DELETE FROM
+			threads_log
+		WHERE
+			threadid = ?'
+		);
+	$stm->bindInteger($threadid);
+	$stm->execute();
+	$stm->close();
 	}
 
 private function collectGarbage()
 	{
-	try
-		{
-		$stm = $this->DB->prepare
-			('
-			DELETE FROM
-				threads_log
-			WHERE
-				dat <= ?'
-			);
-		$stm->bindInteger(time() - $this->timeout);
-		$stm->execute();
-		$stm->close();
-		}
-	catch (DBNoDataException $e)
-		{
-		$stm->close();
-		}
+	$stm = $this->DB->prepare
+		('
+		DELETE FROM
+			threads_log
+		WHERE
+			dat <= ?'
+		);
+	$stm->bindInteger(time() - $this->timeout);
+	$stm->execute();
+	$stm->close();
 	}
 
 }

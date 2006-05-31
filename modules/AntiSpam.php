@@ -60,9 +60,9 @@ private function getDomains($text)
 	{
 	$protocoll 	= '(?:https?|ftp):\/\/';
 	$name 		= '[a-z0-9](?:[a-z0-9_\-\.]*[a-z0-9])?';
-	$tld 			= '[a-z]{2,5}';
+	$tld 		= '[a-z]{2,5}';
 	$domain		=  $name.'\.'.$tld;
-// 	$address		= '(?:'.$domain.'|[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})';
+// 	$address	= '(?:'.$domain.'|[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})';
 
 	preg_match_all('/(?:'.$protocoll.'(?:www\.)?|www\.)('.$domain.')/', $text, $domains);
 

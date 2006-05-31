@@ -128,14 +128,14 @@ protected function sendForm()
 		}
 
 	$stm = $this->DB->prepare
-			('
-			INSERT INTO
-				forum_cat
-			SET
-				forumid = ?,
-				catid = ?,
-				position = ?'
-			);
+		('
+		INSERT INTO
+			forum_cat
+		SET
+			forumid = ?,
+			catid = ?,
+			position = ?'
+		);
 	/** FIXME */
 	foreach($this->Io->getArray() as $forum => $value)
 		{
