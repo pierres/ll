@@ -35,6 +35,10 @@ public static function delThread($thread)
 	self::updateForum($forum);
 	}
 
+public static function delPost($post)
+	{
+	}
+
 private static function removeThread($thread)
 	{
 	$stm = self::__get('DB')->prepare
@@ -122,6 +126,31 @@ private static function removeThread($thread)
 			threadid = ?'
 		);
 	$stm->bindInteger($thread);
+	$stm->execute();
+	$stm->close();
+	}
+
+private function removePost($post)
+	{
+	$stm = self::__get('DB')->prepare
+		('
+		DELETE FROM
+			post_attachments
+		WHERE
+			postid = ?
+		');
+	$stm->bindInteger($post);
+	$stm->execute();
+	$stm->close();
+
+	$stm = self::__get('DB')->prepare
+		('
+		DELETE FROM
+			posts
+		WHERE
+			id = ?'
+		);
+	$stm->bindInteger($post);
 	$stm->execute();
 	$stm->close();
 	}

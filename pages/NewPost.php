@@ -423,10 +423,15 @@ protected function checkForm()
 			}
 		}
 
-	if (!$this->User->isOnline() && $this->AntiSpam->isSpam($this->text))
+	if (!$this->User->isOnline())
 		{
-		sleep(5);
-		$this->showFailure('Dein Beitrag wurde als Spam eingestuft. Falls dies eine Falschmeldung ist, benachrichtige uns bitte.');
+		$AntiSpam = new AntiSpam($this->text);
+		if ($AntiSpam->isSpam())
+			{
+			unset($AntiSpam);
+			sleep(5);
+			$this->showFailure('Dein Beitrag wurde als Spam eingestuft. Falls dies eine Falschmeldung ist, benachrichtige uns bitte.');
+			}
 		}
 
 	$this->checkNewFile();

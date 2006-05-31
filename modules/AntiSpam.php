@@ -2,9 +2,17 @@
 
 class AntiSpam extends Modul{
 
+private $text = '';
+private $listedDomains = array();
+private $nonListedDomains = array();
 
-public function isSpam($text)
+
+public function __construct($text)
 	{
+	$this->text = $text;
+
+	$allDomains = $this->getDomains($this->text);
+
 	try
 		{
 		$blacklist = $this->DB->getColumnSet
@@ -20,9 +28,13 @@ public function isSpam($text)
 		$blacklist = array();
 		}
 
-	$evilDomains = $this->getDomainsInBlacklist($this->getDomains($text), $blacklist);
+	$this->listedDomains = $this->getDomainsInBlacklist($allDomains, $blacklist);
+	$this->nonListedDomains = array_diff($allDomains, $blacklist);
+	}
 
-	if (empty($evilDomains))
+public function isSpam()
+	{
+	if (empty($this->listedDomains))
 		{
 		return false;
 		}
@@ -38,9 +50,9 @@ public function isSpam($text)
 			domain = ?
 		');
 
-	foreach ($evilDomains as $evilDomain)
+	foreach ($this->listedDomains as $domain)
 		{
-		$stm->bindString($evilDomain);
+		$stm->bindString($domain);
 		$stm->execute();
 		}
 	$stm->close();
@@ -48,38 +60,14 @@ public function isSpam($text)
 	return true;
 	}
 
-public function addSpam($text)
+public function getNonListedDomains()
 	{
-	try
-		{
-		$blacklist = $this->DB->getColumnSet
-			('
-			SELECT
-				domain
-			FROM
-				domain_blacklist
-			');
-		}
-	catch (DBNoDataException $e)
-		{
-		$blacklist = array();
-		}
+	return $this->nonListedDomains;
+	}
 
-	$stm = $this->DB->prepare
-		('
-		INSERT INTO
-			domain_blacklist
-		SET
-			domain = ?,
-			inserted = UNIX_TIMESTAMP(),
-			lastmatch = UNIX_TIMESTAMP()
-		');
-	foreach (array_diff($this->getDomains($text), $blacklist) as $domain)
-		{
-		$stm->bindString($domain);
-		$stm->execute();
-		}
-	$stm->close();
+public function getListedDomains()
+	{
+	return $this->listedDomains;
 	}
 
 

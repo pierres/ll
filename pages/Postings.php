@@ -266,8 +266,11 @@ foreach ($result as $data)
 				$del_button = ($this->ismod ?
 							' <a href="?page=DelThread;id='.$this->Board->getId().';thread='.$this->thread.'"><span class="button">Thema löschen</span></a>' : '');
 
+// 				$spam_button = ($this->ismod ?
+// 							' <a href="?page=SpamThread;id='.$this->Board->getId().';thread='.$this->thread.'"><span class="button">Spam</span></a>' : '');
+
 				$spam_button = ($this->ismod ?
-							' <a href="?page=SpamThread;id='.$this->Board->getId().';thread='.$this->thread.'"><span class="button">Spam</span></a>' : '');
+							' <a href="?page=SpamPost;id='.$this->Board->getId().';post='.$data['id'].'"><span class="button">Spam</span></a>' : '');
 
 				$split_button = '';
 				$move_button = '';

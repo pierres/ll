@@ -1,6 +1,6 @@
 <?php
 
-class SpamThread extends DelThread{
+class SpamThread extends SpamPost{
 
 
 protected function sendForm()
