@@ -23,7 +23,7 @@ public function prepare()
 						<tr>
 							<td style="padding-bottom:5px;"><strong>Domain</strong></td>
 							<td style="text-align:right;padding-bottom:5px;"><strong>Spam-Versuche</strong></td>
-							<td style="text-align:right;padding-bottom:5px;"><strong>eingefügt</strong></td>
+							<td style="text-align:right;padding-bottom:5px;padding-right:20px;"><strong>eingefügt</strong></td>
 							<td style="text-align:right;padding-bottom:5px;"><strong>zuletzt blockiert</strong></td>
 						</tr>
 						'.$this->getDomainBlacklist().'
@@ -61,9 +61,9 @@ private function getDomainBlacklist()
 	$list = '';
 	foreach ($domains as $domain)
 		{
-		$list .= '<tr><td>'.$domain['domain'].'</td>
-				<td style="text-align:right;">'.$domain['counter'].'</td>
-				<td style="text-align:right;">'.formatDate($domain['inserted']).'</td>
+		$list .= '<tr><td style="padding-right:20px;">'.$domain['domain'].'</td>
+				<td style="text-align:center;">'.$domain['counter'].'</td>
+				<td style="text-align:right;padding-right:20px;">'.formatDate($domain['inserted']).'</td>
 				<td style="text-align:right;">'.formatDate($domain['lastmatch']).'</td></tr>';
 		}
 
