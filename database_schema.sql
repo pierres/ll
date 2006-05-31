@@ -1,13 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 2.8.0.3
+-- version 2.8.1
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 25. Mai 2006 um 12:06
+-- Erstellungszeit: 31. Mai 2006 um 10:00
 -- Server Version: 5.0.21
--- PHP-Version: 5.1.2
+-- PHP-Version: 5.1.4
 --
--- Datenbank: `develop`
+-- Datenbank: `current`
 --
 
 -- --------------------------------------------------------
@@ -104,6 +104,9 @@ CREATE TABLE `cats` (
 
 CREATE TABLE `domain_blacklist` (
   `domain` varchar(255) NOT NULL,
+  `counter` int(8) NOT NULL default '1',
+  `inserted` int(11) NOT NULL,
+  `lastmatch` int(11) NOT NULL,
   PRIMARY KEY  (`domain`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -309,7 +312,7 @@ CREATE TABLE `threads` (
   `firstusername` varchar(25) NOT NULL default '',
   `lastusername` varchar(25) NOT NULL default '',
   `movedfrom` mediumint(8) unsigned NOT NULL default '0',
-  `summary` text NULL,
+  `summary` text,
   PRIMARY KEY  (`id`),
   KEY `forumid` (`forumid`),
   KEY `deleted` (`deleted`),
@@ -372,7 +375,7 @@ CREATE TABLE `users` (
   `avatar` tinyint(1) unsigned NOT NULL default '0',
   `location` varchar(255) default NULL,
   `plz` mediumint(5) unsigned default NULL,
-  `text` text NOT NULL,
+  `text` text,
   PRIMARY KEY  (`id`),
   KEY `name` (`name`(10)),
   KEY `posts` (`posts`),
