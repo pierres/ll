@@ -1,6 +1,5 @@
 <?php
 
-require (PATH.'pages/Page.php');
 
 class Portal extends Page{
 

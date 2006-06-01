@@ -15,6 +15,10 @@ function __autoload($class)
 		{
 		require(PATH.'pages/'.$class . '.php');
 		}
+	elseif (file_exists(PATH.'pages/abstract/'.$class . '.php'))
+		{
+		require(PATH.'pages/abstract/'.$class . '.php');
+		}
 	else
 		{
 		die('Konnte Modul "'.$class.'" nicht finden!');
