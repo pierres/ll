@@ -2,9 +2,9 @@
 
 class SpamPost extends Form{
 
-private $post = 0;
-private $thread = 0;
-private $forum = 0;
+protected $post = 0;
+protected $thread = 0;
+protected $forum = 0;
 
 protected function setForm()
 	{
@@ -21,11 +21,6 @@ protected function setForm()
 		{
 		$this->showFailure('Zutritt nur für Moderatoren!');
 		}
-
-	$this->setValue('title', 'Beitrag als Spam markieren');
-
-	$this->addSubmit('Abschicken');
-	$this->addHidden('post', $this->post);
 
 	try
 		{
@@ -53,7 +48,15 @@ protected function setForm()
 		$this->showFailure('Kein Beitrag gefunden');
 		}
 
-	$this->addElement('hint', 'Wähle die Domain aus, die der <q>Blacklist</q> hinzugefügt werden soll.');
+	$this->showDomainList($text);
+	$this->addHidden('post', $this->post);
+	}
+
+protected function showDomainList($text)
+	{
+	$this->setValue('title', 'Beitrag als Spam markieren');
+	$this->addSubmit('Abschicken');
+	$this->addElement('hint', 'Wähle die Domain aus, die in Zukunft blockiert werden soll.');
 
 	$AntiSpam = new AntiSpam($text);
 
@@ -91,23 +94,35 @@ protected function sendForm()
 	AdminFunctions::updateThread($this->thread);
 	AdminFunctions::updateForum($this->forum);
 
-	$stm = $this->DB->prepare
-		('
-		INSERT INTO
-			domain_blacklist
-		SET
-			domain = ?,
-			inserted = UNIX_TIMESTAMP(),
-			lastmatch = UNIX_TIMESTAMP()
-		');
-	foreach ($this->Io->getArray('domains') as $domain)
-		{
-		$stm->bindString($domain);
-		$stm->execute();
-		}
-	$stm->close();
+	$this->sendDomainList();
 
 	$this->Io->redirect('Postings', 'thread='.$this->thread);
+	}
+
+protected function sendDomainList()
+	{
+	try
+		{
+		$stm = $this->DB->prepare
+			('
+			INSERT INTO
+				domain_blacklist
+			SET
+				domain = ?,
+				inserted = UNIX_TIMESTAMP(),
+				lastmatch = UNIX_TIMESTAMP()
+			');
+		foreach ($this->Io->getArray('domains') as $domain)
+			{
+			$stm->bindString($domain);
+			$stm->execute();
+			}
+		$stm->close();
+		}
+	catch (IoException $e)
+		{
+		$this->showWarning('Keine Domain ausgewählt.');
+		}
 	}
 
 }
