@@ -41,15 +41,7 @@ protected function getParams()
 
 	if (!$this->isUser())
 		{
-// 		if ($this->thumb)
-// 			{
-// // 			$this->showWarning($this->url);
-// 			$this->Io->redirectToUrl($this->url);
-// 			}
-// 		else
-// 			{
-			$this->Io->redirectToUrl($this->url);
-// 			}
+		$this->redirect();
 		}
 	}
 
@@ -59,26 +51,22 @@ private function loadImage()
 		{
 		if ($this->Io->getRemoteFileSize($this->url) > $this->Settings->getValue('max_image_file_size'))
 			{
-// 			if ($this->thumb)
-// 				{
-// 				$this->showWarning('Das ist mir zu viel');
-// 				$this->Io->redirectToUrl($this->url);
-// 				}
-// 			else
-// 				{
-				$this->Io->redirectToUrl($this->url);
-// 				}
+			$this->redirect();
 			}
 
 		$file = $this->Io->getRemoteFile($this->url);
 		}
-// 	catch (IoException $e)
-// 		{
-// 		$this->Io->redirectToUrl($this->url);
-// 		}
 	catch (Exception $e)
 		{
-		$this->Io->redirectToUrl($this->url);
+		$this->redirect();
+		}
+
+	if (	strpos($file['type'], 'image/jpeg') !== 0 &&
+		strpos($file['type'], 'image/pjpeg') !== 0 &&
+		strpos($file['type'], 'image/png') !== 0 &&
+		strpos($file['type'], 'image/gif') !== 0)
+		{
+		$this->redirect();
 		}
 
 	$file['size'] = strlen($file['content']);
@@ -125,6 +113,11 @@ private function loadImage()
 		}
 	}
 
+private function redirect()
+	{
+	$this->Io->redirectToUrl($this->url);
+	}
+
 public function showWarning($text)
 	{
 	$text = utf8_decode($text);
@@ -155,10 +148,6 @@ public function showWarning($text)
 
 public function show()
 	{
-	/**
-		 FIXME: entsprechende BLOB-Befehle von mysqli verwenden
-		 TODO: evtl. im Dateisystem zwischenspeichern
-	*/
 	try
 		{
 		if ($this->thumb)

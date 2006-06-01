@@ -189,7 +189,7 @@ private function curlInit($url)
 	curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
 	curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 	curl_setopt($curl, CURLOPT_MAXREDIRS, 3);
-	curl_setopt($curl, CURLOPT_TIMEOUT, 15);
+	curl_setopt($curl, CURLOPT_TIMEOUT, 5);
 	curl_setopt($curl, CURLOPT_ENCODING, '');
 
 	return $curl;
