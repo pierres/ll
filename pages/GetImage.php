@@ -61,7 +61,7 @@ private function loadImage()
 			{
 // 			if ($this->thumb)
 // 				{
-// // 				$this->showWarning('Das ist mir zu viel');
+// 				$this->showWarning('Das ist mir zu viel');
 // 				$this->Io->redirectToUrl($this->url);
 // 				}
 // 			else
@@ -89,7 +89,7 @@ private function loadImage()
 		}
 	catch (Exception $e)
 		{
-		$this->Io->redirectToUrl($this->url);
+		$file['thumbcontent'] = '';
 		}
 
 	$file['thumbsize'] = strlen($file['thumbcontent']);

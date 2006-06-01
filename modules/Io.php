@@ -182,76 +182,38 @@ public function redirectToUrl($url)
 	exit();
 	}
 
-private function parseURL($url)
+private function curlInit($url)
 	{
-	$request = @parse_url($url);
+	$curl = curl_init($url);
+	curl_setopt($curl, CURLOPT_FAILONERROR, true);
+	curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+	curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($curl, CURLOPT_MAXREDIRS, 3);
+	curl_setopt($curl, CURLOPT_TIMEOUT, 15);
+	curl_setopt($curl, CURLOPT_ENCODING, '');
 
-	if (!$request)
-		{
-		throw new IoException('Konnte die URL '.$url.' nicht auflösen.');
-		}
-
-	return $request;
-	}
-
-private function openRemoteFile($host)
-	{
-	$link = @fsockopen($host, 80, $errno, $errstr, 10);
-
-
-	if (!$link)
-		{
-		throw new IoException('Konnte keine Verbindung zu '.$host.' herstellen: '.$errstr);
-		}
-
-	return $link;
+	return $curl;
 	}
 
 public function getRemoteFileSize($url)
 	{
-	$request = $this->parseURL($url);
-	$link = $this->openRemoteFile($request['host']);
+	$curl = $this->curlInit($url);
+	curl_setopt($curl, CURLOPT_NOBODY, true);
+	curl_exec($curl);
+	$size = curl_getinfo($curl, CURLINFO_CONTENT_LENGTH_DOWNLOAD);
+	curl_close($curl);
 
-	fputs ($link, 'HEAD '.$request['path']." HTTP/1.0\r\nHost: ".$request['host']."\r\n\r\n");
-
-	$buffer = '';
-	while (!feof($link))
-		{
-		$buffer .= fgets($link, 512);
-		}
-	fclose($link);
-
-	if (!preg_match('/Content-Length: (.*)/', $buffer, $size))
-		{
-		throw new IoException('Konnte die Datei nicht laden.');
-		}
-
-	return $size[1];
+	return $size;
 	}
 
 public function getRemoteFile($url)
 	{
-	$request = $this->parseURL($url);
-	$link = $this->openRemoteFile($request['host']);
+	$curl = $this->curlInit($url);
+	$content = curl_exec($curl);
+	$ype = curl_getinfo($curl, CURLINFO_CONTENT_TYPE);
+	curl_close($curl);
 
-	$buffer = '';
-
-	fputs ($link, 'GET '.$request['path']." HTTP/1.0\r\nHost: ".$request['host']."\r\n\r\n");
-	while (!feof($link))
-		{
-		$buffer .= fgets($link, 8192);
-		}
-	fclose($link);
-
-	$result = explode("\r\n\r\n", $buffer);/** FIXME */
-	unset($buffer);
-
-	if (!preg_match('/Content-Type: (.*)/', $result[0], $type))
-		{
-		throw new IoException('Konnte die Datei nicht laden.');
-		}
-
-	return array('type' => trim($type[1]), 'content' => $result[1]);
+	return array('type' => $ype, 'content' => $content);
 	}
 
 public function getUploadedFile($name)
