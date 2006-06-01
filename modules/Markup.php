@@ -122,7 +122,7 @@ function __construct()
 	$this->search[]  = '#//([^/\n]+?)//#';
 	$this->replace[] = '<em>$1</em>';
 
-	$this->search[]  = '/\*\*([^\*\n]+?)\*\*/';
+	$this->search[]  = '/\*\*([^\*\s](?:[^\*\n]*?[^\*\s])?)\*\*/';
 	$this->replace[] = '<strong>$1</strong>';
 
 	$this->search[]  = '/&quot;(.+?)&quot;/';

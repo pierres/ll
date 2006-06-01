@@ -130,6 +130,26 @@ abc';
 	$this->assertEquals($out, $this->Markup->toHtml($in));
 	}
 
+public function testListAndStrong()
+	{
+	$in =
+'* 1
+** test **';
+
+	$out = '<ul><li>1<ul><li>test **</li></ul></li></ul>';
+
+	$this->assertEquals($out, $this->Markup->toHtml($in));
+
+	$in =
+'* 1
+** 2
+**test**';
+
+	$out = '<ul><li>1<ul><li>2</li></ul></li></ul><strong>test</strong>';
+
+	$this->assertEquals($out, $this->Markup->toHtml($in));
+	}
+
 public function testHeading()
 	{
 	$this->assertEquals('<h1>test</h1>', $this->Markup->toHtml('!test'));
