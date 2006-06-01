@@ -189,7 +189,7 @@ protected function sendFile($postid)
 				post_attachments
 			SET
 				postid = ?,
-				fileid = ?'
+				attachment_id = ?'
 			);
 		foreach($files as $file => $blubb)
 			{
@@ -315,10 +315,10 @@ protected function sendNewFile($files)
 
 		unlink($this->file['tmp_name']);
 
-		if (strpos($file['type'], 'image/jpeg') === 0 ||
-			strpos($file['type'], 'image/pjpeg') === 0 ||
-			strpos($file['type'], 'image/png') === 0 ||
-			strpos($file['type'], 'image/gif') === 0)
+		if (strpos($this->file['type'], 'image/jpeg') === 0 ||
+			strpos($this->file['type'], 'image/pjpeg') === 0 ||
+			strpos($this->file['type'], 'image/png') === 0 ||
+			strpos($this->file['type'], 'image/gif') === 0)
 			{
 			try
 				{
