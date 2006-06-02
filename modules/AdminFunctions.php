@@ -37,6 +37,60 @@ public static function delThread($thread)
 
 public static function delPost($post)
 	{
+	try
+		{
+		$stm = self::__get('DB')->prepare
+			('
+			SELECT
+				threads.forumid,
+				threads.id
+			FROM
+				posts,
+				threads
+			WHERE
+				posts.id = ?'
+			);
+		$stm->bindInteger($post);
+		$data = $stm->getRow();
+		$stm->close();
+		}
+	catch (DBNoDataException $e)
+		{
+		$stm->close();
+		return;
+		}
+
+	try
+		{
+		$stm = self::__get('DB')->prepare
+			('
+			SELECT
+				COUNT(*)
+			FROM
+				posts
+			WHERE
+				threadid = ?'
+			);
+		$stm->bindInteger($data['id']);
+		$posts = $stm->getColumn();
+		$stm->close();
+		}
+	catch (DBNoDataException $e)
+		{
+		$stm->close();
+		$posts = 0;
+		}
+
+	if ($posts <= 1)
+		{
+		self::removeThread($data['id']);
+		return;
+		}
+
+	self::removePost($post);
+
+	self::updateThread($data['id']);
+	self::updateForum($data['forumid']);
 	}
 
 private static function removeThread($thread)
@@ -130,7 +184,7 @@ private static function removeThread($thread)
 	$stm->close();
 	}
 
-private function removePost($post)
+private static function removePost($post)
 	{
 	$stm = self::__get('DB')->prepare
 		('

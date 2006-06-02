@@ -9,7 +9,7 @@ protected function setForm()
 
 	if (!$this->User->isLevel(User::ROOT))
 		{
-		$this->showWarning('kein Zugriff!');
+		$this->showFailure('kein Zugriff!');
 		}
 
 	try
