@@ -111,7 +111,7 @@ public function prepare()
 	foreach ($users as $user)
 		{
 		$list .= '<tr>
-			<td class="main" style="min-width:200px;"><a href="?page=ShowUser;user='.$user['id'].'">'.$user['name'].'</a></td>
+			<td class="main" style="min-width:200px;"><a href="?page=ShowUser;user='.$user['id'].';id='.$this->Board->getId().'">'.$user['name'].'</a></td>
 			<td class="main" style="min-width:200px;">'.$user['realname'].'</td>
 			<td class="main">'.$user['posts'].'</td>
 			<td class="main">'.date('d.m.Y', $user['regdate']).'</td>
