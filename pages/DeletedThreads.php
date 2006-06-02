@@ -18,7 +18,8 @@ protected function setForm()
 			('
 			SELECT
 				id,
-				name
+				name,
+				summary
 			FROM
 				threads
 			WHERE
@@ -29,7 +30,12 @@ protected function setForm()
 
 		foreach ($threads as $thread)
 			{
-			$this->addOutput('<input type="checkbox" id="id'.$thread['id'].'" name="thread[]" value="'.$thread['id'].'" /><label for="id'.$thread['id'].'"><a href="?page=Postings;id='.$this->Board->getId().';thread='.$thread['id'].'">'.$thread['name'].'</a></label><br />');
+			$this->addOutput('<input type="checkbox" id="id'.$thread['id'].'" name="thread[]" value="'.$thread['id'].'" /><label for="id'.$thread['id'].'"><a onmouseover="javascript:document.getElementById(\'post'.$thread['id'].'\').style.visibility=\'visible\'"
+			onmouseout="javascript:document.getElementById(\'post'.$thread['id'].'\').style.visibility=\'hidden\'"  href="?page=Postings;id='.$this->Board->getId().';thread='.$thread['id'].'">'.$thread['name'].'</a></label><br /><script type="text/javascript">
+						<!--
+						document.write("<div class=\"summary\" style=\"visibility:hidden;\" id=\"post'.$thread['id'].'\">'.$thread['summary'].'</div>");
+						-->
+					</script>');
 			}
 		}
 	catch (DBNoDataException $e)
