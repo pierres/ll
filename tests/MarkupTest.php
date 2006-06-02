@@ -62,6 +62,13 @@ public function testQuote()
 	$this->assertEquals($out, $this->Markup->toHtml($in));
 	}
 
+public function testQuoteAndLink()
+	{
+	$in = '<quote>http://www.laber-land.de/</quote>';
+	$out = '<blockquote><div><a href="http://www.laber-land.de/" onclick="return !window.open(this.href);" rel="nofollow" class="extlink">http://www.laber-land.de/</a></div></blockquote>';
+	$this->assertEquals($out, $this->Markup->toHtml($in));
+	}
+
 public function testList()
 	{
 	$in =

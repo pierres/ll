@@ -146,16 +146,21 @@ public function getArray($filter = null)
 		}
 	else
 		{
-		foreach($this->request as $name => $request)
-			{
-			if(is_array($request) && $name == $filter)
+// 		foreach($this->request as $name => $request)
+// 			{
+			if(isset($this->request[$filter]) && is_array($this->request[$filter]))
 				{
-				foreach($request as $key => $value)
-					{
-					$result[] = $value;
-					}
+				return $this->request[$filter];
+// 				foreach($request as $key => $value)
+// 					{
+// 					$result[] = $value;
+// 					}
 				}
-			}
+			else
+				{
+				return array();
+				}
+// 			}
 		}
 
 	return $result;

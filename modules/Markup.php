@@ -7,27 +7,27 @@
 class Markup extends Modul{
 
 
-private $sep 				= '';
+private $sep 			= '';
 private $sepc 			= '';
 /*
 	Zwischenspeicher für gefundene Tags
 */
 private $Stack			= null;
 private $Codes 			= null;
-private $quotes 			= 0;
+private $quotes 		= 0;
 
 private $linkNumber 		= 1;
 /*
 	Such-Arrays:
 */
-private $search 			= array();
-private $replace 			= array();
+private $search 		= array();
+private $replace 		= array();
 private $codeSearch 		= array();
 private $codeReplace 		= array();
 private $smilies_search		= array();
-private $smilies_replace		= array();
+private $smilies_replace	= array();
 
-private $HighLight 			= null;
+private $HighLight 		= null;
 
 private $smiliesenabled		= true;
 
@@ -49,12 +49,12 @@ function __construct()
 
 	$protocoll 	= '(?:https?|ftp):\/\/';
 	$name 		= '[a-z0-9](?:[a-z0-9_\-\.]*[a-z0-9])?';
-	$tld 			= '[a-z]{2,5}';
+	$tld 		= '[a-z]{2,5}';
 	$domain		=  $name.'\.'.$tld;
-	$address		= '(?:'.$domain.'|[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})';
+	$address	= '(?:'.$domain.'|[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})';
 	$path 		= '(?:\/(?:[a-z0-9_%&:;,\+\-\/=~\.#]*[a-z0-9\/])?)?';
-	$request 		= '(?:\?[a-z0-9_%&:;,\+\-\/=~\.#]*[a-z0-9])?';
-	$img	 		= '[a-z0-9_\-]+\.(?:gif|jpe?g|png)';
+	$request 	= '(?:\?[a-z0-9_%&:;,\+\-\/=~\.#]*[a-z0-9])?';
+	$img	 	= '[a-z0-9_\-]+\.(?:gif|jpe?g|png)';
 
 
 	/** Code muß am Zeilenanfang beginnen */
@@ -64,6 +64,9 @@ function __construct()
 	$this->codeSearch[]  = '/==(.+?)==/e';
 	$this->codeReplace[] = '$this->makeCode(\'$1\', \'code\')';
 
+	/** Zitate */
+	$this->search[]  = '#&lt;quote(?: .+?)?&gt;.+&lt;/quote&gt;#es';
+	$this->replace[] = '$this->makeQuote(\'$0\')';
 
 	/** komplette URL mit Namen */
 	$this->search[]  = '/&lt;('.$protocoll.$address.$path.$request.') (.+?)&gt;/ies';
@@ -112,9 +115,6 @@ function __construct()
 	$this->replace[] = '$this->makeLink(\'ftp://$0\', \'$0\')';
 
 
-	/** Zitate */
-	$this->search[]  = '#&lt;quote(?: .+?)?&gt;.+&lt;/quote&gt;#es';
-	$this->replace[] = '$this->makeQuote(\'$0\')';
 	/** Überschriften */
 	$this->search[]  = '/^(!{1,6})(.+?)$(\n?)/me';
 	$this->replace[] = '$this->makeHeading(\'$2\', strlen(\'$1\')).\'$3\'';
