@@ -114,7 +114,6 @@ catch (DBException $e)
 
 try
 	{
-	/** TODO: summary zwischenspeichern */
 	$stm = $this->DB->prepare
 		('
 		SELECT

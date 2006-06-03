@@ -65,7 +65,6 @@ public function prepare()
 	$stm->execute();
 	$stm->close();
 
-	/** TODO Stement-Schatelung aufräumen */
 	try
 		{
 		$stm = $this->DB->prepare

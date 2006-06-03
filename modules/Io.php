@@ -85,6 +85,12 @@ public function isEmpty($name)
 	{
 	return empty($this->request[$name]);
 	}
+
+public function isEmptyString($name)
+	{
+	$this->request[$name] = trim($this->request[$name]);
+	return empty($this->request[$name]);
+	}
 /**
 * FIXME: Prüfe Seiteneffekt bei leerem Rückgabewert
 */

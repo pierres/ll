@@ -2,7 +2,6 @@
 
 class GetAttachment extends GetFile{
 
-/** TODO: Vorschau für Bilder */
 
 protected $file = 0;
 

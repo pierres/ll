@@ -7,8 +7,6 @@ private $sep;
 private $sepc;
 private $Stack;
 
-/** TODO: Auch hier STack verwenden; siehe Listen mit benannten Links */
-
 function __construct()
 	{
 	$this->sep 	= chr(28);

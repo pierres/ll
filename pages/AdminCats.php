@@ -2,7 +2,7 @@
 
 class AdminCats extends AdminForm{
 
-
+private $cats = array();
 
 protected function setForm()
 	{
@@ -55,47 +55,82 @@ protected function setForm()
 
 protected function checkForm()
 	{
-	/** TODO Prüfung auf vernünftige Werte */
+	try
+		{
+		$this->cats = $this->Io->getArray('category');
+		}
+	catch (IoRequestException $e)
+		{
+		if ($this->Io->isEmpty('newname'))
+			{
+			$this->showWarning('Keine Kategorien angegeben.');
+			}
+		else
+			{
+			return;
+			}
+		}
+
+	foreach($this->cats as $id => $cat)
+		{
+		if (empty($id))
+			{
+			$this->showWarning('Keine Kategorie-ID angegeben.');
+			}
+
+		if (empty($cat['position']))
+			{
+			$this->showWarning('Keine Kategorie-Position angegeben.');
+			}
+
+		if (empty($cat['name']))
+			{
+			$name = trim($cat['name']);
+			$this->showWarning('Kein Kategorie-Name angegeben.');
+			}
+		else
+			{
+			$name = trim($cat['name']);
+			if (empty($name))
+				{
+				$name = trim($cat['name']);
+				$this->showWarning('Kein Kategorie-Name angegeben.');
+				}
+			}
+		}
 	}
 
 protected function sendForm()
 	{
-	try
+	if (!empty($this->cats))
 		{
-		$cats = $this->Io->getArray('category');
-		}
-	catch (IoRequestException $e)
-		{
-		$this->showFailure($e->getMessage());
-		}
+		$stm = $this->DB->prepare
+			('
+			UPDATE
+				cats
+			SET
+				position = ?,
+				name = ?
+			WHERE
+				boardid = ?
+				AND id = ?'
+			);
 
-	$stm = $this->DB->prepare
-		('
-		UPDATE
-			cats
-		SET
-			position = ?,
-			name = ?
-		WHERE
-			boardid = ?
-			AND id = ?'
-		);
-
-	foreach($cats as $id => $cat)
-		{
-		if (isset($cat['position']) && isset($cat['name']) && isset($id))
+		foreach($this->cats as $id => $cat)
 			{
-			$stm->bindInteger($cat['position']);
-			$stm->bindString(htmlspecialchars($cat['name']));
-			$stm->bindInteger($this->Board->getId());
-			$stm->bindInteger($id);
-			$stm->execute();
+			if (isset($cat['position']) && isset($cat['name']) && isset($id))
+				{
+				$stm->bindInteger($cat['position']);
+				$stm->bindString(htmlspecialchars($cat['name']));
+				$stm->bindInteger($this->Board->getId());
+				$stm->bindInteger($id);
+				$stm->execute();
+				}
 			}
+		$stm->close();
 		}
-	$stm->close();
 
-
-	if (!$this->Io->isEmpty('newname'))
+	if (!$this->Io->isEmptyString('newname'))
 		{
 		$stm = $this->DB->prepare
 			('

@@ -1,7 +1,5 @@
 <?php
 
-/** TODO: Sicherheit und Zugriffsrechte */
-
 
 class NewPost extends Form {
 
