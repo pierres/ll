@@ -161,7 +161,14 @@ protected function sendFile($postid)
 	{
 	if($this->User->isOnline() && $this->Io->isRequest('addfile'))
 		{
-		$files = $this->Io->getArray();
+		try
+			{
+			$files = $this->Io->getArray('files');
+			}
+		catch (IoRequestException $e)
+			{
+			return;
+			}
 
 		$files = $this->sendNewFile($files);
 

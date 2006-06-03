@@ -65,7 +65,7 @@ protected function setForm()
 
 			$this->addOutput
 				('
-				<input type="checkbox" name="forums['.$forum['id'].']" value="1" />'.$forum['name'].'<br />
+				<input type="checkbox" name="forums[]" value="'.$forum['id'].'" />'.$forum['name'].'<br />
 				');
 			}
 		$stm->close();
@@ -108,6 +108,15 @@ protected function sendForm()
 	{
 	try
 		{
+		$forums = $this->Io->getArray('forums');
+		}
+	catch (IoRequestException $e)
+		{
+		$this->redirect();
+		}
+
+	try
+		{
 		$stm = $this->DB->prepare
 			('
 			SELECT
@@ -136,8 +145,8 @@ protected function sendForm()
 			catid = ?,
 			position = ?'
 		);
-	/** FIXME */
-	foreach($this->Io->getArray() as $forum => $value)
+
+	foreach($forums as $forum)
 		{
 		$stm->bindInteger($forum);
 		$stm->bindInteger($this->cat);

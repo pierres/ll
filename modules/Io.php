@@ -124,46 +124,17 @@ public function getHex($name)
 	{
 	return hexVal($this->getString($name));
 	}
-/**
-* @TODO: remove deprecated use of getArray()
-*/
-public function getArray($filter = null)
-	{
-	$result = array();
 
-	if ($filter === null)
+public function getArray($name)
+	{
+	if(isset($this->request[$name]) && is_array($this->request[$name]))
 		{
-		foreach($this->request as $name => $request)
-			{
-			if(is_array($request))
-				{
-				foreach($request as $key => $value)
-					{
-					$result[$key][$name] = $value;
-					}
-				}
-			}
+		return $this->request[$name];
 		}
 	else
 		{
-// 		foreach($this->request as $name => $request)
-// 			{
-			if(isset($this->request[$filter]) && is_array($this->request[$filter]))
-				{
-				return $this->request[$filter];
-// 				foreach($request as $key => $value)
-// 					{
-// 					$result[] = $value;
-// 					}
-				}
-			else
-				{
-				return array();
-				}
-// 			}
+		throw new IoRequestException($name);
 		}
-
-	return $result;
 	}
 
 public function getLength($name)

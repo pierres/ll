@@ -60,10 +60,10 @@ protected function setForm()
 			$this->addOutput
 				(
 				'<table><tr><td>'.
-				AdminFunctions::buildPositionMenu('position['.$forum['id'].']', $totalForums, $forum['position']).'
-				<input type="text" name="name['.$forum['id'].']" size="74" value="'.$forum['name'].'" />
+				AdminFunctions::buildPositionMenu('forums['.$forum['id'].'][position]', $totalForums, $forum['position']).'
+				<input type="text" name="forums['.$forum['id'].'][name]" size="74" value="'.$forum['name'].'" />
 				<br />
-				<textarea name="description['.$forum['id'].']" cols="80" rows="4">'.$forum['description'].'</textarea>
+				<textarea name="forums['.$forum['id'].'][description]" cols="80" rows="4">'.$forum['description'].'</textarea>
 				<br />
 				<a href="?page=AdminForumsMove;id='.$this->Board->getId().';forum='.$forum['id'].'"><span class="button">verschieben</span></a>
 				<a href="?page=AdminForumsDel;id='.$this->Board->getId().';forum='.$forum['id'].'"><span class="button" style="background-color:#CC0000">löschen</span></a>
@@ -83,10 +83,10 @@ protected function setForm()
 			$this->addOutput
 				(
 				'<table style="width:100%"><tr><td>'.
-				AdminFunctions::buildPositionMenu('position['.$forum['id'].']', $totalForums, $forum['position']).'
-				<input disabled="disabled" type="text" name="name['.$forum['id'].']" size="74" value="'.$forum['name'].'" />
+				AdminFunctions::buildPositionMenu('forums['.$forum['id'].'][position]', $totalForums, $forum['position']).'
+				<input disabled="disabled" type="text" name="forums['.$forum['id'].'][name]" size="74" value="'.$forum['name'].'" />
 				<br />
-				<textarea disabled="disabled" name="description['.$forum['id'].']" cols="80" rows="4">'.$forum['description'].'</textarea>
+				<textarea disabled="disabled" name="forums['.$forum['id'].'][description]" cols="80" rows="4">'.$forum['description'].'</textarea>
 				<br />
 				<a href="?page=AdminForumsMove;id='.$this->Board->getId().';forum='.$forum['id'].'"><span class="button">verschieben</span></a>
 				<a href="?page=AdminForumsDelEx;id='.$this->Board->getId().';forum='.$forum['id'].'"><span class="button" style="background-color:#CC6600">löschen</span></a>
@@ -179,8 +179,14 @@ protected function checkForm()
 
 protected function sendForm()
 	{
-	/** FIXME */
-	$forums = $this->Io->getArray();
+	try
+		{
+		$forums = $this->Io->getArray('forums');
+		}
+	catch (IoRequestException $e)
+		{
+		$this->redirect();
+		}
 
 	$stm = $this->DB->prepare
 		('
@@ -204,19 +210,19 @@ protected function sendForm()
 			forumid = ?
 			AND catid = ?'
 		);
-	foreach($forums as $forum => $value)
+	foreach($forums as $id => $forum)
 		{
-		if(isset($value['name']) && isset($value['description']))
+		if(isset($forum['name']) && isset($forum['description']) && isset($id))
 			{
-			$stm->bindString(htmlspecialchars($value['name']));
-			$stm->bindString(htmlspecialchars($value['description']));
+			$stm->bindString(htmlspecialchars($forum['name']));
+			$stm->bindString(htmlspecialchars($forum['description']));
 			$stm->bindInteger($this->Board->getId());
-			$stm->bindInteger($forum);
+			$stm->bindInteger($id);
 			$stm->execute();
 			}
 
-		$stm2->bindInteger($value['position']);
-		$stm2->bindInteger($forum);
+		$stm2->bindInteger($forum['position']);
+		$stm2->bindInteger($id);
 		$stm2->bindInteger($this->cat);
 		$stm2->execute();
 		}

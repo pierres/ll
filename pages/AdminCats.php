@@ -32,8 +32,8 @@ protected function setForm()
 			$cats = $stm->getNumRows();
 			$this->addOutput
 				(
-				AdminFunctions::buildPositionMenu('position['.$cat['id'].']', $cats, $cat['position']).'
-				<input type="text" name="name['.$cat['id'].']" size="74" value="'.$cat['name'].'" />
+				AdminFunctions::buildPositionMenu('category['.$cat['id'].'][position]', $cats, $cat['position']).'
+				<input type="text" name="category['.$cat['id'].'][name]" size="74" value="'.$cat['name'].'" />
 				<a href="?page=AdminForums;id='.$this->Board->getId().';cat='.$cat['id'].'"><span class="button">Foren</span></a>
 				<a href="?page=AdminCatsDel;id='.$this->Board->getId().';cat='.$cat['id'].'"><span class="button" style="background-color:#CC0000">löschen</span></a>
 				<br /><br />
@@ -55,13 +55,19 @@ protected function setForm()
 
 protected function checkForm()
 	{
-	/** FIXME */
+	/** TODO Prüfung auf vernünftige Werte */
 	}
 
 protected function sendForm()
 	{
-	/** FIXME */
-	$cats = $this->Io->getArray();
+	try
+		{
+		$cats = $this->Io->getArray('category');
+		}
+	catch (IoRequestException $e)
+		{
+		$this->showFailure($e->getMessage());
+		}
 
 	$stm = $this->DB->prepare
 		('
@@ -75,13 +81,16 @@ protected function sendForm()
 			AND id = ?'
 		);
 
-	foreach($cats as $cat => $value)
+	foreach($cats as $id => $cat)
 		{
-		$stm->bindInteger($value['position']);
-		$stm->bindString(htmlspecialchars($value['name']));
-		$stm->bindInteger($this->Board->getId());
-		$stm->bindInteger($cat);
-		$stm->execute();
+		if (isset($cat['position']) && isset($cat['name']) && isset($id))
+			{
+			$stm->bindInteger($cat['position']);
+			$stm->bindString(htmlspecialchars($cat['name']));
+			$stm->bindInteger($this->Board->getId());
+			$stm->bindInteger($id);
+			$stm->execute();
+			}
 		}
 	$stm->close();
 
@@ -98,7 +107,7 @@ protected function sendForm()
 				boardid = ?'
 			);
 
-		$stm->bindInteger($this->Io->isEmpty('position') ? 0 : $this->Io->getInt('newposition'));
+		$stm->bindInteger($this->Io->isEmpty('newposition') ? 0 : $this->Io->getInt('newposition'));
 		$stm->bindString($this->Io->getHtml('newname'));
 		$stm->bindInteger($this->Board->getId());
 		$stm->execute();
