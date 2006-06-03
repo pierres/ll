@@ -353,7 +353,7 @@ public static function delBoard($board)
 	unlink(PATH.'html'.$board.'.js');
 	}
 
-/** FIXME: Summary erstellen; Änderungen optimieren (nur falls nötig) */
+/** TODO: Summary erstellen; Änderungen optimieren (nur falls nötig) */
 //---------------------------------------------------------------------------------------------------------
 public static function updateThread($thread)
 	{

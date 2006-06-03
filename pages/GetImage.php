@@ -24,7 +24,6 @@ protected function getParams()
 
 	try
 		{
-		/** FIXME: Hier XSS möglich */
 		$this->url = $this->Io->getString('url');
 		}
 	catch (IoRequestException $e)

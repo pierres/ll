@@ -3,7 +3,6 @@
 
 function hexVal($in)
 	{
-	/** FIXME: nicht unbedingt geschickt */
 	$result = preg_replace('/[^0-9a-fA-F]/', '', $in);
 	return (empty($result) ? 0 : $result);
 	}
@@ -40,7 +39,6 @@ function rehtmlspecialchars($string)
 
 /**
 * gibt die Tageszeit aus
-* FIXME: Ist das hier so geschickt?
 * @param &$time Unix-Zeitstempel
 */
 function formatDate($time)
@@ -62,7 +60,6 @@ function formatDate($time)
 
 function cutString($string, $length)
 	{
-	/** FIXME */
 	// Verhindere das Abschneiden im Entity
 	$string = unhtmlspecialchars($string);
 	$string =  (mb_strlen($string, 'UTF-8') > $length ? mb_substr($string, 0, ($length-3), 'UTF-8').'...' : $string);
@@ -108,8 +105,7 @@ function resizeImage($image, $type, $size)
 
 	if ($width <= $size && $height <= $size)
 		{
-		/** FIXME: ungeeignete Rückgabe; besser Exception */
-// 		return '';
+		/** TODO: besser eigene Exception */
 		throw new Exception('we do not need to resize');
 		}
 	else

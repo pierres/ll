@@ -33,7 +33,7 @@ protected function setForm()
 		{
 		$this->text = $this->Io->getString('text');
 		$this->Markup->enableSmilies($this->Io->isRequest('smilies'));
-		/** FIXME: position of preview-window is not allways optimal */
+		/** TODO: position of preview-window is not allways optimal */
 		$this->addElement('previewwindow',
 		'<div class="preview">'.$this->Markup->toHtml($this->text).'</div>');
 		}

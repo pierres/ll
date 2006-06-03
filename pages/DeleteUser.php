@@ -91,7 +91,7 @@ protected function sendForm()
 		$stm->execute();
 		$stm->close();
 
-	/** FIXME: ggf. müssen dann die Links in posts auch gelöscht werden */
+	/** TODO: ggf. müssen dann die Links in posts auch gelöscht werden */
 	/*
 		$stm = $this->DB->prepare
 			('
@@ -190,10 +190,22 @@ protected function sendForm()
 		$stm->execute();
 		$stm->close();
 
-		/** FIXME löscht der Admin einen eingeloggten User, so wird dieser nicht ausgeloggt */
 		if ($this->user == $this->User->getId())
 			{
 			$this->User->logout();
+			}
+		else
+			{
+			$stm = $this->DB->prepare
+				('
+				DELETE FROM
+					sessions
+				WHERE
+					id = ?'
+				);
+			$stm->bindInteger($this->user);
+			$stm->execute();
+			$stm->close();
 			}
 		}
 

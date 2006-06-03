@@ -72,7 +72,6 @@ protected function buildList()
 	{
 	$this->addSubmit('Verschieben');
 
-	/** FIXME: Kann man Themen aus dem Board herausschieben ? */
 	try
 		{
 		$stm = $this->DB->prepare

@@ -39,7 +39,7 @@ protected function setForm()
 
 	$this->addText('location', 'Dein Wohnort', $this->location);
 	$this->setLength('location', 3, 255);
-	/** FIXME */
+
 	$this->addText('plz', 'Deine Postleitzahl', !empty($this->plz) ? $this->plz : '', 5);
 	$this->setLength('plz', 5, 5);
 
@@ -88,7 +88,6 @@ protected function checkForm()
 		catch (DBNoDataException $e)
 			{
 			$stm->close();
-			/** FIXME */
 			if (!empty($this->plz))
 				{
 				$this->showWarning('Postleitzahl nicht gefunden');
@@ -269,7 +268,7 @@ private function showAvatar()
 	$this->addFile('avatar', 'neuer Avatar', 25);
 	$this->addOutput('</fieldset>');
 	}
-/** FIXME: Exception-Handling hinzufügen */
+
 private function sendAvatar()
 	{
 	try

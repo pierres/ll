@@ -170,7 +170,6 @@ protected function listThreads()
 			$data['name'] = '<span class="newthread">'.$data['name'].'</span>';
 			}
 
-		/** FIXME */
 		$status = (!empty($data['poll'])    ? '<span class="poll"></span>' : '');
 
 		$lastposter = (empty($data['lastuserid'])

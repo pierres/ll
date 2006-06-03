@@ -256,7 +256,6 @@ protected function listThreads()
 			}
 
 
-		/** FIXME */
 		$status = (!empty($data['poll'])    ? '<span class="poll"></span>' : '');
 		$status .= (!empty($data['closed']) ? '<span class="closed"></span>' : '');
 		$status .= (!empty($data['sticky']) ? '<span class="sticky"></span>' : '');

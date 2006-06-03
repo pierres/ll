@@ -44,7 +44,7 @@ protected function checkForm()
 	catch (LoginException $e)
 		{
 		// Ich kann warten...
-		/** FIXME: Man muß dann aber auch den jeweiligen Benutzer temporär sperren */
+		/** TODO: Man muß dann aber auch den jeweiligen Benutzer temporär sperren */
 		sleep(5);
 		$this->showWarning('Falsches Passwort.');
 		}

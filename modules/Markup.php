@@ -376,7 +376,6 @@ private function makeLink($url, $name = '')
 		$name = htmlspecialchars($name, ENT_COMPAT, 'UTF-8');
 		}
 
-	/** FIXME: externer oder interner Link? */
 	if (strpos($url, $this->Settings->getValue('domain')) !== false)
 		{
 		$target = ' class="link"';

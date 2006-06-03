@@ -101,7 +101,7 @@ public function insert($threadid, $threadtime)
 	$stm->execute();
 	$stm->close();
 
-	/** FIXME: kann man beim Neuerstellen/Löschen eines Beitrags starten.*/
+	/** TODO: kann man beim Neuerstellen/Löschen eines Beitrags starten.*/
 	$this->collectGarbage();
 	}
 
