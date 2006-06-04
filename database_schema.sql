@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 31. Mai 2006 um 10:00
+-- Erstellungszeit: 04. Juni 2006 um 12:15
 -- Server Version: 5.0.21
 -- PHP-Version: 5.1.4
 --
@@ -376,6 +376,7 @@ CREATE TABLE `users` (
   `location` varchar(255) default NULL,
   `plz` mediumint(5) unsigned default NULL,
   `text` text,
+  `lastlogin` int(11) unsigned NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `name` (`name`(10)),
   KEY `posts` (`posts`),

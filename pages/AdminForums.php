@@ -153,6 +153,7 @@ private function getMods($group)
 
 protected function checkForm()
 	{
+	/** TODO Eingaben genauer prüfen (vor allem auf LeerStrings) */
 	try
 		{
 		$stm = $this->DB->prepare
@@ -185,49 +186,55 @@ protected function sendForm()
 		}
 	catch (IoRequestException $e)
 		{
-		$this->redirect();
-		}
-
-	$stm = $this->DB->prepare
-		('
-		UPDATE
-			forums
-		SET
-			name = ?,
-			description = ?
-		WHERE
-			boardid = ?
-			AND id = ?'
-		);
-
-	$stm2 = $this->DB->prepare
-		('
-		UPDATE
-			forum_cat
-		SET
-			position = ?
-		WHERE
-			forumid = ?
-			AND catid = ?'
-		);
-	foreach($forums as $id => $forum)
-		{
-		if(isset($forum['name']) && isset($forum['description']) && isset($id))
+		if ($this->Io->isEmpty('newname'))
 			{
-			$stm->bindString(htmlspecialchars($forum['name']));
-			$stm->bindString(htmlspecialchars($forum['description']));
-			$stm->bindInteger($this->Board->getId());
-			$stm->bindInteger($id);
-			$stm->execute();
+			$this->redirect();
 			}
-
-		$stm2->bindInteger($forum['position']);
-		$stm2->bindInteger($id);
-		$stm2->bindInteger($this->cat);
-		$stm2->execute();
 		}
-	$stm->close();
-	$stm2->close();
+
+	if (!empty($forums))
+		{
+		$stm = $this->DB->prepare
+			('
+			UPDATE
+				forums
+			SET
+				name = ?,
+				description = ?
+			WHERE
+				boardid = ?
+				AND id = ?'
+			);
+
+		$stm2 = $this->DB->prepare
+			('
+			UPDATE
+				forum_cat
+			SET
+				position = ?
+			WHERE
+				forumid = ?
+				AND catid = ?'
+			);
+		foreach($forums as $id => $forum)
+			{
+			if(isset($forum['name']) && isset($forum['description']) && isset($id))
+				{
+				$stm->bindString(htmlspecialchars($forum['name']));
+				$stm->bindString(htmlspecialchars($forum['description']));
+				$stm->bindInteger($this->Board->getId());
+				$stm->bindInteger($id);
+				$stm->execute();
+				}
+
+			$stm2->bindInteger($forum['position']);
+			$stm2->bindInteger($id);
+			$stm2->bindInteger($this->cat);
+			$stm2->execute();
+			}
+		$stm->close();
+		$stm2->close();
+		}
 
 	if (!$this->Io->isEmpty('newname'))
 		{

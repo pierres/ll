@@ -4,13 +4,13 @@
 class User extends Modul{
 
 
-const ROOT			= 3;
-const ADMIN			= 2;
-const MOD			= 1;
+const ROOT		= 3;
+const ADMIN		= 2;
+const MOD		= 1;
 
-private $sessionid		= 0;
-private $id 			= 0;
-private $level			= 0;
+private $sessionid	= 0;
+private $id 		= 0;
+private $level		= 0;
 private $name		= '';
 private $groups		= array();
 
@@ -237,6 +237,20 @@ private function start($id, $name ,$level, $groups)
 	$stm->close();
 
 	$this->Io->setCookie('sessionid', $this->sessionid);
+
+	$stm = $this->DB->prepare
+		('
+		UPDATE
+			users
+		SET
+			lastlogin = ?
+		WHERE
+			id = ?
+		');
+	$stm->bindInteger(time());
+	$stm->bindInteger($this->id);
+	$stm->execute();
+	$stm->close();
 	}
 
 private function collectGarbage()
