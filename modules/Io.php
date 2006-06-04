@@ -152,10 +152,14 @@ public function redirect($class, $param = '', $id = 0)
 	{
 	$param = (!empty($param) ? ';'.$param : '');
 
-	$this->redirectToUrl('http'.(!getenv('HTTPS') ? '' : 's').'://'.
-				getenv('HTTP_HOST')
-				.dirname($_SERVER['PHP_SELF'])
-				.'?id='.($id == 0 ? $this->Board->getId() : $id).';page='.$class.$param);
+	$this->redirectToUrl($this->getURL().'?id='.($id == 0 ? $this->Board->getId() : $id).';page='.$class.$param);
+	}
+
+public function getURL()
+	{
+	return 'http'.(!getenv('HTTPS') ? '' : 's').'://'
+			.getenv('HTTP_HOST')
+			.dirname($_SERVER['PHP_SELF']);
 	}
 
 public function redirectToUrl($url)

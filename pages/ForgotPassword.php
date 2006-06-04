@@ -55,19 +55,31 @@ protected function checkForm()
 
 protected function sendForm()
 	{
-	$password = generatePassword();
+	$key = md5(generatePassword());
 
 	$stm = $this->DB->prepare
 		('
-		UPDATE
-			users
-		SET
-			password = ?
+		DELETE FROM
+			change_password
 		WHERE
 			id = ?'
 		);
-	$stm->bindString(md5($password));
 	$stm->bindInteger($this->id);
+	$stm->execute();
+	$stm->close();
+
+	$stm = $this->DB->prepare
+		('
+		INSERT INTO
+			change_password
+		SET
+			id = ?,
+			`key` = ?,
+			request_time = ?'
+		);
+	$stm->bindInteger($this->id);
+	$stm->bindString($key);
+	$stm->bindInteger(time());
 	$stm->execute();
 	$stm->close();
 
@@ -75,12 +87,13 @@ protected function sendForm()
 	$this->Mail->setFrom('support@laber-land.de');
 	$this->Mail->setSubject('Dein Passwort im Laber-Land');
 	$this->Mail->setText(
-<<<eot
-Hallo {$this->name}!
+'Hallo '.$this->name.'!
 
-Dein neues Passwort lautet: {$password}
-eot
-);
+Du kannst Dein Passwort ändern, wenn Du folgende Seite besuchst:
+'.$this->Io->getURL().'?id='.$this->Board->getId().';page=ChangePasswordKey;userid='.$this->id.';key='.$key.'
+
+Solltest Du Dir diese Erinnerung nicht geschcikt haben, so kannst Du diese Nachricht ignorieren.
+Dein altes Passwort bleibt dann weiterhin gültig.');
 	$this->Mail->send();
 
 	$this->Io->redirect('Login');
