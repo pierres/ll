@@ -92,7 +92,7 @@ protected function sendForm()
 Du kannst Dein Passwort ändern, wenn Du folgende Seite besuchst:
 '.$this->Io->getURL().'?id='.$this->Board->getId().';page=ChangePasswordKey;userid='.$this->id.';key='.$key.'
 
-Solltest Du Dir diese Erinnerung nicht geschcikt haben, so kannst Du diese Nachricht ignorieren.
+Solltest Du Dir diese Erinnerung nicht geschickt haben, so kannst Du diese Nachricht ignorieren.
 Dein altes Passwort bleibt dann weiterhin gültig.');
 	$this->Mail->send();
 
