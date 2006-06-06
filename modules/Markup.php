@@ -22,8 +22,8 @@ private $linkNumber 		= 1;
 */
 private $search 		= array();
 private $replace 		= array();
-private $codeSearch 		= array();
-private $codeReplace 		= array();
+private $stackSearch 		= array();
+private $stackReplace 		= array();
 private $smilies_search		= array();
 private $smilies_replace	= array();
 
@@ -58,61 +58,61 @@ function __construct()
 
 
 	/** Code muß am Zeilenanfang beginnen */
-	$this->codeSearch[]  = '#^<code>$(.+?)^</code>$\n?#esm';
-	$this->codeReplace[] = '$this->makeCode(\'$1\')';
+	$this->stackSearch[]  = '#^<code>$(.+?)^</code>$\n?#esm';
+	$this->stackReplace[] = '$this->makeCode(\'$1\')';
 	/** Inline Code */
-	$this->codeSearch[]  = '/==(.+?)==/e';
-	$this->codeReplace[] = '$this->makeCode(\'$1\', \'code\')';
+	$this->stackSearch[]  = '/==(.+?)==/e';
+	$this->stackReplace[] = '$this->makeCode(\'$1\', \'code\')';
 
 	/** Zitate */
 	$this->search[]  = '#&lt;quote(?: .+?)?&gt;.+&lt;/quote&gt;#es';
 	$this->replace[] = '$this->makeQuote(\'$0\')';
 
 	/** komplette URL mit Namen */
-	$this->search[]  = '/&lt;('.$protocoll.$address.$path.$request.') (.+?)&gt;/ies';
-	$this->replace[] = '$this->makeLink(\'$1\', \'$2\')';
+	$this->stackSearch[]  = '/<('.$protocoll.$address.$path.$request.') (.+?)>/ies';
+	$this->stackReplace[] = '$this->makeLink(\'$1\', \'$2\')';
 	/** www.domain.tld  mit Namen */
-	$this->search[]  = '/&lt;(www\.'.$domain.$path.$request.') (.+?)&gt;/ies';
-	$this->replace[] = '$this->makeLink(\'http://$1\', \'$2\')';
+	$this->stackSearch[]  = '/<(www\.'.$domain.$path.$request.') (.+?)>/ies';
+	$this->stackReplace[] = '$this->makeLink(\'http://$1\', \'$2\')';
 	/** ftp.domain.tld  mit Namen */
-	$this->search[]  = '/&lt;(ftp\.'.$domain.$path.$request.') (.+?)&gt;/ies';
-	$this->replace[] = '$this->makeLink(\'ftp://$1\', \'$2\')';
+	$this->stackSearch[]  = '/<(ftp\.'.$domain.$path.$request.') (.+?)>/ies';
+	$this->stackReplace[] = '$this->makeLink(\'ftp://$1\', \'$2\')';
 	/** komplette URL */
-	$this->search[]  = '/&lt;('.$protocoll.$address.$path.$request.')&gt;/ies';
-	$this->replace[] = '$this->makeLink(\'$1\')';
+	$this->stackSearch[]  = '/<('.$protocoll.$address.$path.$request.')>/ies';
+	$this->stackReplace[] = '$this->makeLink(\'$1\')';
 	/** www.domain.tld */
-	$this->search[]  = '/&lt;(www\.'.$domain.$path.$request.')&gt;/ies';
-	$this->replace[] = '$this->makeLink(\'http://$1\')';
+	$this->stackSearch[]  = '/<(www\.'.$domain.$path.$request.')>/ies';
+	$this->stackReplace[] = '$this->makeLink(\'http://$1\')';
 	/** ftp.domain.tld */
-	$this->search[]  = '/&lt;(ftp\.'.$domain.$path.$request.')&gt;/ies';
-	$this->replace[] = '$this->makeLink(\'ftp://$1\')';
+	$this->stackSearch[]  = '/<(ftp\.'.$domain.$path.$request.')>/ies';
+	$this->stackReplace[] = '$this->makeLink(\'ftp://$1\')';
 /*
 	Folgendes sollte eigentlich alle URLs finden.
 	Auch (www.laber-land.de) und www.laber-land.de!
 */
 	/** E-Mails */
-	$this->search[] = '/'.$name.'@'.$domain.'/ie';
-	$this->replace[] = '$this->makeEmail(\'$0\')';
+	$this->stackSearch[] = '/'.$name.'@'.$domain.'/ie';
+	$this->stackReplace[] = '$this->makeEmail(\'$0\')';
 
 	/** Bilder */
-	$this->search[] = '/'.$protocoll.$address.$path.$img.'/ie';
-	$this->replace[] = '$this->makeImage(\'$0\')';
+	$this->stackSearch[] = '/'.$protocoll.$address.$path.$img.'/ie';
+	$this->stackReplace[] = '$this->makeImage(\'$0\')';
 	/** Bilder www.domain.tld */
-	$this->search[] = '/www\.'.$domain.$path.$img.'/ie';
-	$this->replace[] = '$this->makeImage(\'http://$0\')';
+	$this->stackSearch[] = '/www\.'.$domain.$path.$img.'/ie';
+	$this->stackReplace[] = '$this->makeImage(\'http://$0\')';
 	/** Bilder ftp.domain.tld */
-	$this->search[] = '/ftp\.'.$domain.$path.$img.'/ie';
-	$this->replace[] = '$this->makeImage(\'ftp://$0\')';
+	$this->stackSearch[] = '/ftp\.'.$domain.$path.$img.'/ie';
+	$this->stackReplace[] = '$this->makeImage(\'ftp://$0\')';
 
 	/** komplette URL */
-	$this->search[] = '/'.$protocoll.$address.$path.$request.'/ie';
-	$this->replace[] = '$this->makeLink(\'$0\', \'$0\')';
+	$this->stackSearch[] = '/'.$protocoll.$address.$path.$request.'/ie';
+	$this->stackReplace[] = '$this->makeLink(\'$0\', \'$0\')';
 	/** www.domain.tld */
-	$this->search[] = '/www\.'.$domain.$path.$request.'/ie';
-	$this->replace[] = '$this->makeLink(\'http://$0\', \'$0\')';
+	$this->stackSearch[] = '/www\.'.$domain.$path.$request.'/ie';
+	$this->stackReplace[] = '$this->makeLink(\'http://$0\', \'$0\')';
 	/** ftp.domain.tld */
-	$this->search[] = '/ftp\.'.$domain.$path.$request.'/ie';
-	$this->replace[] = '$this->makeLink(\'ftp://$0\', \'$0\')';
+	$this->stackSearch[] = '/ftp\.'.$domain.$path.$request.'/ie';
+	$this->stackReplace[] = '$this->makeLink(\'ftp://$0\', \'$0\')';
 
 
 	/** Überschriften */
@@ -208,7 +208,7 @@ public function toHtml($text)
 	$text = str_replace($this->sepc, '', $text);
 	$text = str_replace("\r", '', $text);	//Wer braucht schon Windows-Zeilenumbrche?
 
-	$text = preg_replace($this->codeSearch, $this->codeReplace, $text);
+	$text = preg_replace($this->stackSearch, $this->stackReplace, $text);
 	$text = htmlspecialchars($text, ENT_COMPAT, 'UTF-8');
 	$text = preg_replace($this->search, $this->replace, $text);
 
@@ -370,10 +370,7 @@ private function makeLink($url, $name = '')
 		}
 	elseif (strlen($name) > 50)
 		{
-		// Verhindere das Abschneiden im Entity
-		$name = unhtmlspecialchars($name);
-		$name = substr($name, 0, 37).'...'.substr($name, -10);
-		$name = htmlspecialchars($name, ENT_COMPAT, 'UTF-8');
+		$name = mb_substr($name, 0, 37, 'UTF-8').'...'.mb_substr($name, -10, 'UTF-8');
 		}
 
 	if (strpos($url, $this->Settings->getValue('domain')) !== false)
@@ -385,7 +382,7 @@ private function makeLink($url, $name = '')
 		$target = ' onclick="return !window.open(this.href);" rel="nofollow" class="extlink"';
 		}
 
-	$this->Stack->push('<a href="'.$url.'"'.$target.'>'.$name.'</a>');
+	$this->Stack->push('<a href="'.htmlspecialchars($url, ENT_COMPAT, 'UTF-8').'"'.$target.'>'.htmlspecialchars($name, ENT_COMPAT, 'UTF-8').'</a>');
 
 	return $this->sep.$this->Stack->lastID().$this->sep;
 	}
@@ -399,7 +396,7 @@ private function makeImage($url)
 
 private function makeEmail($email)
 	{
-// 	$email = rehtmlspecialchars($email);
+	$email = htmlspecialchars($email, ENT_COMPAT, 'UTF-8');
 
 	$this->Stack->push('<a href="mailto:'.$email.'">'.$email.'</a>');
 
