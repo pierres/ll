@@ -18,7 +18,7 @@ public function prepare()
 				</td>
 			</tr>
 			<tr>
-				<td class="main" style="width:950px;">
+				<td class="main" style="width:1000px;">
 					<p>Leider treten in letzter Zeit vermehrt Probleme mit Werbung auf, die automatisiert in Foren, Wikis und Gästebüchern veröffentlicht wird. Um diesem <a href="http://de.wikipedia.org/wiki/Spam#Wiki-.2C_Link-_und_Blogspam" class="extlink" onclick="return !window.open(this.href);" rel="nofollow">Spam</a> entgegen zu wirken, werden wir Domains, für die Werbung gemacht wird sperren.</p>
 					<p>Bisher wurden '.$stat['counts'].' Spam-Versuche für '.$stat['domains'].' Domains blockiert. Sollte eine Domain fälschlicherweise auf dieser Liste stehen, so <a href="?page=Contact;id='.$this->Board->getId().'" class="link">teile uns dies bitte mit</a>.</p>
 					'.$this->getDomainBlacklist().'
