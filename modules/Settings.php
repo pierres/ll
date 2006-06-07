@@ -40,6 +40,10 @@ public function __construct()
 
 	$this->config['password_key_lifetime']		= 3600;
 
+	$this->config['antispam_hash']			= '';
+
+	$this->config['antispam_timeout']		= 600;
+
 	if (file_exists(PATH.'LocalSettings.php'))
 		{
 		include (PATH.'LocalSettings.php');

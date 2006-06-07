@@ -21,6 +21,7 @@ private $request	= '';
 public function prepare()
 	{
 	$this->setForm();
+	$this->addAntiSpamHash();
 
 	if ($this->Io->isRequest('submit') && count($this->warning) == 0)
 		{
@@ -29,6 +30,7 @@ public function prepare()
 
 		if (count($this->warning) == 0)
 			{
+			$this->checkAntiSpamHash();
 			$this->sendForm();
 			}
 		else
@@ -47,6 +49,36 @@ protected function setForm()
 	if (empty($this->buttons['submit']))
 		{
 		$this->addSubmit('Abschicken');
+		}
+	}
+
+private function addAntiSpamHash()
+	{
+	$time = time();
+	$this->addHidden('AntiSpamTime', $time);
+	$this->addHidden('AntiSpamHash', sha1($time.$this->Settings->getValue('antispam_hash')));
+	}
+
+private function checkAntiSpamHash()
+	{
+	try
+		{
+		$time = $this->Io->getInt('AntiSpamTime');
+		$hash = $this->Io->getHex('AntiSpamHash');
+		}
+	catch (IoRequestException $e)
+		{
+		$this->showFailure('Kein Spam bitte!');
+		}
+
+	if ($hash != sha1($time.$this->Settings->getValue('antispam_hash')))
+		{
+		$this->showFailure('Kein Spam bitte!');
+		}
+
+	if (time() - $time >= $this->Settings->getValue('antispam_timeout'))
+		{
+		$this->showFailure('Kein Spam bitte!');
 		}
 	}
 
