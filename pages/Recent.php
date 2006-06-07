@@ -31,11 +31,13 @@ public function prepare()
 						threads.posts,
 						0 AS forumid,
 						0 AS forumname,
-						summary
+						threads.summary
 					FROM
-						threads JOIN thread_user ON thread_user.threadid = threads.id
+						threads,
+						thread_user
 					WHERE
 						threads.forumid = 0
+						AND thread_user.threadid = threads.id
 						AND threads.deleted = 0
 						AND thread_user.userid = ?
 				)
@@ -57,11 +59,13 @@ public function prepare()
 						threads.posts,
 						forums.id AS forumid,
 						forums.name AS forumname,
-						summary
+						threads.summary
 					FROM
-						forums JOIN threads ON threads.forumid = forums.id
+						forums,
+						threads
 					WHERE
 						threads.deleted = 0
+						AND threads.forumid = forums.id
 				)
 				ORDER BY
 					lastdate DESC
@@ -91,11 +95,13 @@ public function prepare()
 					threads.posts,
 					forums.id AS forumid,
 					forums.name AS forumname,
-					summary
+					threads.summary
 				FROM
-					forums JOIN threads ON threads.forumid = forums.id
+					forums,
+					threads
 				WHERE
 					threads.deleted = 0
+					AND threads.forumid = forums.id
 				ORDER BY
 					threads.lastdate DESC
 				LIMIT
