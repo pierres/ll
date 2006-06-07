@@ -79,18 +79,45 @@ protected function sendForm()
 	$stm->execute();
 	$stm->close();
 
+	$key = md5(generatePassword());
+	$userid = $this->DB->getInsertId();
+
+	$stm = $this->DB->prepare
+		('
+		DELETE FROM
+			change_password
+		WHERE
+			id = ?'
+		);
+	$stm->bindInteger($userid);
+	$stm->execute();
+	$stm->close();
+
+	$stm = $this->DB->prepare
+		('
+		INSERT INTO
+			change_password
+		SET
+			id = ?,
+			`key` = ?,
+			request_time = ?'
+		);
+	$stm->bindInteger($userid);
+	$stm->bindString($key);
+	$stm->bindInteger(time());
+	$stm->execute();
+	$stm->close();
+
 	$this->Mail->setTo($this->email);
 	$this->Mail->setFrom('support@laber-land.de');
 	$this->Mail->setSubject('Registrierung im Laber-Land');
 	$this->Mail->setText(
-<<<eot
-Hallo {$this->name}!
+'Hallo '.$this->name.'!
 
-Deine Registrierung bei www.laber-land.de war erfolgreich.
+Deine Registrierung bei www.laber-land.de war erfolgreich. Du kannst Dein Passwort ändern, wenn Du folgende Seite besuchst:
+'.$this->Io->getURL().'?id='.$this->Board->getId().';page=ChangePasswordKey;userid='.$userid.';key='.$key.'
 
-Dein Passwort lautet: {$password}
-eot
-);
+');
 	$this->Mail->send();
 
 
@@ -106,7 +133,7 @@ eot
 				<td class="main">
 					Willkommen im Laber-Land, '.htmlspecialchars($this->name).'!
 					<p>
-					Dein Passwort wurde Dir soeben an <em>'.htmlspecialchars($this->email).'</em> geschickt. Mit diesem kannst Du Dich nun <a href="?page=Login;id='.$this->Board->getId().'" class="button">Anmelden</a>.
+					Es wurde ein Aktivierungsschlüssel an <em>'.htmlspecialchars($this->email).'</em> geschickt. Mit diesem kannst Du Dein Passwort einrichten.
 					</p>
 				</td>
 			</tr>

@@ -96,7 +96,7 @@ protected function setFile()
 				{
 				$this->addOutput('<tr><td style="padding:5px;">');
 				$this->addCheckbox('files['.$file['id'].']',
-				'<a class="link" onclick="openLink(this)" href="?page=GetFile;file='.$file['id'].'">'.$file['name'].'</a>');
+				'a class="link" onclick="return !window.open(this.href);" href="?page=GetAttachment;file='.$file['id'].'">'.$file['name'].'</a>');
 				$this->addOutput('</td><td style="text-align:right;padding:5px;vertical-align:bottom;">'.round($file['size'] / 1024, 2).' KByte</td></tr>');
 				}
 			$stm->close();

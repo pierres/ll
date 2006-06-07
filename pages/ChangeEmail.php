@@ -83,19 +83,60 @@ protected function sendForm()
 	$stm->bindInteger($this->User->getId());
 	$stm->execute();
 	$stm->close();
+//
+// 	$this->Mail->setTo($this->email);
+// 	$this->Mail->setFrom('support@laber-land.de');
+// 	$this->Mail->setSubject('Dein Passwort im Laber-Land');
+// 	$this->Mail->setText(
+// <<<eot
+// Hallo!
+//
+// Dein Passwort lautet: {$password}
+//
+// Viel Spass in der Forengemeinschaft wuenscht Dir das LL-Team.
+// eot
+// );
+// 	$this->Mail->send();
+
+	$key = md5(generatePassword());
+
+	$stm = $this->DB->prepare
+		('
+		DELETE FROM
+			change_password
+		WHERE
+			id = ?'
+		);
+	$stm->bindInteger($this->User->getId());
+	$stm->execute();
+	$stm->close();
+
+	$stm = $this->DB->prepare
+		('
+		INSERT INTO
+			change_password
+		SET
+			id = ?,
+			`key` = ?,
+			request_time = ?'
+		);
+	$stm->bindInteger($this->User->getId());
+	$stm->bindString($key);
+	$stm->bindInteger(time());
+	$stm->execute();
+	$stm->close();
 
 	$this->Mail->setTo($this->email);
 	$this->Mail->setFrom('support@laber-land.de');
 	$this->Mail->setSubject('Dein Passwort im Laber-Land');
 	$this->Mail->setText(
-<<<eot
-Hallo!
+'Hallo '.$this->name.'!
 
-Dein Passwort lautet: {$password}
+Du kannst Dein Passwort ändern, wenn Du folgende Seite besuchst:
+'.$this->Io->getURL().'?id='.$this->Board->getId().';page=ChangePasswordKey;userid='.$this->User->getId().';key='.$key.'
 
-Viel Spass in der Forengemeinschaft wuenscht Dir das LL-Team.
-eot
-);
+Solltest Du Dir diese Erinnerung nicht geschickt haben, so kannst Du diese Nachricht ignorieren.
+Dein altes Passwort bleibt dann weiterhin gültig.');
 	$this->Mail->send();
 
 	$this->User->logout();
@@ -112,7 +153,7 @@ eot
 				<td class="main">
 					Hallo!
 					<p>
-					Dein neues Passwort wurde Dir soeben an <em>'.htmlspecialchars($this->email).'</em> geschickt. Mit diesem kannst Du Dich nun <a href="?page=Login;id='.$this->Board->getId().'" class="button">Anmelden</a>.
+					Es wurde ein Aktivierungsschlüssel an <em>'.htmlspecialchars($this->email).'</em> geschickt. Mit diesem kannst Du Dein Passwort einrichten.
 					</p>
 				</td>
 			</tr>

@@ -38,11 +38,10 @@ public function __construct()
 	$this->config['thumb_size']			= 300;
 	$this->config['max_image_file_size']		= 2097152; //2MByte
 
-	$this->config['password_key_lifetime']		= 3600;
+	$this->config['password_key_lifetime']		= 10800;
 
 	$this->config['antispam_hash']			= '';
-
-	$this->config['antispam_timeout']		= 600;
+	$this->config['antispam_timeout']		= 1200;
 
 	if (file_exists(PATH.'LocalSettings.php'))
 		{
