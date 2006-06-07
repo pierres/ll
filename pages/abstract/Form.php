@@ -72,17 +72,17 @@ private function checkAntiSpamHash()
 			}
 		catch (IoRequestException $e)
 			{
-			$this->showFailure('Ungültige Formulardaten empfangen!');
+			$this->showFailure('Ungültige Formulardaten empfangen. Geh weg!');
 			}
 
 		if ($hash != sha1($time.$this->Settings->getValue('antispam_hash')))
 			{
-			$this->showWarning('Manipulierte Formulardaten empfangen!');
+			$this->showFailure('Manipulierte Formulardaten empfangen. Geh weg!');
 			}
 
 		if (time() - $time >= $this->Settings->getValue('antispam_timeout'))
 			{
-			$this->showWarning('Deine Zeit ist abgelaufen!');
+			$this->showWarning('Deine Zeit ist abgelaufen. Schicke den Beitrag bitte erneut.');
 			}
 		}
 	}
