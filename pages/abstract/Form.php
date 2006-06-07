@@ -72,7 +72,7 @@ private function checkAntiSpamHash()
 			}
 		catch (IoRequestException $e)
 			{
-			$this->showWarning('Ungültige Formulardaten empfangen!');
+			$this->showFailure('Ungültige Formulardaten empfangen!');
 			}
 
 		if ($hash != sha1($time.$this->Settings->getValue('antispam_hash')))
