@@ -199,7 +199,7 @@ protected function sendForm()
 			$stm = $this->DB->prepare
 				('
 				DELETE FROM
-					sessions
+					session
 				WHERE
 					id = ?'
 				);
