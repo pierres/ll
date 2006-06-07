@@ -310,7 +310,7 @@ foreach ($result as $data)
 		$del_button = '';
 		$split_button = '';
 		$move_button = '';
-		$spam_button = '';
+		$spam_button = ($this->ismod ? ' <a href="?page=SpamThread;id='.$this->Board->getId().';thread='.$this->thread.'"><span class="button">Spam</span></a>' : '');
 		}
 	else
 		{
@@ -321,11 +321,9 @@ foreach ($result as $data)
 
 		if ($this->User->isOnline() && $deleted && !$closed)
 			{
-			$del_button = ($this->ismod ?
-				' <a href="?page=DelPost;id='.$this->Board->getId().';post='.$data['id'].'"><span class="button">wiederherstellen</span></a>' : '');
+			$del_button = ($this->ismod ? ' <a href="?page=DelPost;id='.$this->Board->getId().';post='.$data['id'].'"><span class="button">wiederherstellen</span></a>' : '');
 
-			$spam_button = ($this->ismod ?
-							' <a href="?page=SpamPost;id='.$this->Board->getId().';post='.$data['id'].'"><span class="button">Spam</span></a>' : '');
+			$spam_button = ($this->ismod ? ' <a href="?page=SpamPost;id='.$this->Board->getId().';post='.$data['id'].'"><span class="button">Spam</span></a>' : '');
 			}
 		else
 			{
