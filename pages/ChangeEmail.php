@@ -130,7 +130,7 @@ protected function sendForm()
 	$this->Mail->setFrom('support@laber-land.de');
 	$this->Mail->setSubject('Dein Passwort im Laber-Land');
 	$this->Mail->setText(
-'Hallo '.$this->name.'!
+'Hallo '.$this->User->getName().'!
 
 Du kannst Dein Passwort ändern, wenn Du folgende Seite besuchst:
 '.$this->Io->getURL().'?id='.$this->Board->getId().';page=ChangePasswordKey;userid='.$this->User->getId().';key='.$key.'
