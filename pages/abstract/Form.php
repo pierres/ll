@@ -25,12 +25,11 @@ public function prepare()
 
 	if ($this->Io->isRequest('submit') && count($this->warning) == 0)
 		{
-		// weitere Prüfungen
+		$this->checkAntiSpamHash();
 		$this->checkForm();
 
 		if (count($this->warning) == 0)
 			{
-			$this->checkAntiSpamHash();
 			$this->sendForm();
 			}
 		else
@@ -54,31 +53,37 @@ protected function setForm()
 
 private function addAntiSpamHash()
 	{
-	$time = time();
-	$this->addHidden('AntiSpamTime', $time);
-	$this->addHidden('AntiSpamHash', sha1($time.$this->Settings->getValue('antispam_hash')));
+	if (!$this->User->isOnline())
+		{
+		$time = time();
+		$this->addHidden('AntiSpamTime', $time);
+		$this->addHidden('AntiSpamHash', sha1($time.$this->Settings->getValue('antispam_hash')));
+		}
 	}
 
 private function checkAntiSpamHash()
 	{
-	try
+	if (!$this->User->isOnline())
 		{
-		$time = $this->Io->getInt('AntiSpamTime');
-		$hash = $this->Io->getHex('AntiSpamHash');
-		}
-	catch (IoRequestException $e)
-		{
-		$this->showFailure('Kein Spam bitte!');
-		}
+		try
+			{
+			$time = $this->Io->getInt('AntiSpamTime');
+			$hash = $this->Io->getHex('AntiSpamHash');
+			}
+		catch (IoRequestException $e)
+			{
+			$this->showWarning('Ungültige Formulardaten empfangen!');
+			}
 
-	if ($hash != sha1($time.$this->Settings->getValue('antispam_hash')))
-		{
-		$this->showFailure('Kein Spam bitte!');
-		}
+		if ($hash != sha1($time.$this->Settings->getValue('antispam_hash')))
+			{
+			$this->showWarning('Manipulierte Formulardaten empfangen!');
+			}
 
-	if (time() - $time >= $this->Settings->getValue('antispam_timeout'))
-		{
-		$this->showFailure('Kein Spam bitte!');
+		if (time() - $time >= $this->Settings->getValue('antispam_timeout'))
+			{
+			$this->showWarning('Deine Zeit ist abgelaufen!');
+			}
 		}
 	}
 
