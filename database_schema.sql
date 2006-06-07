@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 04. Juni 2006 um 12:15
+-- Erstellungszeit: 07. Juni 2006 um 16:54
 -- Server Version: 5.0.21
 -- PHP-Version: 5.1.4
 --
@@ -94,6 +94,19 @@ CREATE TABLE `cats` (
   PRIMARY KEY  (`id`),
   KEY `boardid` (`boardid`),
   KEY `position` (`position`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `change_password`
+--
+
+CREATE TABLE `change_password` (
+  `id` mediumint(8) unsigned NOT NULL,
+  `key` varchar(32) NOT NULL,
+  `request_time` int(11) unsigned NOT NULL,
+  PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -376,7 +389,7 @@ CREATE TABLE `users` (
   `location` varchar(255) default NULL,
   `plz` mediumint(5) unsigned default NULL,
   `text` text,
-  `lastlogin` int(11) unsigned NOT NULL,
+  `lastlogin` int(11) unsigned default NULL,
   PRIMARY KEY  (`id`),
   KEY `name` (`name`(10)),
   KEY `posts` (`posts`),
