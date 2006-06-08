@@ -103,7 +103,7 @@ protected function sendForm()
 	$stm = $this->DB->prepare
 		('
 		DELETE FROM
-			change_password
+			password_key
 		WHERE
 			id = ?'
 		);
@@ -114,7 +114,7 @@ protected function sendForm()
 	$stm = $this->DB->prepare
 		('
 		INSERT INTO
-			change_password
+			password_key
 		SET
 			id = ?,
 			`key` = ?,
