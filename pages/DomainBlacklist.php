@@ -18,7 +18,7 @@ public function prepare()
 				</td>
 			</tr>
 			<tr>
-				<td class="main" style="width:1100px;">
+				<td class="main" style="width:900px;">
 					<p>Leider treten in letzter Zeit vermehrt Probleme mit Werbung auf, die automatisiert in Foren, Wikis und Gästebüchern veröffentlicht wird. Um diesem <a href="http://de.wikipedia.org/wiki/Spam#Wiki-.2C_Link-_und_Blogspam" class="extlink" onclick="return !window.open(this.href);" rel="nofollow">Spam</a> entgegen zu wirken, werden wir Domains, für die Werbung gemacht wird sperren.</p>
 					<p>Bisher wurden '.$stat['counts'].' Spam-Versuche für '.$stat['domains'].' Domains blockiert. Sollte eine Domain fälschlicherweise auf dieser Liste stehen, so <a href="?page=Contact;id='.$this->Board->getId().'" class="link">teile uns dies bitte mit</a>.</p>
 					'.$this->getDomainBlacklist().'
@@ -75,18 +75,18 @@ private function getDomainBlacklist()
 			$domains = array();
 			}
 
-		$list = '<table style="margin:10px;width:1050px;">
+		$list = '<table style="margin:10px;">
 				<tr>
-					<td style="padding-bottom:5px;padding-right:200px;;"><strong>Domain</strong></td>
-					<td style="text-align:right;padding-bottom:5px;"><strong>Spam-Versuche</strong></td>
-					<td style="text-align:right;padding-bottom:5px;padding-right:100px;"><strong>eingefügt</strong></td>
-					<td style="text-align:right;padding-bottom:5px;"><strong>zuletzt blockiert</strong></td>
+					<td style="padding-bottom:5px;width:300px;"><strong>Domain</strong></td>
+					<td style="text-align:center;padding-bottom:5px;width:100px;"><strong>Spam-Versuche</strong></td>
+					<td style="text-align:right;padding-bottom:5px;width:200px;"><strong>eingefügt</strong></td>
+					<td style="text-align:right;padding-bottom:5px;width:200px;"><strong>zuletzt blockiert</strong></td>
 				</tr>';
 		foreach ($domains as $domain)
 			{
-			$list .= '<tr><td style="padding-right:200px;">'.$domain['domain'].'</td>
+			$list .= '<tr><td>'.$domain['domain'].'</td>
 					<td style="text-align:center;">'.$domain['counter'].'</td>
-					<td style="text-align:right;padding-right:100px;">'.formatDate($domain['inserted']).'</td>
+					<td style="text-align:right;">'.formatDate($domain['inserted']).'</td>
 					<td style="text-align:right;">'.formatDate($domain['lastmatch']).'</td></tr>';
 			}
 
