@@ -79,9 +79,9 @@ private function getDomains($text)
 	$domain		=  $name.'\.'.$tld;
 // 	$address	= '(?:'.$domain.'|[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})';
 
-	preg_match_all('/(?:'.$protocoll.'(?:www\.)?|www\.|'.$name.'@)('.$domain.')/', $text, $domains);
+	preg_match_all('/(?:'.$protocoll.'(?:www\.)?|www\.|'.$name.'@)('.$domain.')/i', $text, $domains);
 
-	return array_unique($domains[1]);
+	return array_unique(array_map('strtolower', $domains[1]));
 	}
 
 private function getDomainsInBlacklist($domains, $blacklist)
