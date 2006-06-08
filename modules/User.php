@@ -118,6 +118,45 @@ public function logout()
 /** TODO: Methode sollte gesplittet werden */
 public function login($name, $password, $cookie = false)
 	{
+	/** nur zur Übergangszeit md5 -> sha1 */
+	try
+		{
+		$stm = $this->DB->prepare
+			('
+			SELECT
+				id
+			FROM
+				users
+			WHERE
+				name = ?
+				AND password = ?'
+			);
+		$stm->bindString($name);
+		$stm->bindString(md5($password));
+		$user_id = $stm->getColumn();
+		$stm->close();
+
+		$stm = $this->DB->prepare
+			('
+			UPDATE
+				users
+			SET
+				new_password = ?
+			WHERE
+				id = ?'
+			);
+		$stm->bindString(sha1($password));
+		$stm->bindInteger($user_id);
+		$stm->execute();
+		$stm->close();
+		}
+	catch (DBNoDataException $e)
+		{
+		$stm->close();
+		}
+
+	/** / nur zur Übergangszeit md5 -> sha1 */
+
 	try
 		{
 		if ($cookie)
@@ -132,7 +171,7 @@ public function login($name, $password, $cookie = false)
 					users
 				WHERE
 					id = ?
-					AND password = ?'
+					AND new_password = ?'
 				);
 			$stm->bindInteger($name);
 			$stm->bindString($password);
@@ -149,10 +188,10 @@ public function login($name, $password, $cookie = false)
 					users
 				WHERE
 					name = ?
-					AND password = ?'
+					AND new_password = ?'
 				);
 			$stm->bindString($name);
-			$stm->bindString(md5($password));
+			$stm->bindString(sha1($password));
 			}
 
 		$data = $stm->getRow();
@@ -197,9 +236,9 @@ private function start($id, $name ,$level, $groups)
 	{
 	$this->collectGarbage();//evtl. könnte man überlegen den Müll öfters zu entfernen
 
-	$this->sessionid = md5(uniqid(rand(), true));
+	$this->sessionid = sha1(uniqid(rand(), true));
 
-	$this->id 		= $id;
+	$this->id 	= $id;
 	$this->name 	= $name;
 	$this->level 	= $level;
 	$this->groups 	= $groups;

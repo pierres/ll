@@ -68,7 +68,7 @@ protected function showDomainList($text)
 	foreach ($AntiSpam->getNonListedDomains() as $nonListedDomain)
 		{
 		$nonListedDomain = htmlspecialchars($nonListedDomain);
-		$this->addElement($nonListedDomain, '<input type="checkbox" id="id'.md5($nonListedDomain).'" value="'.$nonListedDomain.'" name="domains[]" checked="checked" /><label for="id'.md5($nonListedDomain).'">'.$nonListedDomain.'</label>');
+		$this->addElement($nonListedDomain, '<input type="checkbox" id="id'.sha1($nonListedDomain).'" value="'.$nonListedDomain.'" name="domains[]" checked="checked" /><label for="id'.sha1($nonListedDomain).'">'.$nonListedDomain.'</label>');
 		}
 	}
 

@@ -69,23 +69,23 @@ protected function sendForm()
 		SET
 			name = ?,
 			email = ?,
-			password = ?,
+			new_password = ?,
 			regdate = ?'
 		);
 	$stm->bindString(htmlspecialchars($this->name));
 	$stm->bindString($this->email);
-	$stm->bindString(md5($password));
+	$stm->bindString(sha1($password));
 	$stm->bindInteger(time());
 	$stm->execute();
 	$stm->close();
 
-	$key = md5(generatePassword());
+	$key = sha1(generatePassword());
 	$userid = $this->DB->getInsertId();
 
 	$stm = $this->DB->prepare
 		('
 		DELETE FROM
-			change_password
+			password_key
 		WHERE
 			id = ?'
 		);
@@ -96,7 +96,7 @@ protected function sendForm()
 	$stm = $this->DB->prepare
 		('
 		INSERT INTO
-			change_password
+			password_key
 		SET
 			id = ?,
 			`key` = ?,

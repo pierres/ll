@@ -33,7 +33,7 @@ protected function setForm()
 
 protected function checkForm()
 	{
-	$this->password = md5($this->Io->getString('password'));
+	$this->password = sha1($this->Io->getString('password'));
 
 	try
 		{
@@ -45,7 +45,7 @@ protected function checkForm()
 				users
 			WHERE
 				id = ?
-				AND password =?'
+				AND new_password =?'
 			);
 		$stm->bindInteger($this->User->getId());
 		$stm->bindString($this->password);
@@ -58,9 +58,9 @@ protected function checkForm()
 		$this->showWarning('Passwort ist falsch');
 		}
 
-	$this->newpassword = md5($this->Io->getString('newpassword'));
+	$this->newpassword = sha1($this->Io->getString('newpassword'));
 
-	if ($this->newpassword != md5($this->Io->getString('confirm')))
+	if ($this->newpassword != sha1($this->Io->getString('confirm')))
 		{
 		$this->showWarning('Du hast Dich vertippt!');
 		}
@@ -73,7 +73,7 @@ protected function sendForm()
 		UPDATE
 			users
 		SET
-			password = ?
+			new_password = ?
 		WHERE
 			id = ?'
 		);

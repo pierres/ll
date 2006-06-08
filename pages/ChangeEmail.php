@@ -74,12 +74,12 @@ protected function sendForm()
 			users
 		SET
 			email = ?,
-			password = ?
+			new_password = ?
 		WHERE
 			id = ?'
 		);
 	$stm->bindString($this->email);
-	$stm->bindString(md5($password));
+	$stm->bindString(sha1($password));
 	$stm->bindInteger($this->User->getId());
 	$stm->execute();
 	$stm->close();
@@ -98,7 +98,7 @@ protected function sendForm()
 // );
 // 	$this->Mail->send();
 
-	$key = md5(generatePassword());
+	$key = sha1(generatePassword());
 
 	$stm = $this->DB->prepare
 		('

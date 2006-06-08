@@ -21,7 +21,7 @@ protected function setForm()
 				SELECT
 					request_time
 				FROM
-					change_password
+					password_key
 				WHERE
 					id = ?
 					AND `key` = ?
@@ -46,7 +46,7 @@ protected function setForm()
 			$stm = $this->DB->prepare
 				('
 				DELETE FROM
-					change_password
+					password_key
 				WHERE
 					id = ?'
 				);
@@ -58,6 +58,8 @@ protected function setForm()
 
 		$this->addHidden('userid', $this->id);
 		$this->addHidden('key', $key);
+		$this->setLength('userid', 1, 8);
+		$this->setLength('key', 40, 40);
 		}
 	else
 		{
@@ -79,9 +81,9 @@ protected function setForm()
 
 protected function checkForm()
 	{
-	$this->newpassword = md5($this->Io->getString('newpassword'));
+	$this->newpassword = sha1($this->Io->getString('newpassword'));
 
-	if ($this->newpassword != md5($this->Io->getString('confirm')))
+	if ($this->newpassword != sha1($this->Io->getString('confirm')))
 		{
 		$this->showWarning('Du hast Dich vertippt!');
 		}
@@ -92,7 +94,7 @@ protected function sendForm()
 	$stm = $this->DB->prepare
 		('
 		DELETE FROM
-			change_password
+			password_key
 		WHERE
 			id = ?'
 		);
@@ -105,7 +107,7 @@ protected function sendForm()
 		UPDATE
 			users
 		SET
-			password = ?
+			new_password = ?
 		WHERE
 			id = ?'
 		);
