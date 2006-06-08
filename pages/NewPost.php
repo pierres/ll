@@ -73,7 +73,8 @@ protected function setFile()
 					SELECT
 						id,
 						name,
-						size
+						size,
+						type
 					FROM
 						attachments
 					WHERE
@@ -94,10 +95,29 @@ protected function setFile()
 
 			foreach ($files as $file)
 				{
-				$this->addOutput('<tr><td style="padding:5px;">');
+				if (strpos($file['type'], 'image/jpeg') === 0 ||
+					strpos($file['type'], 'image/pjpeg') === 0 ||
+					strpos($file['type'], 'image/png') === 0 ||
+					strpos($file['type'], 'image/gif') === 0)
+					{
+					$hover = '  onmouseover="javascript:document.getElementById(\'thumb'.$file['id'].'\').style.visibility=\'visible\'"
+						onmouseout="javascript:document.getElementById(\'thumb'.$file['id'].'\').style.visibility=\'hidden\'" ';
+					$preview = '<script type="text/javascript">
+							<!--
+							document.write("<img style=\"visibility:hidden;width:auto;height:auto;position:absolute;\" id=\"thumb'.$file['id'].'\" src=\"?page=GetAttachmentThumb;file='.$file['id'].'\"  alt=\"'.$file['name'].'\" class=\"image\" />");
+							-->
+						</script>';
+					}
+				else
+					{
+					$hover ='';
+					$preview ='';
+					}
+
+				$this->addOutput('<tr><td'.$hover.' style="padding:5px;">');
 				$this->addCheckbox('files['.$file['id'].']',
-				'a class="link" onclick="return !window.open(this.href);" href="?page=GetAttachment;file='.$file['id'].'">'.$file['name'].'</a>');
-				$this->addOutput('</td><td style="text-align:right;padding:5px;vertical-align:bottom;">'.round($file['size'] / 1024, 2).' KByte</td></tr>');
+				'<a class="link" onclick="return !window.open(this.href);" href="?page=GetAttachment;file='.$file['id'].'">'.$file['name'].'</a>');
+				$this->addOutput('</td><td style="text-align:right;padding:5px;vertical-align:bottom;">'.round($file['size'] / 1024, 2).' KByte'.$preview.'</td></tr>');
 				}
 			$stm->close();
 
