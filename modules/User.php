@@ -129,8 +129,9 @@ public function login($name, $password, $cookie = false)
 				users
 			WHERE
 				name = ?
-				AND password = ?'
-			);
+				AND password = ?
+				AND new_password = \'\'
+			');
 		$stm->bindString($name);
 		$stm->bindString(md5($password));
 		$user_id = $stm->getColumn();
