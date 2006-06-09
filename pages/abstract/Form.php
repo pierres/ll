@@ -56,8 +56,10 @@ private function addAntiSpamHash()
 	if (!$this->User->isOnline())
 		{
 		$time = time();
-		$this->addHidden('AntiSpamTime', $time);
-		$this->addHidden('AntiSpamHash', sha1($time.$this->Settings->getValue('antispam_hash')));
+		$expireTime = $time + $this->Settings->getValue('antispam_timeout');
+
+		$this->Io->setCookie('AntiSpamTime', $time, $expireTime);
+		$this->Io->setCookie('AntiSpamHash', sha1($time.$this->Settings->getValue('antispam_hash')), $expireTime);
 		}
 	}
 
