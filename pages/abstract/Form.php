@@ -74,11 +74,13 @@ private function checkAntiSpamHash()
 			}
 		catch (IoRequestException $e)
 			{
+			sleep(5);
 			$this->showFailure('Ungültige Formulardaten empfangen. Geh weg!');
 			}
 
 		if ($hash != sha1($time.$this->Settings->getValue('antispam_hash')))
 			{
+			sleep(5);
 			$this->showFailure('Manipulierte Formulardaten empfangen. Geh weg!');
 			}
 
@@ -88,7 +90,8 @@ private function checkAntiSpamHash()
 			}
 		elseif ($now - $time < $this->Settings->getValue('antispam_wait'))
 			{
-			$this->showWarning('Du warst zu schnell. Schicke den Beitrag bitte erneut. Warte diesmal mindestens '.$this->Settings->getValue('antispam_wait').' Sekunden.');
+			sleep($this->Settings->getValue('antispam_wait'));
+			$this->showWarning('Du warst zu schnell. Schicke den Beitrag bitte erneut.');
 			}
 		}
 	}
