@@ -86,12 +86,12 @@ private function checkAntiSpamHash()
 
 		if ($now - $time > $this->Settings->getValue('antispam_timeout'))
 			{
-			$this->showWarning('Deine Zeit ist abgelaufen. Schicke den Beitrag bitte erneut, und zwar innherlab der nächsten '.$this->Settings->getValue('antispam_timeout').' Sekunden.');
+			$this->showWarning('Deine Zeit ist abgelaufen. Schicke das Formular bitte erneut ab, und zwar innherlab der nächsten '.$this->Settings->getValue('antispam_timeout').' Sekunden.');
 			}
 		elseif ($now - $time < $this->Settings->getValue('antispam_wait'))
 			{
 			sleep($this->Settings->getValue('antispam_wait'));
-			$this->showWarning('Du warst zu schnell. Schicke den Beitrag bitte erneut.');
+			$this->showWarning('Du warst zu schnell. Schicke das Formular bitte erneut ab.');
 			}
 		}
 	}
