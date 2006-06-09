@@ -16,6 +16,7 @@ public function prepare()
 
 public function show()
 	{
+	header("Cache-Control: no-cache, must-revalidate");
 	header('Content-type: image/png');
 	$im = imagecreatetruecolor(1, 1);
 	$black = imagecolorallocate($im, 0, 0, 0);
