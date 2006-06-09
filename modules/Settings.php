@@ -41,7 +41,8 @@ public function __construct()
 	$this->config['password_key_lifetime']		= 10800;
 
 	$this->config['antispam_hash']			= '';
-	$this->config['antispam_timeout']		= 1200;
+	$this->config['antispam_timeout']		= 600;
+	$this->config['antispam_wait']			= 4;
 
 	if (file_exists(PATH.'LocalSettings.php'))
 		{

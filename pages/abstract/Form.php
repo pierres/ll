@@ -65,6 +65,8 @@ private function checkAntiSpamHash()
 	{
 	if (!$this->User->isOnline())
 		{
+		$now = time();
+
 		try
 			{
 			$time = $this->Io->getInt('AntiSpamTime');
@@ -80,9 +82,13 @@ private function checkAntiSpamHash()
 			$this->showFailure('Manipulierte Formulardaten empfangen. Geh weg!');
 			}
 
-		if (time() - $time >= $this->Settings->getValue('antispam_timeout'))
+		if ($now - $time > $this->Settings->getValue('antispam_timeout'))
 			{
-			$this->showWarning('Deine Zeit ist abgelaufen. Schicke den Beitrag bitte erneut.');
+			$this->showWarning('Deine Zeit ist abgelaufen. Schicke den Beitrag bitte erneut, und zwar innherlab der nächsten '.$this->Settings->getValue('antispam_timeout').' Sekunden.');
+			}
+		elseif ($now - $time < $this->Settings->getValue('antispam_wait'))
+			{
+			$this->showWarning('Du warst zu schnell. Schicke den Beitrag bitte erneut. Warte diesmal mindestens '.$this->Settings->getValue('antispam_wait').' Sekunden.');
 			}
 		}
 	}
