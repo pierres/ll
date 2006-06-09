@@ -75,11 +75,11 @@ private function getDomains($text)
 	{
 	$protocoll 	= '(?:https?|ftp):\/\/';
 	$name 		= '[a-z0-9](?:[a-z0-9_\-\.]*[a-z0-9])?';
-	$tld 		= '[a-z]{2,5}';
+	$tld			= '[a-z]{2,5}';
 	$domain		=  $name.'\.'.$tld;
-// 	$address	= '(?:'.$domain.'|[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})';
+// 	$address		= '(?:'.$domain.'|[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})';
 
-	preg_match_all('/(?:'.$protocoll.'(?:www\.)?|www\.|'.$name.'@)('.$domain.')/i', $text, $domains);
+	preg_match_all('/(?:'.$protocoll.'(?:www\.)?|www\.|'.$name.'@)?('.$domain.')/i', $text, $domains);
 
 	return array_unique(array_map('strtolower', $domains[1]));
 	}
