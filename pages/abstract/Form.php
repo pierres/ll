@@ -21,7 +21,6 @@ private $request	= '';
 public function prepare()
 	{
 	$this->setForm();
-	$this->addAntiSpamHash();
 
 	if ($this->Io->isRequest('submit') && count($this->warning) == 0)
 		{
@@ -48,18 +47,6 @@ protected function setForm()
 	if (empty($this->buttons['submit']))
 		{
 		$this->addSubmit('Abschicken');
-		}
-	}
-
-private function addAntiSpamHash()
-	{
-	if (!$this->User->isOnline())
-		{
-		$time = time();
-		$expireTime = $time + $this->Settings->getValue('antispam_timeout');
-
-		$this->Io->setCookie('AntiSpamTime', $time, $expireTime);
-		$this->Io->setCookie('AntiSpamHash', sha1($time.$this->Settings->getValue('antispam_hash')), $expireTime);
 		}
 	}
 
@@ -132,6 +119,11 @@ protected function showForm()
 			document.getElementById("id'.$this->focus.'").focus();
 		</script>
 		';
+
+	if (!$this->User->isOnline())
+		{
+		$body .= '<span style="background-image:url(?page=FunnyDot)">&nbsp;</span>';
+		}
 
 	$this->setValue('body', $body);
 	}
