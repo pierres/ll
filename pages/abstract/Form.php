@@ -63,13 +63,13 @@ private function checkAntiSpamHash()
 			}
 		catch (IoRequestException $e)
 			{
-			sleep(5);
+			sleep($this->Settings->getValue('antispam_wait'));
 			$this->showFailure('Ungültige Formulardaten empfangen. Geh weg!');
 			}
 
 		if ($hash != sha1($time.$this->Settings->getValue('antispam_hash')))
 			{
-			sleep(5);
+			sleep($this->Settings->getValue('antispam_wait'));
 			$this->showFailure('Manipulierte Formulardaten empfangen. Geh weg!');
 			}
 
@@ -80,7 +80,7 @@ private function checkAntiSpamHash()
 		elseif ($now - $time < $this->Settings->getValue('antispam_wait'))
 			{
 			sleep($this->Settings->getValue('antispam_wait'));
-			$this->showWarning('Du warst zu schnell. Schicke das Formular bitte erneut ab.');
+			$this->showWarning('Du warst zu schnell. Schicke das Formular bitte erneut ab. Laße Dir diesmal mindestens '.$this->Settings->getValue('antispam_wait').' Sekunden Zeit.');
 			}
 		}
 	}
@@ -122,7 +122,7 @@ protected function showForm()
 
 	if (!$this->User->isOnline())
 		{
-		$body .= '<span style="background-image:url(?page=FunnyDot)">&nbsp;</span>';
+		$body .= '<div style="background-image:url(?page=FunnyDot);background-repeat:no-repeat;visibility:hidden;">&nbsp;</div>';
 		}
 
 	$this->setValue('body', $body);

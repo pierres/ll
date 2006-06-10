@@ -55,7 +55,14 @@ public function setOutputHandler($handler)
 
 public function setCookie($key, $value, $maxage = null)
 	{
-	setcookie ($key, $value, $maxage);//, '/', '.'.$this->Settings->getValue('domain'));
+	if (is_null($maxage))
+		{
+		setcookie ($key, $value);
+		}
+	else
+		{
+		setcookie ($key, $value, $maxage);
+		}
 	}
 
 public function out(&$text)

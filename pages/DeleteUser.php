@@ -140,6 +140,17 @@ protected function sendForm()
 
 		$stm = $this->DB->prepare
 			('
+			DELETE FROM
+				password_key
+			WHERE
+				id = ?'
+			);
+		$stm->bindInteger($this->user);
+		$stm->execute();
+		$stm->close();
+
+		$stm = $this->DB->prepare
+			('
 			UPDATE
 				threads
 			SET
