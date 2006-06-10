@@ -53,16 +53,9 @@ public function setOutputHandler($handler)
 	$this->outputHandler = $handler;
 	}
 
-public function setCookie($key, $value, $maxage = null)
+public function setCookie($key, $value, $expire = 0)
 	{
-	if (is_null($maxage))
-		{
-		setcookie ($key, $value);
-		}
-	else
-		{
-		setcookie ($key, $value, $maxage);
-		}
+	setcookie($key, $value, $expire, '', '', getenv('HTTPS'));
 	}
 
 public function out(&$text)
