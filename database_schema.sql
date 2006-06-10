@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 07. Juni 2006 um 17:23
+-- Erstellungszeit: 10. Juni 2006 um 20:19
 -- Server Version: 5.0.21
 -- PHP-Version: 5.1.4
 --
@@ -74,7 +74,7 @@ CREATE TABLE `boards` (
   `posts` mediumint(8) unsigned NOT NULL default '0',
   `threads` mediumint(8) unsigned NOT NULL default '0',
   `lastpost` int(11) unsigned NOT NULL default '0',
-  `description` text NOT NULL,
+  `description` text,
   `admins` mediumint(8) unsigned NOT NULL default '0',
   `mods` mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY  (`id`)
@@ -94,19 +94,6 @@ CREATE TABLE `cats` (
   PRIMARY KEY  (`id`),
   KEY `boardid` (`boardid`),
   KEY `position` (`position`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `change_password`
---
-
-CREATE TABLE `change_password` (
-  `id` mediumint(8) unsigned NOT NULL,
-  `key` varchar(32) NOT NULL,
-  `request_time` int(11) unsigned NOT NULL,
-  PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -173,6 +160,19 @@ CREATE TABLE `images` (
   `thumbcontent` mediumblob NOT NULL,
   `thumbsize` mediumint(6) unsigned NOT NULL,
   PRIMARY KEY  (`url`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `password_key`
+--
+
+CREATE TABLE `password_key` (
+  `id` mediumint(8) unsigned NOT NULL,
+  `key` varchar(40) NOT NULL,
+  `request_time` int(11) unsigned NOT NULL,
+  PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -279,7 +279,7 @@ CREATE TABLE `posts` (
 --
 
 CREATE TABLE `session` (
-  `sessionid` varchar(32) NOT NULL default '',
+  `sessionid` varchar(40) NOT NULL,
   `id` mediumint(8) unsigned NOT NULL default '0',
   `name` varchar(25) NOT NULL default '',
   `level` tinyint(1) unsigned NOT NULL default '0',
@@ -378,6 +378,7 @@ CREATE TABLE `users` (
   `name` varchar(25) NOT NULL default '',
   `realname` varchar(100) NOT NULL default '',
   `password` varchar(32) NOT NULL default '',
+  `new_password` varchar(40) NOT NULL,
   `email` varchar(100) NOT NULL default '',
   `birthday` int(11) NOT NULL default '0',
   `posts` smallint(5) unsigned NOT NULL default '0',
