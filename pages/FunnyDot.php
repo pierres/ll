@@ -8,10 +8,9 @@ class FunnyDot extends Modul implements IOutput{
 public function prepare()
 	{
 	$time = time();
-	$expireTime = $time + $this->Settings->getValue('antispam_timeout');
 
-	$this->Io->setCookie('AntiSpamTime', $time, $expireTime);
-	$this->Io->setCookie('AntiSpamHash', sha1($time.$this->Settings->getValue('antispam_hash')), $expireTime);
+	$this->Io->setCookie('AntiSpamTime', $time);
+	$this->Io->setCookie('AntiSpamHash', sha1($time.$this->Settings->getValue('antispam_hash')));
 	}
 
 public function show()
