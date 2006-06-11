@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 11. Juni 2006 um 10:21
+-- Erstellungszeit: 11. Juni 2006 um 19:18
 -- Server Version: 5.0.21
 -- PHP-Version: 5.1.4
 --
@@ -289,6 +289,18 @@ CREATE TABLE `session` (
   UNIQUE KEY `id` (`id`),
   KEY `lastupdate` (`lastupdate`)
 ) ENGINE=MEMORY DEFAULT CHARSET=utf8 MAX_ROWS=300 AVG_ROW_LENGTH=300;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `spam_log`
+--
+
+CREATE TABLE `spam_log` (
+  `ip` varchar(15) NOT NULL,
+  `time` int(11) unsigned NOT NULL,
+  PRIMARY KEY  (`ip`,`time`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
