@@ -26,7 +26,7 @@ protected function setForm()
 		}
 	else
 		{
-		$tls = '';
+		$tls = $this->Settings->getValue('tls_enabled_message');
 		}
 
 	$this->addElement('forgot', $tls.'<a href="?page=ForgotPassword;id='.$this->Board->getId().'"><span class="button">Passwort vergessen?</span></a>');

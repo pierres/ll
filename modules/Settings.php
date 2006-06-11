@@ -44,6 +44,8 @@ public function __construct()
 	$this->config['antispam_timeout']		= 600;
 	$this->config['antispam_wait']			= 4;
 
+	$this->config['tls_enabled_message']		= '';
+
 	if (file_exists(PATH.'LocalSettings.php'))
 		{
 		include (PATH.'LocalSettings.php');
