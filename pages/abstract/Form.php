@@ -60,10 +60,14 @@ private function logSpam()
 				spam_log
 			SET
 				ip = ?,
-				`time` = ?
+				`time` = ?,
+				request = ?,
+				server = ?
 			');
 		$stm->bindString($this->Io->getEnv('REMOTE_ADDR'));
 		$stm->bindInteger(time());
+		$stm->bindString(gzcompress(serialize($_REQUEST)));
+		$stm->bindString(gzcompress(serialize($_SERVER)));
 		$stm->execute();
 		$stm->close();
 		}

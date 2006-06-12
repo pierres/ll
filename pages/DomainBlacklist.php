@@ -45,7 +45,7 @@ private function getStat()
 		}
 	catch (DBNoDataException $e)
 		{
-		$stat = array('domains'=>'', ''=>'counts');
+		$stat = array('domains'=>0, 'counts'=>0);
 		}
 
 	return $stat;
