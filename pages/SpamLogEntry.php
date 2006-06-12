@@ -80,10 +80,10 @@ private function getSpamLogEntry()
 				</tr>
 				<tr>
 					<td style="padding-bottom:5px;"><strong>Request</strong></td>
-					<td><pre>'.print_r(unserialize(gzuncompress($data['request'])), true).'</pre></td>
+					<td><pre>'.(!empty($data['request']) ? print_r(unserialize(gzuncompress($data['request'])), true) : '').'</pre></td>
 				</tr>
 					<td style="padding-bottom:5px;"><strong>Server</strong></td>
-					<td><pre>'.print_r(unserialize(gzuncompress($data['server'])), true).'</pre></td>
+					<td><pre>'.(!empty($data['request']) ? print_r(unserialize(gzuncompress($data['server'])), true) : '').'</pre></td>
 				</tr>
 			</table>';
 		}
