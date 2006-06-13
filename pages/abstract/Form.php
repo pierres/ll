@@ -91,7 +91,7 @@ private function checkAntiSpamHash()
 			{
 			$this->logSpam();
 			sleep($this->Settings->getValue('antispam_wait'));
-			$this->showFailure('Ungültige Formulardaten empfangen. Geh weg!');
+			$this->showFailure('Ungültige Formulardaten empfangen. Stelle sicher, daß Cookies für diese Domain angenommen werden.');
 			}
 
 		if ($hash != sha1($time.$this->Settings->getValue('antispam_hash')))
