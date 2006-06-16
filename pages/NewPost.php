@@ -185,7 +185,7 @@ protected function sendFile($postid)
 			}
 		catch (IoRequestException $e)
 			{
-			return;
+			$files = array();
 			}
 
 		$files = $this->sendNewFile($files);
@@ -194,7 +194,6 @@ protected function sendFile($postid)
 			{
 			return;
 			}
-
 		$success = false;
 
 		$stm = $this->DB->prepare
