@@ -1,7 +1,7 @@
 <?php
 
 
-class Recent extends Search{
+class Recent extends Page{
 
 
 public function prepare()
@@ -73,11 +73,11 @@ public function prepare()
 					25
 				');
 			$stm->bindInteger($this->User->getId());
-			$this->result = $stm->getRowSet();
+			$result = $stm->getRowSet();
 			}
 		else
 			{
-			$this->result = $this->DB->getRowSet
+			$result = $this->DB->getRowSet
 				('
 				SELECT
 					threads.id,
@@ -111,10 +111,10 @@ public function prepare()
 		}
 	catch (DBNoDataException $e)
 		{
-		$this->result = array();
+		$result = array();
 		}
 
-	$threads = $this->listThreads();
+	$threads = $this->ThreadList->getList($result);
 	if (isset($stm))
 		{
 		$stm->close();

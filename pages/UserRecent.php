@@ -1,7 +1,7 @@
 <?php
 
 
-class UserRecent extends Search{
+class UserRecent extends Page{
 
 
 public function prepare()
@@ -52,14 +52,14 @@ public function prepare()
 			');
 
 		$stm->bindInteger($user);
-		$this->result = $stm->getRowSet();
+		$result = $stm->getRowSet();
 		}
 	catch (DBNoDataException $e)
 		{
-		$this->result = array();
+		$result = array();
 		}
 
-	$threads = $this->listThreads();
+	$threads = $this->ThreadList->getList($result);
 	$stm->close();
 
 	$body =
