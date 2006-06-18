@@ -41,6 +41,7 @@ protected function setForm()
 
 	$this->addHidden('forum', $this->forum);
 
+	$mods = array();
 	try
 		{
 		$stm = $this->DB->prepare
@@ -55,13 +56,16 @@ protected function setForm()
 				AND user_group.groupid = ?'
 			);
 		$stm->bindInteger($this->group);
-		$mods = $stm->getColumnSet();
+
+		foreach($stm->getColumnSet() as $mod)
+			{
+			$mods[] = $mod;
+			}
 		$stm->close();
 		}
 	catch (DBNoDataException $e)
 		{
 		$stm->close();
-		$mods = array();
 		}
 
 	$this->addTextArea('mods', 'Moderatoren', implode("\n", $mods), 80, 5);
