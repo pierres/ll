@@ -15,12 +15,13 @@ protected function setForm()
 	$this->addText('name', 'Dein Name', '', 50);
 	$this->requires('name');
 	$this->setLength('name', 3, 25);
+	$this->addElement('namehint', '<span style="font-size:10px;color:red;">Dieser Name wird öffentlich angezeigt.</span>');
 
 	$this->addText('email', 'Deine E-Mail-Adresse', '', 50);
 	$this->requires('email');
 	$this->setLength('email', 6, 50);
 
-	$this->addElement('hint', 'Achte auf die Gültigkeit dieser Adresse,<br /> da die Zugangsdaten dorthin verschickt werden.');
+	$this->addElement('emailhint', '<span style="font-size:10px;color:red;">Achte auf die Gültigkeit dieser Adresse,<br /> da die Zugangsdaten dorthin verschickt werden.</span>');
 	}
 
 protected function checkForm()
