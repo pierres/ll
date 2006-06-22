@@ -26,9 +26,6 @@ public function prepare()
 				<li style="margin:20px;">
 				<a href="?page=DeletedPosts;id='.$this->Board->getId().'"><span class="button">Gelöschte Beiträge</span></a>
 				</li>
-				<li style="margin:20px;">
-				<a href="?page=DomainBlacklist;id='.$this->Board->getId().'"><span class="button">Gesperrte Domains</span></a>
-				</li>
 			</ul>
 		</td>
 	</tr>
