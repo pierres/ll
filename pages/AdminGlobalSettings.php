@@ -29,9 +29,6 @@ public function prepare()
 				<li style="margin:20px;">
 				<a href="?page=DomainBlacklist;id='.$this->Board->getId().'"><span class="button">Gesperrte Domains</span></a>
 				</li>
-				<li style="margin:20px;">
-				<a href="?page=SpamLog;id='.$this->Board->getId().'"><span class="button">Spam-Log</span></a>
-				</li>
 			</ul>
 		</td>
 	</tr>

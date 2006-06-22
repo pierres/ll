@@ -266,9 +266,6 @@ foreach ($result as $data)
 				$del_button = ($this->ismod ?
 							' <a href="?page=DelThread;id='.$this->Board->getId().';thread='.$this->thread.'"><span class="button">Thema löschen</span></a>' : '');
 
-				$spam_button = ($this->ismod ?
-							' <a href="?page=SpamThread;id='.$this->Board->getId().';thread='.$this->thread.'"><span class="button">Spam</span></a>' : '');
-
 				$split_button = '';
 				$move_button = '';
 
@@ -287,9 +284,6 @@ foreach ($result as $data)
 
 				$move_button = ($this->ismod ?
 							' <a href="?page=MovePosting;id='.$this->Board->getId().';post='.$data['id'].'"><span class="button">verschieben</span></a>' : '');
-
-				$spam_button = ($this->ismod ?
-							' <a href="?page=SpamPost;id='.$this->Board->getId().';post='.$data['id'].'"><span class="button">Spam</span></a>' : '');
 				}
 			}
 		else
@@ -298,7 +292,6 @@ foreach ($result as $data)
 			$del_button = '';
 			$split_button = '';
 			$move_button = '';
-			$spam_button = '';
 			}
 
 		$quote_button = '<a href="?page=QuotePost;id='.$this->Board->getId().';post='.$postid.'"><span class="button">zitieren</span></a>';
@@ -310,7 +303,6 @@ foreach ($result as $data)
 		$del_button = '';
 		$split_button = '';
 		$move_button = '';
-		$spam_button = ($this->ismod ? ' <a href="?page=SpamThread;id='.$this->Board->getId().';thread='.$this->thread.'"><span class="button">Spam</span></a>' : '');
 		}
 	else
 		{
@@ -322,13 +314,10 @@ foreach ($result as $data)
 		if ($this->User->isOnline() && $deleted && !$closed)
 			{
 			$del_button = ($this->ismod ? ' <a href="?page=DelPost;id='.$this->Board->getId().';post='.$data['id'].'"><span class="button">wiederherstellen</span></a>' : '');
-
-			$spam_button = ($this->ismod ? ' <a href="?page=SpamPost;id='.$this->Board->getId().';post='.$data['id'].'"><span class="button">Spam</span></a>' : '');
 			}
 		else
 			{
 			$del_button = '';
-			$spam_button = '';
 			}
 		}
 
@@ -355,7 +344,7 @@ foreach ($result as $data)
 				<div class="postdate">'.$data['dat'].'</div>
 			</td>
 			<td '.$style.'>
-				<div class="postbuttons">'.$quote_button.$edit_button.$del_button.$spam_button.$split_button.$move_button.'</div>
+				<div class="postbuttons">'.$quote_button.$edit_button.$del_button.$split_button.$move_button.'</div>
 			</td>
 		</tr>
 		<tr>

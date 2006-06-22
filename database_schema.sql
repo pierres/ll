@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 11. Juni 2006 um 19:18
+-- Erstellungszeit: 22. Juni 2006 um 11:21
 -- Server Version: 5.0.21
 -- PHP-Version: 5.1.4
 --
@@ -13,7 +13,7 @@
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `attachment_thumbnails`
+-- Tabellenstruktur fÃ¼r Tabelle `attachment_thumbnails`
 --
 
 CREATE TABLE `attachment_thumbnails` (
@@ -28,7 +28,7 @@ CREATE TABLE `attachment_thumbnails` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `attachments`
+-- Tabellenstruktur fÃ¼r Tabelle `attachments`
 --
 
 CREATE TABLE `attachments` (
@@ -48,7 +48,7 @@ CREATE TABLE `attachments` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `avatars`
+-- Tabellenstruktur fÃ¼r Tabelle `avatars`
 --
 
 CREATE TABLE `avatars` (
@@ -63,7 +63,7 @@ CREATE TABLE `avatars` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `boards`
+-- Tabellenstruktur fÃ¼r Tabelle `boards`
 --
 
 CREATE TABLE `boards` (
@@ -83,7 +83,7 @@ CREATE TABLE `boards` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `cats`
+-- Tabellenstruktur fÃ¼r Tabelle `cats`
 --
 
 CREATE TABLE `cats` (
@@ -99,21 +99,7 @@ CREATE TABLE `cats` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `domain_blacklist`
---
-
-CREATE TABLE `domain_blacklist` (
-  `domain` varchar(255) NOT NULL,
-  `counter` int(8) NOT NULL default '1',
-  `inserted` int(11) NOT NULL,
-  `lastmatch` int(11) NOT NULL,
-  PRIMARY KEY  (`domain`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `forum_cat`
+-- Tabellenstruktur fÃ¼r Tabelle `forum_cat`
 --
 
 CREATE TABLE `forum_cat` (
@@ -128,7 +114,7 @@ CREATE TABLE `forum_cat` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `forums`
+-- Tabellenstruktur fÃ¼r Tabelle `forums`
 --
 
 CREATE TABLE `forums` (
@@ -149,7 +135,7 @@ CREATE TABLE `forums` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `images`
+-- Tabellenstruktur fÃ¼r Tabelle `images`
 --
 
 CREATE TABLE `images` (
@@ -165,7 +151,7 @@ CREATE TABLE `images` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `password_key`
+-- Tabellenstruktur fÃ¼r Tabelle `password_key`
 --
 
 CREATE TABLE `password_key` (
@@ -178,7 +164,7 @@ CREATE TABLE `password_key` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `plz`
+-- Tabellenstruktur fÃ¼r Tabelle `plz`
 --
 
 CREATE TABLE `plz` (
@@ -196,7 +182,7 @@ CREATE TABLE `plz` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `poll_values`
+-- Tabellenstruktur fÃ¼r Tabelle `poll_values`
 --
 
 CREATE TABLE `poll_values` (
@@ -211,7 +197,7 @@ CREATE TABLE `poll_values` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `poll_voters`
+-- Tabellenstruktur fÃ¼r Tabelle `poll_voters`
 --
 
 CREATE TABLE `poll_voters` (
@@ -224,7 +210,7 @@ CREATE TABLE `poll_voters` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `polls`
+-- Tabellenstruktur fÃ¼r Tabelle `polls`
 --
 
 CREATE TABLE `polls` (
@@ -236,7 +222,7 @@ CREATE TABLE `polls` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `post_attachments`
+-- Tabellenstruktur fÃ¼r Tabelle `post_attachments`
 --
 
 CREATE TABLE `post_attachments` (
@@ -249,7 +235,7 @@ CREATE TABLE `post_attachments` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `posts`
+-- Tabellenstruktur fÃ¼r Tabelle `posts`
 --
 
 CREATE TABLE `posts` (
@@ -275,7 +261,7 @@ CREATE TABLE `posts` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `session`
+-- Tabellenstruktur fÃ¼r Tabelle `session`
 --
 
 CREATE TABLE `session` (
@@ -293,19 +279,7 @@ CREATE TABLE `session` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `spam_log`
---
-
-CREATE TABLE `spam_log` (
-  `ip` varchar(15) NOT NULL,
-  `time` int(11) unsigned NOT NULL,
-  PRIMARY KEY  (`ip`,`time`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `thread_user`
+-- Tabellenstruktur fÃ¼r Tabelle `thread_user`
 --
 
 CREATE TABLE `thread_user` (
@@ -318,7 +292,7 @@ CREATE TABLE `thread_user` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `threads`
+-- Tabellenstruktur fÃ¼r Tabelle `threads`
 --
 
 CREATE TABLE `threads` (
@@ -354,7 +328,7 @@ CREATE TABLE `threads` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `threads_log`
+-- Tabellenstruktur fÃ¼r Tabelle `threads_log`
 --
 
 CREATE TABLE `threads_log` (
@@ -369,7 +343,7 @@ CREATE TABLE `threads_log` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `user_group`
+-- Tabellenstruktur fÃ¼r Tabelle `user_group`
 --
 
 CREATE TABLE `user_group` (
@@ -382,7 +356,7 @@ CREATE TABLE `user_group` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `users`
+-- Tabellenstruktur fÃ¼r Tabelle `users`
 --
 
 CREATE TABLE `users` (

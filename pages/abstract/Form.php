@@ -50,32 +50,6 @@ protected function setForm()
 		}
 	}
 
-private function logSpam()
-	{
-	try
-		{
-		$stm = $this->DB->prepare
-			('
-			INSERT INTO
-				spam_log
-			SET
-				ip = ?,
-				`time` = ?,
-				request = ?,
-				server = ?
-			');
-		$stm->bindString($this->Io->getEnv('REMOTE_ADDR'));
-		$stm->bindInteger(time());
-		$stm->bindString(gzcompress(serialize($_REQUEST)));
-		$stm->bindString(gzcompress(serialize($_SERVER)));
-		$stm->execute();
-		$stm->close();
-		}
-	catch (DBException $e)
-		{
-		}
-	}
-
 private function checkAntiSpamHash()
 	{
 	if (!$this->User->isOnline())
@@ -89,14 +63,12 @@ private function checkAntiSpamHash()
 			}
 		catch (IoRequestException $e)
 			{
-			$this->logSpam();
 			sleep($this->Settings->getValue('antispam_wait'));
 			$this->showFailure('Ungültige Formulardaten empfangen. Stelle sicher, daß Cookies für diese Domain angenommen werden.');
 			}
 
 		if ($hash != sha1($time.$this->Settings->getValue('antispam_hash')))
 			{
-			$this->logSpam();
 			sleep($this->Settings->getValue('antispam_wait'));
 			$this->showFailure('Manipulierte Formulardaten empfangen. Geh weg!');
 			}

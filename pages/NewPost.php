@@ -447,17 +447,6 @@ protected function checkForm()
 			}
 		}
 
-	if (!$this->User->isOnline())
-		{
-		$AntiSpam = new AntiSpam($this->text);
-		if ($AntiSpam->isSpam())
-			{
-			unset($AntiSpam);
-			sleep(5);
-			$this->showWarning('Dein Beitrag wurde als Spam eingestuft. Falls dies eine Falschmeldung ist, <a href="?page=Contact;id='.$this->Board->getId().'" class="link">benachrichtige uns</a> bitte. Siehe auch: <a href="?page=DomainBlacklist;id='.$this->Board->getId().'" class="link">Gesperrte Domains</a>');
-			}
-		}
-
 	$this->checkNewFile();
 
 	$this->Markup->enableSmilies($this->smilies);
