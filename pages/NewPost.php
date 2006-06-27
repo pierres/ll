@@ -84,44 +84,44 @@ protected function setFile()
 					');
 				$stm->bindInteger($this->User->getId());
 				$files = $stm->getRowSet();
+
+				$this->addOutput('<br />Dateien auswählen:<br /><table class="frame" style="margin:10px;font-size:9px;">');
+
+				foreach ($files as $file)
+					{
+					if (strpos($file['type'], 'image/jpeg') === 0 ||
+						strpos($file['type'], 'image/pjpeg') === 0 ||
+						strpos($file['type'], 'image/png') === 0 ||
+						strpos($file['type'], 'image/gif') === 0)
+						{
+						$hover = '  onmouseover="javascript:document.getElementById(\'thumb'.$file['id'].'\').style.visibility=\'visible\'"
+							onmouseout="javascript:document.getElementById(\'thumb'.$file['id'].'\').style.visibility=\'hidden\'" ';
+						$preview = '<script type="text/javascript">
+								<!--
+								document.write("<img style=\"visibility:hidden;width:auto;height:auto;position:absolute;\" id=\"thumb'.$file['id'].'\" src=\"?page=GetAttachmentThumb;file='.$file['id'].'\"  alt=\"'.$file['name'].'\" class=\"image\" />");
+								-->
+							</script>';
+						}
+					else
+						{
+						$hover ='';
+						$preview ='';
+						}
+
+					$this->addOutput('<tr><td'.$hover.' style="padding:5px;">');
+					$this->addCheckbox('files['.$file['id'].']',
+					'<a class="link" onclick="return !window.open(this.href);" href="?page=GetAttachment;file='.$file['id'].'">'.$file['name'].'</a>');
+					$this->addOutput('</td><td style="text-align:right;padding:5px;vertical-align:bottom;">'.round($file['size'] / 1024, 2).' KByte'.$preview.'</td></tr>');
+					}
+				$stm->close();
+
+				$this->addOutput('</table><br />');
 				}
 			catch (DBNoDataException $e)
 				{
 				$stm->close();
-				$files = array();
 				}
 
-			$this->addOutput('<br />Dateien auswählen:<br /><table class="frame" style="margin:10px;font-size:9px;">');
-
-			foreach ($files as $file)
-				{
-				if (strpos($file['type'], 'image/jpeg') === 0 ||
-					strpos($file['type'], 'image/pjpeg') === 0 ||
-					strpos($file['type'], 'image/png') === 0 ||
-					strpos($file['type'], 'image/gif') === 0)
-					{
-					$hover = '  onmouseover="javascript:document.getElementById(\'thumb'.$file['id'].'\').style.visibility=\'visible\'"
-						onmouseout="javascript:document.getElementById(\'thumb'.$file['id'].'\').style.visibility=\'hidden\'" ';
-					$preview = '<script type="text/javascript">
-							<!--
-							document.write("<img style=\"visibility:hidden;width:auto;height:auto;position:absolute;\" id=\"thumb'.$file['id'].'\" src=\"?page=GetAttachmentThumb;file='.$file['id'].'\"  alt=\"'.$file['name'].'\" class=\"image\" />");
-							-->
-						</script>';
-					}
-				else
-					{
-					$hover ='';
-					$preview ='';
-					}
-
-				$this->addOutput('<tr><td'.$hover.' style="padding:5px;">');
-				$this->addCheckbox('files['.$file['id'].']',
-				'<a class="link" onclick="return !window.open(this.href);" href="?page=GetAttachment;file='.$file['id'].'">'.$file['name'].'</a>');
-				$this->addOutput('</td><td style="text-align:right;padding:5px;vertical-align:bottom;">'.round($file['size'] / 1024, 2).' KByte'.$preview.'</td></tr>');
-				}
-			$stm->close();
-
-			$this->addOutput('</table><br />');
 			$this->addFile('file', 'Neue Datei hinzufügen');
 			$this->addOutput('<br />');
 
