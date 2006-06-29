@@ -26,7 +26,7 @@ public function setTo($to)
 
 public function setSubject($subject)
 	{
-	$this->subject = $this->encodeMimeSubject($subject);
+	$this->subject = $subject;
 	}
 
 public function setText($text)
