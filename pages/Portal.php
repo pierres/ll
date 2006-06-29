@@ -135,76 +135,73 @@ public function prepare()
 
 private function getNews()
 	{
+	$result = '';
+
 	try
 		{
 		$stm = $this->DB->prepare
 			('
 			SELECT
-				threads.id,
-				threads.name,
-				threads.firstdate,
-				threads.firstusername,
-				threads.firstuserid,
-				posts.text
+				id,
+				name,
+				firstdate,
+				firstusername,
+				firstuserid,
+				summary
 			FROM
 				threads
-					LEFT JOIN posts
-					ON posts.threadid = threads.id AND posts.dat = threads.firstdate
 			WHERE
-				threads.forumid = ?
-				AND threads.forumid != 0
-				AND threads.deleted = 0
+				forumid = ?
+				AND forumid != 0
+				AND deleted = 0
 			ORDER BY
-				threads.id DESC
+				id DESC
 			LIMIT
 				10
 			');
 		$stm->bindInteger($this->forum);
-		$threads = $stm->getRowSet();
-		}
+
+		foreach ($stm->getRowSet() as $thread)
+			{
+			if ($this->User->isOnline() && $this->Log->isNew($thread['id'], $thread['firstdate']))
+				{
+				$thread['name'] = '<span class="newthread">'.$thread['name'].'</span>';
+				}
+
+			$result .=
+				'
+				<table class="frame" style="width:100%;margin-bottom:12px;">
+					<tr>
+						<td class="title" style="text-align:left">
+							'.$thread['name'].'
+						</td>
+					</tr>
+					<tr>
+						<td class="post0">
+							<div class="postdate" style="margin-bottom:5px;">'.formatDate($thread['firstdate']).'</div>
+							<div>'.$thread['summary'].'</div>
+							<div class="postdate" style="margin-top:5px;">
+							'.(empty($thread['firstuserid']) ? $thread['firstusername'] : '<a href="?page=ShowUser;id='.$this->Board->getId().';user='.$thread['firstuserid'].'">'.$thread['firstusername'].'</a>').'
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="post0">
+						<div class="postbuttons">
+						<a href="?page=Postings;thread='.$thread['id'].';id='.$this->Board->getId().'"><span class="button">lesen</span></a>
+						<a href="?page=NewPost;thread='.$thread['id'].';id='.$this->Board->getId().'"><span class="button">antworten</span></a>
+						</div>
+						</td>
+					</tr>
+				</table>
+				';
+			}
+		$stm->close();
+			}
 	catch(DBNoDataException $e)
 		{
-		$threads = array();
+		$stm->close();
 		}
-
-	$result = '';
-
-	foreach ($threads as $thread)
-		{
-		if ($this->User->isOnline() && $this->Log->isNew($thread['id'], $thread['firstdate']))
-			{
-			$thread['name'] = '<span class="newthread">'.$thread['name'].'</span>';
-			}
-
-		$result .=
-			'
-			<table class="frame" style="width:100%;margin-bottom:12px;">
-				<tr>
-					<td class="title" style="text-align:left">
-						'.$thread['name'].'
-					</td>
-				</tr>
-				<tr>
-					<td class="post0">
-						<div class="postdate" style="margin-bottom:5px;">'.formatDate($thread['firstdate']).'</div>
-						<div>'.$thread['text'].'</div>
-						<div class="postdate" style="margin-top:5px;">
-						'.(empty($thread['firstuserid']) ? $thread['firstusername'] : '<a href="?page=ShowUser;id='.$this->Board->getId().';user='.$thread['firstuserid'].'">'.$thread['firstusername'].'</a>').'
-						</div>
-					</td>
-				</tr>
-				<tr>
-					<td class="post0">
-					<div class="postbuttons">
-					<a href="?page=Postings;thread='.$thread['id'].';id='.$this->Board->getId().'"><span class="button">lesen</span></a>
-					<a href="?page=NewPost;thread='.$thread['id'].';id='.$this->Board->getId().'"><span class="button">antworten</span></a>
-					</div>
-					</td>
-				</tr>
-			</table>
-			';
-		}
-	$stm->close();
 
 	return $result;
 	}
