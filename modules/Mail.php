@@ -11,6 +11,7 @@ private $subject 	= '';
 
 public function send()
 	{
+	mb_internal_encoding('UTF-8');
 	mb_language('uni');
 	mb_send_mail($this->to, $this->subject, $this->text, 'From: '.$this->from."\r\n");
 	}
