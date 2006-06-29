@@ -11,7 +11,8 @@ private $subject 	= '';
 
 public function send()
 	{
-	mb_send_mail($this->to, $this->subject, $this->text, 'Content-Type: text/plain;charset="UTF-8"'."\r\n".'From: '.$this->from."\r\n");
+	mb_language('uni');
+	mb_send_mail($this->to, $this->subject, $this->text, 'From: '.$this->from."\r\n");
 	}
 
 public function setFrom($from)
