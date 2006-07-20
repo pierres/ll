@@ -466,6 +466,11 @@ public static function updateForum($forum)
 		{
 		$stm->close();
 		}
+	/** FIXME: Workaround: Finde Problem für "Warning : Daten abgeschnitten f?r Feld 'posts' in Zeile 1" */
+	catch (DBWarningException $e)
+		{
+		$stm->close();
+		}
 	}
 
 public static function buildPositionMenu($name, $values, $marked)
