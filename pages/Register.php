@@ -115,8 +115,16 @@ protected function sendForm()
 	$this->Mail->setText(
 'Hallo '.$this->name.'!
 
-Deine Registrierung bei www.laber-land.de war erfolgreich. Du kannst Dein Passwort ändern, wenn Du folgende Seite besuchst:
+Deine Registrierung bei www.laber-land.de war erfolgreich.
+Du kannst Dein Passwort ändern, wenn Du folgende Seite besuchst:
 '.$this->Io->getURL().'?id='.$this->Board->getId().';page=ChangePasswordKey;userid='.$userid.';key='.$key.'
+
+Sollte obiger Link bei Deinem Mail-Programm nicht funktionieren,
+so wähle im Anmelde-Dialog die Option "Passwort setzen" und gebe folgende Daten an:
+Benutzer-ID:	'.$this->id.'
+Schlüssel:	'.$key.'
+
+
 
 ');
 	$this->Mail->send();

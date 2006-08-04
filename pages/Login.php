@@ -20,6 +20,8 @@ protected function setForm()
 
 	$this->addCheckbox('cookie', 'Keks benutzen');
 
+	$this->addElement('passwordoptions', '<a href="?page=ForgotPassword;id='.$this->Board->getId().'"><span class="button">Passwort vergessen?</span></a> <a href="?page=ChangePasswordKey;id='.$this->Board->getId().'"><span class="button">Passwort setzen</span></a>');
+
 	if(!$this->Io->getEnv('HTTPS'))
 		{
 		$tls = '<br /><a href="https://'.$this->Io->getEnv('HTTP_HOST').'/?page=Login;id='.$this->Board->getId().'"><span class="button">TLS-Verschlüsselung</span></a> ';
@@ -29,7 +31,7 @@ protected function setForm()
 		$tls = $this->Settings->getValue('tls_enabled_message');
 		}
 
-	$this->addElement('forgot', $tls.'<a href="?page=ForgotPassword;id='.$this->Board->getId().'"><span class="button">Passwort vergessen?</span></a>');
+	$this->addElement('tls', $tls.'<br />');
 	}
 
 protected function checkForm()
