@@ -23,6 +23,7 @@ public function __construct()
 
 	$this->variables['body']	 = '';
 	$this->variables['title']	 = '';
+	$this->variables['meta.robots']	 = 'index,follow';
 	}
 
 protected function makeMenu()

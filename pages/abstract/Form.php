@@ -20,6 +20,7 @@ private $request	= '';
 
 public function prepare()
 	{
+	$this->setValue('meta.robots', 'noindex,nofollow');
 	$this->setForm();
 
 	if ($this->Io->isRequest('submit') && count($this->warning) == 0)
