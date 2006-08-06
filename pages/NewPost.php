@@ -46,7 +46,7 @@ protected function setForm()
 	$this->requires('text');
 	$this->setLength('text', 3, 65536);
 
-	$this->addOutput('<a href="html/LLCodes.html" onclick="return !window.open(this.href,\'_blank\',\'dependent=yes,location=no,menubar=no,status=no,toolbar=no,scrollbars=yes,width=610\');" rel="nofollow" class="link"><span class="button">LL-Codes</span></a><br /><br />');
+	$this->addOutput('<a href="html/LLCodes.html" onclick="return !window.open(this.href,\'_blank\',\'dependent=yes,location=no,menubar=no,status=no,toolbar=no,scrollbars=yes,width=610\');" rel="nofollow" class="link"><span class="button">LL-Codes</span></a> <a href="html/Smilies.html" onclick="return !window.open(this.href,\'_blank\',\'dependent=yes,location=no,menubar=no,status=no,toolbar=no,scrollbars=yes,width=610\');" rel="nofollow" class="link"><span class="button">Smilies</span></a><br /><br />');
 
 	$this->addCheckbox('smilies', 'grafische Smilies', $this->smilies);
 
