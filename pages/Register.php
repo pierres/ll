@@ -121,7 +121,7 @@ Du kannst Dein Passwort ändern, wenn Du folgende Seite besuchst:
 
 Sollte obiger Link bei Deinem Mail-Programm nicht funktionieren,
 so wähle im Anmelde-Dialog die Option "Passwort setzen" und gebe folgende Daten an:
-Benutzer-ID:	'.$this->id.'
+Benutzer-ID:	'.$userid.'
 Schlüssel:	'.$key.'
 
 
