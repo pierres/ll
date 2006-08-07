@@ -66,7 +66,7 @@ public function fromHtml($text)
 
 	$text = preg_replace_callback('#<img src="images/smilies/extra/\w+.gif" alt="(\w+)" class="smiley" />#',array($this, 'unmakeExtraSmiley'), $text);
 
-	$text = preg_replace_callback('#<a href="\?page=GetImage;url=(.+?)" onclick="return !window\.open\(this\.href\);" rel="nofollow"><img src="\?page=GetImage;thumb;url=(.+?)" alt="" class="image" /></a>#', 'urldecode', $text);
+	$text = preg_replace_callback('#<a href="\?page=GetImage;url=(.+?)" onclick="return !window\.open\(this\.href\);" rel="nofollow"><img src="\?page=GetImage;thumb;url=(.+?)" alt="" class="image" /></a>#', array($this, 'urldecode'), $text);
 
 	$text = preg_replace_callback('#<ul>.+</ul>#s', array($this, 'unmakeList'), $text);
 
@@ -86,6 +86,11 @@ public function fromHtml($text)
 	$text = unhtmlspecialchars($text);
 
 	return $text;
+	}
+
+private function urldecode($matches)
+	{
+	return urldecode($matches[1]);
 	}
 
 private function unmakeHeading($matches)
