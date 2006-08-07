@@ -46,6 +46,8 @@ public function __construct()
 
 	$this->config['tls_enabled_message']		= '';
 
+	$this->config['debug']				= false;
+
 	if (file_exists(PATH.'LocalSettings.php'))
 		{
 		include (PATH.'LocalSettings.php');

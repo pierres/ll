@@ -9,33 +9,66 @@ function ExceptionHandler(Exception $e)
 	try
 		{
 		$screen = '<?xml version="1.0" encoding="UTF-8" ?>
-		<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "xhtml11.dtd">
-		<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de">
-		<head>
-		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-		<title>'.get_class($e).'</title>
-		</head>
-		<body>
-			<h1 style="font-size:16px;">'.get_class($e).'</h1>
-			<pre style="overflow:auto;">'.$e->getMessage().'</pre>
-			<pre>
+			<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "xhtml11.dtd">
+			<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de">
+			<head>
+			<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+			<title>'.get_class($e).'</title>
+			</head>
+			<body>
+				<h1 style="font-size:16px;">'.get_class($e).'</h1>
+				<pre style="overflow:auto;">'.$e->getMessage().'</pre>
+				<pre>
 <strong>Code</strong>: '.$e->getCode().'
 <strong>File</strong>: '.$e->getFile().'
 <strong>Line</strong>: '.$e->getLine().'</pre>
-			<h2 style="font-size:14px;">Trace:</h2>
-			<pre>'.$e->getTraceAsString().'</pre>
-		</body>
-	</html>';
+				<h2 style="font-size:14px;">Trace:</h2>
+				<pre>'.$e->getTraceAsString().'</pre>
+			</body>
+			</html>';
 
-		if (Modul::__get('Settings')->getValue('log_dir') != '')
+		if (Modul::__get('Settings')->getValue('debug'))
 			{
-			file_put_contents(Modul::__get('Settings')->getValue('log_dir').time().'.html', $screen);
+			header('Content-Type: text/html; charset=UTF-8');
+			header('HTTP/1.1 500 Exception');
+			echo $screen;
+			exit();
 			}
+		else
+			{
+			if (Modul::__get('Settings')->getValue('log_dir') != '')
+				{
+				file_put_contents(Modul::__get('Settings')->getValue('log_dir').time().'.html', $screen);
+				}
 
-		header('Content-Type: text/html; charset=UTF-8');
-		header('HTTP/1.1 500 Exception');
-		echo $screen;
-		exit();
+			$mail = Modul::__get('Mail');
+
+			$mail->setTo('support@laber-land.de');
+			$mail->setFrom('support@laber-land.de');
+			$mail->setSubject('LL-Error');
+			$mail->setText($screen);
+			$mail->send();
+
+			$screen = '<?xml version="1.0" encoding="UTF-8" ?>
+			<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "xhtml11.dtd">
+			<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de">
+			<head>
+			<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+			<title>Schwerer Fehler</title>
+			</head>
+			<body>
+				<h1 style="font-size:16px;">Fehler in Modul '.get_class($e).'</h1>
+				<p>Es ist ein schwerer Fehler aufgetreten. Die LL-Administration wurde bereits benachrichtigt. Das Problem wird sobald wie möglich behoben.</p>
+				<h2 style="font-size:14px;">Kontakt</h2>
+				<p><a href="mailto:support@laber-land.de">support@laber-land.de</a></p>
+			</body>
+			</html>';
+
+			header('Content-Type: text/html; charset=UTF-8');
+			header('HTTP/1.1 500 Exception');
+			echo $screen;
+			exit();
+			}
 		}
 	catch (Exception $e)
 		{
