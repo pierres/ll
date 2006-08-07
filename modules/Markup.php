@@ -17,15 +17,8 @@ private $Codes 			= null;
 private $quotes 		= 0;
 
 private $linkNumber 		= 1;
-/*
-	Such-Arrays:
-*/
-private $search 		= array();
-private $replace 		= array();
-private $stackSearch 		= array();
-private $stackReplace 		= array();
-private $smilies_search		= array();
-private $smilies_replace	= array();
+
+private $smilies 		= array();
 
 private $HighLight 		= null;
 
@@ -46,7 +39,35 @@ function __construct()
 	$this->Stack = new Stack();
 	$this->Codes = new Stack();
 
+	$this->smilies = array(
+		';-)' => 'wink',
+		';)' => 'wink',
+		';D' => 'grin',
+		'::)' => 'rolleyes',
+		':-)' => 'smiley',
+		':)' => 'smiley',
+		':-\\' => 'undecided',
+		':-/' => 'undecided',
+		':-X' => 'lipsrsealed',
+		':-x' => 'lipsrsealed',
+		':-[' => 'embarassed',
+		':-*' => 'kiss',
+		'&gt;:\(' => 'angry',
+		':P' => 'tongue',
+		':p' => 'tongue',
+		':D' => 'cheesy',
+		':-(' => 'sad',
+		':(' => 'sad',
+		':O' => 'shocked',
+		':o' => 'shocked',
+		'8)' => 'cool',
+		'???' => 'huh',
+		':\'(' => 'cry',
+		'\'(' => 'cry');
+	}
 
+private function complieFirstPass($text)
+	{
 	$protocoll 	= '(?:https?|ftp):\/\/';
 	$name 		= '[a-z0-9](?:[a-z0-9_\-\.]*[a-z0-9])?';
 	$tld 		= '[a-z]{2,5}';
@@ -58,139 +79,106 @@ function __construct()
 
 
 	/** Code muß am Zeilenanfang beginnen */
-	$this->stackSearch[]  = '#^<code>$(.+?)^</code>$\n?#esm';
-	$this->stackReplace[] = '$this->makeCode(\'$1\')';
+	$text = preg_replace_callback('#^<code>$(.+?)^</code>$\n?#sm', array($this, 'makeCode'), $text);
 	/** Inline Code */
-	$this->stackSearch[]  = '/==(.+?)==/e';
-	$this->stackReplace[] = '$this->makeCode(\'$1\', \'code\')';
-
-	/** Zitate */
-	$this->search[]  = '#&lt;quote(?: .+?)?&gt;.+&lt;/quote&gt;#es';
-	$this->replace[] = '$this->makeQuote(\'$0\')';
+	$text = preg_replace_callback('/==(.+?)==/', array($this, 'makeInlineCode'), $text);
 
 	/** komplette URL mit Namen */
-	$this->stackSearch[]  = '/<('.$protocoll.$address.$path.$request.') (.+?)>/ies';
-	$this->stackReplace[] = '$this->makeLink(\'$1\', \'$2\')';
+	$text = preg_replace_callback('/<('.$protocoll.$address.$path.$request.') (.+?)>/is', array($this, 'makeNamedLink'), $text);
 	/** www.domain.tld  mit Namen */
-	$this->stackSearch[]  = '/<(www\.'.$domain.$path.$request.') (.+?)>/ies';
-	$this->stackReplace[] = '$this->makeLink(\'http://$1\', \'$2\')';
+	$text = preg_replace_callback('/<(www\.'.$domain.$path.$request.') (.+?)>/is',  array($this, 'makeNamedWWWLink'), $text);
 	/** ftp.domain.tld  mit Namen */
-	$this->stackSearch[]  = '/<(ftp\.'.$domain.$path.$request.') (.+?)>/ies';
-	$this->stackReplace[] = '$this->makeLink(\'ftp://$1\', \'$2\')';
+	$text = preg_replace_callback('/<(ftp\.'.$domain.$path.$request.') (.+?)>/is',  array($this, 'makeNamedFTPLink'), $text);
 	/** komplette URL */
-	$this->stackSearch[]  = '/<('.$protocoll.$address.$path.$request.')>/ies';
-	$this->stackReplace[] = '$this->makeLink(\'$1\')';
+	$text = preg_replace_callback('/<('.$protocoll.$address.$path.$request.')>/is', array($this, 'makeNumberedLink'), $text);
 	/** www.domain.tld */
-	$this->stackSearch[]  = '/<(www\.'.$domain.$path.$request.')>/ies';
-	$this->stackReplace[] = '$this->makeLink(\'http://$1\')';
+	$text = preg_replace_callback('/<(www\.'.$domain.$path.$request.')>/is', array($this, 'makeNumberedWWWLink'), $text);
 	/** ftp.domain.tld */
-	$this->stackSearch[]  = '/<(ftp\.'.$domain.$path.$request.')>/ies';
-	$this->stackReplace[] = '$this->makeLink(\'ftp://$1\')';
-/*
-	Folgendes sollte eigentlich alle URLs finden.
-	Auch (www.laber-land.de) und www.laber-land.de!
-*/
+	$text = preg_replace_callback('/<(ftp\.'.$domain.$path.$request.')>/is', array($this, 'makeNumberedFTPLink'), $text);
+
 	/** E-Mails */
-	$this->stackSearch[] = '/'.$name.'@'.$domain.'/ie';
-	$this->stackReplace[] = '$this->makeEmail(\'$0\')';
+	$text = preg_replace_callback('/'.$name.'@'.$domain.'/i', array($this, 'makeEmail'), $text);
 
 	/** Bilder */
-	$this->stackSearch[] = '/'.$protocoll.$address.$path.$img.'/ie';
-	$this->stackReplace[] = '$this->makeImage(\'$0\')';
+	$text = preg_replace_callback('/'.$protocoll.$address.$path.$img.'/i', array($this, 'makeImage'), $text);
 	/** Bilder www.domain.tld */
-	$this->stackSearch[] = '/www\.'.$domain.$path.$img.'/ie';
-	$this->stackReplace[] = '$this->makeImage(\'http://$0\')';
+	$text = preg_replace_callback('/www\.'.$domain.$path.$img.'/i', array($this, 'makeWWWImage'), $text);
 	/** Bilder ftp.domain.tld */
-	$this->stackSearch[] = '/ftp\.'.$domain.$path.$img.'/ie';
-	$this->stackReplace[] = '$this->makeImage(\'ftp://$0\')';
+	$text = preg_replace_callback('/ftp\.'.$domain.$path.$img.'/i', array($this, 'makeFTPImage'), $text);
 
 	/** komplette URL */
-	$this->stackSearch[] = '/'.$protocoll.$address.$path.$request.'/ie';
-	$this->stackReplace[] = '$this->makeLink(\'$0\', \'$0\')';
+	$text = preg_replace_callback('/'.$protocoll.$address.$path.$request.'/i', array($this, 'makeLink'), $text);
 	/** www.domain.tld */
-	$this->stackSearch[] = '/www\.'.$domain.$path.$request.'/ie';
-	$this->stackReplace[] = '$this->makeLink(\'http://$0\', \'$0\')';
+	$text = preg_replace_callback('/www\.'.$domain.$path.$request.'/i', array($this, 'makeWWWLink'), $text);
 	/** ftp.domain.tld */
-	$this->stackSearch[] = '/ftp\.'.$domain.$path.$request.'/ie';
-	$this->stackReplace[] = '$this->makeLink(\'ftp://$0\', \'$0\')';
+	$text = preg_replace_callback('/ftp\.'.$domain.$path.$request.'/i', array($this, 'makeFTPLink'), $text);
 
+	return $text;
+	}
 
+private function complieSecondPass($text)
+	{
+	/** Zitate */
+	$text = preg_replace_callback('#&lt;quote(?: .+?)?&gt;.+&lt;/quote&gt;#s', array($this, 'makeQuote'), $text);
 	/** Überschriften */
-	$this->search[]  = '/^(!{1,6})(.+?)$(\n?)/me';
-	$this->replace[] = '$this->makeHeading(\'$2\', strlen(\'$1\')).\'$3\'';
+	$text = preg_replace_callback('/^(!{1,6})(.+?)$(\n?)/m', array($this, 'makeHeading'), $text);
 	/** Hervorhebungen */
-	$this->search[]  = '#//([^/\n]+?)//#';
-	$this->replace[] = '<em>$1</em>';
+	$text = preg_replace('#//([^/\n]+?)//#', '<em>$1</em>', $text);
 
-	$this->search[]  = '/\*\*([^\*\s](?:[^\*\n]*?[^\*\s])?)\*\*/';
-	$this->replace[] = '<strong>$1</strong>';
+	$text = preg_replace('/\*\*([^\*\s](?:[^\*\n]*?[^\*\s])?)\*\*/', '<strong>$1</strong>', $text);
 
-	$this->search[]  = '/&quot;(.+?)&quot;/';
-	$this->replace[] = '<q>$1</q>';
+	$text = preg_replace('/&quot;(.+?)&quot;/', '<q>$1</q>', $text);
 
-	$this->search[]  = '/^----+$(\n?)/m';
-	$this->replace[] = '<hr />$1';
+	$text = preg_replace('/^----+$(\n?)/m', '<hr />$1', $text);
 
-	$this->search[]  = '/--(.+?)--/';
-	$this->replace[] = '<span><del>$1</del></span>';
+	$text = preg_replace('/--(.+?)--/', '<span><del>$1</del></span>', $text);
 
-	$this->search[]  = '/\+\+(.+?)\+\+/';
-	$this->replace[] = '<span><ins>$1</ins></span>';
+	$text = preg_replace('/\+\+(.+?)\+\+/', '<span><ins>$1</ins></span>', $text);
 
 	/** Listen */
-	$this->search[]  = '/(?:^\*+ [^\n]+$\n?)+/em';
-	$this->replace[] = '$this->makeList(\'$0\')';
+	$text = preg_replace_callback('/(?:^\*+ [^\n]+$\n?)+/m',array($this, 'makeList'), $text);
 
-	$this->smilies_search[] = '/(^|\s)(;-?\))($|\W)/e';		//;-) ;)
-	$this->smilies_replace[]   = '\'$1\'.$this->makeSmiley(\'wink\').\'$3\'';
+	return $text;
+	}
 
-	$this->smilies_search[] = '/(^|\s)(;D)($|\W)/e';		//;D
-	$this->smilies_replace[]   = '\'$1\'.$this->makeSmiley(\'grin\').\'$3\'';
+private function compileSmilies($text)
+	{
+	//;-) ;)
+	$text = preg_replace_callback('/(^|\s)(;-?\))($|\W)/', array($this, 'makeSmiley'), $text);
+	//;D
+	$text = preg_replace_callback('/(^|\s)(;D)($|\W)/', array($this, 'makeSmiley'), $text);
+	//::)
+	$text = preg_replace_callback('/(^|\s)(::\))($|\W)/', array($this, 'makeSmiley'), $text);
+	//:-) :)
+	$text = preg_replace_callback('/(^|\s)(:-?\))($|\W)/', array($this, 'makeSmiley'), $text);
+	//:-\ :-/
+	$text = preg_replace_callback('/(^|\s)(:-\\\|:-\/)($|\W)/', array($this, 'makeSmiley'), $text);
+	//:-X :-x
+	$text = preg_replace_callback('/(^|\s)(:-X)($|\W)/i', array($this, 'makeSmiley'), $text);
+	//:-[
+	$text = preg_replace_callback('/(^|\s)(:-\[)($|\W)/', array($this, 'makeSmiley'), $text);
+	//:-*
+	$text = preg_replace_callback('/(^|\s)(:-\*)($|\W)/', array($this, 'makeSmiley'), $text);
+	//>:(
+	$text = preg_replace_callback('/(^|\s)(&gt;:\()($|\W)/', array($this, 'makeSmiley'), $text);
+	//:P :p
+	$text = preg_replace_callback('/(^|\s)(:P)($|\W)/i', array($this, 'makeSmiley'), $text);
+	//:D
+	$text = preg_replace_callback('/(^|\s)(:D)($|\W)/', array($this, 'makeSmiley'), $text);
+	//:-( :(
+	$text = preg_replace_callback('/(^|\s)(:-?\()($|\W)/', array($this, 'makeSmiley'), $text);
+	//:o :O
+	$text = preg_replace_callback('/(^|\s)(:o)($|\W)/i', array($this, 'makeSmiley'), $text);
+	//8)
+	$text = preg_replace_callback('/(^|\s)(8\))($|\W)/', array($this, 'makeSmiley'), $text);
+	//???
+	$text = preg_replace_callback('/(^|\s)(\?\?\?)($|\W)/', array($this, 'makeSmiley'), $text);
+	//'( :'(
+	$text = preg_replace_callback('/(^|\s)(:?\'\()($|\W)/', array($this, 'makeSmiley'), $text);
 
-	$this->smilies_search[] = '/(^|\s)(::\))($|\W)/e';		//::)
-	$this->smilies_replace[]   = '\'$1\'.$this->makeSmiley(\'rolleyes\').\'$3\'';
+	$text = preg_replace_callback('/&lt;(\w{2,15})&gt;/', array($this, 'makeExtraSmiley'), $text);
 
-	$this->smilies_search[] = '/(^|\s)(:-?\))($|\W)/e';		//:-) :)
-	$this->smilies_replace[]   = '\'$1\'.$this->makeSmiley(\'smiley\').\'$3\'';
-
-	$this->smilies_search[] = '/(^|\s)(:-\\\|:-\/)($|\W)/e';	//:-\ :-/
-	$this->smilies_replace[]   = '\'$1\'.$this->makeSmiley(\'undecided\').\'$3\'';
-
-	$this->smilies_search[] = '/(^|\s)(:-X)($|\W)/ie';		//:-X :-x
-	$this->smilies_replace[]   = '\'$1\'.$this->makeSmiley(\'lipsrsealed\').\'$3\'';
-
-	$this->smilies_search[] = '/(^|\s)(:-\[)($|\W)/e';		//:-[
-	$this->smilies_replace[]   = '\'$1\'.$this->makeSmiley(\'embarassed\').\'$3\'';
-
-	$this->smilies_search[] = '/(^|\s)(:-\*)($|\W)/e';		//:-*
-	$this->smilies_replace[]   = '\'$1\'.$this->makeSmiley(\'kiss\').\'$3\'';
-
-	$this->smilies_search[] = '/(^|\s)(&gt;:\()($|\W)/e';		//>:(
-	$this->smilies_replace[]   = '\'$1\'.$this->makeSmiley(\'angry\').\'$3\'';
-
-	$this->smilies_search[] = '/(^|\s)(:P)($|\W)/ei';		//:P :p
-	$this->smilies_replace[]   = '\'$1\'.$this->makeSmiley(\'tongue\').\'$3\'';
-
-	$this->smilies_search[] = '/(^|\s)(:D)($|\W)/e';		//:D
-	$this->smilies_replace[]   = '\'$1\'.$this->makeSmiley(\'cheesy\').\'$3\'';
-
-	$this->smilies_search[] = '/(^|\s)(:-?\()($|\W)/e';		//:-( :(
-	$this->smilies_replace[]   = '\'$1\'.$this->makeSmiley(\'sad\').\'$3\'';
-
-	$this->smilies_search[] = '/(^|\s)(:o)($|\W)/ei';		//:o :O
-	$this->smilies_replace[]   = '\'$1\'.$this->makeSmiley(\'shocked\').\'$3\'';
-
-	$this->smilies_search[] = '/(^|\s)(8\))($|\W)/e';		//8)
-	$this->smilies_replace[]   = '\'$1\'.$this->makeSmiley(\'cool\').\'$3\'';
-
-	$this->smilies_search[] = '/(^|\s)(\?\?\?)($|\W)/e';		//???
-	$this->smilies_replace[]   = '\'$1\'.$this->makeSmiley(\'huh\').\'$3\'';
-
-	$this->smilies_search[] = '/(^|\s)(:?\'\()($|\W)/e';		//'( :'(
-	$this->smilies_replace[]   = '\'$1\'.$this->makeSmiley(\'cry\').\'$3\'';
-
-	$this->smilies_search[] = '/&lt;(\w{2,15})&gt;/e';
-	$this->smilies_replace[] = '$this->makeExtraSmiley(\'$1\')';
+	return $text;
 	}
 
 /**
@@ -208,13 +196,13 @@ public function toHtml($text)
 	$text = str_replace($this->sepc, '', $text);
 	$text = str_replace("\r", '', $text);	//Wer braucht schon Windows-Zeilenumbrche?
 
-	$text = preg_replace($this->stackSearch, $this->stackReplace, $text);
+	$text = $this->complieFirstPass($text);
 	$text = htmlspecialchars($text, ENT_COMPAT, 'UTF-8');
-	$text = preg_replace($this->search, $this->replace, $text);
+	$text = $this->complieSecondPass($text);
 
 	if ($this->smiliesenabled)
 		{
-		$text = preg_replace($this->smilies_search, $this->smilies_replace, $text);
+		$text = $this->compileSmilies($text);
 		}
 
 /*
@@ -248,22 +236,24 @@ public function toHtml($text)
 	return $text;
 	}
 
-private function makeCode($in, $tag = 'pre')
+private function makeCode($matches)
 	{
-	/** FIXME Vielleicht kann man dieses blöde Veerhalten von PHP ausschalten
-		-> preg_replace_callback
-	*/
-	$in = str_replace('\"', '"', $in);
+	$this->Codes->push('<pre>'.htmlspecialchars($matches[1], ENT_COMPAT, 'UTF-8').'</pre>');
 
-	$this->Codes->push('<'.$tag.'>'.htmlspecialchars($in, ENT_COMPAT, 'UTF-8').'</'.$tag.'>');
+	return $this->sepc.$this->Codes->lastID().$this->sepc;
+	}
+
+private function makeInlineCode($matches)
+	{
+	$this->Codes->push('<code>'.htmlspecialchars($matches[1], ENT_COMPAT, 'UTF-8').'</code>');
 
 	return $this->sepc.$this->Codes->lastID().$this->sepc;
 	}
 // -------------------------------------------------------
-private function openQuote($cite = '')
+private function openQuote($matches)
 	{
 	$this->quotes++;
-	return (empty($cite) ? '' : '<cite>'.$cite.'</cite>').'<blockquote><div>';
+	return (empty($matches[1]) ? '' : '<cite>'.$matches[1].'</cite>').'<blockquote><div>';
 	}
 
 private function closeQuote()
@@ -286,14 +276,10 @@ private function closeQuote()
 	Das sollte eigentlich immer zuverlässig funktionieren.
 */
 /** FIXME: Vereinfachnung wie unmakeList() */
-private function makeQuote($in)
+private function makeQuote($matches)
 	{
-	$in = preg_replace
-		(
-		array('#&lt;quote(?: (.+?))?&gt;\s*#e'  , '#\s*&lt;/quote&gt;#e'),
-		array('$this->openQuote(\'$1\')', '$this->closeQuote()'),
-		$in
-		);
+	$matches[0] = preg_replace_callback('#&lt;quote(?: (.+?))?&gt;\s*#', array($this, 'openQuote'), $matches[0]);
+	$matches[0] = preg_replace_callback('#\s*&lt;/quote&gt;#', array($this, 'closeQuote'), $matches[0]);
 
 	while ($this->quotes > 0)
 		{
@@ -301,18 +287,18 @@ private function makeQuote($in)
 		$this->quotes--;
 		}
 
-	return $in;
+	return $matches[0];
 	}
 // -------------------------------------------------------
 /**
 	erzeugt Listenelemente (auch geschachtelt)
 */
-private function makeList($in)
+private function makeList($matches)
 	{
 	$out = '';
 	$last = 0;
 
-	foreach (explode("\n", trim($in)) as $line)
+	foreach (explode("\n", trim($matches[0])) as $line)
 		{
 		$cur = 0;
 
@@ -356,19 +342,75 @@ private function makeList($in)
 	return $out;
 	}
 
-private function makeHeading($text, $level)
+private function makeHeading($matches)
 	{
-	return '<h'.$level.'>'.$text.'</h'.$level.'>';
+	$level = strlen($matches[1]);
+	return '<h'.$level.'>'.$matches[2].'</h'.$level.'>'.$matches[3];
 	}
 
-private function makeLink($url, $name = '')
+private function makeLink($matches)
 	{
-	if (empty($name))
+	$matches[1] = $matches[0];
+	$matches[2] = $matches[0];
+
+	return $this->makeNamedLink($matches);
+	}
+
+private function makeWWWLink($matches)
+	{
+	$matches[1] = $matches[0];
+	$matches[2] = $matches[0];
+
+	return $this->makeNamedWWWLink($matches);
+	}
+
+private function makeFTPLink($matches)
+	{
+	$matches[1] = $matches[0];
+	$matches[2] = $matches[0];
+
+	return $this->makeNamedFTPLink($matches);
+	}
+
+private function makeNumberedLink($matches)
+	{
+	$url = $matches[1];
+
+	$name = '['.$this->linkNumber.']';
+	$this->linkNumber++;
+
+	if (strpos($url, $this->Settings->getValue('domain')) !== false)
 		{
-		$name = '['.$this->linkNumber.']';
-		$this->linkNumber++;
+		$target = ' class="link"';
 		}
-	elseif (strlen($name) > 50)
+	else
+		{
+		$target = ' onclick="return !window.open(this.href);" rel="nofollow" class="extlink"';
+		}
+
+	$this->Stack->push('<a href="'.htmlspecialchars($url, ENT_COMPAT, 'UTF-8').'"'.$target.'>'.htmlspecialchars($name, ENT_COMPAT, 'UTF-8').'</a>');
+
+	return $this->sep.$this->Stack->lastID().$this->sep;
+	}
+
+private function makeNumberedWWWLink($matches)
+	{
+	$matches[1] = 'http://'.$matches[1];
+	return $this->makeNumberedLink($matches);
+	}
+
+private function makeNumberedFTPLink($matches)
+	{
+	$matches[1] = 'ftp://'.$matches[1];
+	return $this->makeNumberedLink($matches);
+	}
+
+private function makeNamedLink($matches)
+	{
+	$url = $matches[1];
+	$name = $matches[2];
+
+	if (strlen($name) > 50)
 		{
 		$name = mb_substr($name, 0, 37, 'UTF-8').'...'.mb_substr($name, -10, 'UTF-8');
 		}
@@ -387,41 +429,67 @@ private function makeLink($url, $name = '')
 	return $this->sep.$this->Stack->lastID().$this->sep;
 	}
 
-private function makeImage($url)
+private function makeNamedWWWLink($matches)
 	{
-	$this->Stack->push('<a href="?page=GetImage;url='.urlencode($url).'" onclick="return !window.open(this.href);" rel="nofollow"><img src="?page=GetImage;thumb;url='.urlencode($url).'" alt="" class="image" /></a>');
+	$matches[1] = 'http://'.$matches[1];
+	return $this->makeNamedLink($matches);
+	}
+
+private function makeNamedFTPLink($matches)
+	{
+	$matches[1] = 'ftp://'.$matches[1];
+	return $this->makeNamedLink($matches);
+	}
+
+private function makeImage($matches)
+	{
+	$url = urlencode($matches[0]);
+
+	$this->Stack->push('<a href="?page=GetImage;url='.$url.'" onclick="return !window.open(this.href);" rel="nofollow"><img src="?page=GetImage;thumb;url='.$url.'" alt="" class="image" /></a>');
 
 	return $this->sep.$this->Stack->lastID().$this->sep;
 	}
 
-private function makeEmail($email)
+private function makeWWWImage($matches)
 	{
-	$email = htmlspecialchars($email, ENT_COMPAT, 'UTF-8');
+	$matches[0] = 'http://'.$matches[0];
+	return $this->makeImage($matches);
+	}
+
+private function makeFTPImage($matches)
+	{
+	$matches[0] = 'ftp://'.$matches[0];
+	return $this->makeImage($matches);
+	}
+
+private function makeEmail($matches)
+	{
+	$email = htmlspecialchars($matches[0], ENT_COMPAT, 'UTF-8');
 
 	$this->Stack->push('<a href="mailto:'.$email.'">'.$email.'</a>');
 
 	return $this->sep.$this->Stack->lastID().$this->sep;
 	}
 
-private function makeSmiley($smiley)
+private function makeSmiley($matches)
 	{
-	$this->Stack->push('<img src="images/smilies/'.$smiley.'.gif" alt="'.$smiley.'" class="smiley" />');
+	$this->Stack->push('<img src="images/smilies/'.$this->smilies[$matches[2]].'.gif" alt="'.$this->smilies[$matches[2]].'" class="smiley" />');
 
-	return $this->sep.$this->Stack->lastID().$this->sep;
+	return $matches[1].$this->sep.$this->Stack->lastID().$this->sep.$matches[3];
 	}
 
-private function makeExtraSmiley($smiley)
+private function makeExtraSmiley($matches)
 	{
 	$smilies = array('Mr-T','afro','alien','angel','angry','annoyed','antlers','anxious','argue','army','artist','baby','balloon','balloon2','balloon3','bandana','batman','beadyeyes','beadyeyes2','beam','beatnik','beatnik2','behead','behead2','bigcry','biker','blank','blush','bobby','bobby2','bomb','bomb2','book','book2','bow','brood','bucktooth','builder','builder2','bulb','bulb2','charming','cheesy','chef','chinese','clown','computer','confused','cool','cool2','cool3','cool4','cowboy','crown','crowngrin','cry','cry2','curtain','cyclist','daisy','dead','deal','deal2','devil','devilish','disappointed','disguise','dizzy','dizzy2','dozey','drummer','drunk','dunce','dunce2','earmuffs','ears','egypt','elf','elvis','embarassed','end','evil','evil2','evil3','evilgrin','fireman','freak','furious','furious2','furious3','glasses','glasses2','goofy','gorgeous','gossip','greedy','grin','grin2','grin3','guitarist','hair','hair2','hanged','happy','happy2','hat','hat2','heart','helmet','help','hippy','huh2','idea','idea2','idea3','iloveyou','indian_brave','indian_chief','inquisitive','jester','joker','juggle','juggle2','karate','kid','kiss','kiss2','klingon','knife','laugh','laugh2','laugh3','laugh4','leer','lips','lips2','lipsrsealed','lipsrsealed2','lost','love','mad','mask','mean','mellow','mickey','moustache','nice','no','oops','operator','party','party2','party3','pimp','pimp2','pirate','pleased','policeman','pumpkin','punk','rifle','rockstar','rolleyes','rolleyes2','rolleyes3','rolleyes4','rolleyes5','sad','sad2','sad3','santa','santa2','santa3','scholar','shame','shifty','shocked','shocked2','shocked3','shout','shy','sick','sick2','singer','skull','sleep','sleeping','sleepy','smart','smartass','smartass2','smash','smile','smiley','smiley2','smitten','smoking','smug','smug2','sneaky','snobby','snore','sombrero','speechless','square','stare','stars','stooge_curly','stooge_larry','stooge_moe','stop','stunned','stupid','sultan','sunny','surprised','sweatdrop','sweetheart','thinking','thinking2','thumbsdown','thumbsup','tiny','tired','toff','toilet','tongue','tongue2','tongue3','uhoh','uhoh2','undecided','uneasy','vampire','vanish','veryangry','veryangry2','vulcan','wacko','wacky','wall','whip','wideeyed','wings','wink','wink2','wink3','wiseguy','withclever','worried','worried2','wreck','wry','xmas','yes','zzz');
 
-	if (in_array($smiley, $smilies))
+	if (in_array($matches[1], $smilies))
 		{
-		$this->Stack->push('<img src="images/smilies/extra/'.$smiley.'.gif" alt="'.$smiley.'" class="smiley" />');
+		$this->Stack->push('<img src="images/smilies/extra/'.$matches[1].'.gif" alt="'.$matches[1].'" class="smiley" />');
 		return $this->sep.$this->Stack->lastID().$this->sep;
 		}
 	else
 		{
-		return '&lt;'.$smiley.'&gt;';
+		return '&lt;'.$matches[1].'&gt;';
 		}
 	}
 

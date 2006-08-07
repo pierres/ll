@@ -23,86 +23,52 @@ public function fromHtml($text)
 		}
 
 	/** LL3.1-Kompatibilität */
-	$search[] = '<br />';
-	$replace[] = "\n";
+	$text = str_replace('<br />', "\n", $text);
 
-	$search[] = '<code>';
-	$replace[] = '==';
-	$search[] = '</code>';
-	$replace[] = '==';
+	$text = str_replace('<code>', '==', $text);
+	$text = str_replace('</code>', '==', $text);
 
-	$search[] = '<pre>';
-	$replace[] = '<code>';
-	$search[] = '</pre>';
-	$replace[] = "</code>\n";
+	$text = str_replace('<pre>', '<code>', $text);
+	$text = str_replace('</pre>', "</code>\n", $text);
 
-	$preg_search[] = '/<span class="\w+?">/';
-	$preg_replace[] = '';
-	$search[] = '</span>';
-	$replace[] = '';
+	$text = preg_replace('/<span class="\w+?">/', '', $text);
+	$text = str_replace('</span>', '', $text);
 
-	$preg_search[] = '#<h[1-6]>(.+?)</h([1-6])>#e';
-	$preg_replace[] = '$this->unmakeHeading(\'$1\',\'$2\')';
+	$text = preg_replace_callback('#<h[1-6]>(.+?)</h([1-6])>#', array($this, 'unmakeHeading'), $text);
 
 	/** FIXME: Keine saubere Lösung, aber Test ist "grün" */
-	$preg_search[] = '#<cite>(.+?)</cite><quote>#';
-	$preg_replace[] = '<quote $1>';
-	$search[] = '<blockquote><div>';
-	$replace[] = '<quote>';
-	$search[] = '</div></blockquote>';
-	$replace[] = '</quote>';
+	$text = preg_replace('#<cite>(.+?)</cite><blockquote><div>#', '<quote $1>', $text);
+	$text = str_replace('<blockquote><div>', '<quote>', $text);
+	$text = str_replace('</div></blockquote>', '</quote>', $text);
 
-	$search[] = '<em>';
-	$replace[] = '//';
-	$search[] = '</em>';
-	$replace[] = '//';
+	$text = str_replace('<em>', '//', $text);
+	$text = str_replace('</em>', '//', $text);
 
-	$search[] = '<strong>';
-	$replace[] = '**';
-	$search[] = '</strong>';
-	$replace[] = '**';
+	$text = str_replace('<strong>', '**', $text);
+	$text = str_replace('</strong>', '**', $text);
 
-	$search[] = '<hr />';
-	$replace[] = "----\n";
+	$text = str_replace('<hr />', "----\n", $text);
 
+	$text = str_replace('<q>', '"', $text);
+	$text = str_replace('</q>', '"', $text);
 
+	$text = str_replace('<span><del>', '--', $text);
+	$text = str_replace('</del>', '--', $text);
 
-	$search[] = '<q>';
-	$replace[] = '"';
-	$search[] = '</q>';
-	$replace[] = '"';
+	$text = str_replace('<span><ins>', '++', $text);
+	$text = str_replace('</ins>', '++', $text);
 
-	$search[] = '<span><del>';
-	$replace[] = '--';
-	$search[] = '</del>';
-	$replace[] = '--';
+	$text = preg_replace('#<a href="mailto:(.+?)">.+?</a>#', '$1', $text);
 
-	$search[] = '<span><ins>';
-	$replace[] = '++';
-	$search[] = '</ins>';
-	$replace[] = '++';
+	$text = preg_replace_callback('#<a href="(.+?)"(?: onclick="return !window\.open\(this\.href\);" rel="nofollow" class="extlink"| class="link")>(.+?)</a>#', array($this, 'unmakeLink'), $text);
 
-	$preg_search[] = '#<a href="mailto:(.+?)">.+?</a>#';
-	$preg_replace[] = '$1';
+	$text = preg_replace_callback('#<img src="images/smilies/\w+.gif" alt="(\w+)" class="smiley" />#',array($this, 'unmakeSmiley'), $text);
 
-	$preg_search[] = '#<a href="(.+?)"(?: onclick="return !window\.open\(this\.href\);" rel="nofollow" class="extlink"| class="link")>(.+?)</a>#e';
-	$preg_replace[] = '$this->unmakeLink(\'$1\', \'$2\')';
+	$text = preg_replace_callback('#<img src="images/smilies/extra/\w+.gif" alt="(\w+)" class="smiley" />#',array($this, 'unmakeExtraSmiley'), $text);
 
-	$preg_search[] = '#<img src="images/smilies/\w+.gif" alt="(\w+)" class="smiley" />#e';
-	$preg_replace[] ='$this->unmakeSmiley(\'$1\')';
+	$text = preg_replace_callback('#<a href="\?page=GetImage;url=(.+?)" onclick="return !window\.open\(this\.href\);" rel="nofollow"><img src="\?page=GetImage;thumb;url=(.+?)" alt="" class="image" /></a>#', 'urldecode', $text);
 
-	$preg_search[] = '#<img src="images/smilies/extra/\w+.gif" alt="(\w+)" class="smiley" />#e';
-	$preg_replace[] ='$this->unmakeExtraSmiley(\'$1\')';
-
-	$preg_search[] = '#<a href="\?page=GetImage;url=(.+?)" onclick="return !window\.open\(this\.href\);" rel="nofollow"><img src="\?page=GetImage;thumb;url=(.+?)" alt="" class="image" /></a>#e';
-	$preg_replace[] = 'urldecode(\'$1\')';
-
-	$preg_search[] = '#<ul>.+</ul>#es';
-	$preg_replace[] = '$this->unmakeList(\'$0\')';
-
-	/** FIXME: Prüfe, ob Reihenfolge relevant sein kann -> Ja, bei Zitaten mit Autor*/
-	$text = str_replace($search, $replace, $text);
-	$text = preg_replace($preg_search, $preg_replace, $text);
+	$text = preg_replace_callback('#<ul>.+</ul>#s', array($this, 'unmakeList'), $text);
 
 	/*
 	Jetzt schreiben wir wieder alle gefundenen Tags zurück
@@ -122,17 +88,15 @@ public function fromHtml($text)
 	return $text;
 	}
 
-private function unmakeHeading($text, $level)
+private function unmakeHeading($matches)
 	{
-	$text = str_replace('\"', '"', $text);
-
-	return str_repeat('!', $level).$text;
+	return str_repeat('!', $matches[2]).$matches[1];
 	}
 
-private function unmakeLink($url, $name)
+private function unmakeLink($matches)
 	{
-	$url = str_replace('\"', '"', $url);
-	$name = str_replace('\"', '"', $name);
+	$url = $matches[1];
+	$name = $matches[2];
 
 	if (preg_match('/^\[\d+\]$/', $name))
 		{
@@ -157,12 +121,11 @@ private function unmakeLink($url, $name)
 	return $this->sep.$this->Stack->lastID().$this->sep;
 	}
 
-private function unmakeSmiley($smiley)
+private function unmakeSmiley($matches)
 	{
-	$smiley = str_replace('\"', '"', $smiley);
 	/** TODO: Stack verwenden */
 
-	switch($smiley)
+	switch($matches[1])
 		{
 		case 'wink' 			: return ';-)';
 		case 'grin' 			: return ';D';
@@ -170,33 +133,30 @@ private function unmakeSmiley($smiley)
 		case 'smiley' 			: return ':-)';
 		case 'undecided' 		: return ':-\\';
 		case 'lipsrsealed' 		: return ':-X';
-		case 'embarassed' 	: return ':-[';
+		case 'embarassed' 		: return ':-[';
 		case 'kiss' 			: return ':-*';
 		case 'angry' 			: return '>:(';
-		case 'tongue' 		: return ':P';
-		case 'cheesy' 		: return ':D';
+		case 'tongue' 			: return ':P';
+		case 'cheesy' 			: return ':D';
 		case 'sad' 			: return ':-(';
-		case 'shocked' 		: return ':o';
+		case 'shocked' 			: return ':o';
 		case 'cool' 			: return '8)';
 		case 'huh' 			: return '???';
 		case 'cry' 			: return ':\'(';
-		default 				: return $smiley;
+		default 			: return $matches[1];
 		}
 	}
 
-private function unmakeExtraSmiley($smiley)
+private function unmakeExtraSmiley($matches)
 	{
-	$smiley = str_replace('\"', '"', $smiley);
-
-	$this->Stack->push( '<'.$smiley.'>');
+	$this->Stack->push( '<'.$matches[1].'>');
 
 	return $this->sep.$this->Stack->lastID().$this->sep;
 	}
 
-private function unmakeList($in)
+private function unmakeList($matches)
 	{
-	$in = str_replace('\"', '"', $in);
-	$in = str_replace('</li>', '', $in);
+	$in = str_replace('</li>', '', $matches[0]);
 
 	$out = '';
 	$depth = 0;
