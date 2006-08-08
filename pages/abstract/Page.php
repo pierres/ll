@@ -88,21 +88,15 @@ private function getWebring()
 		$boards = array();
 		}
 
-	$menu = <<<eot
-<script type="text/javascript">
-   <!--
-			document.write("<form action=\"\"><select name=\"link\" onchange=\"location.href='?page=Forums;id='+this.form.link.options[this.form.link.selectedIndex].value\">
-eot;
+	$menu = '<form action=""><select name="link" onchange="location.href=\'?page=Forums;id=\'+this.form.link.options[this.form.link.selectedIndex].value">';
 
 	foreach ($boards as $board)
 		{
-		$selected = ($this->Board->getId() == $board['id'] ? ' selected=\"selected\"': '');
-		$menu .= '<option value=\"'.$board['id'].'\"'.$selected.'>'.$board['name'].'<\/option>';
+		$selected = ($this->Board->getId() == $board['id'] ? ' selected="selected"': '');
+		$menu .= '<option value="'.$board['id'].'"'.$selected.'>'.$board['name'].'</option>';
 		}
 
-	return $menu.'<\/select><\/form>");
-   -->
-		</script>';
+	return $menu.'</select></form>';
 	}
 
 public function prepare()
@@ -124,7 +118,7 @@ public function show()
 		$this->variables['user'] = $this->User->getName();
 		}
 
-// 	$this->setValue('webring', $this->getWebring());
+	$this->setValue('webring', $this->getWebring());
 
 	$this->setValue('body', $this->getValue('body').'<div style="text-align:right;font-size:8px;"><a href="?page=Impressum;id='.$this->Board->getId().'">Impressum</a></div>');
 
