@@ -88,7 +88,7 @@ private function getWebring()
 		$boards = array();
 		}
 
-	$menu = '<form action=""><select name="link" onchange="location.href=\'?page=Forums;id=\'+this.form.link.options[this.form.link.selectedIndex].value">';
+	$menu = '<form action=""><div><select name="link" onchange="location.href=\'?page=Forums;id=\'+this.form.link.options[this.form.link.selectedIndex].value">';
 
 	foreach ($boards as $board)
 		{
@@ -96,7 +96,7 @@ private function getWebring()
 		$menu .= '<option value="'.$board['id'].'"'.$selected.'>'.$board['name'].'</option>';
 		}
 
-	return $menu.'</select></form>';
+	return $menu.'</select></div></form>';
 	}
 
 public function prepare()
