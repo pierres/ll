@@ -78,7 +78,7 @@ public function prepare()
 public function show()
 	{
 	echo count($this->links);
-	file_put_contents('/sitemap.txt', implode("\n", $this->links));
+	file_put_contents('sitemap.txt', implode("\n", $this->links));
 	}
 
 
