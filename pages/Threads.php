@@ -288,11 +288,13 @@ protected function listThreads()
 					</div>
 				</td>
 				<td class="lastpost">
+					<div class="summary" style="visibility:hidden;" id="summary'.$data['id'].'">
 					<script type="text/javascript">
-						<!--
-						document.write("<div class=\"summary\" style=\"visibility:hidden;\" id=\"summary'.$data['id'].'\">'.$data['summary'].'<\/div>");
-						-->
+						var summary = document.createTextNode(\''.$data['summary'].'\');
+						var view = document.getElementById(\'summary'.$data['id'].'\');
+						view.appendChild(summary);
 					</script>
+					</div>
 					<div>von '.$firstposter.'</div>
 					<div>'.$data['firstdate'].'</div>
 				</td>
