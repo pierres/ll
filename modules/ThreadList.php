@@ -80,7 +80,6 @@ public function getList($resultset)
 				<td class="lastpost">
 					<div class="summary" style="visibility:hidden;" id="summary'.$data['id'].'">
 						'.$data['summary'].'
-					</script>
 					</div>
 					<div>von '.$firstposter.'</div>
 					<div>'.$data['firstdate'].'</div>
