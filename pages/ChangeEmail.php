@@ -74,7 +74,7 @@ protected function sendForm()
 			users
 		SET
 			email = ?,
-			new_password = ?
+			password = ?
 		WHERE
 			id = ?'
 		);

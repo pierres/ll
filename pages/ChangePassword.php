@@ -45,7 +45,7 @@ protected function checkForm()
 				users
 			WHERE
 				id = ?
-				AND new_password =?'
+				AND password =?'
 			);
 		$stm->bindInteger($this->User->getId());
 		$stm->bindString($this->password);
@@ -73,7 +73,7 @@ protected function sendForm()
 		UPDATE
 			users
 		SET
-			new_password = ?
+			password = ?
 		WHERE
 			id = ?'
 		);

@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 2.8.1
+-- version 2.8.2
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 22. Juni 2006 um 11:21
--- Server Version: 5.0.21
--- PHP-Version: 5.1.4
+-- Erstellungszeit: 08. August 2006 um 13:46
+-- Server Version: 5.0.23
+-- PHP-Version: 5.1.4sf5
 --
 -- Datenbank: `current`
 --
@@ -23,7 +23,7 @@ CREATE TABLE `attachment_thumbnails` (
   `type` varchar(100) NOT NULL default '',
   `content` mediumblob NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=209 DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -43,7 +43,7 @@ CREATE TABLE `attachments` (
   KEY `type` (`type`),
   KEY `userid` (`userid`),
   KEY `uploaded` (`uploaded`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=209 DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -58,7 +58,7 @@ CREATE TABLE `avatars` (
   `type` varchar(100) NOT NULL default '',
   `content` mediumblob NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=2194 DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -78,7 +78,7 @@ CREATE TABLE `boards` (
   `admins` mediumint(8) unsigned NOT NULL default '0',
   `mods` mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -94,7 +94,7 @@ CREATE TABLE `cats` (
   PRIMARY KEY  (`id`),
   KEY `boardid` (`boardid`),
   KEY `position` (`position`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=123 DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -130,7 +130,7 @@ CREATE TABLE `forums` (
   `mods` mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `boardid` (`boardid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=332 DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -192,7 +192,7 @@ CREATE TABLE `poll_values` (
   `id` mediumint(8) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`),
   KEY `pollid` (`pollid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=1061 DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -256,7 +256,7 @@ CREATE TABLE `posts` (
   KEY `deleted` (`deleted`),
   KEY `dat` (`dat`),
   FULLTEXT KEY `text` (`text`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=92132 DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -323,7 +323,7 @@ CREATE TABLE `threads` (
   KEY `firstdate` (`firstdate`),
   KEY `lastdate` (`lastdate`),
   FULLTEXT KEY `name` (`name`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=5107 DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -363,8 +363,7 @@ CREATE TABLE `users` (
   `id` mediumint(8) unsigned NOT NULL auto_increment,
   `name` varchar(25) NOT NULL default '',
   `realname` varchar(100) NOT NULL default '',
-  `password` varchar(32) NOT NULL default '',
-  `new_password` varchar(40) NOT NULL,
+  `password` varchar(40) NOT NULL,
   `email` varchar(100) NOT NULL default '',
   `birthday` int(11) NOT NULL default '0',
   `posts` smallint(5) unsigned NOT NULL default '0',
@@ -383,4 +382,4 @@ CREATE TABLE `users` (
   KEY `regdate` (`regdate`),
   KEY `realname` (`realname`),
   KEY `lastpost` (`lastpost`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=2195 DEFAULT CHARSET=utf8;

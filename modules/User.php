@@ -118,46 +118,6 @@ public function logout()
 /** TODO: Methode sollte gesplittet werden */
 public function login($name, $password, $cookie = false)
 	{
-	/** nur zur Übergangszeit md5 -> sha1 */
-	try
-		{
-		$stm = $this->DB->prepare
-			('
-			SELECT
-				id
-			FROM
-				users
-			WHERE
-				name = ?
-				AND password = ?
-				AND new_password = \'\'
-			');
-		$stm->bindString($name);
-		$stm->bindString(md5($password));
-		$user_id = $stm->getColumn();
-		$stm->close();
-
-		$stm = $this->DB->prepare
-			('
-			UPDATE
-				users
-			SET
-				new_password = ?
-			WHERE
-				id = ?'
-			);
-		$stm->bindString(sha1($password));
-		$stm->bindInteger($user_id);
-		$stm->execute();
-		$stm->close();
-		}
-	catch (DBNoDataException $e)
-		{
-		$stm->close();
-		}
-
-	/** / nur zur Übergangszeit md5 -> sha1 */
-
 	try
 		{
 		if ($cookie)
@@ -172,7 +132,7 @@ public function login($name, $password, $cookie = false)
 					users
 				WHERE
 					id = ?
-					AND new_password = ?'
+					AND password = ?'
 				);
 			$stm->bindInteger($name);
 			$stm->bindString($password);
@@ -189,7 +149,7 @@ public function login($name, $password, $cookie = false)
 					users
 				WHERE
 					name = ?
-					AND new_password = ?'
+					AND password = ?'
 				);
 			$stm->bindString($name);
 			$stm->bindString(sha1($password));

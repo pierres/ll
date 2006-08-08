@@ -70,7 +70,7 @@ protected function sendForm()
 		SET
 			name = ?,
 			email = ?,
-			new_password = ?,
+			password = ?,
 			regdate = ?'
 		);
 	$stm->bindString(htmlspecialchars($this->name));

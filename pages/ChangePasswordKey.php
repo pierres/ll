@@ -111,7 +111,7 @@ protected function sendForm()
 		UPDATE
 			users
 		SET
-			new_password = ?
+			password = ?
 		WHERE
 			id = ?'
 		);
