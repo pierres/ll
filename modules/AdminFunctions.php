@@ -348,9 +348,9 @@ public static function delBoard($board)
 	$stm->execute();
 	$stm->close();
 
-	unlink(PATH.'html'.$board.'.html');
-	unlink(PATH.'html'.$board.'.css');
-	unlink(PATH.'html'.$board.'.js');
+	unlink('html'.$board.'.html');
+	unlink('html'.$board.'.css');
+	unlink('html'.$board.'.js');
 	}
 
 /** TODO: Summary erstellen; Änderungen optimieren (nur falls nötig) */

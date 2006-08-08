@@ -1,23 +1,22 @@
 <?php
 
-define('PATH', '../');
 require_once 'PHPUnit2/Framework/TestCase.php';
-require (PATH.'modules/Settings.php');
-require (PATH.'modules/Functions.php');
+require ('modules/Settings.php');
+require ('modules/Functions.php');
 
 function __autoload($class)
 	{
-	if (file_exists(PATH.'modules/'.$class . '.php'))
+	if (file_exists('modules/'.$class . '.php'))
 		{
-		require(PATH.'modules/'.$class . '.php');
+		require('modules/'.$class . '.php');
 		}
-	elseif (file_exists(PATH.'pages/'.$class . '.php'))
+	elseif (file_exists('pages/'.$class . '.php'))
 		{
-		require(PATH.'pages/'.$class . '.php');
+		require('pages/'.$class . '.php');
 		}
-	elseif (file_exists(PATH.'pages/abstract/'.$class . '.php'))
+	elseif (file_exists('pages/abstract/'.$class . '.php'))
 		{
-		require(PATH.'pages/abstract/'.$class . '.php');
+		require('pages/abstract/'.$class . '.php');
 		}
 	else
 		{

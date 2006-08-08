@@ -146,8 +146,8 @@ protected function sendForm()
 	$stm->execute();
 	$stm->close();
 
-	copy(PATH.'/html/default.html', PATH.'/html/'.$id.'.html');
-	copy(PATH.'/html/default.css', PATH.'/html/'.$id.'.css');
+	copy('html/default.html', 'html/'.$id.'.html');
+	copy('html/default.css', 'html/'.$id.'.css');
 
 
 	$body =

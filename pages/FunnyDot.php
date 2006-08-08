@@ -1,6 +1,6 @@
 <?php
 
-require (PATH.'modules/IOutput.php');
+require ('modules/IOutput.php');
 
 class FunnyDot extends Modul implements IOutput{
 

@@ -48,9 +48,9 @@ public function __construct()
 
 	$this->config['debug']				= false;
 
-	if (file_exists(PATH.'LocalSettings.php'))
+	if (file_exists('LocalSettings.php'))
 		{
-		include (PATH.'LocalSettings.php');
+		include ('LocalSettings.php');
 		}
 
 	setlocale(LC_ALL, $this->config['locale']);

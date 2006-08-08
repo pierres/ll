@@ -10,7 +10,7 @@ protected function setForm()
 
 	$this->addSubmit('Speichern');
 
-	$html = file_get_contents(PATH.'html/'.$this->Board->getId().'.html');
+	$html = file_get_contents('html/'.$this->Board->getId().'.html');
 
 	$this->addTextArea('html', 'HTML', $html);
 	$this->requires('html');
@@ -42,7 +42,7 @@ protected function checkForm()
 
 protected function sendForm()
 	{
-	file_put_contents(PATH.'html/'.$this->Board->getId().'.html', $this->Io->getString('html'));
+	file_put_contents('html/'.$this->Board->getId().'.html', $this->Io->getString('html'));
 
 	$this->redirect();
 	}

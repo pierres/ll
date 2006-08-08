@@ -1,6 +1,6 @@
 <?php
 
-require (PATH.'modules/IOutput.php');
+require ('modules/IOutput.php');
 
 abstract class GetFile extends Modul implements IOutput{
 

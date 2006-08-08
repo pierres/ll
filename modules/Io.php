@@ -19,15 +19,15 @@ function __construct()
 	{
 	$this->request = &$_REQUEST;
 
-	if (get_magic_quotes_gpc())
-		{
-		die('"magic_quotes_gpc" ist aktiviert!');
-		}
-
-// 	if (strpos($this->getEnv('HTTP_ACCEPT'), 'application/xhtml+xml') !== false)
+// 	if (get_magic_quotes_gpc() == 1 || get_magic_quotes_runtime() == 1)
 // 		{
-// 		$this->contentType = 'Content-Type: application/xhtml+xml; charset=UTF-8';
+// 		die('"magic_quotes_gpc" oder "get_magic_quotes_runtime" ist aktiviert!');
 // 		}
+
+	if (strpos($this->getEnv('HTTP_ACCEPT'), 'application/xhtml+xml') !== false)
+		{
+		$this->contentType = 'Content-Type: application/xhtml+xml; charset=UTF-8';
+		}
 	}
 
 private function header($string)

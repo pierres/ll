@@ -1,9 +1,9 @@
 <?php
 
-require (PATH.'modules/DB.php');
-require (PATH.'modules/User.php');
-require (PATH.'modules/Board.php');
-require (PATH.'modules/IOutput.php');
+require ('modules/DB.php');
+require ('modules/User.php');
+require ('modules/Board.php');
+require ('modules/IOutput.php');
 
 abstract class Page extends Modul implements IOutput{
 
@@ -113,7 +113,7 @@ public function prepare()
 
 public function show()
 	{
-	$file = file_get_contents(PATH.'html/'.$this->Board->getId().'.html');
+	$file = file_get_contents('html/'.$this->Board->getId().'.html');
 
 	$this->variables['id'] = $this->Board->getId();
 	$this->variables['name'] = $this->Board->getName();
