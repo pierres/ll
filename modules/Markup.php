@@ -283,7 +283,7 @@ private function makeQuote($matches)
 
 	while ($this->quotes > 0)
 		{
-		$in .= '</div></blockquote>';
+		$matches[0] .= '</div></blockquote>';
 		$this->quotes--;
 		}
 
