@@ -101,7 +101,6 @@ function resizeImage($image, $type, $size)
 
 	$width = imagesx($src);
 	$height = imagesy($src);
-	$aspect_ratio = $height/$width;
 
 	if ($width <= $size && $height <= $size)
 		{
@@ -110,8 +109,16 @@ function resizeImage($image, $type, $size)
 		}
 	else
 		{
-		$new_w = $size;
-		$new_h = abs($new_w * $aspect_ratio);
+		if ($width >= $height)
+			{
+			$new_w = $size;
+			$new_h = abs($new_w * ($height/$width));
+			}
+		else
+			{
+			$new_h = $size;
+			$new_w = abs($new_h * ($width/$height));
+			}
 		}
 
 	$img = imagecreatetruecolor($new_w,$new_h);

@@ -40,8 +40,7 @@ protected function getParams()
 
 	if (!$this->isUser())
 		{
-		$this->showWarning('nicht angemeldet');
-// 		$this->redirect();
+ 		$this->redirect();
 		}
 	}
 
@@ -51,16 +50,14 @@ private function loadImage()
 		{
 		if ($this->Io->getRemoteFileSize($this->url) > $this->Settings->getValue('max_image_file_size'))
 			{
-			$this->showWarning('Datei zu groß');
-// 			$this->redirect();
+ 			$this->redirect();
 			}
 
 		$file = $this->Io->getRemoteFile($this->url);
 		}
 	catch (Exception $e)
 		{
-		$this->showWarning($e->getMessage());
-// 		$this->redirect();
+ 		$this->redirect();
 		}
 
 	if (	strpos($file['type'], 'image/jpeg') !== 0 &&
@@ -68,8 +65,7 @@ private function loadImage()
 		strpos($file['type'], 'image/png') !== 0 &&
 		strpos($file['type'], 'image/gif') !== 0)
 		{
-		$this->showWarning('Falscher Dateityp');
-// 		$this->redirect();
+ 		$this->redirect();
 		}
 
 	$file['size'] = strlen($file['content']);
