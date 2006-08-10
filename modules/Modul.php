@@ -1,10 +1,5 @@
 <?php
 
-function __autoload($class)
-	{
-	Modul::loadModul($class);
-	}
-
 abstract class Modul{
 
 private static $loadedModules = array();

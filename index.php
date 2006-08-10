@@ -9,6 +9,10 @@ require ('modules/Io.php');
 Modul::__set('Settings', new Settings());
 $Io = Modul::__set('Io', new Io());
 
+function __autoload($class)
+	{
+	Modul::loadModul($class);
+	}
 
 try
 	{
