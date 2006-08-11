@@ -30,12 +30,6 @@ function unhtmlspecialchars($string)
 
 	return $string;
 	}
-/** TODO: Wozu war das bloß gut? */
-/*
-function rehtmlspecialchars($string)
-	{
-	return htmlspecialchars(unhtmlspecialchars($string), ENT_COMPAT, 'UTF-8');
-	}*/
 
 /**
 * gibt die Tageszeit aus

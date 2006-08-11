@@ -24,8 +24,6 @@ protected function setForm()
 
 protected function checkForm()
 	{
-	/** TODO: Hier müssen noch einige Maßnahmen gegen Mißbrauch ergriffen werden */
-
 	$this->name = $this->Io->getHtml('name');
 	$this->email = $this->Io->getString('email');
 

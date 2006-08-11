@@ -213,10 +213,6 @@ private function updateMods()
 	{
 	if ($this->Board->getMods() == 0 && !empty($this->mods))
 		{
-		/** FIXME:
-			Gleichzeitiger Zugriff könnte Überscheindung zur Folge haben -> Tabellen sperren
-			Das hilft so aber auch nicht unbedingt viel :-(
-		*/
 		$this->DB->execute('LOCK TABLES user_group WRITE, boards WRITE');
 		$groupid = $this->DB->getColumn
 			('
@@ -279,7 +275,6 @@ private function updateAdmins()
 	{
 	if ($this->Board->getAdmins() == 0 && !empty($this->admins))
 		{
-		/** FIXME: Gleichzeitiger Zugriff könnte Überscheindung zur Folge haben -> Tabellen sperren */
 		$this->DB->execute('LOCK TABLES user_group WRITE, boards WRITE');
 		$groupid = $this->DB->getColumn
 			('

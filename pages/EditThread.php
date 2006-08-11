@@ -180,8 +180,6 @@ protected function sendForm()
 
 	if ($this->Io->isRequest('poll_question') && $this->Io->isRequest('poll_options'))
 		{
-		/** FIXME: Warum schlägt hier ein gewöhnlicher Stringvergleich fehl? */
-// 		if (metaphone($this->poll_options) != metaphone($this->db_poll_options) || metaphone($this->poll_question) != metaphone($this->db_poll_question))
 		if ($this->poll_options != $this->db_poll_options || $this->poll_question != $this->db_poll_question)
 			{
 			$stm = $this->DB->prepare

@@ -107,10 +107,6 @@ private function updateMods()
 	{
 	if ($this->group == 0 && !empty($this->mods))
 		{
-		/** FIXME:
-			Gleichzeitiger Zugriff könnte Überscheindung zur Folge haben -> Tabellen sperren
-			Das hilft so aber auch nicht unbedingt viel :-(
-		*/
 		$this->DB->execute('LOCK TABLES user_group WRITE, forums WRITE');
 		try
 			{

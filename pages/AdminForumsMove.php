@@ -83,24 +83,6 @@ protected function checkForm()
 	{
 	try
 		{
-		/** FIXME: Nachprüfen, ob wirklich sicher; es sollte reichen, wenn die Kategorie getestet wird */
-		/*
-		$stm = $this->DB->prepare
-			('
-			SELECT
-				id
-			FROM
-				forums
-			WHERE
-				id = ?
-				AND boardid = ?'
-			);
-		$stm->bindInteger($this->forum);
-		$stm->bindInteger($this->Board->getId());
-		$stm->getColumn();
-		$stm->close();
-		*/
-
 		$stm = $this->DB->prepare
 			('
 			SELECT

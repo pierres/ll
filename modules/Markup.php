@@ -275,7 +275,7 @@ private function closeQuote()
 	sind noch Tags zu schließen.
 	Das sollte eigentlich immer zuverlässig funktionieren.
 */
-/** FIXME: Vereinfachnung wie unmakeList() */
+/** TODO: Vereinfachnung wie unmakeList() */
 private function makeQuote($matches)
 	{
 	$matches[0] = preg_replace_callback('#&lt;quote(?: (.+?))?&gt;\s*#', array($this, 'openQuote'), $matches[0]);

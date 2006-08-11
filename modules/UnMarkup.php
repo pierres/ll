@@ -36,7 +36,6 @@ public function fromHtml($text)
 
 	$text = preg_replace_callback('#<h[1-6]>(.+?)</h([1-6])>#', array($this, 'unmakeHeading'), $text);
 
-	/** FIXME: Keine saubere Lösung, aber Test ist "grün" */
 	$text = preg_replace('#<cite>(.+?)</cite><blockquote><div>#', '<quote $1>', $text);
 	$text = str_replace('<blockquote><div>', '<quote>', $text);
 	$text = str_replace('</div></blockquote>', '</quote>', $text);
