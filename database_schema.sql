@@ -3,8 +3,8 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 08. August 2006 um 13:46
--- Server Version: 5.0.23
+-- Erstellungszeit: 11. August 2006 um 10:48
+-- Server Version: 5.0.24
 -- PHP-Version: 5.1.4sf5
 --
 -- Datenbank: `current`
@@ -17,9 +17,9 @@
 --
 
 CREATE TABLE `attachment_thumbnails` (
-  `id` mediumint(8) unsigned NOT NULL auto_increment,
+  `id` int(10) unsigned NOT NULL auto_increment,
   `name` varchar(200) NOT NULL default '',
-  `size` mediumint(6) unsigned NOT NULL default '0',
+  `size` int(10) unsigned NOT NULL default '0',
   `type` varchar(100) NOT NULL default '',
   `content` mediumblob NOT NULL,
   PRIMARY KEY  (`id`)
@@ -32,12 +32,12 @@ CREATE TABLE `attachment_thumbnails` (
 --
 
 CREATE TABLE `attachments` (
-  `id` mediumint(8) unsigned NOT NULL auto_increment,
+  `id` int(10) unsigned NOT NULL auto_increment,
   `name` varchar(200) NOT NULL default '',
-  `size` mediumint(6) unsigned NOT NULL default '0',
+  `size` int(10) unsigned NOT NULL default '0',
   `type` varchar(100) NOT NULL default '',
-  `userid` mediumint(8) unsigned NOT NULL default '0',
-  `uploaded` int(11) unsigned NOT NULL default '0',
+  `userid` int(10) unsigned NOT NULL default '0',
+  `uploaded` int(10) unsigned NOT NULL default '0',
   `content` mediumblob NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `type` (`type`),
@@ -52,9 +52,9 @@ CREATE TABLE `attachments` (
 --
 
 CREATE TABLE `avatars` (
-  `id` mediumint(8) unsigned NOT NULL auto_increment,
+  `id` int(10) unsigned NOT NULL auto_increment,
   `name` varchar(200) NOT NULL default '',
-  `size` mediumint(6) unsigned NOT NULL default '0',
+  `size` int(10) unsigned NOT NULL default '0',
   `type` varchar(100) NOT NULL default '',
   `content` mediumblob NOT NULL,
   PRIMARY KEY  (`id`)
@@ -67,16 +67,16 @@ CREATE TABLE `avatars` (
 --
 
 CREATE TABLE `boards` (
-  `id` mediumint(8) unsigned NOT NULL auto_increment,
-  `admin` mediumint(8) unsigned NOT NULL default '0',
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `admin` int(10) unsigned NOT NULL default '0',
   `name` varchar(100) NOT NULL default '',
-  `regdate` int(11) unsigned NOT NULL default '0',
-  `posts` mediumint(8) unsigned NOT NULL default '0',
-  `threads` mediumint(8) unsigned NOT NULL default '0',
-  `lastpost` int(11) unsigned NOT NULL default '0',
+  `regdate` int(10) unsigned NOT NULL default '0',
+  `posts` int(10) unsigned NOT NULL default '0',
+  `threads` int(10) unsigned NOT NULL default '0',
+  `lastpost` int(10) unsigned NOT NULL default '0',
   `description` text,
-  `admins` mediumint(8) unsigned NOT NULL default '0',
-  `mods` mediumint(8) unsigned NOT NULL default '0',
+  `admins` int(10) unsigned NOT NULL default '0',
+  `mods` int(10) unsigned NOT NULL default '0',
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
 
@@ -87,8 +87,8 @@ CREATE TABLE `boards` (
 --
 
 CREATE TABLE `cats` (
-  `id` mediumint(8) unsigned NOT NULL auto_increment,
-  `boardid` mediumint(8) unsigned NOT NULL default '0',
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `boardid` int(10) unsigned NOT NULL default '0',
   `name` varchar(100) NOT NULL default '',
   `position` tinyint(3) unsigned NOT NULL default '0',
   PRIMARY KEY  (`id`),
@@ -103,8 +103,8 @@ CREATE TABLE `cats` (
 --
 
 CREATE TABLE `forum_cat` (
-  `catid` mediumint(8) unsigned NOT NULL default '0',
-  `forumid` mediumint(8) unsigned NOT NULL default '0',
+  `catid` int(10) unsigned NOT NULL default '0',
+  `forumid` int(10) unsigned NOT NULL default '0',
   `position` tinyint(3) unsigned NOT NULL default '0',
   KEY `catid` (`catid`),
   KEY `forumid` (`forumid`),
@@ -118,16 +118,16 @@ CREATE TABLE `forum_cat` (
 --
 
 CREATE TABLE `forums` (
-  `id` mediumint(8) unsigned NOT NULL auto_increment,
-  `boardid` mediumint(8) unsigned NOT NULL default '0',
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `boardid` int(10) unsigned NOT NULL default '0',
   `name` varchar(100) NOT NULL default '',
   `description` varchar(200) NOT NULL default '',
-  `lastdate` int(11) unsigned default NULL,
-  `lastposter` mediumint(8) unsigned default NULL,
-  `lastthread` mediumint(8) unsigned default NULL,
-  `threads` mediumint(8) unsigned NOT NULL default '0',
-  `posts` mediumint(8) unsigned NOT NULL default '0',
-  `mods` mediumint(8) unsigned NOT NULL default '0',
+  `lastdate` int(10) unsigned default NULL,
+  `lastposter` int(10) unsigned default NULL,
+  `lastthread` int(10) unsigned default NULL,
+  `threads` int(10) unsigned NOT NULL default '0',
+  `posts` int(10) unsigned NOT NULL default '0',
+  `mods` int(10) unsigned NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `boardid` (`boardid`)
 ) ENGINE=MyISAM AUTO_INCREMENT=332 DEFAULT CHARSET=utf8;
@@ -142,9 +142,9 @@ CREATE TABLE `images` (
   `url` varchar(255) NOT NULL,
   `type` varchar(100) NOT NULL,
   `content` mediumblob NOT NULL,
-  `size` mediumint(6) unsigned NOT NULL,
+  `size` int(10) unsigned NOT NULL,
   `thumbcontent` mediumblob NOT NULL,
-  `thumbsize` mediumint(6) unsigned NOT NULL,
+  `thumbsize` int(10) unsigned NOT NULL,
   PRIMARY KEY  (`url`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -155,9 +155,9 @@ CREATE TABLE `images` (
 --
 
 CREATE TABLE `password_key` (
-  `id` mediumint(8) unsigned NOT NULL,
+  `id` int(10) unsigned NOT NULL,
   `key` varchar(40) NOT NULL,
-  `request_time` int(11) unsigned NOT NULL,
+  `request_time` int(10) unsigned NOT NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -186,10 +186,10 @@ CREATE TABLE `plz` (
 --
 
 CREATE TABLE `poll_values` (
-  `pollid` mediumint(8) unsigned NOT NULL default '0',
+  `pollid` int(10) unsigned NOT NULL default '0',
   `value` varchar(100) NOT NULL default '',
   `votes` smallint(5) unsigned NOT NULL default '0',
-  `id` mediumint(8) unsigned NOT NULL auto_increment,
+  `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`),
   KEY `pollid` (`pollid`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1061 DEFAULT CHARSET=utf8;
@@ -201,8 +201,8 @@ CREATE TABLE `poll_values` (
 --
 
 CREATE TABLE `poll_voters` (
-  `pollid` mediumint(8) unsigned NOT NULL default '0',
-  `userid` mediumint(8) unsigned NOT NULL default '0',
+  `pollid` int(10) unsigned NOT NULL default '0',
+  `userid` int(10) unsigned NOT NULL default '0',
   KEY `pollid` (`pollid`),
   KEY `userid` (`userid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
@@ -214,7 +214,7 @@ CREATE TABLE `poll_voters` (
 --
 
 CREATE TABLE `polls` (
-  `id` mediumint(8) unsigned NOT NULL default '0',
+  `id` int(10) unsigned NOT NULL default '0',
   `question` varchar(200) NOT NULL default '0',
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
@@ -226,8 +226,8 @@ CREATE TABLE `polls` (
 --
 
 CREATE TABLE `post_attachments` (
-  `postid` mediumint(8) unsigned NOT NULL default '0',
-  `attachment_id` mediumint(8) unsigned NOT NULL default '0',
+  `postid` int(10) unsigned NOT NULL default '0',
+  `attachment_id` int(10) unsigned NOT NULL default '0',
   KEY `postid` (`postid`),
   KEY `fileid` (`attachment_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
@@ -239,13 +239,13 @@ CREATE TABLE `post_attachments` (
 --
 
 CREATE TABLE `posts` (
-  `id` mediumint(8) unsigned NOT NULL auto_increment,
-  `threadid` mediumint(8) unsigned NOT NULL default '0',
-  `userid` mediumint(8) unsigned NOT NULL default '0',
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `threadid` int(10) unsigned NOT NULL default '0',
+  `userid` int(10) unsigned NOT NULL default '0',
   `username` varchar(25) NOT NULL default '0',
-  `dat` int(11) unsigned NOT NULL default '0',
-  `editdate` int(11) unsigned NOT NULL default '0',
-  `editby` mediumint(8) unsigned NOT NULL default '0',
+  `dat` int(10) unsigned NOT NULL default '0',
+  `editdate` int(10) unsigned NOT NULL default '0',
+  `editby` int(10) unsigned NOT NULL default '0',
   `smilies` tinyint(1) NOT NULL default '1',
   `deleted` tinyint(1) NOT NULL default '0',
   `text` text NOT NULL,
@@ -256,7 +256,7 @@ CREATE TABLE `posts` (
   KEY `deleted` (`deleted`),
   KEY `dat` (`dat`),
   FULLTEXT KEY `text` (`text`)
-) ENGINE=MyISAM AUTO_INCREMENT=92132 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=92136 DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -266,11 +266,11 @@ CREATE TABLE `posts` (
 
 CREATE TABLE `session` (
   `sessionid` varchar(40) NOT NULL,
-  `id` mediumint(8) unsigned NOT NULL default '0',
+  `id` int(10) unsigned NOT NULL default '0',
   `name` varchar(25) NOT NULL default '',
   `level` tinyint(1) unsigned NOT NULL default '0',
   `groups` varchar(200) NOT NULL default '',
-  `lastupdate` int(11) unsigned NOT NULL default '0',
+  `lastupdate` int(10) unsigned NOT NULL default '0',
   PRIMARY KEY  (`sessionid`),
   UNIQUE KEY `id` (`id`),
   KEY `lastupdate` (`lastupdate`)
@@ -283,8 +283,8 @@ CREATE TABLE `session` (
 --
 
 CREATE TABLE `thread_user` (
-  `userid` mediumint(8) unsigned NOT NULL default '0',
-  `threadid` mediumint(8) unsigned NOT NULL default '0',
+  `userid` int(10) unsigned NOT NULL default '0',
+  `threadid` int(10) unsigned NOT NULL default '0',
   KEY `userid` (`userid`),
   KEY `threadid` (`threadid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
@@ -296,21 +296,21 @@ CREATE TABLE `thread_user` (
 --
 
 CREATE TABLE `threads` (
-  `id` mediumint(8) unsigned NOT NULL auto_increment,
-  `forumid` mediumint(8) unsigned NOT NULL default '0',
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `forumid` int(10) unsigned NOT NULL default '0',
   `name` varchar(100) NOT NULL default '',
   `sticky` tinyint(1) unsigned NOT NULL default '0',
   `closed` tinyint(1) unsigned NOT NULL default '0',
   `poll` tinyint(1) unsigned NOT NULL default '0',
-  `lastdate` int(11) unsigned NOT NULL default '0',
-  `lastuserid` mediumint(8) unsigned NOT NULL default '0',
-  `posts` mediumint(8) unsigned NOT NULL default '0',
+  `lastdate` int(10) unsigned NOT NULL default '0',
+  `lastuserid` int(10) unsigned NOT NULL default '0',
+  `posts` int(10) unsigned NOT NULL default '0',
   `deleted` tinyint(1) NOT NULL default '0',
-  `firstdate` int(11) unsigned NOT NULL default '0',
-  `firstuserid` mediumint(8) unsigned NOT NULL default '0',
+  `firstdate` int(10) unsigned NOT NULL default '0',
+  `firstuserid` int(10) unsigned NOT NULL default '0',
   `firstusername` varchar(25) NOT NULL default '',
   `lastusername` varchar(25) NOT NULL default '',
-  `movedfrom` mediumint(8) unsigned NOT NULL default '0',
+  `movedfrom` int(10) unsigned NOT NULL default '0',
   `summary` text,
   PRIMARY KEY  (`id`),
   KEY `forumid` (`forumid`),
@@ -323,7 +323,7 @@ CREATE TABLE `threads` (
   KEY `firstdate` (`firstdate`),
   KEY `lastdate` (`lastdate`),
   FULLTEXT KEY `name` (`name`)
-) ENGINE=MyISAM AUTO_INCREMENT=5107 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=5109 DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -332,9 +332,9 @@ CREATE TABLE `threads` (
 --
 
 CREATE TABLE `threads_log` (
-  `threadid` mediumint(8) unsigned NOT NULL default '0',
-  `userid` mediumint(8) unsigned NOT NULL default '0',
-  `dat` int(11) unsigned NOT NULL default '0',
+  `threadid` int(10) unsigned NOT NULL default '0',
+  `userid` int(10) unsigned NOT NULL default '0',
+  `dat` int(10) unsigned NOT NULL default '0',
   KEY `threadid` (`threadid`),
   KEY `userid` (`userid`),
   KEY `dat` (`dat`)
@@ -347,8 +347,8 @@ CREATE TABLE `threads_log` (
 --
 
 CREATE TABLE `user_group` (
-  `userid` mediumint(8) unsigned NOT NULL default '0',
-  `groupid` mediumint(8) unsigned NOT NULL default '0',
+  `userid` int(10) unsigned NOT NULL default '0',
+  `groupid` int(10) unsigned NOT NULL default '0',
   KEY `userid` (`userid`),
   KEY `groupid` (`groupid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
@@ -360,22 +360,22 @@ CREATE TABLE `user_group` (
 --
 
 CREATE TABLE `users` (
-  `id` mediumint(8) unsigned NOT NULL auto_increment,
+  `id` int(10) unsigned NOT NULL auto_increment,
   `name` varchar(25) NOT NULL default '',
   `realname` varchar(100) NOT NULL default '',
   `password` varchar(40) NOT NULL,
   `email` varchar(100) NOT NULL default '',
   `birthday` int(11) NOT NULL default '0',
-  `posts` smallint(5) unsigned NOT NULL default '0',
-  `regdate` int(11) unsigned NOT NULL default '0',
+  `posts` int(10) unsigned NOT NULL default '0',
+  `regdate` int(10) unsigned NOT NULL default '0',
   `level` tinyint(1) unsigned NOT NULL default '0',
   `gender` tinyint(1) unsigned NOT NULL default '0',
-  `lastpost` int(11) unsigned NOT NULL default '0',
+  `lastpost` int(10) unsigned NOT NULL default '0',
   `avatar` tinyint(1) unsigned NOT NULL default '0',
   `location` varchar(255) default NULL,
   `plz` mediumint(5) unsigned default NULL,
   `text` text,
-  `lastlogin` int(11) unsigned NOT NULL default '0',
+  `lastlogin` int(10) unsigned NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `name` (`name`(10)),
   KEY `posts` (`posts`),
