@@ -40,6 +40,8 @@ public function prepare()
 						AND thread_user.threadid = threads.id
 						AND threads.deleted = 0
 						AND thread_user.userid = ?
+					ORDER BY
+						lastdate DESC
 					LIMIT	25
 				)
 				UNION
@@ -67,6 +69,8 @@ public function prepare()
 					WHERE
 						threads.deleted = 0
 						AND threads.forumid = forums.id
+					ORDER BY
+						lastdate DESC
 					LIMIT	25
 				)
 				ORDER BY
