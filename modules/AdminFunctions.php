@@ -359,6 +359,8 @@ public static function updateThread($thread)
 	{
 	try
 		{
+		self::__get('DB')->execute('LOCK TABLES posts READ, threads WRITE');
+
 		$stm = self::__get('DB')->prepare
 			('
 			SELECT
@@ -372,6 +374,7 @@ public static function updateThread($thread)
 				AND deleted = 0
 			ORDER BY
 				dat DESC
+			LIMIT 1
 			');
 		$stm->bindInteger($thread);
 		$lastpost = $stm->getRow();
@@ -390,6 +393,7 @@ public static function updateThread($thread)
 				AND deleted = 0
 			ORDER BY
 				dat ASC
+			LIMIT 1
 			');
 		$stm->bindInteger($thread);
 		$firstpost = $stm->getRow();
@@ -424,6 +428,8 @@ public static function updateThread($thread)
 		$stm->execute();
 		$stm->close();
 
+		self::__get('DB')->execute('UNLOCK TABLES');
+
 		self::updatePostCounter($thread);
 		}
 	catch (DBNoDataException $e)
@@ -442,6 +448,8 @@ public static function updateThread($thread)
 		$stm->bindInteger($thread);
 		$stm->execute();
 		$stm->close();
+
+		self::__get('DB')->execute('UNLOCK TABLES');
 		}
 	}
 
@@ -498,11 +506,11 @@ public static function updateForum($forum)
 		$stm = self::__get('DB')->prepare
 			('
 			UPDATE
-				forums AS f
+				forums
 			SET
-				lastthread = (SELECT id FROM threads WHERE forumid = f.id AND deleted = 0 ORDER BY lastdate DESC LIMIT 1),
-				threads = (SELECT COUNT(*) FROM threads WHERE forumid = f.id AND deleted = 0),
-				posts = (SELECT SUM(posts) FROM threads WHERE forumid = f.id AND deleted = 0)
+				lastthread = (SELECT id FROM threads WHERE forumid = forums.id AND deleted = 0 ORDER BY lastdate DESC LIMIT 1),
+				threads = (SELECT COUNT(*) FROM threads WHERE forumid = forums.id AND deleted = 0),
+				posts = (SELECT SUM(posts) FROM threads WHERE forumid = forums.id AND deleted = 0)
 			WHERE
 				id = ?'
 			);

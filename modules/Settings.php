@@ -17,7 +17,7 @@ public function __construct()
 	$this->config['sql_user']			= '';
 	$this->config['sql_password']			= '';
 
-	$this->config['log_timeout'] 			= 14;
+	$this->config['log_timeout'] 			= 14 * 86400; //days
 	$this->config['session_timeout'] 		= 3600;
 	$this->config['session_refresh'] 		= 900;
 	$this->config['max_age']			= 31536000;

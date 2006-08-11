@@ -4,9 +4,9 @@
 class Board extends Modul{
 
 private $id 		= 1;
-private $name 	= '';
-private $mods	= 0;
-private $admin 	= 0;
+private $name 		= '';
+private $mods		= 0;
+private $admin 		= 0;
 private $admins 	= 0;
 
 
@@ -31,7 +31,7 @@ public function __construct()
 		}
 
 	$this->name 	= $board['name'];
-	$this->id		= $board['id'];
+	$this->id	= $board['id'];
 	$this->admin 	= $board['admin'];
 	$this->admins 	= $board['admins'];
 	$this->mods 	= $board['mods'];

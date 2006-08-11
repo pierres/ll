@@ -182,7 +182,6 @@ $this->setValue('body', $body);
 
 private function getPrivateThreads()
 	{
-	/** TODO: Anzahl in thread_user speichern */
 	try
 		{
 		$stm = $this->DB->prepare

@@ -12,6 +12,7 @@ public function prepare()
 		{
 		if ($this->User->isOnline())
 			{
+			/** TODO Potentiell teure Anfrage */
 			$stm = $this->DB->prepare
 				('
 				(

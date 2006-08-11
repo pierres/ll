@@ -7,19 +7,22 @@
 */
 class Log extends Modul{
 
-private $timeout;
-private $log;
+private $timeout 	= 0;
+private $log 		= array();
+private $now		= 0;
 
 
 public function __construct()
 	{
+	$this->now = time();
+	$this->timeout = $this->Settings->getValue('log_timeout');
+
 	if (!$this->User->isOnline())
 		{
 		return false;
 		}
 
-	$this->timeout = 86400 * $this->Settings->getValue('log_timeout'); //days
-/*
+/** TODO
 	Das ist keine schöne Lösung;
 	mir fälllt z.Z. aber keine bessere ein.
 
@@ -58,8 +61,7 @@ public function insert($threadid, $threadtime)
 		return false;
 		}
 
-	$time = time();
-	if (($time  - $threadtime) >= $this->timeout)
+	if (($this->now  - $threadtime) >= $this->timeout)
 		{
 		return false;
 		}
@@ -100,9 +102,6 @@ public function insert($threadid, $threadtime)
 	$stm->bindInteger($this->User->getId());
 	$stm->execute();
 	$stm->close();
-
-	/** TODO: kann man beim Neuerstellen/Löschen eines Beitrags starten.*/
-	$this->collectGarbage();
 	}
 
 public function isNew($threadid, $threadtime)
@@ -112,7 +111,7 @@ public function isNew($threadid, $threadtime)
 		return false;
 		}
 
-	if ((time() - $threadtime) >= $this->timeout)
+	if (($this->now - $threadtime) >= $this->timeout)
 		{
 		return false;
 		}
@@ -131,27 +130,27 @@ public function getTime($threadid)
 	{
 	if (empty($this->log[$threadid]))
 		{
-		return (time() - $this->timeout);
+		return ($this->now - $this->timeout);
 		}
 
 	return $this->log[$threadid];
 	}
 
-public function delete($threadid)
-	{
-	$stm = $this->DB->prepare
-		('
-		DELETE FROM
-			threads_log
-		WHERE
-			threadid = ?'
-		);
-	$stm->bindInteger($threadid);
-	$stm->execute();
-	$stm->close();
-	}
+// private function delete($threadid)
+// 	{
+// 	$stm = $this->DB->prepare
+// 		('
+// 		DELETE FROM
+// 			threads_log
+// 		WHERE
+// 			threadid = ?'
+// 		);
+// 	$stm->bindInteger($threadid);
+// 	$stm->execute();
+// 	$stm->close();
+// 	}
 
-private function collectGarbage()
+public function collectGarbage()
 	{
 	$stm = $this->DB->prepare
 		('
@@ -160,7 +159,7 @@ private function collectGarbage()
 		WHERE
 			dat <= ?'
 		);
-	$stm->bindInteger(time() - $this->timeout);
+	$stm->bindInteger($this->now - $this->timeout);
 	$stm->execute();
 	$stm->close();
 	}

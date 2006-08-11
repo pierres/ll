@@ -2,12 +2,12 @@
 
 class SplitThread extends Form{
 
-private $post 			= 0;
-private $oldthread 		= 0;
+private $post 		= 0;
+private $oldthread 	= 0;
 private $newthread 	= 0;
 private $forum	 	= 0;
-private $newtopic 		= '';
-protected $title 		= 'Beiträge abzweigen';
+private $newtopic 	= '';
+protected $title 	= 'Beiträge abzweigen';
 
 
 protected function setForm()

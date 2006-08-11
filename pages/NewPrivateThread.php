@@ -3,13 +3,13 @@
 
 class NewPrivateThread extends NewPrivatePost{
 
-protected $topic 			= '';
+protected $topic 		= '';
 protected $recipients 		= '';
 protected $tousers		= array();
 protected $poll_question 	= '';
 protected $poll_options 	= '';
 
-protected $title 			= 'Neues Thema erstellen';
+protected $title 		= 'Neues Thema erstellen';
 
 
 protected function setForm()

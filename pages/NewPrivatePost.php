@@ -113,7 +113,10 @@ protected function sendForm()
 	$stm->execute();
 	$stm->close();
 
-	$this->sendFile($this->DB->getInsertId());
+	$insertid = $this->DB->getInsertId();
+	$this->DB->execute('UNLOCK TABLES');
+
+	$this->sendFile($insertid);
 
 	$this->updateThread();
 

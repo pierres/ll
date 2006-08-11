@@ -208,6 +208,7 @@ private function getNews()
 
 private function getRecent()
 	{
+	/** TODO Potentiell teure Anfrage */
 	try
 		{
 		if ($this->User->isOnline())
@@ -228,6 +229,10 @@ private function getRecent()
 						AND threads.deleted = 0
 						AND thread_user.threadid = threads.id
 						AND thread_user.userid = ?
+					ORDER BY
+						lastdate DESC
+					LIMIT
+						25
 				)
 				UNION
 				(
@@ -242,6 +247,10 @@ private function getRecent()
 						deleted = 0
 						AND forumid != 0
 						AND forumid != ?
+					ORDER BY
+						lastdate DESC
+					LIMIT
+						25
 				)
 				ORDER BY
 					lastdate DESC

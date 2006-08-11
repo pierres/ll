@@ -4,13 +4,13 @@
 class NewPost extends Form {
 
 
-protected $text 		= '';
-protected $thread		= 0;
-protected $forum		= 0;
+protected $text 	= '';
+protected $thread	= 0;
+protected $forum	= 0;
 
-protected $time 		= 0;
+protected $time 	= 0;
 protected $smilies 	= true;
-protected $title 		= 'Beitrag schreiben';
+protected $title 	= 'Beitrag schreiben';
 
 protected $file		= array();
 
@@ -335,7 +335,9 @@ protected function sendNewFile($files)
 		$stm->execute();
 		$stm->close();
 
-		$files[$this->DB->getInsertId()] = '';
+		$fileID = $this->DB->getInsertId();
+
+		$files[$fileID] = '';
 
 		unlink($this->file['tmp_name']);
 
@@ -362,7 +364,7 @@ protected function sendNewFile($files)
 					size = ?,
 					content = ?'
 				);
-			$stm->bindInteger($this->DB->getInsertId());
+			$stm->bindInteger($fileID);
 			$stm->bindInteger(strlen($thumbcontent));
 			$stm->bindString($thumbcontent);
 
@@ -460,7 +462,6 @@ protected function checkForm()
 
 protected function checkAccess()
 	{
-	/** Privater Thread -> Prüfung */
 	}
 
 protected function sendForm()
@@ -564,6 +565,7 @@ protected function sendForm()
 	$stm->close();
 
 	$this->Log->insert($this->thread, $this->time);
+	$this->Log->collectGarbage();
 
 	$this->redirect();
 	}

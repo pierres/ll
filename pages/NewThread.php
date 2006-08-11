@@ -3,12 +3,12 @@
 
 class NewThread extends NewPost{
 
-protected $topic 			= '';
+protected $topic 		= '';
 protected $poll_question 	= '';
 protected $poll_options 	= '';
-protected $forum 			= 0;
+protected $forum 		= 0;
 
-protected $title 			= 'Neues Thema erstellen';
+protected $title 		= 'Neues Thema erstellen';
 
 
 protected function setForm()
@@ -106,7 +106,6 @@ protected function setPoll()
 
 protected function checkInput()
 	{
-	/** Hier ein Problem mit privatebn Threads */
 	if ($this->forum == 0)
 		{
 		try

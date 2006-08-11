@@ -2,7 +2,7 @@
 
 class MarkAllAsRead extends Page{
 
-
+/** TODO: Dies kann durch direkten Zugriff auf die DB noch optimiert werden */
 public function prepare()
 	{
 	if ($this->User->isOnline())
@@ -20,7 +20,7 @@ public function prepare()
 					forumid != 0
 					AND lastdate > ?'
 				);
-			$stm->bindInteger(time() - (86400 * $this->Settings->getValue('log_timeout')));
+			$stm->bindInteger(time() - $this->Settings->getValue('log_timeout'));
 
 			foreach ($stm->getRowSet() as $thread)
 				{
