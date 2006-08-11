@@ -6,8 +6,8 @@ class Threads extends Page{
 
 protected $ismod 		= false;
 protected $forum 		= 0;
-protected $thread 	= 0;
-protected $threads 	= 0;
+protected $thread 		= 0;
+protected $threads 		= 0;
 protected $result 		= array();
 
 public function prepare(){
@@ -30,8 +30,6 @@ catch (IoRequestException $e)
 	$this->thread = 0;
 	}
 
-
-$limit = $this->thread.','.$this->Settings->getValue('max_threads');
 
 try
 	{
@@ -116,36 +114,70 @@ try
 	{
 	$stm = $this->DB->prepare
 		('
-		SELECT
-			id,
-			poll,
-			name,
-			lastdate,
-			lastuserid,
-			lastusername,
-			firstdate,
-			firstuserid,
-			firstusername,
-			closed,
-			sticky,
-			deleted,
-			posts,
-			forumid,
-			movedfrom,
-			summary
-		FROM
-			threads
-		WHERE
-			(forumid = ? OR movedfrom = ?)
-			'.($this->ismod ? '' : 'AND deleted =  0').'
+		(
+			SELECT
+				id,
+				poll,
+				name,
+				lastdate,
+				lastuserid,
+				lastusername,
+				firstdate,
+				firstuserid,
+				firstusername,
+				closed,
+				sticky,
+				deleted,
+				posts,
+				forumid,
+				movedfrom,
+				summary
+			FROM
+				threads
+			WHERE
+				(forumid = ? OR movedfrom = ?)
+				'.($this->ismod ? '' : 'AND deleted =  0').'
+				AND sticky = 1
+		)
+		UNION
+		(
+			SELECT
+				id,
+				poll,
+				name,
+				lastdate,
+				lastuserid,
+				lastusername,
+				firstdate,
+				firstuserid,
+				firstusername,
+				closed,
+				sticky,
+				deleted,
+				posts,
+				forumid,
+				movedfrom,
+				summary
+			FROM
+				threads
+			WHERE
+				(forumid = ? OR movedfrom = ?)
+				'.($this->ismod ? '' : 'AND deleted =  0').'
+				AND counter BETWEEN ? AND ?
+				AND sticky = 0
+		)
 		ORDER BY
 			sticky DESC,
 			lastdate DESC
-		LIMIT
-			'.$limit
-		);
+		');
 	$stm->bindInteger($this->forum);
 	$stm->bindInteger($this->forum);
+
+	$stm->bindInteger($this->forum);
+	$stm->bindInteger($this->forum);
+	$stm->bindInteger($this->threads-$this->Settings->getValue('max_threads')-$this->thread);
+	$stm->bindInteger($this->threads-$this->thread-1);
+
 	$this->result = $stm->getRowSet();
 	}
 catch (DBNoDataException $e)

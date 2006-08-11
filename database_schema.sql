@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 11. August 2006 um 10:48
+-- Erstellungszeit: 11. August 2006 um 19:09
 -- Server Version: 5.0.24
 -- PHP-Version: 5.1.4sf5
 --
@@ -241,6 +241,7 @@ CREATE TABLE `post_attachments` (
 CREATE TABLE `posts` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `threadid` int(10) unsigned NOT NULL default '0',
+  `counter` int(10) unsigned NOT NULL,
   `userid` int(10) unsigned NOT NULL default '0',
   `username` varchar(25) NOT NULL default '0',
   `dat` int(10) unsigned NOT NULL default '0',
@@ -255,8 +256,9 @@ CREATE TABLE `posts` (
   KEY `userid` (`userid`),
   KEY `deleted` (`deleted`),
   KEY `dat` (`dat`),
+  KEY `counter` (`counter`),
   FULLTEXT KEY `text` (`text`)
-) ENGINE=MyISAM AUTO_INCREMENT=92136 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=92147 DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -298,6 +300,7 @@ CREATE TABLE `thread_user` (
 CREATE TABLE `threads` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `forumid` int(10) unsigned NOT NULL default '0',
+  `counter` int(10) unsigned NOT NULL,
   `name` varchar(100) NOT NULL default '',
   `sticky` tinyint(1) unsigned NOT NULL default '0',
   `closed` tinyint(1) unsigned NOT NULL default '0',
@@ -322,8 +325,9 @@ CREATE TABLE `threads` (
   KEY `closed` (`closed`),
   KEY `firstdate` (`firstdate`),
   KEY `lastdate` (`lastdate`),
+  KEY `counter` (`counter`),
   FULLTEXT KEY `name` (`name`)
-) ENGINE=MyISAM AUTO_INCREMENT=5109 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=5112 DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 

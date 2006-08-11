@@ -178,20 +178,39 @@ protected function sendPoll()
 
 protected function sendForm()
 	{
+	$this->DB->execute('LOCK TABLES threads WRITE');
+
+	$stm = $this->DB->prepare
+		('
+		SELECT
+			MAX(counter)
+		FROM
+			threads
+		WHERE
+			forumid = ?'
+		);
+	$stm->bindInteger($this->forum);
+	$counter = $stm->getColumn();
+	$stm->close();
+
 	$stm = $this->DB->prepare
 		('
 		INSERT INTO
 			threads
 		SET
 			name = ?,
-			forumid = ?
+			forumid = ?,
+			counter = ?
 		');
 	$stm->bindString(htmlspecialchars($this->topic));
 	$stm->bindInteger($this->forum);
+	$stm->bindInteger($counter == 0 ? 0 : $counter+1);
 	$stm->execute();
 	$stm->close();
 
 	$this->thread = $this->DB->getInsertId();
+
+	$this->DB->execute('UNLOCK TABLES');
 
 	$stm = $this->DB->prepare
 		('

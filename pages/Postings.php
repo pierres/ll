@@ -143,7 +143,7 @@ if ($this->post == -1)
 		catch (DBNoDataException $e)
 			{
 			$stm->close();
-			$this->post = $this->posts;
+			$this->post = $this->posts-1;
 			}
 		}
 	else
@@ -151,9 +151,6 @@ if ($this->post == -1)
 		$this->post = nat($this->posts-$this->Settings->getValue('max_posts'));
 		}
 	}
-
-
-$limit = $this->post.','.$this->Settings->getValue('max_posts');
 
 if ($thread['deleted'] == 1 && !$this->ismod)
 	{
@@ -199,12 +196,13 @@ try
 		WHERE
 			posts.threadid = ?
 			'.($this->ismod ? '' : 'AND posts.deleted = 0').'
+			AND posts.counter BETWEEN ? AND ?
 		ORDER BY
 			posts.dat ASC
-		LIMIT
-			'.$limit
-		);
+		');
 	$stm->bindInteger($this->thread);
+	$stm->bindInteger($this->post);
+	$stm->bindInteger($this->post+$this->Settings->getValue('max_posts')-1);
 	$result = $stm->getRowSet();
 	}
 catch (DBNoDataException $e)

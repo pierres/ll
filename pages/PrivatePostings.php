@@ -103,7 +103,7 @@ if ($this->post == -1)
 		catch (DBNoDataException $e)
 			{
 			$stm->close();
-			$this->post = $this->posts;
+			$this->post = $this->posts-1;
 			}
 		}
 	else
@@ -112,8 +112,6 @@ if ($this->post == -1)
 		}
 	}
 
-
-$limit = $this->post.','. $this->Settings->getValue('max_posts');
 
 $pages = $this->getPages();
 
@@ -180,12 +178,13 @@ try
 					ON posts.editby = editors.id
 		WHERE
 			posts.threadid = ?
+			AND posts.counter BETWEEN ? AND ?
 		ORDER BY
 			posts.dat ASC
-		LIMIT
-			'.$limit
-		);
+		');
 	$stm->bindInteger($this->thread);
+	$stm->bindInteger($this->post);
+	$stm->bindInteger($this->post+$this->Settings->getValue('max_posts')-1);
 	$result = $stm->getRowSet();
 	}
 catch (DBNoDataException $e)

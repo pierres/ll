@@ -499,6 +499,21 @@ protected function sendForm()
 		$userid = 0;
 		}
 
+	$this->DB->execute('LOCK TABLES posts WRITE');
+
+	$stm = $this->DB->prepare
+		('
+		SELECT
+			MAX(counter)
+		FROM
+			posts
+		WHERE
+			threadid = ?'
+		);
+	$stm->bindInteger($this->thread);
+	$counter = $stm->getColumn();
+	$stm->close();
+
 	$stm = $this->DB->prepare
 		('
 		INSERT INTO
@@ -509,7 +524,8 @@ protected function sendForm()
 			username = ?,
 			text = ?,
 			dat = ?,
-			smilies = ?'
+			smilies = ?,
+			counter = ?'
 		);
 	$stm->bindInteger($this->thread);
 	$stm->bindInteger($userid);
@@ -518,10 +534,16 @@ protected function sendForm()
 	$stm->bindInteger($this->time);
 	$stm->bindInteger($this->smilies ? 1 : 0);
 
+	$stm->bindInteger($counter == 0 ? 0 : $counter+1);
+
 	$stm->execute();
 	$stm->close();
 
-	$this->sendFile($this->DB->getInsertId());
+	$insertid = $this->DB->getInsertId();
+
+	$this->DB->execute('UNLOCK TABLES');
+
+	$this->sendFile($insertid);
 
 	$this->updateThread();
 	$this->updateForum();

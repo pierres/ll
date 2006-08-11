@@ -73,6 +73,21 @@ protected function sendForm()
 	$stm->execute();
 	$stm->close();
 
+	$this->DB->execute('LOCK TABLES posts WRITE');
+
+	$stm = $this->DB->prepare
+		('
+		SELECT
+			MAX(counter)
+		FROM
+			posts
+		WHERE
+			threadid = ?'
+		);
+	$stm->bindInteger($this->thread);
+	$counter = $stm->getColumn();
+	$stm->close();
+
 	$stm = $this->DB->prepare
 		('
 		INSERT INTO
@@ -83,7 +98,8 @@ protected function sendForm()
 			username = ?,
 			text = ?,
 			dat = ?,
-			smilies = ?'
+			smilies = ?,
+			counter = ?'
 		);
 	$stm->bindInteger($this->thread);
 	$stm->bindInteger($this->User->getId());
@@ -91,6 +107,8 @@ protected function sendForm()
 	$stm->bindString($this->text);
 	$stm->bindInteger($this->time);
 	$stm->bindInteger($this->smilies ? 1 : 0);
+
+	$stm->bindInteger($counter == 0 ? 0 : $counter+1);
 
 	$stm->execute();
 	$stm->close();
