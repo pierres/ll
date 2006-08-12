@@ -220,7 +220,8 @@ protected function sendForm()
 		INSERT INTO
 			threads
 		SET
-			name = ?'
+			name = ?,
+			counter = 0'
 		);
 	$stm->bindString(htmlspecialchars($this->topic));
 	$stm->execute();
