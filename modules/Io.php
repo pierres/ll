@@ -19,10 +19,10 @@ function __construct()
 	{
 	$this->request = &$_REQUEST;
 
-// 	if (get_magic_quotes_gpc() == 1 || get_magic_quotes_runtime() == 1)
-// 		{
-// 		die('"magic_quotes_gpc" oder "get_magic_quotes_runtime" ist aktiviert!');
-// 		}
+	if (get_magic_quotes_gpc() == 1 || get_magic_quotes_runtime() == 1)
+		{
+		die('"magic_quotes_gpc" oder "get_magic_quotes_runtime" ist aktiviert!');
+		}
 
 	if (strpos($this->getEnv('HTTP_ACCEPT'), 'application/xhtml+xml') !== false)
 		{

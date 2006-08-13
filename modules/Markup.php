@@ -52,7 +52,7 @@ function __construct()
 		':-x' => 'lipsrsealed',
 		':-[' => 'embarassed',
 		':-*' => 'kiss',
-		'&gt;:\(' => 'angry',
+		'&gt;:(' => 'angry',
 		':P' => 'tongue',
 		':p' => 'tongue',
 		':D' => 'cheesy',
