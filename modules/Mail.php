@@ -24,7 +24,7 @@ public function setFrom($from)
 		}
 	else
 		{
-		throw new MailExeption('keine gültige Mail-Adresse', 0);
+		throw new MailException('keine gültige Mail-Adresse', 0);
 		}
 	}
 
@@ -36,7 +36,7 @@ public function setTo($to)
 		}
 	else
 		{
-		throw new MailExeption('keine gültige Mail-Adresse', 0);
+		throw new MailException('keine gültige Mail-Adresse', 0);
 		}
 	}
 
