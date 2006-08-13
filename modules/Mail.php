@@ -30,14 +30,14 @@ public function setFrom($from)
 
 public function setTo($to)
 	{
-	if ($this->validateMail($to))
-		{
+// 	if ($this->validateMail($to))
+// 		{
 		$this->to = $to;
-		}
-	else
-		{
-		throw new MailException('keine gültige Mail-Adresse', 0);
-		}
+// 		}
+// 	else
+// 		{
+// 		throw new MailException('keine gültige Mail-Adresse', 0);
+// 		}
 	}
 
 public function setSubject($subject)
