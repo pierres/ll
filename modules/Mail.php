@@ -18,14 +18,14 @@ public function send()
 
 public function setFrom($from)
 	{
-	if ($this->validateMail($from))
-		{
+// 	if ($this->validateMail($from))
+// 		{
 		$this->from = $from;
-		}
-	else
-		{
-		throw new MailException('keine gültige Mail-Adresse', 0);
-		}
+// 		}
+// 	else
+// 		{
+// 		throw new MailException('keine gültige Mail-Adresse', 0);
+// 		}
 	}
 
 public function setTo($to)
