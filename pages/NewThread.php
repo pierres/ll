@@ -177,7 +177,7 @@ protected function sendPoll()
 
 protected function sendForm()
 	{
-	$this->DB->execute('LOCK TABLES threads WRITE');
+// 	$this->DB->execute('LOCK TABLES threads WRITE');
 
 	$stm = $this->DB->prepare
 		('
@@ -209,7 +209,7 @@ protected function sendForm()
 
 	$this->thread = $this->DB->getInsertId();
 
-	$this->DB->execute('UNLOCK TABLES');
+// 	$this->DB->execute('UNLOCK TABLES');
 
 	$stm = $this->DB->prepare
 		('

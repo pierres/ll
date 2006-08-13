@@ -500,7 +500,7 @@ protected function sendForm()
 		$userid = 0;
 		}
 
-	$this->DB->execute('LOCK TABLES posts WRITE');
+// 	$this->DB->execute('LOCK TABLES posts WRITE');
 
 	$stm = $this->DB->prepare
 		('
@@ -542,7 +542,7 @@ protected function sendForm()
 
 	$insertid = $this->DB->getInsertId();
 
-	$this->DB->execute('UNLOCK TABLES');
+// 	$this->DB->execute('UNLOCK TABLES');
 
 	$this->sendFile($insertid);
 

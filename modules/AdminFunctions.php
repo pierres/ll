@@ -359,7 +359,7 @@ public static function updateThread($thread)
 	{
 	try
 		{
-		self::__get('DB')->execute('LOCK TABLES posts READ, threads WRITE');
+// 		self::__get('DB')->execute('LOCK TABLES posts READ, threads WRITE');
 
 		$stm = self::__get('DB')->prepare
 			('
@@ -428,7 +428,7 @@ public static function updateThread($thread)
 		$stm->execute();
 		$stm->close();
 
-		self::__get('DB')->execute('UNLOCK TABLES');
+// 		self::__get('DB')->execute('UNLOCK TABLES');
 
 		self::updatePostCounter($thread);
 		}
@@ -449,13 +449,13 @@ public static function updateThread($thread)
 		$stm->execute();
 		$stm->close();
 
-		self::__get('DB')->execute('UNLOCK TABLES');
+// 		self::__get('DB')->execute('UNLOCK TABLES');
 		}
 	}
 
 private static function updatePostCounter($thread)
 	{
-	self::__get('DB')->execute('LOCK TABLES posts WRITE');
+// 	self::__get('DB')->execute('LOCK TABLES posts WRITE');
 
 	$stm = self::__get('DB')->prepare
 		('
@@ -496,7 +496,7 @@ private static function updatePostCounter($thread)
 	$stm2->close();
 	$stm->close();
 
-	self::__get('DB')->execute('UNLOCK TABLES');
+// 	self::__get('DB')->execute('UNLOCK TABLES');
 	}
 
 public static function updateForum($forum)
@@ -528,7 +528,7 @@ public static function updateForum($forum)
 
 private static function updateThreadCounter($forum)
 	{
-	self::__get('DB')->execute('LOCK TABLES threads WRITE');
+// 	self::__get('DB')->execute('LOCK TABLES threads WRITE');
 
 	$stm = self::__get('DB')->prepare
 		('
@@ -569,7 +569,7 @@ private static function updateThreadCounter($forum)
 	$stm2->close();
 	$stm->close();
 
-	self::__get('DB')->execute('UNLOCK TABLES');
+// 	self::__get('DB')->execute('UNLOCK TABLES');
 	}
 
 public static function buildPositionMenu($name, $values, $marked)
