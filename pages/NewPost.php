@@ -500,7 +500,7 @@ protected function sendForm()
 		$userid = 0;
 		}
 
-// 	$this->DB->execute('LOCK TABLES posts WRITE');
+ 	$this->DB->execute('LOCK TABLES posts WRITE');
 
 	$stm = $this->DB->prepare
 		('
@@ -542,12 +542,44 @@ protected function sendForm()
 
 	$insertid = $this->DB->getInsertId();
 
-// 	$this->DB->execute('UNLOCK TABLES');
+ 	$this->DB->execute('UNLOCK TABLES');
 
 	$this->sendFile($insertid);
 
-	$this->updateThread();
-	$this->updateForum();
+	$stm = self::__get('DB')->prepare
+		('
+		UPDATE
+			threads
+		SET
+			lastdate = ?,
+			lastuserid = ?,
+			lastusername = ?,
+			posts = posts + 1
+		WHERE
+			id = ?'
+		);
+	$stm->bindInteger($this->time);
+	$stm->bindInteger($userid);
+	$stm->bindString($username);
+	$stm->bindInteger($this->thread);
+
+	$stm->execute();
+	$stm->close();
+
+	$stm = self::__get('DB')->prepare
+		('
+		UPDATE
+			forums
+		SET
+			lastthread = ?,
+			posts = posts + 1
+		WHERE
+			id = ?'
+		);
+	$stm->bindInteger($this->thread);
+	$stm->bindInteger($this->forum);
+	$stm->execute();
+	$stm->close();
 
 	$stm = $this->DB->prepare
 		('
@@ -577,7 +609,7 @@ protected function updateThread()
 
 protected function updateForum()
 	{
-	AdminFunctions::updateForum($this->forum);
+ 	AdminFunctions::updateForum($this->forum);
 	}
 
 protected function redirect()
