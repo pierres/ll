@@ -546,7 +546,19 @@ protected function sendForm()
 
 	$this->sendFile($insertid);
 
-	$stm = self::__get('DB')->prepare
+	$this->updateThread($userid, $username);
+	$this->updateForum($userid);
+	$this->updateBoard();
+
+	$this->Log->insert($this->thread, $this->time);
+	$this->Log->collectGarbage();
+
+	$this->redirect();
+	}
+
+protected function updateThread($userid, $username)
+	{
+	$stm = $this->DB->prepare
 		('
 		UPDATE
 			threads
@@ -565,22 +577,32 @@ protected function sendForm()
 
 	$stm->execute();
 	$stm->close();
+	}
 
-	$stm = self::__get('DB')->prepare
+protected function updateForum($userid)
+	{
+ 	$stm = $this->DB->prepare
 		('
 		UPDATE
 			forums
 		SET
 			lastthread = ?,
+			lastdate = ?,
+			lastposter = ?,
 			posts = posts + 1
 		WHERE
 			id = ?'
 		);
 	$stm->bindInteger($this->thread);
+	$stm->bindInteger($this->time);
+	$stm->bindInteger($userid);
 	$stm->bindInteger($this->forum);
 	$stm->execute();
 	$stm->close();
+	}
 
+protected function updateBoard()
+	{
 	$stm = $this->DB->prepare
 		('
 		UPDATE
@@ -595,21 +617,6 @@ protected function sendForm()
 	$stm->bindInteger($this->Board->getId());
 	$stm->execute();
 	$stm->close();
-
-	$this->Log->insert($this->thread, $this->time);
-	$this->Log->collectGarbage();
-
-	$this->redirect();
-	}
-
-protected function updateThread()
-	{
-	AdminFunctions::updateThread($this->thread);
-	}
-
-protected function updateForum()
-	{
- 	AdminFunctions::updateForum($this->forum);
 	}
 
 protected function redirect()

@@ -30,7 +30,7 @@ protected function sendForm()
 	$stm->execute();
 	$stm->close();
 
-	$this->updateForum();
+// 	$this->updateForum();
 	$this->redirect();
 	}
 

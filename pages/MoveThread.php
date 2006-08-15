@@ -144,10 +144,9 @@ protected function sendForm()
 	$stm->execute();
 	$stm->close();
 
-	$this->updateForum();
+	AdminFunctions::updateForum($this->forum);
 	// Auch das neue Forum muß aktualisiert werden
-	$this->forum = $this->moveto;
-	$this->updateForum();
+	AdminFunctions::updateForum($this->moveto);
 
 	$this->redirect();
 	}
@@ -155,7 +154,7 @@ protected function sendForm()
 
 protected function redirect()
 	{
-	$this->Io->redirect('Threads', 'forum='.$this->forum);
+	$this->Io->redirect('Threads', 'forum='.$this->moveto);
 	}
 
 }

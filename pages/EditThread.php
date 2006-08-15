@@ -3,15 +3,15 @@
 
 class EditThread extends NewThread{
 
-protected $post 			= 0;
+protected $post 		= 0;
 protected $allow_closed 	= false;
 protected $allow_deleted 	= false;
-protected $thread			= 0;
+protected $thread		= 0;
 
 private $db_poll_question 	= '';
 private $db_poll_options 	= '';
 
-protected $title 			= 'Thema bearbeiten';
+protected $title 		= 'Thema bearbeiten';
 
 
 protected function checkInput()
@@ -164,16 +164,21 @@ protected function checkAccess()
 
 protected function sendForm()
 	{
+	$summary = str_replace('<br />', ' ', $this->text);
+	$summary = str_replace("\n", ' ', strip_tags($summary));
+	$summary = cutString($summary,  300);
 	$stm = $this->DB->prepare(
 		'
 		UPDATE
 			threads
 		SET
-			name = ?
+			name = ?,
+			summary = ?
 		WHERE
 			id = ?'
 		);
 	$stm->bindString(htmlspecialchars($this->topic));
+	$stm->bindString($summary);
 	$stm->bindInteger($this->thread);
 	$stm->execute();
 	$stm->close();
@@ -240,7 +245,6 @@ protected function sendForm()
 	$stm->close();
 
 	$this->sendFile($this->post);
-	$this->sendThreadSummary();
 
 	$this->redirect();
 	}

@@ -215,32 +215,24 @@ protected function sendPoll()
 
 protected function sendForm()
 	{
+	$summary = str_replace('<br />', ' ', $this->text);
+	$summary = str_replace("\n", ' ', strip_tags($summary));
+	$summary = cutString($summary,  300);
+
 	$stm = $this->DB->prepare
 		('
 		INSERT INTO
 			threads
 		SET
 			name = ?,
-			counter = 0'
+			summary = ?'
 		);
 	$stm->bindString(htmlspecialchars($this->topic));
+	$stm->bindString($summary);
 	$stm->execute();
 	$stm->close();
 
 	$this->thread = $this->DB->getInsertId();
-
-	$stm = $this->DB->prepare
-		('
-		UPDATE
-			boards
-		SET
-			threads = threads + 1
-		WHERE
-			id = ?'
-		);
-	$stm->bindInteger($this->Board->getId());
-	$stm->execute();
-	$stm->close();
 
 	$stm = $this->DB->prepare
 		('
@@ -259,32 +251,60 @@ protected function sendForm()
 	$stm->close();
 
 	$this->sendPoll();
-	$this->sendThreadSummary();
 
 	parent::sendForm();
 	}
 
-protected function sendThreadSummary()
+protected function updateThread($userid, $username)
 	{
-	$summary = str_replace('<br />', ' ', $this->text);
-	$summary = str_replace("\n", ' ', strip_tags($summary));
-	$summary = cutString($summary,  300);
-
 	$stm = $this->DB->prepare
 		('
 		UPDATE
 			threads
 		SET
-			summary = ?
+			firstdate = ?,
+			firstuserid = ?,
+			firstusername = ?,
+			lastdate = ?,
+			lastuserid = ?,
+			lastusername = ?,
+			posts = 1
 		WHERE
-			id = ?
-		');
+			id = ?'
+		);
+	$stm->bindInteger($this->time);
+	$stm->bindInteger($userid);
+	$stm->bindString($username);
 
-	$stm->bindString($summary);
+	$stm->bindInteger($this->time);
+	$stm->bindInteger($userid);
+	$stm->bindString($username);
+
 	$stm->bindInteger($this->thread);
+
 	$stm->execute();
 	$stm->close();
 	}
+
+protected function updateBoard()
+	{
+	$stm = $this->DB->prepare
+		('
+		UPDATE
+			boards
+		SET
+			posts = posts + 1,
+			threads = threads + 1,
+			lastpost = ?
+		WHERE
+			id = ?'
+		);
+	$stm->bindInteger($this->time);
+	$stm->bindInteger($this->Board->getId());
+	$stm->execute();
+	$stm->close();
+	}
+
 
 }
 

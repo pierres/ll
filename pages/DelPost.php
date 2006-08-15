@@ -27,10 +27,21 @@ protected function sendForm()
 	$stm->close();
 
 	$this->updateThread();
-	$this->updateForum();
+ 	$this->updateForum();
 	$this->redirect();
 	}
 
+protected function updateThread()
+	{
+	/** TODO: nicht optimal */
+	AdminFunctions::updateThread($this->thread);
+	}
+
+protected function updateForum()
+	{
+	/** TODO: nicht optimal */
+	AdminFunctions::updateForum($this->forum);
+	}
 
 protected function redirect()
 	{

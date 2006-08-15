@@ -3,8 +3,8 @@
 class MovePosting extends Form{
 
 private $moveto 	= 0;
-private $post = 0;
-private $forum = 0;
+private $post 		= 0;
+private $forum 		= 0;
 private $oldthread 	= 0;
 
 

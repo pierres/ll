@@ -73,7 +73,7 @@ protected function sendForm()
 	$stm->execute();
 	$stm->close();
 
-// 	$this->DB->execute('LOCK TABLES posts WRITE');
+ 	$this->DB->execute('LOCK TABLES posts WRITE');
 
 	$stm = $this->DB->prepare
 		('
@@ -114,38 +114,19 @@ protected function sendForm()
 	$stm->close();
 
 	$insertid = $this->DB->getInsertId();
-// 	$this->DB->execute('UNLOCK TABLES');
+ 	$this->DB->execute('UNLOCK TABLES');
 
 	$this->sendFile($insertid);
 
-	$this->updateThread();
-
-	$stm = $this->DB->prepare
-		('
-		UPDATE
-			boards
-		SET
-			posts = posts + 1,
-			lastpost = ?
-		WHERE
-			id = ?'
-		);
-	$stm->bindInteger($this->time);
-	$stm->bindInteger($this->Board->getId());
-	$stm->execute();
-	$stm->close();
+	$this->updateThread($this->User->getId(), $this->User->getName());
+	$this->updateBoard();
 
 	$this->Log->insert($this->thread, $this->time);
 
 	$this->redirect();
 	}
 
-protected function updateThread()
-	{
-	AdminFunctions::updateThread($this->thread);
-	}
-
-protected function updateForum()
+protected function updateForum($userid)
 	{
 	}
 

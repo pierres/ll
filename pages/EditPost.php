@@ -3,11 +3,11 @@
 
 class EditPost extends NewPost{
 
-protected $post 			= 0;
+protected $post 		= 0;
 protected $allow_deleted 	= false;
 protected $allow_closed 	= false;
 
-protected $title 			= 'Beitrag bearbeiten';
+protected $title 		= 'Beitrag bearbeiten';
 
 
 

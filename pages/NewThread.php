@@ -177,7 +177,7 @@ protected function sendPoll()
 
 protected function sendForm()
 	{
- 	$this->DB->execute('LOCK TABLES threads WRITE');
+	$this->DB->execute('LOCK TABLES threads WRITE');
 
 	$stm = $this->DB->prepare
 		('
@@ -192,6 +192,10 @@ protected function sendForm()
 	$counter = $stm->getColumn();
 	$stm->close();
 
+	$summary = str_replace('<br />', ' ', $this->text);
+	$summary = str_replace("\n", ' ', strip_tags($summary));
+	$summary = cutString($summary,  300);
+
 	$stm = $this->DB->prepare
 		('
 		INSERT INTO
@@ -199,60 +203,100 @@ protected function sendForm()
 		SET
 			name = ?,
 			forumid = ?,
-			counter = ?
-		');
+			counter = ?,
+			summary = ?'
+		);
 	$stm->bindString(htmlspecialchars($this->topic));
 	$stm->bindInteger($this->forum);
 	$stm->bindInteger($counter == 0 ? 0 : $counter+1);
+
+	$stm->bindString($summary);
+
 	$stm->execute();
 	$stm->close();
 
 	$this->thread = $this->DB->getInsertId();
 
- 	$this->DB->execute('UNLOCK TABLES');
-
-	$stm = $this->DB->prepare
-		('
-		UPDATE
-			boards
-		SET
-			threads = threads + 1
-		WHERE
-			id = ?'
-		);
-	$stm->bindInteger($this->Board->getId());
-	$stm->execute();
-	$stm->close();
+	$this->DB->execute('UNLOCK TABLES');
 
 	$this->sendPoll();
-	$this->sendThreadSummary();
 
 	parent::sendForm();
-	parent::updateThread();
-	parent::updateForum();
 	}
 
-protected function sendThreadSummary()
+protected function updateThread($userid, $username)
 	{
-	$summary = str_replace('<br />', ' ', $this->text);
-	$summary = str_replace("\n", ' ', strip_tags($summary));
-	$summary = cutString($summary,  300);
-
 	$stm = $this->DB->prepare
 		('
 		UPDATE
 			threads
 		SET
-			summary = ?
+			firstdate = ?,
+			firstuserid = ?,
+			firstusername = ?,
+			lastdate = ?,
+			lastuserid = ?,
+			lastusername = ?,
+			posts = 1
 		WHERE
-			id = ?
-		');
+			id = ?'
+		);
+	$stm->bindInteger($this->time);
+	$stm->bindInteger($userid);
+	$stm->bindString($username);
 
-	$stm->bindString($summary);
+	$stm->bindInteger($this->time);
+	$stm->bindInteger($userid);
+	$stm->bindString($username);
+
 	$stm->bindInteger($this->thread);
+
 	$stm->execute();
 	$stm->close();
 	}
+
+protected function updateForum($userid)
+	{
+ 	$stm = $this->DB->prepare
+		('
+		UPDATE
+			forums
+		SET
+			lastthread = ?,
+			lastdate = ?,
+			lastposter = ?,
+			posts = posts + 1,
+			threads = threads + 1
+		WHERE
+			id = ?'
+		);
+	$stm->bindInteger($this->thread);
+	$stm->bindInteger($this->time);
+	$stm->bindInteger($userid);
+	$stm->bindInteger($this->forum);
+	$stm->execute();
+	$stm->close();
+	}
+
+protected function updateBoard()
+	{
+	$stm = $this->DB->prepare
+		('
+		UPDATE
+			boards
+		SET
+			posts = posts + 1,
+			threads = threads + 1,
+			lastpost = ?
+		WHERE
+			id = ?'
+		);
+	$stm->bindInteger($this->time);
+	$stm->bindInteger($this->Board->getId());
+	$stm->execute();
+	$stm->close();
+	}
+
 }
 
 ?>

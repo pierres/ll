@@ -31,6 +31,11 @@ protected function sendForm()
 	$this->redirect();
 	}
 
+protected function updateForum()
+	{
+	/** TODO: nicht optimal */
+	AdminFunctions::updateForum($this->forum);
+	}
 
 protected function redirect()
 	{
