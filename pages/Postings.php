@@ -105,8 +105,8 @@ try
 		FROM
 			posts
 		WHERE
-			'.($this->ismod ? '' : 'posts.deleted = 0 AND').
-			' posts.threadid = ?');
+			threadid = ?
+		');
 	$stm->bindInteger($this->thread);
 	$this->posts = $stm->getColumn();
 	$stm->close();

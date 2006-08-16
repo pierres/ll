@@ -97,8 +97,8 @@ try
 		FROM
 			threads
 		WHERE
-			'.($this->ismod ? '' : 'threads.deleted = 0 AND').
-			' threads.forumid = ?');
+			forumid = ?
+		');
 	$stm->bindInteger($this->forum);
 	$this->threads = $stm->getColumn();
 	$stm->close();
