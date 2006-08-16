@@ -1,102 +1,67 @@
-* { margin: 0; padding: 0; }
-* ul { padding: 20px; }
 body {
 	background: url("http://www.archlinux.de/images/title_back.png") repeat-x top left #fbf8f1;
-	padding: 0 30px;
+	padding: 0px 30px;
+	margin: 0;
 	color: #46494d;
 	font-family: sans-serif;
-	font-size:12px;
+	font-size:10px;
 }
-#head_container { height: 140px; }
-.right {
-	float: right;
-	width: 360px;
-	padding: 0 10px 10px 0;
-}
-.clear { clear: both; margin: 0; padding: 0; }
+
+#head_container {top:0; margin: 0; padding: 0;  height: 140px;}
+
 #main_nav ul {
 	list-style: none;
+	margin: 0;
+	padding: 20px;
 	padding-right: 10px;
 	padding-top: 48px;
 }
-.right ul {
-	list-style: none;
-}
+
 #main_nav ul li {
 	display: block;
 	float: right;
 	width: 67px;
 	height: 20px;
+	margin: 0;
 	padding-top: 2px;
 	margin-left: 3px;
 	background: url("http://www.archlinux.de/images/tab.png") repeat-x bottom left #fbf8f1;
 	text-align: center;
 	font-size: 13px;
 }
+
 #main_nav ul li[class~=selected] {
 	background: #fbf8f1;
 }
+
 #main_nav ul li a {
-	text-decoration: none;
-}
-
-.updates {
-	position: relative;
-	top: -30px;
-	background: #f6efe0;
-	border: 1px solid #eee4cb;
-	padding: 10px;
-	font-size:10px;
-}
-
-.left {
-	padding: 10px;
-	margin: 0 400px 0 0;
-}
-.left p { text-align: justify; }
-#title {
-	height: 140px;
-	float: left;
-}
-#logo {
-	float: left;
-	width: 140px;
-	height: 140px;
-}
-.box {
-	padding: 10px;
-	background: #e1e3e6;
-	border: 1px solid #8faecd;
-}
-h2 {
-	margin-bottom: 10px;
-	font-size:18px;
-}
-h1 {
-	margin: 20px 0 10px 0;
-	font-size:20px;
-}
-
-h3{font-size:16px;margin-bottom: 5px;}
-
-a {
-	color: #35526f;
+color: #35526f;
 	font-weight: bold;
 	text-decoration: none;
 }
 
-a:hover	{
-	text-decoration:underline;
+
+
+#title {margin: 0; padding: 0;
+	height: 140px;
+	float: left;
 }
 
-img { border: none; }
-.foot {
-	clear: both;
-	text-align: center;
-	font-size: 0.8em;
+#logo {margin: 0; padding: 0;
+	float: left;
+	width: 140px;
+	height: 140px;
 }
 
+a		{
+		text-decoration:none;
+		color:#35526f;
+		}
 
+a:hover		{
+		color:#6D8AA9;
+		text-decoration:none;
+		}
 
 table     	{
 		empty-cells:show;
@@ -145,11 +110,11 @@ table     	{
 		}
 
 .newex:before	{
-		content:url(http://www.archlinux.de/images/new.png);
+		content:url(http://www.archlinux.de/images/new_ex.png);
 		}
 
 .oldex:before	{
-		content:url(http://www.archlinux.de/images/old.png);
+		content:url(http://www.archlinux.de/images/old_ex.png);
 		}
 
 .poll:before	{
@@ -234,7 +199,7 @@ table     	{
 		}
 
 .pathlink:hover	{
-/* 		color:#3366CC; */
+ 		color:#35526f;
 		}
 
 .iconcol	{
