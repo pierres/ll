@@ -15,13 +15,12 @@ protected function setForm()
 	try
 		{
 		$this->post = $this->Io->getInt('post');
+		$this->addHidden('post', $this->post);
 		}
 	catch (IoRequestException $e)
 		{
 		$this->showWarning('Welcher Beitrag?');
 		}
-
-	$this->addHidden('post', $this->post);
 
 	$this->checkAccess();
 
@@ -131,6 +130,8 @@ protected function buildList()
 			WHERE
 				id <> ?
 				AND forumid = (SELECT forumid FROM threads WHERE id = ?)
+				AND deleted = 0
+				AND closed = 0
 			ORDER BY
 				lastdate DESC
 			LIMIT 50

@@ -97,7 +97,7 @@ if ($this->post == -1)
 				');
 			$stm->bindInteger($this->thread);
 			$stm->bindInteger($this->Log->getTime($this->thread));
-			$this->post = $this->posts - $stm->getColumn();
+			$this->post = $this->posts - $stm->getColumn()-1;
 			$stm->close();
 			}
 		catch (DBNoDataException $e)

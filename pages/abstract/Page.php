@@ -61,11 +61,18 @@ public function getValue($key)
 	return $this->variables[$key];
 	}
 
-public function showWarning($text)
+protected function showWarning($text)
 	{
 	$this->setValue('title', 'Warnung');
 	$this->setValue('body', '<div class="warning">'.$text.'</div>');
-	$this->show();
+	$this->sendOutput();
+	}
+
+protected function showFailure($text)
+	{
+	$this->setValue('title', 'Warnung');
+	$this->setValue('body', '<div class="warning">'.$text.'</div>');
+	$this->sendOutput();
 	}
 
 private function getWebring()
@@ -105,7 +112,7 @@ public function prepare()
 	$this->setValue('body', 'kein Text');
 	}
 
-public function show()
+private function sendOutput()
 	{
 	$file = file_get_contents('html/'.$this->Board->getId().'.html');
 
@@ -128,6 +135,11 @@ public function show()
 		}
 
 	$this->Io->out($file);
+	}
+
+public function show()
+	{
+	$this->sendOutput();
 	}
 }
 

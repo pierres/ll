@@ -1,19 +1,15 @@
 <?php
 
-class DelThread extends EditThread{
+class DelThread extends Page{
 
+protected $forum 		= 0;
+protected $thread		= 0;
 
 public function prepare()
 	{
-	$this->allow_deleted = true;
-	$this->allow_closed = true;
 	$this->checkInput();
 	$this->checkAccess();
-	$this->sendForm();
-	}
 
-protected function sendForm()
-	{
 	$stm = $this->DB->prepare
 		('
 		UPDATE
@@ -28,7 +24,49 @@ protected function sendForm()
 	$stm->close();
 
 	$this->updateForum();
-	$this->redirect();
+	}
+
+protected function checkInput()
+	{
+	try
+		{
+		$this->thread = $this->Io->getInt('thread');
+		}
+	catch (IoException $e)
+		{
+		$this->showFailure('Kein Thema angegeben!');
+		}
+
+	try
+		{
+		$stm = $this->DB->prepare
+			('
+			SELECT
+				forumid
+			FROM
+				threads
+			WHERE
+				closed = 0
+				AND id = ?
+			');
+		$stm->bindInteger($this->thread);
+		$this->forum = $stm->getColumn();
+		$stm->close();
+		}
+	catch (DBNoDataException $e)
+		{
+		$stm->close();
+		$this->showFailure('Thema nicht gefunden oder geschlossen!');
+		}
+	}
+
+protected function checkAccess()
+	{
+	if (!$this->User->isForumMod($this->forum))
+		{
+		// Tun wir so, als wüssten wir von nichts
+		$this->showFailure('Kein Thema gefunden.');
+		}
 	}
 
 protected function updateForum()
@@ -37,9 +75,9 @@ protected function updateForum()
 	AdminFunctions::updateForum($this->forum);
 	}
 
-protected function redirect()
+public function show()
 	{
-	$this->Io->redirect('Threads', 'forum='.$this->forum);
+	$this->Io->redirect('Postings', 'thread='.$this->thread);
 	}
 
 }

@@ -15,12 +15,21 @@ protected function checkInput()
 	{
 	try
 		{
+		$this->thread = $this->Io->getInt('thread');
+		$this->addHidden('thread', $this->thread);
+		}
+	catch (IoException $e)
+		{
+		$this->showFailure('Kein Thema angegeben!');
+		}
+
+	try
+		{
 		$stm = $this->DB->prepare
 			('
 			SELECT
 				posts.id,
 				posts.text,
-				posts.threadid,
 				posts.smilies,
 				threads.name
 			FROM
@@ -32,14 +41,9 @@ protected function checkInput()
 			ORDER BY
 				posts.dat ASC
 			');
-		$stm->bindInteger($this->Io->getInt('thread'));
+		$stm->bindInteger($this->thread );
 		$data = $stm->getRow();
 		$stm->close();
-		}
-	catch (IoException $e)
-		{
-		$stm->close();
-		$this->showFailure('Kein Thema angegeben!');
 		}
 	catch (DBNoDataException $e)
 		{
@@ -58,7 +62,7 @@ protected function checkInput()
 			WHERE
 				id = ?'
 			);
-		$stm->bindInteger($this->Io->getInt('thread'));
+		$stm->bindInteger($this->thread);
 		$this->poll_question = $stm->getColumn();
 		$stm->close();
 
@@ -73,11 +77,13 @@ protected function checkInput()
 			ORDER BY
 				id ASC
 			');
-		$stm->bindInteger($this->Io->getInt('thread'));
+		$stm->bindInteger($this->thread);
+
 		foreach($stm->getColumnSet() as $poll_option)
 			{
 			$this->poll_options .= $poll_option."\n";
 			}
+
 		$stm->close();
 		}
 	catch (DBNoDataException $e)
@@ -87,7 +93,6 @@ protected function checkInput()
 
 	$this->post = $data['id'];
 	$this->text =  $this->UnMarkup->fromHtml($data['text']);
-	$this->thread = $data['threadid'];
 
 	$this->topic = unhtmlspecialchars($data['name']);
 	$this->smilies = ($data['smilies'] == 0 ? false : true);
@@ -95,8 +100,6 @@ protected function checkInput()
 
 	$this->db_poll_question = $this->poll_question;
 	$this->db_poll_options = $this->poll_options;
-
-	$this->addHidden('thread', $this->thread);
 
 	parent::checkInput();
 	}

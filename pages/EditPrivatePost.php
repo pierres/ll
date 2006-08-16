@@ -3,19 +3,27 @@
 
 class EditPrivatePost extends NewPrivatePost{
 
-protected $post 		= 0;
-protected $title 		= 'Beitrag bearbeiten';
-
+protected $post 	= 0;
+protected $title 	= 'Beitrag bearbeiten';
 
 
 protected function checkInput()
 	{
 	try
 		{
+		$this->post = $this->Io->getInt('post');
+		$this->addHidden('post', $this->post);
+		}
+	catch (IoException $e)
+		{
+		$this->showFailure('Kein Beitrag angegeben!');
+		}
+
+	try
+		{
 		$stm = $this->DB->prepare
 			('
 			SELECT
-				id,
 				text,
 				threadid,
 				smilies
@@ -24,27 +32,19 @@ protected function checkInput()
 			WHERE
 				id = ?'
 			);
-		$stm->bindInteger($this->Io->getInt('post'));
+		$stm->bindInteger($this->post);
 		$data = $stm->getRow();
 		$stm->close();
-		}
-	catch (IoException $e)
-		{
-		$stm->close();
-		$this->showFailure('Kein Beitrag angegeben!');
+
+		$this->text =  $this->UnMarkup->fromHtml($data['text']);
+		$this->thread = $data['threadid'];
+		$this->smilies = ($data['smilies'] == 0 ? false : true);
 		}
 	catch (DBNoDataException $e)
 		{
 		$stm->close();
 		$this->showFailure('Beitrag nicht gefunden!');
 		}
-
-	$this->post = $data['id'];
-	$this->text =  $this->UnMarkup->fromHtml($data['text']);
-	$this->thread = $data['threadid'];
-	$this->smilies = ($data['smilies'] == 0 ? false : true);
-
-	$this->addHidden('post', $this->post);
 	}
 
 protected function checkAccess()

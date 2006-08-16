@@ -351,6 +351,45 @@ public function isMod()
 	return ($this->isAdmin() || $this->isLevel(self::MOD) || $this->isGroup($this->Board->getMods()));
 	}
 
+public function isForumMod($forumid)
+	{
+	$isMod = false;
+
+	if ($this->isMod())
+		{
+		$isMod = true;
+		}
+	else
+		{
+		try
+			{
+			$stm = $this->DB->prepare
+				('
+				SELECT
+					mods
+				FROM
+					forums
+				WHERE
+					id = ?'
+				);
+			$stm->bindInteger($forumid);
+			$mods = $stm->getColumn();
+			$stm->close();
+
+			if ($this->isGroup($mods))
+				{
+				$isMod = true;
+				}
+			}
+		catch (DBNoDataException $e)
+			{
+			$stm->close();
+			}
+		}
+
+	return $isMod;
+	}
+
 }
 
 class LoginException extends RuntimeException{

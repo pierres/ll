@@ -10,8 +10,6 @@ protected function setForm()
 	{
 	$this->setValue('title', $this->title);
 
-	$this->allow_closed = true;
-
 	$this->checkInput();
 	$this->checkAccess($this->forum);
 
@@ -33,39 +31,12 @@ protected function checkForm()
 
 protected function checkAccess($forum = 0)
 	{
-	// Wenn`s ein Moderator ist brauchen wir ja nicht weiter prüfen
-	if ($this->User->isMod())
+	if ($this->User->isForumMod($forum))
 		{
 		return;
 		}
 
 	parent::checkAccess();
-
-	try
-		{
-		$stm = $this->DB->prepare
-			('
-			SELECT
-				mods
-			FROM
-				forums
-			WHERE
-				id = ?'
-			);
-		$stm->bindInteger($forum);
-		$mods = $stm->getColumn();
-		$stm->close();
-		}
-	catch (DBNoDataException $e)
-		{
-		$stm->close();
-		$this->showFailure('Kein Forum gefunden.');
-		}
-
-	if (!$this->User->isGroup($mods))
-		{
-		$this->showFailure('Kein Forum gefunden.');
-		}
 	}
 
 protected function buildList()

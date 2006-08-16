@@ -1,18 +1,16 @@
 <?php
 
-class DelPost extends EditPost{
+class DelPost extends Page{
 
+private $post = 0;
+private $thread = 0;
+private $forum = 0;
 
 public function prepare()
 	{
-	$this->allow_deleted = true;
 	$this->checkInput();
 	$this->checkAccess();
-	$this->sendForm();
-	}
 
-protected function sendForm()
-	{
 	$stm = $this->DB->prepare
 		('
 		UPDATE
@@ -28,7 +26,56 @@ protected function sendForm()
 
 	$this->updateThread();
  	$this->updateForum();
-	$this->redirect();
+	}
+
+protected function checkInput()
+	{
+	try
+		{
+		$this->post = $this->Io->getInt('post');
+		}
+	catch (IoException $e)
+		{
+		$this->showFailure('Kein Beitrag angegeben!');
+		}
+
+	try
+		{
+		$stm = $this->DB->prepare
+			('
+			SELECT
+				threads.forumid,
+				threads.id
+			FROM
+				threads JOIN posts ON posts.threadid = threads.id
+			WHERE
+				threads.deleted = 0
+				AND threads.closed = 0
+				AND posts.id = ?
+				AND threads.forumid <> 0
+			');
+		$stm->bindInteger($this->post);
+		$data = $stm->getRow();
+		$stm->close();
+
+		$this->thread = $data['id'];
+		$this->forum = $data['forumid'];
+		}
+	catch (DBNoDataException $e)
+		{
+		$stm->close();
+		$this->showFailure('Beitrag nicht gefunden oder Thema geschlossen!');
+		}
+	}
+
+protected function checkAccess()
+	{
+	/** TODO: evtl. auch eigene Posts löschen */
+	if (!$this->User->isForumMod($this->forum))
+		{
+		// Tun wir so, als wüssten wir von nichts
+		$this->showFailure('Kein Beitrag gefunden.');
+		}
 	}
 
 protected function updateThread()
@@ -43,7 +90,7 @@ protected function updateForum()
 	AdminFunctions::updateForum($this->forum);
 	}
 
-protected function redirect()
+public function show()
 	{
 	$this->Io->redirect('Postings', 'thread='.$this->thread);
 	}

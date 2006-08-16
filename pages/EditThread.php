@@ -4,8 +4,6 @@
 class EditThread extends NewThread{
 
 protected $post 		= 0;
-protected $allow_closed 	= false;
-protected $allow_deleted 	= false;
 protected $thread		= 0;
 
 private $db_poll_question 	= '';
@@ -18,36 +16,37 @@ protected function checkInput()
 	{
 	try
 		{
+		$this->thread = $this->Io->getInt('thread');
+		$this->addHidden('thread', $this->thread);
+		}
+	catch (IoException $e)
+		{
+		$this->showFailure('Kein Thema angegeben!');
+		}
+
+	try
+		{
 		$stm = $this->DB->prepare
 			('
 			SELECT
 				posts.id,
 				posts.text,
-				posts.threadid,
 				posts.smilies,
 				threads.forumid,
 				threads.name
 			FROM
-				posts,
-				threads
+				posts JOIN threads ON threads.id = posts.threadid
 			WHERE
-				threads.id = posts.threadid
-				'.($this->allow_deleted ? '' : 'AND posts.deleted = 0').'
-				'.($this->allow_deleted ? '' : 'AND threads.deleted = 0').'
-				'.($this->allow_closed ? '' : 'AND threads.closed = 0').'
+				posts.deleted = 0
+				AND threads.deleted = 0
+				AND threads.closed = 0
 				AND threads.id = ?
 			ORDER BY
 				posts.dat ASC
 			');
-		$this->thread = $this->Io->getInt('thread');
 		$stm->bindInteger($this->thread);
 		$data = $stm->getRow();
 		$stm->close();
-		}
-	catch (IoException $e)
-		{
-		$stm->close();
-		$this->showFailure('Kein Thema angegeben!');
 		}
 	catch (DBNoDataException $e)
 		{
@@ -66,7 +65,7 @@ protected function checkInput()
 			WHERE
 				id = ?'
 			);
-		$stm->bindInteger($this->Io->getInt('thread'));
+		$stm->bindInteger($this->thread);
 		$this->poll_question = $stm->getColumn();
 		$stm->close();
 
@@ -81,11 +80,13 @@ protected function checkInput()
 			ORDER BY
 				id ASC
 			');
-		$stm->bindInteger($this->Io->getInt('thread'));
+		$stm->bindInteger($this->thread);
+
 		foreach($stm->getColumnSet() as $poll_option)
 			{
 			$this->poll_options .= $poll_option."\n";
 			}
+
 		$stm->close();
 		}
 	catch (DBNoDataException $e)
@@ -95,16 +96,12 @@ protected function checkInput()
 
 	$this->post = $data['id'];
 	$this->text =  $this->UnMarkup->fromHtml($data['text']);
-	$this->thread = $data['threadid'];
 	$this->forum = $data['forumid'];
 	$this->topic = unhtmlspecialchars($data['name']);
 	$this->smilies = ($data['smilies'] == 0 ? false : true);
 
-
 	$this->db_poll_question = $this->poll_question;
 	$this->db_poll_options = $this->poll_options;
-
-	$this->addHidden('thread', $this->thread);
 
 	parent::checkInput();
 	}
@@ -134,28 +131,7 @@ protected function checkAccess()
 		$this->showFailure('Kein Beitrag gefunden.');
 		}
 
-	try
-		{
-		$stm = $this->DB->prepare
-			('
-			SELECT
-				mods
-			FROM
-				forums
-			WHERE
-				id = ?'
-			);
-		$stm->bindInteger($this->forum);
-		$mods = $stm->getColumn();
-		$stm->close();
-		}
-	catch (DBNoDataException $e)
-		{
-		$stm->close();
-		$mods = 0;
-		}
-
-	if (!$this->User->isUser($access) && !$this->User->isMod() && !$this->User->isGroup($mods))
+	if (!$this->User->isUser($access) && !$this->User->isForumMod($this->forum))
 		{
 		// Tun wir so, als wüssten wir von nichts
 		$this->showFailure('Kein Beitrag gefunden.');

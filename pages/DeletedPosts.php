@@ -22,11 +22,9 @@ protected function setForm()
 				posts.text,
 				threads.name
 			FROM
-				posts,
-				threads
+				posts JOIN threads ON threads.id = posts.threadid
 			WHERE
 				posts.deleted = 1
-				AND threads.id = posts.threadid
 			ORDER BY
 				posts.dat DESC
 			');

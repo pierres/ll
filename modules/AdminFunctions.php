@@ -19,7 +19,8 @@ public static function delThread($thread)
 				forumid
 			FROM
 				threads
-			WHERE id = ?'
+			WHERE
+				id = ?'
 			);
 		$stm->bindInteger($thread);
 		$forum = $stm->getColumn();
@@ -510,7 +511,7 @@ public static function updateForum($forum)
 			SET
 				lastthread = (SELECT id FROM threads WHERE forumid = forums.id AND deleted = 0 ORDER BY lastdate DESC LIMIT 1),
 				threads = (SELECT COUNT(*) FROM threads WHERE forumid = forums.id AND deleted = 0),
-				posts = (SELECT SUM(posts) FROM threads WHERE forumid = forums.id AND deleted = 0)
+				posts = (SELECT COALESCE(SUM(posts), 0) FROM threads WHERE forumid = forums.id AND deleted = 0)
 			WHERE
 				id = ?'
 			);
@@ -528,22 +529,31 @@ public static function updateForum($forum)
 
 private static function updateThreadCounter($forum)
 	{
- 	self::__get('DB')->execute('LOCK TABLES threads WRITE');
+	self::__get('DB')->execute('LOCK TABLES threads WRITE');
 
-	$stm = self::__get('DB')->prepare
-		('
-		SELECT
-			id,
-			forumid
-		FROM
-			threads
-		WHERE
-			forumid = ?
-		ORDER BY
-			lastdate ASC
-		');
-	$stm->bindInteger($forum);
-	$threads = $stm->getRowSet();
+	try
+		{
+		/** FIXME: movedfrom.counter wird von forumid überschrieben oder umgekehrt
+		 -> deshalb wird es erstmal deaktiviert */
+		$stm = self::__get('DB')->prepare
+			('
+			SELECT
+				id,
+				forumid
+			FROM
+				threads
+			WHERE
+				forumid = ?
+			ORDER BY
+				lastdate ASC
+			');
+		$stm->bindInteger($forum);
+		$threads = $stm->getRowSet();
+		}
+	catch (DBNoDataException $e)
+		{
+		$threads = array();
+		}
 
 	$counter = 0;
 

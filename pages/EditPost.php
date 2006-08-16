@@ -3,64 +3,57 @@
 
 class EditPost extends NewPost{
 
-protected $post 		= 0;
-protected $allow_deleted 	= false;
-protected $allow_closed 	= false;
-
-protected $title 		= 'Beitrag bearbeiten';
-
+protected $post 	= 0;
+protected $title 	= 'Beitrag bearbeiten';
 
 
 protected function checkInput()
 	{
 	try
 		{
+		$this->post = $this->Io->getInt('post');
+		$this->addHidden('post', $this->post);
+		}
+	catch (IoException $e)
+		{
+		$this->showFailure('Kein Beitrag angegeben!');
+		}
+
+	try
+		{
 		$stm = $this->DB->prepare
 			('
 			SELECT
-				posts.id,
 				posts.text,
 				posts.threadid,
 				posts.smilies,
 				threads.forumid
 			FROM
-				posts,
-				threads
+				posts JOIN threads ON threads.id = posts.threadid
 			WHERE
 				posts.id = ?
-				'.($this->allow_deleted ? '' : 'AND posts.deleted = 0').'
-				'.($this->allow_deleted ? '' : 'AND threads.deleted = 0').'
-				'.($this->allow_closed ? '' : 'AND threads.closed = 0').'
-				AND threads.id = posts.threadid
+				AND posts.deleted = 0
+				AND threads.deleted = 0
+				AND threads.closed = 0
 			');
-		$stm->bindInteger($this->Io->getInt('post'));
+		$stm->bindInteger($this->post);
 		$data = $stm->getRow();
 		$stm->close();
-		}
-	catch (IoException $e)
-		{
-		$stm->close();
-		$this->showFailure('Kein Beitrag angegeben!');
+
+		$this->text =  $this->UnMarkup->fromHtml($data['text']);
+		$this->thread = $data['threadid'];
+		$this->forum = $data['forumid'];
+		$this->smilies = ($data['smilies'] == 0 ? false : true);
 		}
 	catch (DBNoDataException $e)
 		{
 		$stm->close();
 		$this->showFailure('Beitrag nicht gefunden oder Thema geschlossen!');
 		}
-
-	$this->post = $data['id'];
-	$this->text =  $this->UnMarkup->fromHtml($data['text']);
-	$this->thread = $data['threadid'];
-	$this->forum = $data['forumid'];
-	$this->smilies = ($data['smilies'] == 0 ? false : true);
-
-	$this->addHidden('post', $this->post);
 	}
 
 protected function checkAccess()
 	{
-	parent::checkAccess();
-
 	try
 		{
 		$stm = $this->DB->prepare
@@ -82,28 +75,7 @@ protected function checkAccess()
 		$this->showFailure('Kein Beitrag gefunden.');
 		}
 
-	try
-		{
-		$stm = $this->DB->prepare
-			('
-			SELECT
-				mods
-			FROM
-				forums
-			WHERE
-				id =?'
-			);
-		$stm->bindInteger($this->forum);
-		$mods = $stm->getColumn();
-		$stm->close();
-		}
-	catch (DBNoDataException $e)
-		{
-		$stm->close();
-		$mods = 0;
-		}
-
-	if (!$this->User->isUser($access) && !$this->User->isMod() && !$this->User->isGroup($mods))
+	if (!$this->User->isUser($access) && !$this->User->isForumMod($this->forum))
 		{
 		// Tun wir so, als wüssten wir von nichts
 		$this->showFailure('Kein Beitrag gefunden.');

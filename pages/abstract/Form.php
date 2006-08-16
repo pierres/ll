@@ -329,14 +329,9 @@ protected function getWarning()
 	return (empty($this->warning) ? '' : '<div class="warning">'.implode('<br />', $this->warning).'</div>');
 	}
 
-public function showWarning($text)
+protected function showWarning($text)
 	{
 	$this->warning[] = $text;
-	}
-
-protected function showFailure($text)
-	{
-	parent::showWarning($text);
 	}
 
 private function setFocus($name)

@@ -98,8 +98,7 @@ try
 			threads
 		WHERE
 			'.($this->ismod ? '' : 'threads.deleted = 0 AND').
-			' (threads.forumid = ? OR threads.movedfrom = ?)');
-	$stm->bindInteger($this->forum);
+			' threads.forumid = ?');
 	$stm->bindInteger($this->forum);
 	$this->threads = $stm->getColumn();
 	$stm->close();
@@ -135,7 +134,7 @@ try
 			FROM
 				threads
 			WHERE
-				(forumid = ? OR movedfrom = ?)
+				forumid = ?
 				'.($this->ismod ? '' : 'AND deleted =  0').'
 				AND sticky = 1
 		)
@@ -161,7 +160,7 @@ try
 			FROM
 				threads
 			WHERE
-				(forumid = ? OR movedfrom = ?)
+				forumid = ?
 				'.($this->ismod ? '' : 'AND deleted =  0').'
 				AND counter BETWEEN ? AND ?
 				AND sticky = 0
@@ -173,8 +172,6 @@ try
 	$stm->bindInteger($this->forum);
 	$stm->bindInteger($this->forum);
 
-	$stm->bindInteger($this->forum);
-	$stm->bindInteger($this->forum);
 	$stm->bindInteger($this->threads-$this->Settings->getValue('max_threads')-$this->thread);
 	$stm->bindInteger($this->threads-$this->thread-1);
 

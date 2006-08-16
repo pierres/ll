@@ -137,7 +137,7 @@ if ($this->post == -1)
 				');
 			$stm->bindInteger($this->thread);
 			$stm->bindInteger($this->Log->getTime($this->thread));
-			$this->post = $this->posts - $stm->getColumn();
+			$this->post = $this->posts - $stm->getColumn()-1;
 			$stm->close();
 			}
 		catch (DBNoDataException $e)
@@ -212,7 +212,7 @@ catch (DBNoDataException $e)
 
 $postings	= '';
 $i 		= 2;
-$first 	= true;
+$first 		= true;
 $closed 	= (empty($thread['closed']) ? false : true);
 $deleted 	= false;
 
@@ -377,7 +377,7 @@ else
 $thread_buttons = ($this->ismod ?
 	'<tr><td class="pages" colspan="3"><a href="?page=DelThread;id='.$this->Board->getId().';thread='.$thread['id'].'"><span class="button">Thema löschen</span></a>
 	<a href="?page=MoveThread;id='.$this->Board->getId().';thread='.$thread['id'].'"><span class="button">Thema verschieben</span></a>
-	<a href="?page=CloseThread;id='.$this->Board->getId().';thread='.$thread['id'].'"><span class="button">Thema schließen</span></a>
+	<a href="?page=CloseThread;id='.$this->Board->getId().';thread='.$thread['id'].'"><span class="button">Thema '.($closed ? 'öffnen' : 'schließen').'</span></a>
 	<a href="?page=StickThread;id='.$this->Board->getId().';thread='.$thread['id'].';stick=1"><span class="button">Thema festsetzen</span></a></td></tr>' : '');
 
 $reply_button = (!$closed && $thread['deleted'] == 0 ? '<a href="?page=NewPost;id='.$this->Board->getId().';thread='.$thread['id'].'"><span class="button">antworten</span></a>' : '');
