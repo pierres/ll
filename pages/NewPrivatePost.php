@@ -78,7 +78,7 @@ protected function sendForm()
 	$stm = $this->DB->prepare
 		('
 		SELECT
-			MAX(counter)
+			COALESCE(MAX(counter)+1, 0)
 		FROM
 			posts
 		WHERE
@@ -108,7 +108,7 @@ protected function sendForm()
 	$stm->bindInteger($this->time);
 	$stm->bindInteger($this->smilies ? 1 : 0);
 
-	$stm->bindInteger($counter == 0 ? 0 : $counter+1);
+	$stm->bindInteger($counter);
 
 	$stm->execute();
 	$stm->close();

@@ -79,7 +79,9 @@ catch (DBNoDataException $e)
 	$this->posts = 0;
 	}
 
-if ($this->post == -1)
+$lastVisit = $this->Log->getTime($this->thread);
+
+if ($this->post < 0)
 	{
 	if ($this->Log->isNew($this->thread, $thread['lastdate']))
 		{
@@ -96,7 +98,7 @@ if ($this->post == -1)
 					AND dat >= ?
 				');
 			$stm->bindInteger($this->thread);
-			$stm->bindInteger($this->Log->getTime($this->thread));
+			$stm->bindInteger($lastVisit);
 			$this->post = $this->posts - $stm->getColumn()-1;
 			$stm->close();
 			}
@@ -205,7 +207,14 @@ foreach ($result as $data)
 
 	$postid = $data['id'];
 
-	$data['dat'] = formatDate($data['dat']);
+	if ($data['dat'] > $lastVisit)
+		{
+		$data['dat'] = '<span class="newthread">'.formatDate($data['dat']).'</span>';
+		}
+	else
+		{
+		$data['dat'] = formatDate($data['dat']);
+		}
 
 	if ($data['editdate'] > 0)
 		{

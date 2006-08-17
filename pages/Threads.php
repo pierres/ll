@@ -23,7 +23,7 @@ catch (IoRequestException $e)
 
 try
 	{
-	$this->thread = $this->Io->getInt('thread');
+	$this->thread = nat($this->Io->getInt('thread'));
 	}
 catch (IoRequestException $e)
 	{

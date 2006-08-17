@@ -6,6 +6,7 @@ private static $loadedModules = array();
 
 private static $availableModules = array
 	(
+	'UpdateCounter' => 'pages/UpdateCounter.php',
 	'AdminCats' => 'pages/AdminCats.php',
 	'AdminCatsDel' => 'pages/AdminCatsDel.php',
 	'AdminCss' => 'pages/AdminCss.php',

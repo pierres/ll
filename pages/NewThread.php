@@ -182,7 +182,7 @@ protected function sendForm()
 	$stm = $this->DB->prepare
 		('
 		SELECT
-			MAX(counter)
+			COALESCE(MAX(counter)+1, 0)
 		FROM
 			threads
 		WHERE
@@ -208,7 +208,7 @@ protected function sendForm()
 		);
 	$stm->bindString(htmlspecialchars($this->topic));
 	$stm->bindInteger($this->forum);
-	$stm->bindInteger($counter == 0 ? 0 : $counter+1);
+	$stm->bindInteger($counter);
 
 	$stm->bindString($summary);
 
