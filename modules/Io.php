@@ -170,6 +170,11 @@ public function redirectToUrl($url)
 
 private function curlInit($url)
 	{
+	if (!preg_match('/^(https?|ftp):\/\//', $url))
+		{
+ 		throw new RuntimeException('Nur http und ftp-Protokolle erlaubt', 0);
+		}
+
 	$curl = curl_init($url);
 	curl_setopt($curl, CURLOPT_FAILONERROR, true);
 	curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
