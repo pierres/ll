@@ -54,7 +54,7 @@ protected function checkInput()
 	catch (DBNoDataException $e)
 		{
 		$stm->close();
-		$this->showFailure('Thema nicht gefunden oder geschlossen!');
+		$this->showFailure('Thema nicht gefunden!');
 		}
 	}
 

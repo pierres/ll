@@ -14,6 +14,8 @@ protected $title 	= 'Beitrag schreiben';
 
 protected $file		= array();
 
+protected $counter 	= 0;
+
 
 protected function setForm()
 	{
@@ -384,7 +386,8 @@ protected function checkInput()
 			SELECT
 				id,
 				forumid,
-				closed
+				closed,
+				counter
 			FROM
 				threads
 			WHERE
@@ -414,6 +417,7 @@ protected function checkInput()
 
 	$this->thread = $data['id'];
 	$this->forum = $data['forumid'];
+	$this->counter = $data['counter'];
 
 	$this->addHidden('thread', $this->thread);
 	}
@@ -505,7 +509,7 @@ protected function sendForm()
 	$stm = $this->DB->prepare
 		('
 		SELECT
-			COALESCE(MAX(counter)+1, 0)
+			COUNT(*)
 		FROM
 			posts
 		WHERE
@@ -558,18 +562,49 @@ protected function sendForm()
 
 protected function updateThread($userid, $username)
 	{
+ 	$this->DB->execute('LOCK TABLES threads WRITE');
+
+	$stm = $this->DB->prepare
+		('
+		SELECT
+			COUNT(*)-1
+		FROM
+			threads
+		WHERE
+			forumid = ?
+		');
+	$stm->bindInteger($this->forum);
+	$newCounter = $stm->getColumn();
+	$stm->close();
+
 	$stm = $this->DB->prepare
 		('
 		UPDATE
 			threads
 		SET
+			counter = counter - 1
+		WHERE
+			counter > ?
+		');
+	$stm->bindInteger($this->counter);
+
+	$stm->execute();
+	$stm->close();
+
+	$stm = $this->DB->prepare
+		('
+		UPDATE
+			threads
+		SET
+			counter = ?,
 			lastdate = ?,
 			lastuserid = ?,
 			lastusername = ?,
 			posts = posts + 1
 		WHERE
-			id = ?'
-		);
+			id = ?
+		');
+	$stm->bindInteger($newCounter);
 	$stm->bindInteger($this->time);
 	$stm->bindInteger($userid);
 	$stm->bindString($username);
@@ -577,6 +612,8 @@ protected function updateThread($userid, $username)
 
 	$stm->execute();
 	$stm->close();
+
+	$this->DB->execute('UNLOCK TABLES');
 	}
 
 protected function updateForum($userid)

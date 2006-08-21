@@ -114,6 +114,7 @@ private function loadImage()
 
 private function redirect()
 	{
+	/** FIXME: evtl. anfällig für XSS */
 	$this->Io->redirectToUrl($this->url);
 	}
 

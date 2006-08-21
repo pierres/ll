@@ -182,7 +182,7 @@ protected function sendForm()
 	$stm = $this->DB->prepare
 		('
 		SELECT
-			COALESCE(MAX(counter)+1, 0)
+			COUNT(*)
 		FROM
 			threads
 		WHERE
