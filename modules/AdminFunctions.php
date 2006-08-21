@@ -454,48 +454,68 @@ public static function updateThread($thread)
 		}
 	}
 
-private static function updatePostCounter($thread)
+public static function updatePostCounter($thread)
 	{
  	self::__get('DB')->execute('LOCK TABLES posts WRITE');
 
-	$stm = self::__get('DB')->prepare
-		('
-		SELECT
-			id,
-			threadid
-		FROM
-			posts
-		WHERE
-			threadid = ?
-		ORDER BY
-			dat ASC
-		');
-	$stm->bindInteger($thread);
-	$posts = $stm->getRowSet();
-
-	$counter = 0;
-
-	$stm2 = self::__get('DB')->prepare
-		('
-		UPDATE
-			posts
-		SET
-			counter = ?
-		WHERE
-			id = ?
-		');
-
-	foreach ($posts as $post)
+	try
 		{
-		$stm2->bindInteger($counter);
-		$stm2->bindInteger($post['id']);
-		$stm2->execute();
+		$stm = self::__get('DB')->prepare
+			('
+			SELECT
+				id,
+				threadid
+			FROM
+				posts
+			WHERE
+				threadid = ?
+			ORDER BY
+				dat ASC
+			');
+		$stm->bindInteger($thread);
+		$posts = $stm->getRowSet();
 
-		$counter++;
+		$counter = 0;
+
+		$stm2 = self::__get('DB')->prepare
+			('
+			UPDATE
+				posts
+			SET
+				counter = ?
+			WHERE
+				id = ?
+			');
+
+		foreach ($posts as $post)
+			{
+			$stm2->bindInteger($counter);
+			$stm2->bindInteger($post['id']);
+			$stm2->execute();
+
+			$counter++;
+			}
+
+		$stm2->close();
+		$stm->close();
 		}
-
-	$stm2->close();
-	$stm->close();
+	catch (DBNoDataException $e)
+		{
+		self::__get('DB')->execute('LOCK TABLES threads WRITE');
+		$stm->close();
+		$stm2 = self::__get('DB')->prepare
+			('
+			UPDATE
+				threads
+			SET
+				deleted = 1
+			WHERE
+				id = ?
+			');
+		$stm2->bindInteger($thread);
+		$stm2->execute();
+		$stm2->close();
+		}
 
  	self::__get('DB')->execute('UNLOCK TABLES');
 	}
@@ -527,7 +547,7 @@ public static function updateForum($forum)
 		}
 	}
 
-private static function updateThreadCounter($forum)
+public static function updateThreadCounter($forum)
 	{
 	self::__get('DB')->execute('LOCK TABLES threads WRITE');
 
