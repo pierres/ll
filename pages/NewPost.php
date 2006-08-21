@@ -584,8 +584,10 @@ protected function updateThread($userid, $username)
 		SET
 			counter = counter - 1
 		WHERE
-			counter > ?
+			forumid = ?
+			AND counter > ?
 		');
+	$stm->bindInteger($this->forum);
 	$stm->bindInteger($this->counter);
 
 	$stm->execute();
