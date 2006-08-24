@@ -18,6 +18,7 @@ protected function checkInput()
 				posts.id AS post,
 				threads.id AS thread,
 				threads.forumid,
+				threads.counter,
 				posts.text,
 				posts.username
 			FROM
@@ -50,6 +51,7 @@ protected function checkInput()
 
 	$this->thread = $data['thread'];
 	$this->forum = $data['forumid'];
+	$this->counter = $data['counter'];
 
 	$this->addHidden('post', $data['post']);
 	}

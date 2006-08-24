@@ -126,6 +126,29 @@ protected function sendForm()
 	$this->redirect();
 	}
 
+protected function updateThread($userid, $username)
+	{
+	$stm = $this->DB->prepare
+		('
+		UPDATE
+			threads
+		SET
+			lastdate = ?,
+			lastuserid = ?,
+			lastusername = ?,
+			posts = posts + 1
+		WHERE
+			id = ?
+		');
+	$stm->bindInteger($this->time);
+	$stm->bindInteger($userid);
+	$stm->bindString($username);
+	$stm->bindInteger($this->thread);
+
+	$stm->execute();
+	$stm->close();
+	}
+
 protected function updateForum($userid)
 	{
 	}
