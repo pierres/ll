@@ -1,22 +1,15 @@
 <?php
 
-class StickThread extends EditThread{
+class StickThread extends Page{
 
+protected $forum 		= 0;
+protected $thread		= 0;
 
 public function prepare()
 	{
-	$this->allow_closed = true;
 	$this->checkInput();
 	$this->checkAccess();
-	$this->sendForm();
-	}
 
-protected function showForm()
-	{
-	}
-
-protected function sendForm()
-	{
 	$stm = $this->DB->prepare
 		('
 		UPDATE
@@ -30,14 +23,61 @@ protected function sendForm()
 	$stm->execute();
 	$stm->close();
 
-// 	$this->updateForum();
-	$this->redirect();
+	$this->updateForum();
 	}
 
-
-protected function redirect()
+protected function checkInput()
 	{
-	$this->Io->redirect('Threads', 'forum='.$this->forum);
+	try
+		{
+		$this->thread = $this->Io->getInt('thread');
+		}
+	catch (IoException $e)
+		{
+		$this->showFailure('Kein Thema angegeben!');
+		}
+
+	try
+		{
+		$stm = $this->DB->prepare
+			('
+			SELECT
+				forumid
+			FROM
+				threads
+			WHERE
+				deleted = 0
+				AND id = ?
+			');
+		$stm->bindInteger($this->thread);
+		$this->forum = $stm->getColumn();
+		$stm->close();
+		}
+	catch (DBNoDataException $e)
+		{
+		$stm->close();
+		$this->showFailure('Thema nicht gefunden!');
+		}
+	}
+
+protected function checkAccess()
+	{
+	if (!$this->User->isForumMod($this->forum))
+		{
+		// Tun wir so, als wüssten wir von nichts
+		$this->showFailure('Kein Thema gefunden.');
+		}
+	}
+
+protected function updateForum()
+	{
+	/** TODO: nicht optimal */
+	AdminFunctions::updateForum($this->forum);
+	}
+
+public function show()
+	{
+	$this->Io->redirect('Postings', 'thread='.$this->thread);
 	}
 
 }
