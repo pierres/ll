@@ -66,6 +66,12 @@ function __construct()
 		'\'(' => 'cry');
 	}
 
+private function createStackLink($string)
+	{
+	$this->Stack->push($string);
+	return $this->sep.$this->Stack->lastID().$this->sep;
+	}
+
 private function complieFirstPass($text)
 	{
 	$protocoll 	= '(?:https?|ftp):\/\/';
@@ -123,17 +129,17 @@ private function complieSecondPass($text)
 	/** Überschriften */
 	$text = preg_replace_callback('/^(!{1,6})(.+?)$(\n?)/m', array($this, 'makeHeading'), $text);
 	/** Hervorhebungen */
-	$text = preg_replace('#//([^/\n]+?)//#', '<em>$1</em>', $text);
+	$text = preg_replace_callback('#//([^/\n]+?)//#', array($this, 'makeEm'), $text);
 
-	$text = preg_replace('/\*\*([^\*\s](?:[^\*\n]*?[^\*\s])?)\*\*/', '<strong>$1</strong>', $text);
+	$text = preg_replace_callback('/\*\*([^\*\s](?:[^\*\n]*?[^\*\s])?)\*\*/', array($this, 'makeStrong'), $text);
 
-	$text = preg_replace('/&quot;(.+?)&quot;/', '<q>$1</q>', $text);
+	$text = preg_replace_callback('/&quot;(.+?)&quot;/', array($this, 'makeInlineQuote'), $text);
 
 	$text = preg_replace('/^----+$(\n?)/m', '<hr />$1', $text);
 
-	$text = preg_replace('/--(.+?)--/', '<span><del>$1</del></span>', $text);
+	$text = preg_replace_callback('/--(.+?)--/', array($this, 'makeDel'), $text);
 
-	$text = preg_replace('/\+\+(.+?)\+\+/', '<span><ins>$1</ins></span>', $text);
+	$text = preg_replace_callback('/\+\+(.+?)\+\+/', array($this, 'makeIns'), $text);
 
 	/** Listen */
 	$text = preg_replace_callback('/(?:^\*+ [^\n]+$\n?)+/m',array($this, 'makeList'), $text);
@@ -345,7 +351,32 @@ private function makeList($matches)
 private function makeHeading($matches)
 	{
 	$level = strlen($matches[1]);
-	return '<h'.$level.'>'.$matches[2].'</h'.$level.'>'.$matches[3];
+	return $this->createStackLink('<h'.$level.'>'.$matches[2].'</h'.$level.'>'.$matches[3]);
+	}
+
+private function makeEm($matches)
+	{
+	return $this->createStackLink('<em>'.$matches[1].'</em>');
+	}
+
+private function makeStrong($matches)
+	{
+	return $this->createStackLink('<strong>'.$matches[1].'</strong>');
+	}
+
+private function makeInlineQuote($matches)
+	{
+	return $this->createStackLink('<q>'.$matches[1].'</q>');
+	}
+
+private function makeDel($matches)
+	{
+	return $this->createStackLink('<span><del>'.$matches[1].'</del></span>');
+	}
+
+private function makeIns($matches)
+	{
+	return $this->createStackLink('<span><ins>'.$matches[1].'</ins></span>');
 	}
 
 private function makeLink($matches)
@@ -388,9 +419,7 @@ private function makeNumberedLink($matches)
 		$target = ' onclick="return !window.open(this.href);" rel="nofollow" class="extlink"';
 		}
 
-	$this->Stack->push('<a href="'.htmlspecialchars($url, ENT_COMPAT, 'UTF-8').'"'.$target.'>'.htmlspecialchars($name, ENT_COMPAT, 'UTF-8').'</a>');
-
-	return $this->sep.$this->Stack->lastID().$this->sep;
+	return $this->createStackLink('<a href="'.htmlspecialchars($url, ENT_COMPAT, 'UTF-8').'"'.$target.'>'.htmlspecialchars($name, ENT_COMPAT, 'UTF-8').'</a>');
 	}
 
 private function makeNumberedWWWLink($matches)
@@ -424,9 +453,7 @@ private function makeNamedLink($matches)
 		$target = ' onclick="return !window.open(this.href);" rel="nofollow" class="extlink"';
 		}
 
-	$this->Stack->push('<a href="'.htmlspecialchars($url, ENT_COMPAT, 'UTF-8').'"'.$target.'>'.htmlspecialchars($name, ENT_COMPAT, 'UTF-8').'</a>');
-
-	return $this->sep.$this->Stack->lastID().$this->sep;
+	return $this->createStackLink('<a href="'.htmlspecialchars($url, ENT_COMPAT, 'UTF-8').'"'.$target.'>'.htmlspecialchars($name, ENT_COMPAT, 'UTF-8').'</a>');
 	}
 
 private function makeNamedWWWLink($matches)
@@ -445,9 +472,7 @@ private function makeImage($matches)
 	{
 	$url = urlencode($matches[0]);
 
-	$this->Stack->push('<a href="?page=GetImage;url='.$url.'" onclick="return !window.open(this.href);" rel="nofollow"><img src="?page=GetImage;thumb;url='.$url.'" alt="" class="image" /></a>');
-
-	return $this->sep.$this->Stack->lastID().$this->sep;
+	return $this->createStackLink('<a href="?page=GetImage;url='.$url.'" onclick="return !window.open(this.href);" rel="nofollow"><img src="?page=GetImage;thumb;url='.$url.'" alt="" class="image" /></a>');
 	}
 
 private function makeWWWImage($matches)
@@ -466,16 +491,12 @@ private function makeEmail($matches)
 	{
 	$email = htmlspecialchars($matches[0], ENT_COMPAT, 'UTF-8');
 
-	$this->Stack->push('<a href="mailto:'.$email.'">'.$email.'</a>');
-
-	return $this->sep.$this->Stack->lastID().$this->sep;
+	return $this->createStackLink('<a href="mailto:'.$email.'">'.$email.'</a>');
 	}
 
 private function makeSmiley($matches)
 	{
-	$this->Stack->push('<img src="images/smilies/'.$this->smilies[$matches[2]].'.gif" alt="'.$this->smilies[$matches[2]].'" class="smiley" />');
-
-	return $matches[1].$this->sep.$this->Stack->lastID().$this->sep.$matches[3];
+	return $matches[1].$this->createStackLink('<img src="images/smilies/'.$this->smilies[$matches[2]].'.gif" alt="'.$this->smilies[$matches[2]].'" class="smiley" />').$matches[3];
 	}
 
 private function makeExtraSmiley($matches)
@@ -484,8 +505,7 @@ private function makeExtraSmiley($matches)
 
 	if (in_array($matches[1], $smilies))
 		{
-		$this->Stack->push('<img src="images/smilies/extra/'.$matches[1].'.gif" alt="'.$matches[1].'" class="smiley" />');
-		return $this->sep.$this->Stack->lastID().$this->sep;
+		return $this->createStackLink('<img src="images/smilies/extra/'.$matches[1].'.gif" alt="'.$matches[1].'" class="smiley" />');
 		}
 	else
 		{

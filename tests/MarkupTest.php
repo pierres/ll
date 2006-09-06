@@ -228,6 +228,13 @@ public function testSmilies()
 	$this->assertEquals('<img src="images/smilies/wink.gif" alt="wink" class="smiley" />',$this->Markup->toHtml(';-)'));
 	}
 
+public function testBug74()
+	{
+	$this->assertEquals('<q>--test</q>--', $this->Markup->toHtml('"--test"--'));
+	$this->assertEquals('<span><del><q>test</q></del></span>', $this->Markup->toHtml('--"test"--'));
+	$this->assertEquals('<q>--test--</q>', $this->Markup->toHtml('"--test--"'));
+	}
+
 }
 
 ?>
