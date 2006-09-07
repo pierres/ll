@@ -20,7 +20,7 @@ public function prepare()
 
 	try
 		{
-		$tsm = $this->DB->prepare
+		$stm = $this->DB->prepare
 			('
 			SELECT
 				cats.id
