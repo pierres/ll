@@ -4,6 +4,8 @@ body		{
 		text-align:left;
 		color:#002468;
 		background-color:#ffffff;
+		padding:0;
+		margin-right:0;
 		}
 
 a		{
@@ -32,6 +34,7 @@ height: 70px;
 width:100%;
 position:absolute;
 left:0;
+right:0;
 top:0;
 z-index:0;
 }
@@ -148,7 +151,6 @@ z-index:0;
 		}
 
 #menu		{
-		clear:left;
 		text-align:center;
 		margin:10px;
 		padding-top:100px;
@@ -156,11 +158,43 @@ z-index:0;
 
 #body		{
 		text-align:center;
+		position:relative;
+		padding-right:30px;
+		padding-bottom:10px;
 		}
 
-#webring	{
-		text-align:center;
-		padding-top:50px;
+#foot	{
+		position:absolute;
+		left:0;
+		right:0;
+		text-align:left;
+		font-size:12px;
+		font-weight:bold;
+		vertical-align:middle;
+		padding:0;
+		margin:0;
+		padding-left:60px;
+		padding-top:6px;
+		padding-bottom:6px;
+		background-color:#FFCC00;
+		}
+
+#foot-logo{
+		position:absolute;
+		left:10px;
+		bottom:5px;
+}
+
+#right-title	{
+		position:absolute;
+		right:0;
+		bottom:0;
+		height:100%;
+		width:25px;
+		background-image: url("../images/right-title.png");
+		background-repeat:no-repeat;
+		background-position:center center;
+		background-color:#FFCC00;
 		}
 
 .cat		{
