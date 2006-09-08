@@ -167,7 +167,7 @@ protected function listThreads()
 
 		if ($this->Log->isNew($data['id'], $data['lastdate']))
 			{
-			$data['name'] = '<span class="newthread">'.$data['name'].'</span>';
+			$data['name'] = '<span class="newthread">neu</span>'.$data['name'];
 			}
 
 		$status = (!empty($data['poll'])    ? '<span class="poll"></span>' : '');
