@@ -158,15 +158,20 @@ table     	{
 		}
 
 #menu		{
+		z-index:10;
+		position:absolute;
+		right:30px;
+		top:-15px;
 		text-align:center;
 		margin:10px;
 		padding-top:100px;
 		}
 
 #body		{
+		margin-top:150px;
 		text-align:center;
 		position:relative;
-		padding-right:30px;
+		padding-right:40px;
 		padding-bottom:10px;
 		}
 
