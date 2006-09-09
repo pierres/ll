@@ -237,7 +237,7 @@ foreach ($result as $data)
 
 	if ($this->User->isOnline() && $data['dat'] > $lastVisit)
 		{
-		$data['dat'] = '<span class="newthread">'.formatDate($data['dat']).'</span>';
+		$data['dat'] = '<span class="newthread">neu</span>'.formatDate($data['dat']);
 		}
 	else
 		{

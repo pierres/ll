@@ -209,7 +209,7 @@ foreach ($result as $data)
 
 	if ($data['dat'] > $lastVisit)
 		{
-		$data['dat'] = '<span class="newthread">'.formatDate($data['dat']).'</span>';
+		$data['dat'] = '<span class="newthread">neu</span>'.formatDate($data['dat']);
 		}
 	else
 		{
