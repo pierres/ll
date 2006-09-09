@@ -165,7 +165,7 @@ private function getNews()
 			{
 			if ($this->User->isOnline() && $this->Log->isNew($thread['id'], $thread['firstdate']))
 				{
-				$thread['name'] = '<span class="newthread">'.$thread['name'].'</span>';
+				$thread['name'] = '<span class="newthread">neu</span>'.$thread['name'];
 				}
 
 			$result .=
@@ -298,7 +298,7 @@ private function getRecent()
 
 		if ($this->User->isOnline() && $this->Log->isNew($thread['id'], $thread['lastdate']))
 			{
-			$thread['name'] = '<span class="newthread">'.$thread['name'].'</span>';
+			$thread['name'] = '<span class="newthread">neu</span>'.$thread['name'];
 			}
 
 		if ($thread['forumid'] == 0)
