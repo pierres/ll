@@ -139,6 +139,7 @@ table     	{
 		background-color:#FFCC00;
 		color:#182263;
 		border:solid 1px #182263;
+		z-index:10;
 		}
 
 #logo		{
