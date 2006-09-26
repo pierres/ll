@@ -1,7 +1,7 @@
 <?php
 
 
-class Recent extends Page{
+class AllRecent extends Page{
 
 
 public function prepare()
@@ -66,15 +66,10 @@ public function prepare()
 						threads.summary
 					FROM
 						forums,
-						threads,
-						forum_cat,
-						cats
+						threads
 					WHERE
 						threads.deleted = 0
 						AND threads.forumid = forums.id
-						AND forum_cat.forumid = forums.id
-						AND forum_cat.catid = cats.id
-						AND cats.boardid = ?
 					ORDER BY
 						lastdate DESC
 					LIMIT	25
@@ -85,12 +80,11 @@ public function prepare()
 					25
 				');
 			$stm->bindInteger($this->User->getId());
-			$stm->bindInteger($this->Board->getId());
 			$result = $stm->getRowSet();
 			}
 		else
 			{
-			$stm = $this->DB->prepare
+			$result = $this->DB->getRowSet
 				('
 				SELECT
 					threads.id,
@@ -111,22 +105,15 @@ public function prepare()
 					threads.summary
 				FROM
 					forums,
-					threads,
-					forum_cat,
-					cats
+					threads
 				WHERE
 					threads.deleted = 0
 					AND threads.forumid = forums.id
-					AND forum_cat.forumid = forums.id
-					AND forum_cat.catid = cats.id
-					AND cats.boardid = ?
 				ORDER BY
 					threads.lastdate DESC
 				LIMIT
 					25
 				');
-			$stm->bindInteger($this->Board->getId());
-			$result = $stm->getRowSet();
 			}
 		}
 	catch (DBNoDataException $e)
@@ -144,7 +131,7 @@ public function prepare()
 		'
 		<table class="frame" style="width:100%">
 			<tr>
-				<td class="cat" colspan="6"><a href="?page=AllRecent;id='.$this->Board->getId().'"><span class="button"><em>Alle</em> aktuellen Beiträge anzeigen</span></a></td>
+				<td class="cat" colspan="6"><a href="?page=Recent;id='.$this->Board->getId().'"><span class="button"><em>Nur für dieses Forum</em> aktuelle Beiträge anzeigen</span></a></td>
 			</tr>
 			<tr>
 				<td class="title" colspan="2">Thema</td>

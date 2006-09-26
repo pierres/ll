@@ -21,6 +21,7 @@ private static $availableModules = array
 	'AdminHtml' => 'pages/AdminHtml.php',
 	'AdminIndex' => 'pages/AdminIndex.php',
 	'AdminSettings' => 'pages/AdminSettings.php',
+	'AllRecent' => 'pages/AllRecent.php',
 	'ChangeEmail' => 'pages/ChangeEmail.php',
 	'ChangePassword' => 'pages/ChangePassword.php',
 	'ChangePasswordKey' => 'pages/ChangePasswordKey.php',
