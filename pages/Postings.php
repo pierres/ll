@@ -161,11 +161,6 @@ if ($thread['deleted'] == 1 && !$this->ismod)
 
 $pages = $this->getPages();
 
-$next = ($this->posts > $this->Settings->getValue('max_posts')+$this->post ? ' <a href="?page=Postings;id='.$this->Board->getId().';thread='.$this->thread.';post='.($this->Settings->getValue('max_posts')+$this->post).'">&#187;</a>' : '');
-
-$last = ($this->post > 0 ? '<a href="?page=Postings;id='.$this->Board->getId().';thread='.$this->thread.';post='.nat($this->post-$this->Settings->getValue('max_posts')).'">&#171;</a>' : '');
-
-
 if ($this->User->isOnline())
 	{
 	$this->Log->insert($thread['id'], $thread['lastdate']);
@@ -409,19 +404,19 @@ $body =
 			</td>
 		</tr>
 		<tr>
-			<td class="pages">
-				'.$last.$pages.$next.'&nbsp;
+			<td class="pages" colspan="2">
+				'.$pages.'&nbsp;
 			</td>
-			<td class="pages" colspan="2" style="text-align:right">
+			<td class="pages" style="text-align:right">
 				'.$reply_button.'
 			</td>
 		</tr>
 			'.$postings.'
 		<tr>
-			<td class="pages">
-				'.$last.$pages.$next.'&nbsp;
+			<td class="pages" colspan="2">
+				'.$pages.'&nbsp;
 			</td>
-			<td class="pages" colspan="2" style="text-align:right">
+			<td class="pages" style="text-align:right">
 				'.$reply_button.'
 				<a id="last"></a>
 			</td>
@@ -446,6 +441,16 @@ protected function getPages()
 	{
 	$pages = '';
 
+	if ($this->post > ($this->Settings->getValue('max_posts')))
+		{
+		$pages .= '<a href="?page='.$this->getName().';id='.$this->Board->getId().';thread='.$this->thread.'">&laquo;</a>';
+		}
+
+	if ($this->post > 0)
+		{
+		$pages .= ' <a href="?page='.$this->getName().';id='.$this->Board->getId().';thread='.$this->thread.';post='.nat($this->post-$this->Settings->getValue('max_posts')).'">&lsaquo;</a>';
+		}
+
 	for ($i = 0; $i < ($this->posts / $this->Settings->getValue('max_posts')) && ($this->posts / $this->Settings->getValue('max_posts')) > 1; $i++)
 		{
 		if ($this->post < $this->Settings->getValue('max_posts') * ($i-4))
@@ -464,8 +469,20 @@ protected function getPages()
 			}
 		else
 			{
-			$pages .= ' <a href="?page=Postings;id='.$this->Board->getId().';thread='.$this->thread.';post='.($this->Settings->getValue('max_posts') * $i).'">'.($i+1).'</a>';
+			$pages .= ' <a href="?page='.$this->getName().';id='.$this->Board->getId().';thread='.$this->thread.';post='.($this->Settings->getValue('max_posts') * $i).'">'.($i+1).'</a>';
 			}
+		}
+
+	if ($this->posts > $this->Settings->getValue('max_posts')+$this->post)
+		{
+		$pages .= ' <a href="?page='.$this->getName().';id='.$this->Board->getId().';thread='.$this->thread.';post='.($this->Settings->getValue('max_posts')+$this->post).'">&rsaquo;</a>';
+		}
+
+	$lastpage = $this->Settings->getValue('max_posts') *nat($this->posts / $this->Settings->getValue('max_posts'));
+
+	if ($this->post < $lastpage-$this->Settings->getValue('max_posts'))
+		{
+		$pages .= ' <a href="?page='.$this->getName().';id='.$this->Board->getId().';thread='.$this->thread.';post='.$lastpage.'">&raquo;</a>';
 		}
 
 	return $pages;

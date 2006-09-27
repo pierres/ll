@@ -89,13 +89,6 @@ catch (DBNoDataException $e)
 
 $pages = $this->getPages();
 
-$next = ($this->threads >  $this->Settings->getValue('max_threads')+$this->thread
-	? ' <a href="?page=PrivateThreads;id='.$this->Board->getId().';thread='.( $this->Settings->getValue('max_threads')+$this->thread).'">&#187;</a>'
-	: '');
-
-$last = ($this->thread > 0
-	? '<a href="?page=PrivateThreads;id='.$this->Board->getId().';thread='.nat($this->thread- $this->Settings->getValue('max_threads')).'">&#171;</a>'
-	: '');
 
 $threads = $this->listThreads();
 $stm->close();
@@ -117,14 +110,14 @@ $body =
 			</td>
 		</tr>
 		<tr>
-			<td class="pages" colspan="4">'.$last.$pages.$next.'</td>
+			<td class="pages" colspan="4">'.$pages.'</td>
 			<td class="pages">
 			<a href="?page=NewPrivateThread;id='.$this->Board->getId().'"><span class="button">Neues Thema</span></a>
 			</td>
 		</tr>
 		'.$threads.'
 		<tr>
-			<td class="pages" colspan="4">'.$last.$pages.$next.'</td>
+			<td class="pages" colspan="4">'.$pages.'</td>
 			<td class="pages">
 			<a href="?page=NewPrivateThread;id='.$this->Board->getId().'"><span class="button">Neues Thema</span></a>
 			</td>
@@ -226,9 +219,24 @@ protected function getPages()
 	{
 	$pages = '';
 
+	if ($this->thread > ($this->Settings->getValue('max_threads')))
+		{
+		$pages .= '<a href="?page='.$this->getName().';id='.$this->Board->getId().'">&laquo;</a>';
+		}
+
+	if ($this->thread > 0)
+		{
+		$pages .= ' <a href="?page='.$this->getName().';id='.$this->Board->getId().';thread='.nat($this->thread-$this->Settings->getValue('max_threads')).'">&lsaquo;</a>';
+		}
+
 	for ($i = 0; $i < ($this->threads / $this->Settings->getValue('max_threads')) && ($this->threads / $this->Settings->getValue('max_threads')) > 1; $i++)
 		{
-		if ($this->threads > 9 && $this->thread < $this->Settings->getValue('max_threads') * ($i-4) || $this->thread > $this->Settings->getValue('max_threads') * ($i + 4))
+		if ($this->thread < $this->Settings->getValue('max_threads') * ($i-4))
+			{
+			$i = $this->Settings->getValue('max_threads') * ($i-4);
+			continue;
+			}
+		elseif($this->thread > $this->Settings->getValue('max_threads') * ($i+4))
 			{
 			continue;
 			}
@@ -239,8 +247,20 @@ protected function getPages()
 			}
 		else
 			{
-			$pages .= ' <a href="?page=PrivateThreads;id='.$this->Board->getId().';thread='.($this->Settings->getValue('max_threads') * $i).'">'.($i+1).'</a>';
+			$pages .= ' <a href="?page='.$this->getName().';id='.$this->Board->getId().';thread='.($this->Settings->getValue('max_threads') * $i).'">'.($i+1).'</a>';
 			}
+		}
+
+	if ($this->threads > $this->Settings->getValue('max_threads')+$this->thread)
+		{
+		$pages .= ' <a href="?page='.$this->getName().';id='.$this->Board->getId().';thread='.($this->Settings->getValue('max_posts')+$this->thread).'">&rsaquo;</a>';
+		}
+
+	$lastpage = $this->Settings->getValue('max_threads') *nat($this->threads / $this->Settings->getValue('max_threads'));
+
+	if ($this->thread < $lastpage-$this->Settings->getValue('max_threads'))
+		{
+		$pages .= ' <a href="?page='.$this->getName().';id='.$this->Board->getId().';thread='.$lastpage.'">&raquo;</a>';
 		}
 
 	return $pages;

@@ -117,9 +117,6 @@ if ($this->post < 0)
 
 $pages = $this->getPages();
 
-$next = ($this->posts >  $this->Settings->getValue('max_posts')+$this->post ? ' <a href="?page=PrivatePostings;id='.$this->Board->getId().';thread='.$this->thread.';post='.( $this->Settings->getValue('max_posts')+$this->post).'">&#187;</a>' : '');
-
-$last = ($this->post > 0 ? '<a href="?page=PrivatePostings;id='.$this->Board->getId().';thread='.$this->thread.';post='.nat($this->post- $this->Settings->getValue('max_posts')).'">&#171;</a>' : '');
 
 $this->Log->insert($thread['id'], $thread['lastdate']);
 
@@ -325,7 +322,7 @@ $body =
 		</tr>
 		<tr>
 			<td class="pages">
-				'.$last.$pages.$next.'&nbsp;
+				'.$pages.'&nbsp;
 			</td>
 			<td class="pages">
 			Schon dabei: '.$recipients.'
@@ -337,7 +334,7 @@ $body =
 			'.$postings.'
 		<tr>
 			<td class="pages">
-				'.$last.$pages.$next.'&nbsp;
+				'.$pages.'&nbsp;
 			</td>
 			<td class="pages" colspan="2" style="text-align:right">
 				'.$reply_button.'
@@ -357,34 +354,6 @@ $this->setValue('title', $thread['name']);
 $this->setValue('body', $body);
 }
 
-protected function getPages()
-	{
-	$pages = '';
-
-	for ($i = 0; $i < ($this->posts /  $this->Settings->getValue('max_posts')) && ($this->posts /  $this->Settings->getValue('max_posts')) > 1; $i++)
-		{
-		if ($this->post <  $this->Settings->getValue('max_posts') * ($i-4))
-			{
-			$i =  $this->Settings->getValue('max_posts') * ($i-4);
-			continue;
-			}
-		elseif($this->post >  $this->Settings->getValue('max_posts') * ($i+4))
-			{
-			continue;
-			}
-
-		if ($this->post == ( $this->Settings->getValue('max_posts') * $i))
-			{
-			$pages .= ' <strong>'.($i+1).'</strong>';
-			}
-		else
-			{
-			$pages .= ' <a href="?page=PrivatePostings;id='.$this->Board->getId().';thread='.$this->thread.';post='.( $this->Settings->getValue('max_posts') * $i).'">'.($i+1).'</a>';
-			}
-		}
-
-	return $pages;
-	}
 
 }
 ?>
