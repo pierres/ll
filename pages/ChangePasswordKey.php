@@ -82,7 +82,7 @@ protected function checkForm()
 		$stm->bindInteger($this->id);
 		$stm->execute();
 		$stm->close();
-		$this->showFailure('Dein Schlüssel ist abgelaufen! Es ist zuviel Zeit zwischen Registrierung und Aktivierung verstrichen.<br />Lasse Dir bitte <a class="link" href="?page=ForgotPassword;id='.$this->board->getId().'">erneut einen Schlüssel zusenden</a> und aktiviere Dein Konto umgehend.');
+		$this->showFailure('Dein Schlüssel ist abgelaufen! Es ist zuviel Zeit zwischen Registrierung und Aktivierung verstrichen.<br />Lasse Dir bitte <a class="link" href="?page=ForgotPassword;id='.$this->Board->getId().'">erneut einen Schlüssel zusenden</a> und aktiviere Dein Konto umgehend.');
 		}
 
 	$this->newpassword = sha1($this->Io->getString('newpassword'));
