@@ -53,7 +53,8 @@ public function showWarning($text)
 
 protected function sendFile($type, $name, $size, $content)
 	{
-	header('Content-Type: '.$type.'; name='.urlencode($name));
+	header('Content-Type: '.$type);
+	header('Content-Disposition: inline; filename="'.urlencode($name).'"');
 	header('Content-length: '.$size);
 	header('Last-Modified: '.date('r'));
 	echo $content;
