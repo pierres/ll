@@ -6,7 +6,6 @@ private static $loadedModules = array();
 
 private static $availableModules = array
 	(
-	'UpdateCounter' => 'pages/UpdateCounter.php',
 	'AdminCats' => 'pages/AdminCats.php',
 	'AdminCatsDel' => 'pages/AdminCatsDel.php',
 	'AdminCss' => 'pages/AdminCss.php',
@@ -46,7 +45,6 @@ private static $availableModules = array
 	'GetImage' => 'pages/GetImage.php',
 	'Impressum' => 'pages/Impressum.php',
 	'InviteToPrivateThread' => 'pages/InviteToPrivateThread.php',
-	'Jabber' => 'pages/Jabber.php',
 	'Login' => 'pages/Login.php',
 	'Logout' => 'pages/Logout.php',
 	'MarkAllAsRead' => 'pages/MarkAllAsRead.php',
