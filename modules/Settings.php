@@ -25,24 +25,24 @@ public function __construct()
 	$this->config['max_posts'] 			= 20;
 	$this->config['max_summary'] 			= 5;
 	$this->config['max_users'] 			= 150;
-	$this->config['max_post'] 			= 20000;
+	$this->config['max_post'] 			= 40000;
 	$this->config['min_post'] 			= 3;
 
 	$this->config['log_dir'] 			= '';
 
-	$this->config['file_size']			= 2097152;
-	$this->config['quota']				= 10485760;
+	$this->config['file_size']			= 2*1024*1024;
+	$this->config['quota']				= 10*1024*1024;
 	$this->config['files']				= 100;
 	$this->config['avatar_size']			= 60;
 
 	$this->config['thumb_size']			= 300;
-	$this->config['max_image_file_size']		= 2097152; //2MByte
+	$this->config['max_image_file_size']		= 2*1024*1024; //2MByte
 
-	$this->config['password_key_lifetime']		= 10800;
+	$this->config['password_key_lifetime']		= 24*60*60;
 
 	$this->config['antispam_hash']			= '';
-	$this->config['antispam_timeout']		= 600;
-	$this->config['antispam_wait']			= 4;
+	$this->config['antispam_timeout']		= 60*60;
+	$this->config['antispam_wait']			= 2;
 
 	$this->config['tls_enabled_message']		= '';
 
