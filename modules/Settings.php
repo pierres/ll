@@ -29,6 +29,7 @@ public function __construct()
 	$this->config['min_post'] 			= 3;
 
 	$this->config['log_dir'] 			= '';
+	$this->config['mail_log_dir'] 			= '';
 
 	$this->config['file_size']			= 2*1024*1024;
 	$this->config['quota']				= 10*1024*1024;

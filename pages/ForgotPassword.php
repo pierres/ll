@@ -13,11 +13,11 @@ protected function setForm()
 
 	$this->addSubmit('Erinnern');
 
-	$this->addText('name', 'Dein Name', '', 50);
+	$this->addText('name', 'Dein Name', '', 25);
 	$this->requires('name');
 	$this->setLength('name', 3, 25);
 
-	$this->addText('email', 'Deine E-Mail-Adresse', '',  50);
+	$this->addText('email', 'Deine E-Mail-Adresse', '',  25);
 	$this->requires('email');
 	$this->setLength('email', 5, 50);
 	}
@@ -53,7 +53,7 @@ protected function checkForm()
 
 protected function sendForm()
 	{
-	$key = sha1(generatePassword());
+	$key = generatePassword();
 
 	$stm = $this->DB->prepare
 		('

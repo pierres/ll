@@ -15,11 +15,11 @@ protected function setForm()
 
 	$this->addSubmit('Ändern');
 
-	$this->addText('email', 'Deine E-Mail-Adresse', '', 50);
+	$this->addText('email', 'Deine E-Mail-Adresse', '', 25);
 	$this->requires('email');
 	$this->setLength('email', 6, 50);
 
-	$this->addText('confirm', 'Bestätige Deine E-Mail-Adresse', '', 50);
+	$this->addText('confirm', 'Bestätige Deine E-Mail-Adresse', '', 25);
 	$this->requires('confirm');
 	$this->setLength('confirm', 6, 50);
 
@@ -66,8 +66,6 @@ protected function checkForm()
 
 protected function sendForm()
 	{
-	$password = generatePassword();
-
 	$stm = $this->DB->prepare
 		('
 		UPDATE
@@ -79,26 +77,12 @@ protected function sendForm()
 			id = ?'
 		);
 	$stm->bindString($this->email);
-	$stm->bindString(sha1($password));
+	$stm->bindString(sha1(generatePassword()));
 	$stm->bindInteger($this->User->getId());
 	$stm->execute();
 	$stm->close();
-//
-// 	$this->Mail->setTo($this->email);
-// 	$this->Mail->setFrom('support@laber-land.de');
-// 	$this->Mail->setSubject('Dein Passwort im Laber-Land');
-// 	$this->Mail->setText(
-// <<<eot
-// Hallo!
-//
-// Dein Passwort lautet: {$password}
-//
-// Viel Spass in der Forengemeinschaft wuenscht Dir das LL-Team.
-// eot
-// );
-// 	$this->Mail->send();
 
-	$key = sha1(generatePassword());
+	$key = generatePassword();
 
 	$stm = $this->DB->prepare
 		('

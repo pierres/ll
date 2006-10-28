@@ -18,13 +18,13 @@ protected function setForm()
 	$this->setValue('title', 'Passwort ändern');
 	$this->addSubmit('Ändern');
 
-	$this->addText('userid', 'Benutzer-ID', '', 8);
+	$this->addText('userid', 'Benutzer-ID', '', 25);
 	$this->requires('userid');
 	$this->setLength('userid', 1, 8);
 
-	$this->addText('key', 'Schlüssel', '', 40);
+	$this->addText('key', 'Schlüssel', '', 25);
 	$this->requires('key');
-	$this->setLength('key', 40, 40);
+	$this->setLength('key', 8, 40);
 
 	$this->addPassword('newpassword', 'Dein neues Passwort', '', 25);
 	$this->requires('newpassword');
@@ -40,7 +40,7 @@ protected function checkForm()
 	try
 		{
 		$this->id = $this->Io->getInt('userid');
-		$this->key = $this->Io->getHex('key');
+		$this->key = $this->Io->getString('key');
 		}
 	catch (IoRequestException $e)
 		{

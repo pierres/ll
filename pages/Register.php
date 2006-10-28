@@ -61,8 +61,6 @@ protected function checkForm()
 
 protected function sendForm()
 	{
-	$password = generatePassword();
-
 	$stm = $this->DB->prepare
 		('
 		INSERT INTO
@@ -75,12 +73,12 @@ protected function sendForm()
 		);
 	$stm->bindString(htmlspecialchars($this->name));
 	$stm->bindString($this->email);
-	$stm->bindString(sha1($password));
+	$stm->bindString(sha1(generatePassword()));
 	$stm->bindInteger(time());
 	$stm->execute();
 	$stm->close();
 
-	$key = sha1(generatePassword());
+	$key = generatePassword();
 	$userid = $this->DB->getInsertId();
 
 	$stm = $this->DB->prepare

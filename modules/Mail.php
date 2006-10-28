@@ -11,6 +11,16 @@ private $subject 	= '';
 
 public function send()
 	{
+	$logDir = $this->Settings->getValue('mail_log_dir');
+	if (!empty($logDir))
+		{
+		$log = 	$this->from."\n".
+			$this->to."\n".
+			$this->subject."\n".
+			$this->text."\n";
+		file_put_contents($logDir.'/'.time().'.txt', $log);
+		}
+
 	mb_internal_encoding('UTF-8');
 	mb_language('uni');
 	mb_send_mail($this->to, $this->subject, $this->text, 'From: '.$this->from."\r\n");

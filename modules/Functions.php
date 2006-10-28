@@ -74,7 +74,7 @@ function generatePassword($length = 8)
 
 	$password = '';
 
-	for ($i = 0; $i <= $length; $i++)
+	for ($i = 0; $i < $length; $i++)
 		{
 		$password .= $chars[rand(0, count($chars)-1)];
 		}
