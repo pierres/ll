@@ -57,11 +57,7 @@ protected function setForm()
 			{
 			$hover = '  onmouseover="javascript:document.getElementById(\'thumb'.$file['id'].'\').style.visibility=\'visible\'"
 			onmouseout="javascript:document.getElementById(\'thumb'.$file['id'].'\').style.visibility=\'hidden\'" ';
-			$preview = '<script type="text/javascript">
-						<!--
-						document.write("<img style=\"visibility:hidden;width:auto;height:auto;position:absolute;\" id=\"thumb'.$file['id'].'\" src=\"?page=GetAttachmentThumb;file='.$file['id'].'\"  alt=\"'.$file['name'].'\" class=\"image\" />");
-						-->
-					</script>';
+			$preview = '<img style="visibility:hidden;width:auto;height:auto;position:absolute;z-index:10;" id="thumb'.$file['id'].'" src="?page=GetAttachmentThumb;file='.$file['id'].'"  alt="'.$file['name'].'" class="image" />';
 			}
 		else
 			{
