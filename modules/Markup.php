@@ -284,8 +284,8 @@ private function closeQuote()
 /** TODO: Vereinfachnung wie unmakeList() */
 private function makeQuote($matches)
 	{
-	$matches[0] = preg_replace_callback('#&lt;quote(?: (.+?))?&gt;\s*#', array($this, 'openQuote'), $matches[0]);
-	$matches[0] = preg_replace_callback('#\s*&lt;/quote&gt;#', array($this, 'closeQuote'), $matches[0]);
+	$matches[0] = preg_replace_callback('#&lt;quote(?: (.+?))?&gt;#', array($this, 'openQuote'), $matches[0]);
+	$matches[0] = preg_replace_callback('#&lt;/quote&gt;#', array($this, 'closeQuote'), $matches[0]);
 
 	while ($this->quotes > 0)
 		{

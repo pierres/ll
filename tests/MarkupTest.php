@@ -235,6 +235,28 @@ public function testBug74()
 	$this->assertEquals('<q>--test--</q>', $this->Markup->toHtml('"--test--"'));
 	}
 
+public function testBug86()
+	{
+	$this->assertEquals('test<br /><pre>
+123
+</pre>blah', $this->Markup->toHtml('test
+<code>
+123
+</code>
+blah'));
+	}
+
+public function testBug85()
+	{
+	$in = '<quote>
+* 1
+* 2
+</quote>';
+	$out = '<blockquote><div><br /><ul><li>1</li><li>2</li></ul></div></blockquote>';
+
+	$this->assertEquals($out,  $this->Markup->toHtml($in));
+	}
+
 }
 
 ?>
