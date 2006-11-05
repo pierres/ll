@@ -438,6 +438,9 @@ pre		{
 		color:#000000;
 		font-size:12px;
 		background-color:#ffffff;
+		border-style:dashed;
+		border-width:1px;
+		border-color:#35526f;
 		padding:5px;
 		overflow:auto;
 		width:80%;

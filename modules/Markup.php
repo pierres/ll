@@ -85,7 +85,7 @@ private function complieFirstPass($text)
 
 
 	/** Code muß am Zeilenanfang beginnen */
-	$text = preg_replace_callback('#^<code>$(.+?)^</code>$\n?#sm', array($this, 'makeCode'), $text);
+	$text = preg_replace_callback('#^<code>$(.+?)^</code>$#sm', array($this, 'makeCode'), $text);
 	/** Inline Code */
 	$text = preg_replace_callback('/==(.+?)==/', array($this, 'makeInlineCode'), $text);
 

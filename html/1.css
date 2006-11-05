@@ -497,6 +497,9 @@ pre		{
 		font-size:12px;
 		background-color:#ffffff;
 		padding:5px;
+		border-style:dashed;
+		border-width:1px;
+		border-color:black;
 		overflow:auto;
 		width:80%;
 		text-align:left;

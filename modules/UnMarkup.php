@@ -29,7 +29,7 @@ public function fromHtml($text)
 	$text = str_replace('</code>', '==', $text);
 
 	$text = str_replace('<pre>', '<code>', $text);
-	$text = str_replace('</pre>', "</code>\n", $text);
+	$text = str_replace('</pre>', "</code>", $text);
 
 	$text = preg_replace('/<span class="\w+?">/', '', $text);
 	$text = str_replace('</span>', '', $text);
@@ -67,7 +67,7 @@ public function fromHtml($text)
 
 	$text = preg_replace_callback('#<a href="\?page=GetImage;url=(.+?)" onclick="return !window\.open\(this\.href\);" rel="nofollow"><img src="\?page=GetImage;thumb;url=(.+?)" alt="" class="image" /></a>#', array($this, 'urldecode'), $text);
 
-	$text = preg_replace_callback('#<ul>.+</ul>#s', array($this, 'unmakeList'), $text);
+	$text = preg_replace_callback('#<ul>.+</ul>#m', array($this, 'unmakeList'), $text);
 
 	/*
 	Jetzt schreiben wir wieder alle gefundenen Tags zurück

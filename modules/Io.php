@@ -155,6 +155,7 @@ public function redirect($class, $param = '', $id = 0)
 	$this->redirectToUrl($this->getURL().'?id='.($id == 0 ? $this->Board->getId() : $id).';page='.$class.$param);
 	}
 
+/** TODO: ist dieser Rückgabewert vom Nutzer manipulierbar? */
 public function getURL()
 	{
 	return 'http'.(!getenv('HTTPS') ? '' : 's').'://'

@@ -21,7 +21,7 @@ test"<code>
 	$out =
 '-<br /><pre>
 test&quot;&lt;code&gt;
-</pre>-';
+</pre><br />-';
 	$this->assertEquals($out, $this->Markup->toHtml($in));
 
 	$in =
@@ -239,7 +239,7 @@ public function testBug86()
 	{
 	$this->assertEquals('test<br /><pre>
 123
-</pre>blah', $this->Markup->toHtml('test
+</pre><br />blah', $this->Markup->toHtml('test
 <code>
 123
 </code>
@@ -253,6 +253,20 @@ public function testBug85()
 * 2
 </quote>';
 	$out = '<blockquote><div><br /><ul><li>1</li><li>2</li></ul></div></blockquote>';
+
+	$this->assertEquals($out,  $this->Markup->toHtml($in));
+
+	$in = '* 2
+* 3
+* 4
+<code>
+reg
+</code>
+* 2
+* 3';
+	$out = '<ul><li>2</li><li>3</li><li>4</li></ul><pre>
+reg
+</pre><br /><ul><li>2</li><li>3</li></ul>';
 
 	$this->assertEquals($out,  $this->Markup->toHtml($in));
 	}

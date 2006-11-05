@@ -19,15 +19,14 @@ test&quot;&lt;code&gt;
 	$out =
 '<code>
 test"<code>
-</code>
-';
+</code>';
 
 	$this->assertEquals($out, $this->UnMarkup->fromHtml($in));
 
 	$in =
 '-<br /><pre>
 test&quot;&lt;code&gt;
-</pre>-';
+</pre><br />-';
 	$out =
 '-
 <code>
@@ -146,7 +145,42 @@ public function testStrong()
 	$this->assertEquals('**test**', $this->UnMarkup->fromHtml('<strong>test</strong>'));
 	}
 
+public function testBug86()
+	{
+	$this->assertEquals('test
+<code>
+123
+</code>
+blah', $this->UnMarkup->fromHtml('test<br /><pre>
+123
+</pre><br />blah'));
+	}
 
+public function testBug85()
+	{
+	$out = '<quote>
+* 1
+* 2
+</quote>';
+	$in = '<blockquote><div><br /><ul><li>1</li><li>2</li></ul></div></blockquote>';
+
+	$this->assertEquals($out, $this->UnMarkup->fromHtml($in));
+
+	$out = '* 2
+* 3
+* 4
+<code>
+reg
+</code>
+* 2
+* 3
+';
+	$in = '<ul><li>2</li><li>3</li><li>4</li></ul><pre>
+reg
+</pre><br /><ul><li>2</li><li>3</li></ul>';
+
+	$this->assertEquals($out, $this->UnMarkup->fromHtml($in));
+	}
 
 }
 
