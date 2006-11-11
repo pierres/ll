@@ -77,6 +77,11 @@ private function checkSecurityToken()
 			{
 			$this->showWarning('Sicherheitswarnung: Ungültiger Schlüssel!');
 			}
+		else
+			{
+			// dies verwirft das aktuelle Token
+			$this->User->getNextSecurityToken();
+			}
 		}
 	}
 
