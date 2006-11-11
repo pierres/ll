@@ -159,9 +159,10 @@ public function login($name, $password, $cookie = false)
 					users
 				WHERE
 					id = ?
-					AND password = ?'
+					AND SHA1(CONCAT(?,password)) = ?'
 				);
 			$stm->bindInteger($name);
+			$stm->bindString($this->Settings->getValue('cookie_hash'));
 			$stm->bindString($password);
 			}
 		else
