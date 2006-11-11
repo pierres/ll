@@ -55,7 +55,7 @@ public function setOutputHandler($handler)
 /** FIXME: XSS->alle Zeilenumbrüche entfernen */
 public function setCookie($key, $value, $expire = 0)
 	{
-	setcookie($key, $value, $expire, '', '', getenv('HTTPS'));
+	setcookie($key, $value, $expire, '', '', getenv('HTTPS'), true);
 	}
 
 public function out(&$text)
