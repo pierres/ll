@@ -1,5 +1,5 @@
 <?php
-
+/** FIXME: Nicht geschützt via Form */
 class DelPost extends Page{
 
 private $post = 0;

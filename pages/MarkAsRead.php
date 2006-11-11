@@ -1,5 +1,5 @@
 <?php
-
+/** FIXME: Nicht geschützt via Form */
 class MarkAsRead extends Page{
 
 /** TODO: Dies kann durch direkten Zugriff auf die DB noch optimiert werden */

@@ -1,6 +1,6 @@
 <?php
 
-
+/** FIXME: Nicht geschützt via Form */
 class DelFile extends Page{
 
 

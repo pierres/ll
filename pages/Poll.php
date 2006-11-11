@@ -1,5 +1,6 @@
 <?php
 
+/** FIXME: Nicht geschützt via Form */
 /** TODO: Sollte in ein Modul und eine Page aufgeteilt werden! */
 class Poll extends Page{
 

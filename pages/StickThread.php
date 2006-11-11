@@ -1,5 +1,5 @@
 <?php
-
+/** FIXME: Nicht geschützt via Form */
 class StickThread extends Page{
 
 protected $forum 		= 0;

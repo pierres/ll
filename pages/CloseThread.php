@@ -1,5 +1,6 @@
 <?php
 
+/** FIXME: Nicht geschützt via Form */
 class CloseThread extends Page{
 
 protected $forum 		= 0;
