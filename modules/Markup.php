@@ -4,6 +4,8 @@
 *
 * @author Pierre Schmitz
 */
+
+/** FIXME: maximale Tiefe in Schleifen festlegen ->DOS */
 class Markup extends Modul{
 
 

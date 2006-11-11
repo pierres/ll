@@ -42,6 +42,7 @@ protected function setForm()
 		{
 		$this->addText('name', 'Dein Name');
 		$this->setLength('name', 3,25);
+		$this->requires('name');
 		}
 
 	$this->addTextarea('text', 'Deine Nachricht', $this->text);
@@ -492,14 +493,14 @@ protected function sendForm()
 		}
 	else
 		{
-		if (!$this->Io->isEmpty('name'))
-			{
+// 		if (!$this->Io->isEmpty('name'))
+// 			{
 			$username = $this->Io->getHtml('name');
-			}
-		else
-			{
-			$username = 'Gast';
-			}
+// 			}
+// 		else
+// 			{
+// 			$username = 'Gast';
+// 			}
 
 		$userid = 0;
 		}

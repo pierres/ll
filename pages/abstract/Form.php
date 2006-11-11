@@ -26,6 +26,7 @@ public function prepare()
 	if ($this->Io->isRequest('submit') && count($this->warning) == 0)
 		{
 		$this->checkAntiSpamHash();
+		$this->checkSecurityToken();
 		$this->checkForm();
 
 		if (count($this->warning) == 0)
@@ -48,6 +49,34 @@ protected function setForm()
 	if (empty($this->buttons['submit']))
 		{
 		$this->addSubmit('Abschicken');
+		}
+	}
+
+private function addSecurityToken()
+	{
+	if ($this->User->isOnline())
+		{
+		$this->addHidden('SecurityToken', sha1($this->getName().$this->User->getNextSecurityToken()));
+		}
+	}
+
+private function checkSecurityToken()
+	{
+	if ($this->User->isOnline())
+		{
+		try
+			{
+			$token = $this->Io->getHex('SecurityToken');
+			}
+		catch (IoRequestException $e)
+			{
+			$this->showFailure('Sicherheitsverletzung: Aktion nicht erlaubt!');
+			}
+
+		if (sha1($this->getName().$this->User->getSecurityToken()) != $token)
+			{
+			$this->showWarning('Sicherheitswarnung: Ungültiger Schlüssel!');
+			}
 		}
 	}
 
@@ -86,12 +115,23 @@ private function checkAntiSpamHash()
 		}
 	}
 
+private function addAntiSpamHash()
+	{
+	if (!$this->User->isOnline())
+		{
+		$this->addOutput('<div style="background-image:url(?page=FunnyDot);background-repeat:no-repeat;visibility:hidden;">&nbsp;</div>');
+		}
+	}
+
 protected function checkForm()
 	{
 	}
 
 protected function showForm()
 	{
+	$this->addAntiSpamHash();
+	$this->addSecurityToken();
+
 	$body =
 		$this->getWarning().'
 		<form '.$this->encoding.' method="post" action="?page='.$this->getName().';id='.$this->Board->getId().$this->request.'">
@@ -120,11 +160,6 @@ protected function showForm()
 			document.getElementById("id'.$this->focus.'").focus();
 		</script>
 		';
-
-	if (!$this->User->isOnline())
-		{
-		$body .= '<div style="background-image:url(?page=FunnyDot);background-repeat:no-repeat;visibility:hidden;">&nbsp;</div>';
-		}
 
 	$this->setValue('body', $body);
 	}

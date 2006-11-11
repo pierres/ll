@@ -8,7 +8,7 @@ private $to 		= '';
 private $text 		= '';
 private $subject 	= '';
 
-
+/** FIXME: XSS->alle Zeilenumbrüche entfernen */
 public function send()
 	{
 	$logDir = $this->Settings->getValue('mail_log_dir');

@@ -29,7 +29,7 @@ function __construct()
 		$this->contentType = 'Content-Type: application/xhtml+xml; charset=UTF-8';
 		}
 	}
-
+/** FIXME: XSS->alle Zeilenumbrüche entfernen */
 private function header($string)
 	{
 	if (@header($string) != 0)
@@ -52,7 +52,7 @@ public function setOutputHandler($handler)
 	{
 	$this->outputHandler = $handler;
 	}
-
+/** FIXME: XSS->alle Zeilenumbrüche entfernen */
 public function setCookie($key, $value, $expire = 0)
 	{
 	setcookie($key, $value, $expire, '', '', getenv('HTTPS'));
@@ -147,7 +147,7 @@ public function getLength($name)
 	{
 	return (empty($this->request[$name]) ? 0 : strlen($this->getString($name)));
 	}
-
+/** FIXME: XSS->alle Zeilenumbrüche entfernen */
 public function redirect($class, $param = '', $id = 0)
 	{
 	$param = (!empty($param) ? ';'.$param : '');
@@ -162,7 +162,7 @@ public function getURL()
 			.getenv('HTTP_HOST')
 			.dirname($_SERVER['PHP_SELF']);
 	}
-
+/** FIXME: XSS->alle Zeilenumbrüche entfernen */
 public function redirectToUrl($url)
 	{
 	$this->header('Location: '.$url);

@@ -50,7 +50,7 @@ public function showWarning($text)
 	{
 	die($text);
 	}
-
+/** FIXME: XSS->alle Zeilenumbrüche entfernen */
 protected function sendFile($type, $name, $size, $content)
 	{
 	header('Content-Type: '.$type);

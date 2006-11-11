@@ -8,7 +8,8 @@ const ROOT		= 3;
 const ADMIN		= 2;
 const MOD		= 1;
 
-private $sessionid	= 0;
+private $sessionid	= '';
+private $securityToken	= '';
 private $id 		= 0;
 private $level		= 0;
 private $name		= '';
@@ -35,7 +36,8 @@ function __construct()
 				name,
 				level,
 				groups,
-				lastupdate
+				lastupdate,
+				security_token
 			FROM
 				session
 			WHERE
@@ -53,6 +55,7 @@ function __construct()
 		}
 
 	$this->sessionid 	= $sessionid;
+	$this->securityToken 	= $data['security_token'];
 	$this->id 		= $data['id'];
 	$this->level 		= $data['level'];
 	$this->name 		= $data['name'];
@@ -60,20 +63,44 @@ function __construct()
 
 	if (time() - $data['lastupdate'] > $this->Settings->getValue('session_refresh'))
 		{
-		$stm = $this->DB->prepare
-			('
-			UPDATE
-				session
-			SET
-				lastupdate = ?
-			WHERE
-				sessionid = ?'
-			);
-		$stm->bindInteger(time());
-		$stm->bindString($this->sessionid);
-		$stm->execute();
-		$stm->close();
+		$this->updateSession();
 		}
+	}
+
+private function updateSession()
+	{
+	$this->securityToken = $this->getRandomHash();
+	$stm = $this->DB->prepare
+		('
+		UPDATE
+			session
+		SET
+			lastupdate = ?,
+			security_token = ?
+		WHERE
+			sessionid = ?'
+		);
+	$stm->bindInteger(time());
+	$stm->bindString($this->securityToken);
+	$stm->bindString($this->sessionid);
+	$stm->execute();
+	$stm->close();
+	}
+
+private function getRandomHash()
+	{
+	return sha1(uniqid(rand(), true));
+	}
+
+public function getSecurityToken()
+	{
+	return $this->securityToken;
+	}
+
+public function getNextSecurityToken()
+	{
+	$this->updateSession();
+	return $this->securityToken;
 	}
 
 public function getId()
@@ -197,7 +224,8 @@ private function start($id, $name ,$level, $groups)
 	{
 	$this->collectGarbage();//evtl. könnte man überlegen den Müll öfters zu entfernen
 
-	$this->sessionid = sha1(uniqid(rand(), true));
+	$this->sessionid = $this->getRandomHash();
+	$this->securityToken = $this->getRandomHash();
 
 	$this->id 	= $id;
 	$this->name 	= $name;
@@ -225,7 +253,8 @@ private function start($id, $name ,$level, $groups)
 			name = ?,
 			level = ?,
 			groups = ?,
-			lastupdate = ?'
+			lastupdate = ?,
+			security_token = ?'
 		);
 	$stm->bindString($this->sessionid);
 	$stm->bindInteger($this->id);
@@ -233,6 +262,7 @@ private function start($id, $name ,$level, $groups)
 	$stm->bindInteger($this->level);
 	$stm->bindString(implode(',', $this->groups));
 	$stm->bindInteger(time());
+	$stm->bindString($this->securityToken);
 	$stm->execute();
 	$stm->close();
 
