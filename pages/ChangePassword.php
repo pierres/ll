@@ -84,7 +84,7 @@ protected function sendForm()
 
 	if($this->Io->isRequest('cookiepw') && $this->Io->getHex('cookiepw') == $this->password)
 		{
-		$this->Io->setCookie('cookiepw', $this->newpassword);
+		$this->Io->setCookie('cookiepw', sha1($this->Settings->getValue('cookie_hash').$this->newpassword));
 		}
 
 	$this->Io->redirect('MyProfile');

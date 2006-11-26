@@ -122,7 +122,7 @@ protected function sendForm()
 
 	try
 		{
-		$this->User->login($this->id, $this->newpassword, true);
+		$this->User->login($this->id, sha1($this->Settings->getValue('cookie_hash').$this->newpassword), true);
 		}
 	catch (LoginException $e)
 		{
