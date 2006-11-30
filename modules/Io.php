@@ -211,11 +211,24 @@ public function getUploadedFile($name)
 	{
 	if (isset($_FILES[$name]) && is_uploaded_file($_FILES[$name]['tmp_name']))
 		{
+		$this->checkUploadedFile($_FILES[$name]['tmp_name']);
 		return $_FILES[$name];
 		}
 	else
 		{
 		throw new IoException('Datei wurde nicht hochgeladen! Die Datei ist möglicherweise größer als '.ini_get('upload_max_filesize').'Byte .');
+		}
+	}
+
+public function checkUploadedFile($filename)
+	{
+	$finfo = finfo_open(FILEINFO_MIME);
+	$info = explode(';', finfo_file($finfo, $filename));
+	finfo_close($finfo);
+
+	if (!in_array($info[0], $this->Settings->getValue('allowed_mime_types')))
+		{
+		throw new IoException('Dateien des Typs <strong>'.$info[0].'</strong> dürfen nicht hochgeladen werden! Folgende Typen sind erlaubt:<ul><li>'.implode('</li><li>', $this->Settings->getValue('allowed_mime_types')).'</li></ul>');
 		}
 	}
 

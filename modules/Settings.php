@@ -50,6 +50,10 @@ public function __construct()
 	$this->config['tls_enabled_message']		= '';
 
 	$this->config['debug']				= false;
+	
+	$this->config['allowed_mime_types']		= array('text/plain', 
+								'image/gif', 'image/jpeg', 'image/png',
+								'application/pdf', 'application/x-bzip2', 'application/x-gzip', 'application/x-zip');
 
 	if (file_exists('LocalSettings.php'))
 		{
