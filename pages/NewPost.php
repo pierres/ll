@@ -268,6 +268,10 @@ protected function checkNewFile()
 			}
 		catch (IoException $e)
 			{
+			return;
+			}
+		catch (IoMimeException $e)
+			{
 			$this->showWarning($e->getMessage());
 			return;
 			}

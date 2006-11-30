@@ -228,7 +228,7 @@ public function checkUploadedFile($filename)
 
 	if (!in_array($info[0], $this->Settings->getValue('allowed_mime_types')))
 		{
-		throw new IoException('Dateien des Typs <strong>'.$info[0].'</strong> dürfen nicht hochgeladen werden! Folgende Typen sind erlaubt:<ul><li>'.implode('</li><li>', $this->Settings->getValue('allowed_mime_types')).'</li></ul>');
+		throw new IoMimeException('Dateien des Typs <strong>'.$info[0].'</strong> dürfen nicht hochgeladen werden! Folgende Typen sind erlaubt:<ul><li>'.implode('</li><li>', $this->Settings->getValue('allowed_mime_types')).'</li></ul>');
 		}
 	}
 
@@ -254,5 +254,7 @@ function __construct($message)
 	}
 
 }
+
+class IoMimeException extends IoException{}
 
 ?>
