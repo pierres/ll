@@ -266,13 +266,18 @@ protected function checkNewFile()
 			{
 			$this->file = $this->Io->getUploadedFile('file');
 			}
-		catch (IoException $e)
+		catch (IoFileSizeException $e)
 			{
+			$this->showWarning($e->getMessage());
 			return;
 			}
 		catch (IoMimeException $e)
 			{
 			$this->showWarning($e->getMessage());
+			return;
+			}
+		catch (IoException $e)
+			{
 			return;
 			}
 

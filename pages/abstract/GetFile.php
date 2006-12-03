@@ -17,6 +17,7 @@ public function prepare()
 	$this->initDB();
 	}
 
+/** Soll nur Bots abhalten die Dateien zu laden; hat nichts mit Sicherheit zu tun */
 protected function isUser()
 	{
 	return $this->Io->isRequest('sessionid');
@@ -50,15 +51,20 @@ public function showWarning($text)
 	{
 	die($text);
 	}
-/** FIXME: XSS->alle Zeilenumbrüche entfernen */
-protected function sendFile($type, $name, $size, $content)
+
+protected function sendFile($type, $name, $size, $content, $disposition = 'attachment')
 	{
 	header('Content-Type: '.$type);
-	header('Content-Disposition: inline; filename="'.urlencode($name).'"');
 	header('Content-length: '.$size);
+	header('Content-Disposition: '.$disposition.'; filename="'.urlencode($name).'"');
 	header('Last-Modified: '.date('r'));
 	echo $content;
 	exit();
+	}
+
+protected function sendInlineFile($type, $name, $size, $content)
+	{
+	$this->sendFile($type, $name, $size, $content, 'inline');
 	}
 
 }

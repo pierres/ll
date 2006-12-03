@@ -42,7 +42,7 @@ public function show()
 		$this->showWarning('Datei nicht gefunden');
 		}
 
-	$this->sendFile($data['type'], $data['name'], $data['size'], $data['content']);
+	$this->sendInlineFile($data['type'], $data['name'], $data['size'], $data['content']);
 	}
 }
 

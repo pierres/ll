@@ -47,7 +47,35 @@ public function show()
 		$this->showWarning('Datei nicht gefunden');
 		}
 
-	$this->sendFile($data['type'], $data['name'], $data['size'], $data['content']);
+	$this->sendInlineFile($data['type'], $data['name'], $data['size'], $data['content']);
+	}
+
+public function showWarning($text)
+	{
+	$text = utf8_decode($text);
+	$font = -1;
+	$width  = imagefontwidth($font) * strlen($text);
+	$height = imagefontheight($font);
+	$image = imagecreate($width+8, $height+4);
+	$white = imagecolorallocate($image, 255, 255, 255);
+	$black = imagecolorallocate($image, 0, 0, 0);
+
+	imagecolortransparent($image, $white).
+
+	imagestring($image, $font, 4, 2, $text , $black);
+
+	ob_start();
+	imagepng($image);
+	$content = ob_get_clean();
+
+	imagedestroy($image);
+
+	$data['type'] = 'image/png';
+	$data['size'] = strlen($content);
+	$data['content'] = $content;
+	$this->url = 'Warning.png';
+
+	$this->sendInlineFile($data['type'], 'Warning.png', $data['size'], $data['content']);
 	}
 
 }

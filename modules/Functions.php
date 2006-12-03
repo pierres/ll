@@ -134,7 +134,6 @@ function resizeImage($image, $type, $size)
 	switch ($type)
 		{
 		case 'image/jpeg' 	: imagejpeg($img, '', 80); 	break;
-		case 'image/pjpeg' 	: imagejpeg($img, '', 80); 	break;
 		case 'image/png' 	: imagepng($img); 		break;
 		case 'image/gif' 	: imagegif($img); 		break;
 		default 		: throw new Exception('unknown image-type');
@@ -148,5 +147,22 @@ function resizeImage($image, $type, $size)
 	return $thumb;
 	}
 
+function getTypeFromContent($content)
+	{
+	$finfo = finfo_open(FILEINFO_MIME);
+	$type = finfo_buffer($finfo, $content);
+	finfo_close($finfo);
+	
+	return $type;
+	}
+
+function getTypeFromFile($file)
+	{
+	$finfo = finfo_open(FILEINFO_MIME);
+	$type = finfo_file($finfo, $file);
+	finfo_close($finfo);
+	
+	return $type;
+	}
 
 ?>

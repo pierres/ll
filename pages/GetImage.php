@@ -40,7 +40,7 @@ protected function getParams()
 
 	if (!$this->isUser())
 		{
- 		$this->redirect();
+ 		$this->showWarning('Dieses Bild ist nur für angemeldete Nutzer sichtbar.');
 		}
 	}
 
@@ -50,22 +50,25 @@ private function loadImage()
 		{
 		if ($this->Io->getRemoteFileSize($this->url) > $this->Settings->getValue('max_image_file_size'))
 			{
- 			$this->redirect();
+			$this->showWarning('Diese Datei ist zu groß.');
 			}
 
 		$file = $this->Io->getRemoteFile($this->url);
 		}
+	catch (IOMimeExceptionException $e)
+		{
+ 		$this->showWarning('Diese URL enthält kein Bild.');
+		}
 	catch (Exception $e)
 		{
- 		$this->redirect();
+ 		$this->showWarning('Das Bild konnte nicht geladen werden.');
 		}
 
 	if (	strpos($file['type'], 'image/jpeg') !== 0 &&
-		strpos($file['type'], 'image/pjpeg') !== 0 &&
 		strpos($file['type'], 'image/png') !== 0 &&
 		strpos($file['type'], 'image/gif') !== 0)
 		{
- 		$this->redirect();
+ 		$this->showWarning('Diese URL enthält kein Bild.');
 		}
 
 	$file['size'] = strlen($file['content']);
@@ -112,14 +115,6 @@ private function loadImage()
 		}
 	}
 
-private function redirect()
-	{
-	/** FIXME: evtl. anfällig für XSS */
-// 	$this->Io->redirectToUrl($this->url);
-// 	Deshalb Warnung ausgeben:
-	$this->showWarning($this->url);
-	}
-
 public function showWarning($text)
 	{
 	$text = utf8_decode($text);
@@ -145,7 +140,7 @@ public function showWarning($text)
 	$data['content'] = $content;
 	$this->url = 'Warning.png';
 
-	$this->sendFile($data['type'], 'Warning.png', $data['size'], $data['content']);
+	$this->sendInlineFile($data['type'], 'Warning.png', $data['size'], $data['content']);
 	}
 
 public function show()
@@ -209,7 +204,7 @@ public function show()
 		$data = $this->loadImage();
 		}
 
-	$this->sendFile($data['type'], $this->name, $data['size'], $data['content']);
+	$this->sendInlineFile($data['type'], $this->name, $data['size'], $data['content']);
 	}
 
 }

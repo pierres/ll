@@ -43,7 +43,14 @@ public function show()
 		$this->showWarning('Datei nicht gefunden');
 		}
 
-	$this->sendFile($data['type'], $data['name'], $data['size'], $data['content']);
+	if (strpos($data['type'], 'image/') === 0)
+		{
+ 		$this->sendInlineFile($data['type'], $data['name'], $data['size'], $data['content']);
+		}
+	else
+		{
+		$this->sendFile($data['type'], $data['name'], $data['size'], $data['content']);
+		}
 	}
 
 }

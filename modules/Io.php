@@ -173,7 +173,7 @@ private function curlInit($url)
 	{
 	if (!preg_match('/^(https?|ftp):\/\//', $url))
 		{
- 		throw new RuntimeException('Nur http und ftp-Protokolle erlaubt', 0);
+ 		throw new IoException('Nur http und ftp-Protokolle erlaubt');
 		}
 
 	$curl = curl_init($url);
@@ -201,35 +201,66 @@ public function getRemoteFile($url)
 	{
 	$curl = $this->curlInit($url);
 	$content = curl_exec($curl);
-	$ype = curl_getinfo($curl, CURLINFO_CONTENT_TYPE);
+// 	$ype = curl_getinfo($curl, CURLINFO_CONTENT_TYPE);
 	curl_close($curl);
 
-	return array('type' => $ype, 'content' => $content);
+	$type = getTypeFromContent($content);
+
+	if (!$this->isAllowedType($type))
+		{
+		throw new IoMimeException('Dateien des Typs <strong>'.htmlspecialchars($type).'</strong> dürfen nicht hochgeladen werden! Folgende Typen sind erlaubt:<ul><li>'.implode('</li><li>', $this->Settings->getValue('allowed_mime_types')).'</li></ul>');
+		}
+
+	return array('type' => $type, 'content' => $content);
 	}
 
 public function getUploadedFile($name)
 	{
 	if (isset($_FILES[$name]) && is_uploaded_file($_FILES[$name]['tmp_name']))
 		{
-		$this->checkUploadedFile($_FILES[$name]['tmp_name']);
+		$type = getTypeFromFile($_FILES[$name]['tmp_name']);
+
+		if (!$this->isAllowedType($type))
+			{
+			throw new IoMimeException('Dateien des Typs <strong>'.htmlspecialchars($type).'</strong> dürfen nicht hochgeladen werden! Folgende Typen sind erlaubt:<ul><li>'.implode('</li><li>', $this->Settings->getValue('allowed_mime_types')).'</li></ul>');
+			}
+
+		$_FILES[$name]['type'] = $type;
 		return $_FILES[$name];
+		}
+	elseif (isset($_FILES[$name]) && $_FILES[$name]['error'] > 0)
+		{
+		switch ($_FILES[$name]['error'])
+			{
+			case 1 : $message = 'Die Datei ist größer als '.ini_get('upload_max_filesize').'Byte.'; break;
+			case 2 : $message = 'Die Datei ist größer als der im Formular angegebene Wert.'; break;
+			case 3 : $message = 'Die Datei wurde nur teilweise hochgeladen.'; break;
+			case 4 : $message = 'Keine Datei empfangen.'; break;
+			case 6 : $message = 'Kein temporäres Verzeichnis gefunden.'; break;
+			case 7 : $message = 'Konnte Datei nicht speichern.'; break;
+			case 8 : $message = 'Datei wurde von einer Erweiterung blockiert.'; break;
+			default : $message = 'Unbekannter Fehler. Code: '.$_FILES[$name]['error'];
+			}
+			throw new IoFileSizeException('Datei wurde nicht hochgeladen! '.$message);
 		}
 	else
 		{
-		throw new IoException('Datei wurde nicht hochgeladen! Die Datei ist möglicherweise größer als '.ini_get('upload_max_filesize').'Byte .');
+		throw new IoException('Datei wurde nicht hochgeladen!');
 		}
 	}
 
-public function checkUploadedFile($filename)
+private function isAllowedType($type)
 	{
-	$finfo = finfo_open(FILEINFO_MIME);
-	$info = explode(';', finfo_file($finfo, $filename));
-	finfo_close($finfo);
-
-	if (!in_array($info[0], $this->Settings->getValue('allowed_mime_types')))
+	foreach ($this->Settings->getValue('allowed_mime_types') as $allowedType)
 		{
-		throw new IoMimeException('Dateien des Typs <strong>'.$info[0].'</strong> dürfen nicht hochgeladen werden! Folgende Typen sind erlaubt:<ul><li>'.implode('</li><li>', $this->Settings->getValue('allowed_mime_types')).'</li></ul>');
+		// prüfe keine exakte Übereinstimmung
+		if (strpos($type, $allowedType) === 0)
+			{
+			return true;
+			}
 		}
+	
+	return false;
 	}
 
 }
@@ -256,5 +287,7 @@ function __construct($message)
 }
 
 class IoMimeException extends IoException{}
+
+class IoFileSizeException extends IoException{}
 
 ?>
