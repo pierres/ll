@@ -14,6 +14,11 @@ protected function setForm()
 
 	$this->setValue('title', 'Eigenes Forum einrichten');
 
+	if (!$this->User->isLevel(User::ROOT))
+		{
+		$this->showFailure('nur root darf das!');
+		}
+
 	$this->addSubmit('Registrieren');
 
 	$this->addText('name', 'Der Name des Forums', '', 25);
