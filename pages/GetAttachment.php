@@ -19,21 +19,41 @@ protected function getParams()
 
 public function show()
 	{
+	if (!$this->User->isOnline())
+		{
+		$this->showWarning('Nur für Mitglieder');
+		}
+
 	try
 		{
 		$stm = $this->DB->prepare
 			('
 			SELECT
-				name,
-				type,
-				content,
-				size
+				attachments.name,
+				attachments.type,
+				attachments.content,
+				attachments.size
 			FROM
-				attachments
+				attachments,
+				posts,
+				post_attachments,
+				threads,
+				thread_user
 			WHERE
-				id = ?'
+				attachments.id = ?
+				AND post_attachments.postid = posts.id
+				AND post_attachments.attachment_id = attachments.id
+				AND posts.threadid = threads.id
+				AND(	(
+					threads.forumid = 0
+					AND thread_user.threadid = threads.id
+					AND thread_user.userid = ?
+					)
+				OR
+					threads.forumid > 0)'
 			);
 		$stm->bindInteger($this->file);
+		$stm->bindInteger($this->User->getId());
 		$data = $stm->getRow();
 		$stm->close();
 		}

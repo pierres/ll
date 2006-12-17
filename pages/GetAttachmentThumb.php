@@ -4,46 +4,83 @@ class GetAttachmentThumb extends GetAttachment{
 
 public function show()
 	{
+	if (!$this->User->isOnline())
+		{
+		$this->showWarning('Nur für Mitglieder');
+		}
+
 	try
 		{
 		/** @TODO: Optimieren! */
 		$stm = $this->DB->prepare
 			('
 			(
-			SELECT
-				attachments.name,
-				attachments.type,
-				attachment_thumbnails.content,
-				attachment_thumbnails.size
-			FROM
-				attachments,
-				attachment_thumbnails
-			WHERE
-				attachments.id = ?
-				AND attachments.id = attachment_thumbnails.id
+				SELECT
+					attachments.name,
+					attachments.type,
+					attachment_thumbnails.content,
+					attachment_thumbnails.size
+				FROM
+					attachments,
+					attachment_thumbnails,
+					posts,
+					post_attachments,
+					threads,
+					thread_user
+				WHERE
+					attachments.id = ?
+					AND attachments.id = attachment_thumbnails.id
+					AND post_attachments.postid = posts.id
+					AND post_attachments.attachment_id = attachments.id
+					AND posts.threadid = threads.id
+					AND(	(
+						threads.forumid = 0
+						AND thread_user.threadid = threads.id
+						AND thread_user.userid = ?
+						)
+					OR
+						threads.forumid > 0)
 			)
 			UNION
 			(
-			SELECT
-				name,
-				type,
-				content,
-				size
-			FROM
-				attachments
-			WHERE
-				id = ?
-				AND id NOT IN (SELECT id FROM attachment_thumbnails)
+				SELECT
+					attachments.name,
+					attachments.type,
+					attachments.content,
+					attachments.size
+				FROM
+					attachments,
+					attachment_thumbnails,
+					posts,
+					post_attachments,
+					threads,
+					thread_user
+				WHERE
+					attachments.id = ?
+					AND attachments.id NOT IN (SELECT id FROM attachment_thumbnails)
+					AND attachments.id = attachment_thumbnails.id
+					AND post_attachments.postid = posts.id
+					AND post_attachments.attachment_id = attachments.id
+					AND posts.threadid = threads.id
+					AND(	(
+						threads.forumid = 0
+						AND thread_user.threadid = threads.id
+						AND thread_user.userid = ?
+						)
+					OR
+						threads.forumid > 0)
 			)'
 			);
 		$stm->bindInteger($this->file);
+		$stm->bindInteger($this->User->getId());
 		$stm->bindInteger($this->file);
+		$stm->bindInteger($this->User->getId());
 		$data = $stm->getRow();
 		$stm->close();
 		}
 	catch (DBNoDataException $e)
 		{
-		$stm->close();
+ 		$stm->close();
 		$this->showWarning('Datei nicht gefunden');
 		}
 
@@ -73,7 +110,6 @@ public function showWarning($text)
 	$data['type'] = 'image/png';
 	$data['size'] = strlen($content);
 	$data['content'] = $content;
-	$this->url = 'Warning.png';
 
 	$this->sendInlineFile($data['type'], 'Warning.png', $data['size'], $data['content']);
 	}
