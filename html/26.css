@@ -125,10 +125,13 @@ table     	{
 
 #logo		{
 		position:absolute;
-		background-image:url("../images/logo.png");
+		#background-image:url("../images/logo.png");
+		background-image:url("http://www.laber-land.de/~pierre/linuxconf.png");
 		background-repeat:no-repeat;
-		width:150px;
-		height:111px;
+		#width:150px;
+		#height:111px;
+		width:128px;
+		height:128px;
 		z-index:1;
 		}
 
@@ -154,7 +157,7 @@ table     	{
 		}
 
 #body		{
-		margin-top:30px;
+		margin-top:60px;
 		text-align:center;
 		position:relative;
 		}
