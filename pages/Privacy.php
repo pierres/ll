@@ -50,7 +50,7 @@ public function prepare()
 						</li>
 						<li>
 						<strong>Sicherheitshinweis</strong>
-						<p>Dem Nutzer ist bewusst, dass alle Angaben im Profil und alle Beiträge im Forum öffentlich zugänglich sind. Für alle Folgen dieser Veröffentlichung ist der Nutzer selbst verantwortlich.</p>
+						<p>Dem Nutzer ist bewusst, dass alle Angaben im Profil, alle Beiträge und Dateien im Forum öffentlich zugänglich sind. Für alle Folgen dieser Veröffentlichung ist der Nutzer selbst verantwortlich.</p>
 						</li>
 					</ol>
 				</td>
