@@ -63,6 +63,7 @@ private static $availableModules = array
 	'Poll' => 'pages/Poll.php',
 	'Portal' => 'pages/Portal.php',
 	'Postings' => 'pages/Postings.php',
+	'Privacy' => 'pages/Privacy.php',
 	'PrivatePostings' => 'pages/PrivatePostings.php',
 	'PrivateThreads' => 'pages/PrivateThreads.php',
 	'QuotePost' => 'pages/QuotePost.php',

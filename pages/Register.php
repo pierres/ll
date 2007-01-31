@@ -21,7 +21,10 @@ protected function setForm()
 	$this->requires('email');
 	$this->setLength('email', 6, 50);
 
-	$this->addElement('emailhint', '<span style="font-size:10px;color:red;">Achte auf die Gültigkeit dieser Adresse,<br /> da die Zugangsdaten dorthin verschickt werden.</span>');
+	$this->addElement('emailhint', '<span style="font-size:10px;color:red;">Achte auf die Gültigkeit dieser Adresse,<br /> da die Zugangsdaten dorthin verschickt werden.</span><br /><br />');
+	
+	$this->addCheckBox('confirmPrivacy', 'Ich bestätige die <a class="link" href="?page=Privacy;id='.$this->Board->getId().'">Datenschutzerklärung</a>');
+	$this->requires('confirmPrivacy');
 	}
 
 protected function checkForm()

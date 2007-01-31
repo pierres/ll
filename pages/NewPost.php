@@ -53,6 +53,12 @@ protected function setForm()
 
 	$this->addCheckbox('smilies', 'grafische Smilies', $this->smilies);
 
+	if (!$this->User->isOnline())
+		{
+		$this->addCheckBox('confirmPrivacy', 'Ich bestätige die <a class="link" href="?page=Privacy;id='.$this->Board->getId().'">Datenschutzerklärung</a>');
+		$this->requires('confirmPrivacy');
+		}
+
 	$this->setFile();
 
 	if (!empty($this->thread))
