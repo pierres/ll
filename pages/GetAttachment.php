@@ -19,11 +19,6 @@ protected function getParams()
 
 public function show()
 	{
-	if (!$this->User->isOnline())
-		{
-		$this->showWarning('Nur für Mitglieder');
-		}
-
 	try
 		{
 		$stm = $this->DB->prepare

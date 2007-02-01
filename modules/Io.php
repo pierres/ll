@@ -228,7 +228,7 @@ public function getUploadedFile($name)
 		$_FILES[$name]['type'] = $type;
 		return $_FILES[$name];
 		}
-	elseif (isset($_FILES[$name]) && $_FILES[$name]['error'] > 0)
+	elseif (isset($_FILES[$name]) && $_FILES[$name]['error'] > 0 && !empty($_FILES[$name]['name']))
 		{
 		switch ($_FILES[$name]['error'])
 			{

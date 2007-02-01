@@ -20,7 +20,6 @@ public function show()
 	$im = imagecreatetruecolor(1, 1);
 	imagepng($im);
 	imagedestroy($im);
-	exit();
 	}
 
 }

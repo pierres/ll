@@ -42,7 +42,7 @@ public function prepare()
 						</li>
 						<li>
 						<strong>Beendigung der Mitgliedschaft</strong>
-						<p>Jeder registrierte Nutzer kann seine Mitgliedschaft jederzeit über sein Profil beenden. Hierbei werden alle im Profil befindlichen Daten gelöscht. Alle vom Nutzer verfassten Beiträge im Forum bleiben jedoch bestehen.</p>
+						<p>Jeder registrierte Nutzer kann seine Mitgliedschaft jederzeit über sein Profil beenden. Hierbei werden alle im Profil befindlichen Daten gelöscht. Alle vom Nutzer verfassten Beiträge im Forum bleiben jedoch bestehen. Der Benutzername selbst wird weiterhin als Verfasser der Beiträge angezeigt. Auf besonderne Wunsch hin kann der Benutzername allerdings geändert werden. Diese Anfrage sollte jedoch unbedingt vor dem Löschen des Benutzerkontos erfolgen. (Kontakt-Adresse: siehe <a class="link" href="?page=Impressum;id='.$this->Board->getId().'">Impressum</a>)</p>
 						</li>
 						<li>
 						<strong>Cookies</strong>
@@ -53,6 +53,9 @@ public function prepare()
 						<p>Dem Nutzer ist bewusst, dass alle Angaben im Profil, alle Beiträge und Dateien im Forum öffentlich zugänglich sind. Für alle Folgen dieser Veröffentlichung ist der Nutzer selbst verantwortlich.</p>
 						</li>
 					</ol>
+				<div style="text-align:right;font-size:10px;margin:5px;">
+					Stand: <strong>1.2.2007</strong>
+				</div>
 				</td>
 			</tr>
 		</table>

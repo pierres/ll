@@ -10,13 +10,6 @@ private $url 		= '';
 private $name 		= '';
 private $thumb		= false;
 
-public function prepare()
-	{
-	$this->exitIfCached();
-
-	$this->getParams();
-	$this->initDB();
-	}
 
 protected function getParams()
 	{
@@ -37,11 +30,6 @@ protected function getParams()
 		}
 
 	$this->name = preg_replace('/.*\/([^\/]+)/', '$1', $this->url);
-
-	if (!$this->isUser())
-		{
- 		$this->showWarning('Dieses Bild ist nur für angemeldete Nutzer sichtbar.');
-		}
 	}
 
 private function loadImage()

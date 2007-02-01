@@ -4,11 +4,6 @@ class GetAttachmentThumb extends GetAttachment{
 
 public function show()
 	{
-	if (!$this->User->isOnline())
-		{
-		$this->showWarning('Nur für Mitglieder');
-		}
-
 	try
 		{
 		/** @TODO: Optimieren! */

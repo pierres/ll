@@ -7,20 +7,14 @@ abstract class GetFile extends Modul implements IOutput{
 public function prepare()
 	{
 	$this->exitIfCached();
+	$this->initDB();
 
-	if (!$this->isUser())
+	if (!$this->User->isOnline())
 		{
 		$this->showWarning('Nur für Mitglieder!');
 		}
 
 	$this->getParams();
-	$this->initDB();
-	}
-
-/** Soll nur Bots abhalten die Dateien zu laden; hat nichts mit Sicherheit zu tun */
-protected function isUser()
-	{
-	return $this->Io->isRequest('sessionid');
 	}
 
 protected function exitIfCached()
@@ -38,7 +32,7 @@ protected function getParams()
 	{
 	}
 
-protected function initDB()
+private function initDB()
 	{
 	self::__set('DB', new DB(
 		$this->Settings->getValue('sql_user'),
@@ -59,7 +53,6 @@ protected function sendFile($type, $name, $size, $content, $disposition = 'attac
 	header('Content-Disposition: '.$disposition.'; filename="'.urlencode($name).'"');
 	header('Last-Modified: '.date('r'));
 	echo $content;
-	exit();
 	}
 
 protected function sendInlineFile($type, $name, $size, $content)
