@@ -53,6 +53,7 @@ protected function sendFile($type, $name, $size, $content, $disposition = 'attac
 	header('Content-Disposition: '.$disposition.'; filename="'.urlencode($name).'"');
 	header('Last-Modified: '.date('r'));
 	echo $content;
+	exit;
 	}
 
 protected function sendInlineFile($type, $name, $size, $content)
