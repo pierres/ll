@@ -17,6 +17,8 @@ protected $focus	= '';
 private $encoding 	= '';
 private $request	= '';
 
+private $tail		= '';
+
 
 public function prepare()
 	{
@@ -164,9 +166,14 @@ protected function showForm()
 		<script type="text/javascript">
 			document.getElementById("id'.$this->focus.'").focus();
 		</script>
-		';
+		'.$this->tail;
 
 	$this->setValue('body', $body);
+	}
+
+protected function appendOutput($text)
+	{
+	$this->tail .= $text;
 	}
 
 protected function sendForm()

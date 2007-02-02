@@ -45,7 +45,7 @@ public function __construct()
 	$this->config['antispam_hash']			= '';
 	$this->config['antispam_timeout']		= 60*60*2; //2 hour
 	$this->config['antispam_wait']			= 2; //2 seconds
-	
+
 	$this->config['cookie_hash']			= '';
 
 	$this->config['tls_enabled_message']		= '';

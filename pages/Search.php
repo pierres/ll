@@ -6,6 +6,8 @@ class Search extends Form{
 private $search 	= '';
 private $thread 	= 0;
 
+private $globalSearch 	= '';
+
 
 protected function setForm()
 	{
@@ -16,6 +18,8 @@ protected function setForm()
 	$this->addText('search', 'Suchbegriff', '', 50);
 	$this->requires('search');
 	$this->setLength('search', 3, 50);
+
+	$this->addCheckBox('globalSearch', 'in allen Boards suchen', false);
 	}
 
 protected function checkForm()
@@ -29,6 +33,11 @@ protected function checkForm()
 	catch (IoRequestException $e)
 		{
 		$this->thread = 0;
+		}
+
+	if (!$this->Io->isRequest('globalSearch'))
+		{
+		$this->globalSearch = 'AND forums.boardid = '.$this->Board->getId();
 		}
 	}
 
@@ -69,6 +78,7 @@ private function getResult()
 			AGAINST (? IN BOOLEAN MODE)
 			AND threads.forumid = forums.id
 			AND threads.deleted = 0
+			'.$this->globalSearch.'
 			ORDER BY score DESC
 		)
 		UNION
@@ -102,6 +112,7 @@ private function getResult()
 			AND threads.forumid = forums.id
 			AND threads.deleted = 0
 			AND posts.deleted = 0
+			'.$this->globalSearch.'
 			GROUP BY threads.id
 			ORDER BY score DESC
 		)
@@ -115,7 +126,7 @@ private function getResult()
 		}
 	catch (DBNoDataException $e)
 		{
-		$this->showFailure('Leider nichts gefunden');
+		$this->showWarning('Leider nichts gefunden');
 		}
 
 	return $result;
@@ -125,33 +136,40 @@ protected function sendForm()
 	{
 	$this->setValue('title', 'Suche nach &quot;'.htmlspecialchars($this->search).'&quot;');
 
-	$next = '&nbsp;<a href="?page=Search;id='.$this->Board->getId().';thread='.($this->Settings->getValue('max_threads')+$this->thread).';search='.urlencode($this->search).';submit=">&#187;</a>';
+	$params = ';search='.urlencode($this->search).';submit='.($this->Io->isRequest('globalSearch') ? ';globalSearch=' : '');
 
-	$last = ($this->thread > 0 ? '<a href="?page=Search;id='.$this->Board->getId().';thread='.nat($this->thread-$this->Settings->getValue('max_threads')).';search='.urlencode($this->search).';submit=">&#171;</a>' : '');
+	$next = '&nbsp;<a href="?page=Search;id='.$this->Board->getId().';thread='.($this->Settings->getValue('max_threads')+$this->thread).$params.'">&#187;</a>';
+
+	$last = ($this->thread > 0 ? '<a href="?page=Search;id='.$this->Board->getId().';thread='.nat($this->thread-$this->Settings->getValue('max_threads')).$params.'">&#171;</a>' : '');
 
 	$threads = $this->ThreadList->getList($this->getResult());
 
-	$body =
-	'
-	<table class="frame" style="width:100%">
-		<tr>
-			<td class="title" colspan="2">Thema</td>
-			<td class="title">Erster Beitrag</td>
-			<td class="title">Beiträge</td>
-			<td class="title">Letzter Beitrag</td>
-			<td class="title">Forum</td>
-		</tr>
-		<tr>
-			<td class="pages" colspan="6">'.$last.$next.'&nbsp;</td>
-		</tr>
-		'.$threads.'
-		<tr>
-			<td class="pages" colspan="6">'.$last.$next.'&nbsp;</td>
-		</tr>
-	</table>
-	';
+	if (count($this->warning) == 0)
+		{
+		$body =
+		'
+		<table class="frame" style="width:100%">
+			<tr>
+				<td class="title" colspan="2">Thema</td>
+				<td class="title">Erster Beitrag</td>
+				<td class="title">Beiträge</td>
+				<td class="title">Letzter Beitrag</td>
+				<td class="title">Forum</td>
+			</tr>
+			<tr>
+				<td class="pages" colspan="6">'.$last.$next.'&nbsp;</td>
+			</tr>
+			'.$threads.'
+			<tr>
+				<td class="pages" colspan="6">'.$last.$next.'&nbsp;</td>
+			</tr>
+		</table>
+		';
+	
+		$this->appendOutput($body);
+		}
 
-	$this->setValue('body', $body);
+	$this->showForm();
 	}
 
 
