@@ -63,7 +63,7 @@ protected function setForm()
 
 	if (!empty($this->thread))
 		{
-		$this->addOutput($this->getLastPosts());
+		$this->appendOutput($this->getLastPosts());
 		}
 	}
 
@@ -145,7 +145,10 @@ protected function setFile()
 
 protected function getLastPosts()
 	{
-	$posts = '<div class="frame" style="padding:5px;width:500px;height:200px;overflow:auto;">';
+	$posts = '<table class="frame" style="margin-top:10px;padding:5px;width:510px;overflow:auto;">
+			<tr>
+				<td class="main">
+				';
 
 	try
 		{
@@ -181,7 +184,9 @@ protected function getLastPosts()
 		$stm->close();
 		}
 
-	return $posts.'</div>';
+	return $posts.'</td>
+				</tr>
+			</table>';
 	}
 
 protected function sendFile($postid)
