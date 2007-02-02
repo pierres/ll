@@ -31,20 +31,20 @@ public function __construct()
 	$this->config['log_dir'] 			= '';
 	$this->config['mail_log_dir'] 			= '';
 
-	$this->config['file_size']			= 2*1024*1024;
-	$this->config['quota']				= 10*1024*1024;
+	$this->config['file_size']			= 2*1024*1024; //2 MByte
+	$this->config['quota']				= 10*1024*1024; //10 MByte
 	$this->config['files']				= 100;
 	$this->config['avatar_size']			= 60;
 
 	$this->config['thumb_size']			= 300;
-	$this->config['max_image_file_size']		= 2*1024*1024; //2MByte
+	$this->config['max_image_file_size']		= 2*1024*1024; //2 MByte
 	$this->config['image_refresh']			= 60*60*24*30; //30 days
 
-	$this->config['password_key_lifetime']		= 24*60*60;
+	$this->config['password_key_lifetime']		= 24*60*60*7; //7 days
 
 	$this->config['antispam_hash']			= '';
-	$this->config['antispam_timeout']		= 60*60;
-	$this->config['antispam_wait']			= 2;
+	$this->config['antispam_timeout']		= 60*60*2; //2 hour
+	$this->config['antispam_wait']			= 2; //2 seconds
 	
 	$this->config['cookie_hash']			= '';
 
