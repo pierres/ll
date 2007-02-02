@@ -17,7 +17,7 @@ public function __construct()
 	$this->config['sql_user']			= '';
 	$this->config['sql_password']			= '';
 
-	$this->config['log_timeout'] 			= 14 * 86400; //days
+	$this->config['log_timeout'] 			= 14*24*60*60; //14 days
 	$this->config['session_timeout'] 		= 3600;
 	$this->config['session_refresh'] 		= 900;
 	$this->config['max_age']			= 31536000;
@@ -38,6 +38,7 @@ public function __construct()
 
 	$this->config['thumb_size']			= 300;
 	$this->config['max_image_file_size']		= 2*1024*1024; //2MByte
+	$this->config['image_refresh']			= 60*60*24*30; //30 days
 
 	$this->config['password_key_lifetime']		= 24*60*60;
 

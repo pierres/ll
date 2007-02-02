@@ -1,9 +1,5 @@
 <?php
 
-/**
-* TODO:
-*	evtl. timestamp mitführen
-*/
 class GetImage extends GetFile{
 
 private $url 		= '';
@@ -82,7 +78,8 @@ private function loadImage()
 			size = ?,
 			content = ?,
 			thumbcontent = ?,
-			thumbsize = ?'
+			thumbsize = ?,
+			lastupdate = ?'
 		);
 	$stm->bindString($this->url);
 	$stm->bindString($file['type']);
@@ -90,6 +87,7 @@ private function loadImage()
 	$stm->bindString($file['content']);
 	$stm->bindString($file['thumbcontent']);
 	$stm->bindInteger($file['thumbsize']);
+	$stm->bindInteger(time());
 	$stm->execute();
 	$stm->close();
 
@@ -143,7 +141,8 @@ public function show()
 				SELECT
 					type,
 					thumbcontent AS content,
-					thumbsize AS size
+					thumbsize AS size,
+					lastupdate
 				FROM
 					images
 				WHERE
@@ -155,7 +154,8 @@ public function show()
 				SELECT
 					type,
 					content,
-					size
+					size,
+					lastupdate
 				FROM
 					images
 				WHERE
@@ -175,7 +175,8 @@ public function show()
 				SELECT
 					type,
 					content,
-					size
+					size,
+					lastupdate
 				FROM
 					images
 				WHERE
@@ -183,6 +184,21 @@ public function show()
 				');
 			$stm->bindString($this->url);
 			$data = $stm->getRow();
+			$stm->close();
+			}
+
+		if ($data['lastupdate'] < time() - $this->Settings->getValue('image_refresh'))
+			{
+			$stm = $this->DB->prepare
+				('
+				DELETE FROM
+					images
+				WHERE
+					url = ?
+				');
+			
+			$stm->bindString($this->url);
+			$stm->execute();
 			$stm->close();
 			}
 		}

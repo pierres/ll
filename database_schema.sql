@@ -1,10 +1,10 @@
 -- phpMyAdmin SQL Dump
--- version 2.9.0.2
+-- version 2.9.0
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Erstellungszeit: 11. November 2006 um 16:36
--- Server Version: 5.0.26
+-- Erstellungszeit: 02. Februar 2007 um 12:38
+-- Server Version: 5.0.27
 -- PHP-Version: 5.2.0
 -- 
 -- Datenbank: `current`
@@ -145,6 +145,7 @@ CREATE TABLE `images` (
   `size` int(10) unsigned NOT NULL,
   `thumbcontent` mediumblob NOT NULL,
   `thumbsize` int(10) unsigned NOT NULL,
+  `lastupdate` int(11) unsigned NOT NULL,
   PRIMARY KEY  (`url`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
