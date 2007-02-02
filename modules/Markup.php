@@ -386,7 +386,7 @@ private function makeLink($matches)
 	$matches[1] = $matches[0];
 	$matches[2] = $matches[0];
 
-	return $this->makeNamedLink($matches);
+	return $this->makeNamedLink($matches, true);
 	}
 
 private function makeWWWLink($matches)
@@ -394,7 +394,7 @@ private function makeWWWLink($matches)
 	$matches[1] = $matches[0];
 	$matches[2] = $matches[0];
 
-	return $this->makeNamedWWWLink($matches);
+	return $this->makeNamedWWWLink($matches, true);
 	}
 
 private function makeFTPLink($matches)
@@ -402,7 +402,7 @@ private function makeFTPLink($matches)
 	$matches[1] = $matches[0];
 	$matches[2] = $matches[0];
 
-	return $this->makeNamedFTPLink($matches);
+	return $this->makeNamedFTPLink($matches, true);
 	}
 
 private function makeNumberedLink($matches)
@@ -421,7 +421,7 @@ private function makeNumberedLink($matches)
 		$target = ' onclick="return !window.open(this.href);" rel="nofollow" class="extlink"';
 		}
 
-	return $this->createStackLink('<a href="'.htmlspecialchars($url, ENT_COMPAT, 'UTF-8').'"'.$target.'>'.htmlspecialchars($name, ENT_COMPAT, 'UTF-8').'</a>');
+	return $this->createStackLink($this->tagElement('numbered', '<a href="'.htmlspecialchars($url, ENT_COMPAT, 'UTF-8').'"'.$target.'>'.htmlspecialchars($name, ENT_COMPAT, 'UTF-8').'</a>'));
 	}
 
 private function makeNumberedWWWLink($matches)
@@ -436,14 +436,19 @@ private function makeNumberedFTPLink($matches)
 	return $this->makeNumberedLink($matches);
 	}
 
-private function makeNamedLink($matches)
+private function makeNamedLink($matches, $cutName = false)
 	{
 	$url = $matches[1];
 	$name = $matches[2];
 
-	if (strlen($name) > 50)
+	if ($cutName && strlen($name) > 50)
 		{
 		$name = mb_substr($name, 0, 37, 'UTF-8').'...'.mb_substr($name, -10, 'UTF-8');
+		$cutted = true;
+		}
+	else
+		{
+		$cutted = false;
 		}
 
 	if (strpos($url, $this->Settings->getValue('domain')) !== false)
@@ -455,19 +460,32 @@ private function makeNamedLink($matches)
 		$target = ' onclick="return !window.open(this.href);" rel="nofollow" class="extlink"';
 		}
 
-	return $this->createStackLink('<a href="'.htmlspecialchars($url, ENT_COMPAT, 'UTF-8').'"'.$target.'>'.htmlspecialchars($name, ENT_COMPAT, 'UTF-8').'</a>');
+	$link = '<a href="'.htmlspecialchars($url, ENT_COMPAT, 'UTF-8').'"'.$target.'>'.htmlspecialchars($name, ENT_COMPAT, 'UTF-8').'</a>';
+	
+	if ($cutted)
+		{
+		$link = $this->tagElement('cutted', $link);
+		}
+
+	return $this->createStackLink($link);
 	}
 
-private function makeNamedWWWLink($matches)
+private function tagElement($tag, $element)
+	{
+	return '<!-- '.$tag.' -->'.$element.'<!-- /'.$tag.' -->';
+	}
+
+
+private function makeNamedWWWLink($matches, $cutName = false)
 	{
 	$matches[1] = 'http://'.$matches[1];
-	return $this->makeNamedLink($matches);
+	return $this->makeNamedLink($matches, $cutName);
 	}
 
-private function makeNamedFTPLink($matches)
+private function makeNamedFTPLink($matches, $cutName = false)
 	{
 	$matches[1] = 'ftp://'.$matches[1];
-	return $this->makeNamedLink($matches);
+	return $this->makeNamedLink($matches, $cutName);
 	}
 
 private function makeImage($matches)

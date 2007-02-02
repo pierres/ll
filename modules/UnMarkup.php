@@ -59,7 +59,13 @@ public function fromHtml($text)
 
 	$text = preg_replace('#<a href="mailto:(.+?)">.+?</a>#', '$1', $text);
 
+
+	$text = preg_replace_callback('#<!-- numbered --><a href="(.+?)"(?: onclick="return !window\.open\(this\.href\);" rel="nofollow" class="extlink"| class="link")>\[\d+?\]</a><!-- /numbered -->#', array($this, 'unmakeNumberedLink'), $text);
+
+	$text = preg_replace_callback('#<!-- cutted --><a href="(.+?)"(?: onclick="return !window\.open\(this\.href\);" rel="nofollow" class="extlink"| class="link")>.+?</a><!-- /cutted -->#', array($this, 'unmakeCuttedLink'), $text);
+
 	$text = preg_replace_callback('#<a href="(.+?)"(?: onclick="return !window\.open\(this\.href\);" rel="nofollow" class="extlink"| class="link")>(.+?)</a>#', array($this, 'unmakeLink'), $text);
+
 
 	$text = preg_replace_callback('#<img src="images/smilies/\w+.gif" alt="(\w+)" class="smiley" />#',array($this, 'unmakeSmiley'), $text);
 
@@ -102,25 +108,23 @@ private function unmakeLink($matches)
 	$url = $matches[1];
 	$name = $matches[2];
 
-	if (preg_match('/^\[\d+\]$/', $name))
-		{
-		$this->Stack->push( '<'.$url.'>');
-		}
-	/** FIXME: keine schöne Lösung...könnte schiefgehen */
-	if 	(
-		$name !== $url
-		&& !empty($name)
-		&& strpos($url, $name) === false
-		&& strpos($name, '...') === false
-		&& strlen($name) != 50
-		)
-		{
-		$this->Stack->push( '<'.$url.' '.$name.'>');
-		}
-	else
-		{
-		$this->Stack->push($url);
-		}
+	$this->Stack->push( '<'.$url.' '.$name.'>');
+
+	return $this->sep.$this->Stack->lastID().$this->sep;
+	}
+
+private function unmakeNumberedLink($matches)
+	{
+	$url = $matches[1];
+	$this->Stack->push( '<'.$url.'>');
+
+	return $this->sep.$this->Stack->lastID().$this->sep;
+	}
+
+private function unmakeCuttedLink($matches)
+	{
+	$url = $matches[1];
+	$this->Stack->push($url);
 
 	return $this->sep.$this->Stack->lastID().$this->sep;
 	}

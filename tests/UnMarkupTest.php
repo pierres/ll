@@ -182,6 +182,15 @@ reg
 	$this->assertEquals($out, $this->UnMarkup->fromHtml($in));
 	}
 
+public function testBug93()
+	{
+	$this->assertEquals('<http://www.laber-land.de aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa>', $this->UnMarkup->fromHtml('<a href="http://www.laber-land.de" onclick="return !window.open(this.href);" rel="nofollow" class="extlink">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</a>'));
+
+	$this->assertEquals('<http://www.laber-land.de/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa>', $this->UnMarkup->fromHtml('<!-- numbered --><a href="http://www.laber-land.de/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" onclick="return !window.open(this.href);" rel="nofollow" class="extlink">[1]</a><!-- /numbered -->'));
+
+	$this->assertEquals('http://www.laber-land.de/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', $this->UnMarkup->fromHtml('<!-- cutted --><a href="http://www.laber-land.de/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" onclick="return !window.open(this.href);" rel="nofollow" class="extlink">http://www.laber-land.de/aaaaaaaaaaaa...</a><!-- /cutted -->'));
+	}
+
 }
 
 ?>

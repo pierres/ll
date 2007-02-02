@@ -211,9 +211,9 @@ public function testURL()
 	$this->assertEquals('<a href="http://www.laber-land.de" onclick="return !window.open(this.href);" rel="nofollow" class="extlink">Laber-Land</a>', $this->Markup->toHtml('<http://www.laber-land.de Laber-Land>'));
 	$this->assertEquals('<a href="http://www.laber-land.de" onclick="return !window.open(this.href);" rel="nofollow" class="extlink">Laber-Land</a>', $this->Markup->toHtml('<www.laber-land.de Laber-Land>'));
 	$this->assertEquals('<a href="ftp://ftp.laber-land.de" onclick="return !window.open(this.href);" rel="nofollow" class="extlink">Laber-Land</a>', $this->Markup->toHtml('<ftp.laber-land.de Laber-Land>'));
-	$this->assertEquals('<a href="http://www.laber-land.de" onclick="return !window.open(this.href);" rel="nofollow" class="extlink">[1]</a>', $this->Markup->toHtml('<http://www.laber-land.de>'));
-	$this->assertEquals('<a href="http://www.laber-land.de" onclick="return !window.open(this.href);" rel="nofollow" class="extlink">[2]</a>', $this->Markup->toHtml('<www.laber-land.de>'));
-	$this->assertEquals('<a href="ftp://ftp.laber-land.de" onclick="return !window.open(this.href);" rel="nofollow" class="extlink">[3]</a>', $this->Markup->toHtml('<ftp.laber-land.de>'));
+	$this->assertEquals('<!-- numbered --><a href="http://www.laber-land.de" onclick="return !window.open(this.href);" rel="nofollow" class="extlink">[1]</a><!-- /numbered -->', $this->Markup->toHtml('<http://www.laber-land.de>'));
+	$this->assertEquals('<!-- numbered --><a href="http://www.laber-land.de" onclick="return !window.open(this.href);" rel="nofollow" class="extlink">[2]</a><!-- /numbered -->', $this->Markup->toHtml('<www.laber-land.de>'));
+	$this->assertEquals('<!-- numbered --><a href="ftp://ftp.laber-land.de" onclick="return !window.open(this.href);" rel="nofollow" class="extlink">[3]</a><!-- /numbered -->', $this->Markup->toHtml('<ftp.laber-land.de>'));
 	$this->assertEquals('<a href="mailto:support@laber-land.de">support@laber-land.de</a>', $this->Markup->toHtml('support@laber-land.de'));
 	$this->assertEquals('<a href="?page=GetImage;url=http%3A%2F%2Fwww.laber-land.de%2Fimages%2Flogo.png" onclick="return !window.open(this.href);" rel="nofollow"><img src="?page=GetImage;thumb;url=http%3A%2F%2Fwww.laber-land.de%2Fimages%2Flogo.png" alt="" class="image" /></a>', $this->Markup->toHtml('http://www.laber-land.de/images/logo.png'));
 	$this->assertEquals('<a href="?page=GetImage;url=http%3A%2F%2Fwww.laber-land.de%2Fimages%2Flogo.png" onclick="return !window.open(this.href);" rel="nofollow"><img src="?page=GetImage;thumb;url=http%3A%2F%2Fwww.laber-land.de%2Fimages%2Flogo.png" alt="" class="image" /></a>', $this->Markup->toHtml('www.laber-land.de/images/logo.png'));
@@ -269,6 +269,15 @@ reg
 </pre><br /><ul><li>2</li><li>3</li></ul>';
 
 	$this->assertEquals($out,  $this->Markup->toHtml($in));
+	}
+	
+public function testBug93()
+	{
+	$this->assertEquals('<a href="http://www.laber-land.de" onclick="return !window.open(this.href);" rel="nofollow" class="extlink">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</a>', $this->Markup->toHtml('<http://www.laber-land.de aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa>'));
+
+	$this->assertEquals('<!-- numbered --><a href="http://www.laber-land.de/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" onclick="return !window.open(this.href);" rel="nofollow" class="extlink">[4]</a><!-- /numbered -->', $this->Markup->toHtml('<http://www.laber-land.de/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa>'));
+
+	$this->assertEquals('<!-- cutted --><a href="http://www.laber-land.de/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" onclick="return !window.open(this.href);" rel="nofollow" class="extlink">http://www.laber-land.de/aaaaaaaaaaaa...</a><!-- /cutted -->', $this->Markup->toHtml('http://www.laber-land.de/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'));
 	}
 
 }
