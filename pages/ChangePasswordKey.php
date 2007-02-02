@@ -47,12 +47,14 @@ protected function checkForm()
 		$this->showFailure('Kein Schlüssel übergeben!');
 		}
 
+	$this->collectGarbage();
+
 	try
 		{
 		$stm = $this->DB->prepare
 			('
 			SELECT
-				request_time
+				id
 			FROM
 				password_key
 			WHERE
@@ -61,28 +63,13 @@ protected function checkForm()
 			');
 		$stm->bindInteger($this->id);
 		$stm->bindString($this->key);
-		$requestTime = $stm->getColumn();
+		$stm->getColumn();
 		$stm->close();
 		}
 	catch (DBNoDataException $e)
 		{
 		$stm->close();
-		$this->showFailure('Falscher Schlüssel!');
-		}
-
-	if (time() - $requestTime >= $this->Settings->getValue('password_key_lifetime'))
-		{
-		$stm = $this->DB->prepare
-			('
-			DELETE FROM
-				password_key
-			WHERE
-				id = ?'
-			);
-		$stm->bindInteger($this->id);
-		$stm->execute();
-		$stm->close();
-		$this->showFailure('Dein Schlüssel ist abgelaufen! Es ist zuviel Zeit zwischen Registrierung und Aktivierung verstrichen.<br />Lasse Dir bitte <a class="link" href="?page=ForgotPassword;id='.$this->Board->getId().'">erneut einen Schlüssel zusenden</a> und aktiviere Dein Konto umgehend.');
+		$this->showWarning('Falscher Schlüssel! Möglicherweise ist Dein Schlüssel abgelaufen, da zuviel Zeit zwischen Registrierung und Aktivierung verstrichen ist.<br />Lasse Dir bitte <a class="link" href="?page=ForgotPassword;id='.$this->Board->getId().'">erneut einen Schlüssel zusenden</a> und aktiviere Dein Konto umgehend.');
 		}
 
 	$this->newpassword = sha1($this->Io->getString('newpassword'));
@@ -91,6 +78,20 @@ protected function checkForm()
 		{
 		$this->showWarning('Du hast Dich vertippt!');
 		}
+	}
+	
+private function collectGarbage()
+	{
+	$stm = $this->DB->prepare
+		('
+		DELETE FROM
+			password_key
+		WHERE
+			request_time < ?'
+		);
+	$stm->bindInteger(time() - $this->Settings->getValue('password_key_lifetime'));
+	$stm->execute();
+	$stm->close();
 	}
 
 protected function sendForm()
