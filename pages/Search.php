@@ -20,6 +20,9 @@ protected function setForm()
 	$this->setLength('search', 3, 50);
 
 	$this->addCheckBox('globalSearch', 'in allen Boards suchen', false);
+
+	$this->isCheckSecurityToken(false);
+	$this->isCheckAntiSpamHash(false);
 	}
 
 protected function checkForm()

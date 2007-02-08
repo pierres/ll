@@ -19,6 +19,9 @@ private $request	= '';
 
 private $tail		= '';
 
+private $isCheckSecurityToken = true;
+private $isCheckAntiSpamHash = true;
+
 
 public function prepare()
 	{
@@ -56,15 +59,20 @@ protected function setForm()
 
 private function addSecurityToken()
 	{
-	if ($this->User->isOnline())
+	if ($this->isCheckSecurityToken && $this->User->isOnline())
 		{
 		$this->addHidden('SecurityToken', sha1($this->getName().$this->User->getNextSecurityToken()));
 		}
 	}
 
+protected function isCheckSecurityToken($bool = true)
+	{
+	$this->isCheckSecurityToken = $bool;
+	}
+
 private function checkSecurityToken()
 	{
-	if ($this->User->isOnline())
+	if ($this->isCheckSecurityToken && $this->User->isOnline())
 		{
 		try
 			{
@@ -89,7 +97,7 @@ private function checkSecurityToken()
 
 private function checkAntiSpamHash()
 	{
-	if (!$this->User->isOnline())
+	if ($this->isCheckAntiSpamHash && !$this->User->isOnline())
 		{
 		$now = time();
 
@@ -124,10 +132,15 @@ private function checkAntiSpamHash()
 
 private function addAntiSpamHash()
 	{
-	if (!$this->User->isOnline())
+	if ($this->isCheckAntiSpamHash && !$this->User->isOnline())
 		{
 		$this->addOutput('<div style="background-image:url(?page=FunnyDot);background-repeat:no-repeat;visibility:hidden;">&nbsp;</div>');
 		}
+	}
+
+protected function isCheckAntiSpamHash($bool = true)
+	{
+	$this->isCheckAntiSpamHash = $bool;
 	}
 
 protected function checkForm()
