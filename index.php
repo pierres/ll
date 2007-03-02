@@ -1,5 +1,7 @@
 <?php
 
+define('IN_LL', null);
+
 require ('modules/Modul.php');
 require ('modules/Settings.php');
 require ('modules/Exceptions.php');
