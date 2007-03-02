@@ -22,7 +22,7 @@ public function show()
 	header('HTTP/1.1 200 OK');
 	header("Cache-Control: no-cache, must-revalidate");
 	header('Content-Type: image/png');
-	header('Content-Length: '.ob_get_length);
+	header('Content-Length: '.ob_get_length());
 
 	imagepng($im);
 	imagedestroy($im);
