@@ -48,8 +48,9 @@ public function showWarning($text)
 
 protected function sendFile($type, $name, $size, $content, $disposition = 'attachment')
 	{
+	header('HTTP/1.1 200 OK');
 	header('Content-Type: '.$type);
-	header('Content-length: '.$size);
+	header('Content-Length: '.$size);
 	header('Content-Disposition: '.$disposition.'; filename="'.urlencode($name).'"');
 	header('Last-Modified: '.date('r'));
 	echo $content;
