@@ -71,6 +71,7 @@ private static $availableModules = array
 	'Recent' => 'pages/Recent.php',
 	'Register' => 'pages/Register.php',
 	'RegisterBoard' => 'pages/RegisterBoard.php',
+	'RenameUser' => 'pages/RenameUser.php',
 	'Search' => 'pages/Search.php',
 	'ShowUser' => 'pages/ShowUser.php',
 	'SiteMap' => 'pages/SiteMap.php',
@@ -79,6 +80,7 @@ private static $availableModules = array
 	'Threads' => 'pages/Threads.php',
 	'UserList' => 'pages/UserList.php',
 	'UserRecent' => 'pages/UserRecent.php',
+	/** @TODO do not load the following modules as pages (at least; better: remove autoload) */
 	'AdminForm' => 'pages/abstract/AdminForm.php',
 	'AdminPage' => 'pages/abstract/AdminPage.php',
 	'Form' => 'pages/abstract/Form.php',

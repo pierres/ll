@@ -26,6 +26,9 @@ public function prepare()
 				<li style="margin:20px;">
 				<a href="?page=DeletedPosts;id='.$this->Board->getId().'"><span class="button">Gelöschte Beiträge</span></a>
 				</li>
+				<li style="margin:20px;">
+				<a href="?page=RenameUser;id='.$this->Board->getId().'"><span class="button">Benutzer umbenennen</span></a>
+				</li>
 			</ul>
 		</td>
 	</tr>

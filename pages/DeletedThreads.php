@@ -1,6 +1,6 @@
 <?php
 
-class DeletedThreads extends Form{
+class DeletedThreads extends AdminForm{
 
 protected function setForm()
 	{

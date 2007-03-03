@@ -1,6 +1,6 @@
 <?php
 
-class DeletedPosts extends Form{
+class DeletedPosts extends AdminForm{
 
 protected function setForm()
 	{
