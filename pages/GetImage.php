@@ -187,17 +187,19 @@ public function show()
 			$stm->close();
 			}
 
-		if ($data['lastupdate'] < time() - $this->Settings->getValue('image_refresh'))
+		$refreshTime = time() - $this->Settings->getValue('image_refresh');
+
+		if ($data['lastupdate'] < $refreshTime)
 			{
 			$stm = $this->DB->prepare
 				('
 				DELETE FROM
 					images
 				WHERE
-					url = ?
+					lastupdate < ?
 				');
 			
-			$stm->bindString($this->url);
+			$stm->bindInteger($refreshTime);
 			$stm->execute();
 			$stm->close();
 			}
