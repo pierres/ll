@@ -1,32 +1,12 @@
 <?php
-/** FIXME: Nicht geschützt via Form */
-class DelThread extends Page{
+
+class DelThread extends Form{
 
 protected $forum 		= 0;
 protected $thread		= 0;
+private $deleted 		= false;
 
-public function prepare()
-	{
-	$this->checkInput();
-	$this->checkAccess();
-
-	$stm = $this->DB->prepare
-		('
-		UPDATE
-			threads
-		SET
-			deleted = ABS(deleted - 1)
-		WHERE
-			id = ?'
-		);
-	$stm->bindInteger($this->thread);
-	$stm->execute();
-	$stm->close();
-
-	$this->updateForum();
-	}
-
-protected function checkInput()
+protected function setForm()
 	{
 	try
 		{
@@ -42,7 +22,8 @@ protected function checkInput()
 		$stm = $this->DB->prepare
 			('
 			SELECT
-				forumid
+				forumid,
+				deleted
 			FROM
 				threads
 			WHERE
@@ -50,7 +31,9 @@ protected function checkInput()
 				AND id = ?
 			');
 		$stm->bindInteger($this->thread);
-		$this->forum = $stm->getColumn();
+		$result = $stm->getRow();
+		$this->forum = $result['forumid'];
+		$this->deleted = $result['deleted'];
 		$stm->close();
 		}
 	catch (DBNoDataException $e)
@@ -58,9 +41,18 @@ protected function checkInput()
 		$stm->close();
 		$this->showFailure('Thema nicht gefunden oder geschlossen!');
 		}
+
+	$this->setValue('title', 'Thema '.($this->deleted ? 'wiederherstellen' : 'löschen'));
+
+	$this->addHidden('thread', $this->thread);
+	$this->requires('thread');
+
+	$this->addOutput('Soll das Thema wirklich '.($this->deleted ? 'wiederhergestellt' : 'gelöscht').' werden?');
+
+	$this->addSubmit('Thema '.($this->deleted ? 'wiederherstellen' : 'löschen'));
 	}
 
-protected function checkAccess()
+protected function checkForm()
 	{
 	if (!$this->User->isForumMod($this->forum))
 		{
@@ -69,13 +61,33 @@ protected function checkAccess()
 		}
 	}
 
+protected function sendForm()
+	{
+	$stm = $this->DB->prepare
+		('
+		UPDATE
+			threads
+		SET
+			deleted = ABS(deleted - 1)
+		WHERE
+			id = ?'
+		);
+	$stm->bindInteger($this->thread);
+	$stm->execute();
+	$stm->close();
+
+	$this->updateForum();
+
+	$this->redirect();
+	}
+
 protected function updateForum()
 	{
 	/** TODO: nicht optimal */
 	AdminFunctions::updateForum($this->forum);
 	}
 
-public function show()
+protected function redirect()
 	{
 	$this->Io->redirect('Postings', 'thread='.$this->thread);
 	}

@@ -1,10 +1,10 @@
 <?php
 
-/** FIXME: Nicht geschützt via Form */
-class DelFile extends Page{
+class DelFile extends Form {
 
+private $file = 0;
 
-public function prepare()
+protected function setForm()
 	{
 	if (!$this->User->isOnline())
 		{
@@ -13,13 +13,25 @@ public function prepare()
 
 	try
 		{
-		$file = $this->Io->getInt('file');
+		$this->file = $this->Io->getInt('file');
 		}
 	catch (IoRequestException $e)
 		{
-		return;
+		$this->showFailure('Keine Datei angegeben!');
 		}
 
+	$this->setValue('title', 'Datei löschen');
+
+	$this->addHidden('file', $this->file);
+	$this->requires('file');
+
+	$this->addOutput('Soll die Datei wirklich gelöscht werden?');
+
+	$this->addSubmit('Datei löschen');
+	}
+
+protected function checkForm()
+	{
 	try
 		{
 		$stm = $this->DB->prepare
@@ -32,17 +44,20 @@ public function prepare()
 				id = ?
 				AND userid = ?'
 			);
-		$stm->bindInteger($file);
+		$stm->bindInteger($this->file);
 		$stm->bindInteger($this->User->getId());
-		$file =$stm->getColumn();
+		$stm->getColumn();
 		$stm->close();
 		}
 	catch (DBNoDataException $e)
 		{
 		$stm->close();
-		return;
+		$this->showFailure('Datei nicht gefunden!');
 		}
+	}
 
+protected function sendForm()
+	{
 	$stm = $this->DB->prepare
 		('
 		DELETE FROM
@@ -50,7 +65,7 @@ public function prepare()
 		WHERE
 			id = ?'
 		);
-	$stm->bindInteger($file);
+	$stm->bindInteger($this->file);
 	$stm->execute();
 	$stm->close();
 
@@ -61,7 +76,7 @@ public function prepare()
 		WHERE
 			id = ?'
 		);
-	$stm->bindInteger($file);
+	$stm->bindInteger($this->file);
 	$stm->execute();
 	$stm->close();
 
@@ -76,7 +91,7 @@ public function prepare()
 			WHERE
 				attachment_id = ?'
 			);
-		$stm->bindInteger($file);
+		$stm->bindInteger($this->file);
 
 		foreach($stm->getColumnSet() as $post)
 			{
@@ -122,28 +137,14 @@ public function prepare()
 		WHERE
 			attachment_id = ?'
 		);
-	$stm->bindInteger($file);
+	$stm->bindInteger($this->file);
 	$stm->execute();
 	$stm->close();
 
-
-// 	$stm = $this->DB->prepare
-// 		('
-// 		UPDATE
-// 			users
-// 		SET
-// 			avatar = 0
-// 		WHERE
-// 			id = ?
-// 			AND avatar = ?'
-// 		);
-// 	$stm->bindInteger($this->User->getId());
-// 	$stm->bindInteger($file);
-// 	$stm->execute();
-//	 $stm->close();
+	$this->redirect();
 	}
 
-public function show()
+protected function redirect()
 	{
 	$this->Io->redirect('MyFiles');
 	}

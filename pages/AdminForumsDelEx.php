@@ -1,13 +1,13 @@
 <?php
 
 
-class AdminForumsDelEx extends AdminPage{
+class AdminForumsDelEx extends AdminForm{
 
 private $cat = 0;
 private $forum = 0;
 
 
-public function prepare()
+public function setForm()
 	{
 	try
 		{
@@ -47,6 +47,22 @@ public function prepare()
 		$this->Io->redirect('AdminCats');
 		}
 
+	$this->setValue('title', 'Externes Forum löschen');
+
+	$this->addHidden('forum', $this->forum);
+	$this->requires('forum');
+
+	$this->addOutput('Hierdurch wird der Verweis auf das externe Forum aus dem Board entfernt. Dabei werden keine Beiträge gelöscht.');
+
+	$this->addSubmit('Externes Forum löschen');
+	}
+
+protected function checkForm()
+	{
+	}
+
+public function sendForm()
+	{
 	$stm = $this->DB->prepare
 		('
 		DELETE FROM
@@ -59,10 +75,7 @@ public function prepare()
 	$stm->bindInteger($this->cat);
 	$stm->execute();
 	$stm->close();
-	}
 
-public function show()
-	{
 	$this->Io->redirect('AdminForums', 'cat='.$this->cat);
 	}
 
