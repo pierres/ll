@@ -63,6 +63,7 @@ public function getValue($key)
 
 protected function showWarning($text)
 	{
+	$this->setValue('meta.robots', 'noindex,nofollow');
 	$this->setValue('title', 'Warnung');
 	$this->setValue('body', '<div class="warning">'.$text.'</div>');
 	$this->sendOutput();
@@ -70,7 +71,8 @@ protected function showWarning($text)
 
 protected function showFailure($text)
 	{
-	$this->setValue('title', 'Warnung');
+	$this->setValue('meta.robots', 'noindex,nofollow');
+	$this->setValue('title', 'Fehler');
 	$this->setValue('body', '<div class="warning">'.$text.'</div>');
 	$this->sendOutput();
 	}

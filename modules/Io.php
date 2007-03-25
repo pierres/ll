@@ -11,7 +11,7 @@ private $outputHandler 	= 'ob_gzhandler';
 private $contentType 	= 'Content-Type: text/html; charset=UTF-8';
 private $status		= 'HTTP/1.1 200 OK';
 
-const NOT_FOUND		= 'HTTP/1.1 404 NOT FOUND';
+const NOT_FOUND		= 'HTTP/1.1 404 Not Found';
 const OK		= 'HTTP/1.1 200 OK';
 
 private $request 	= array();
