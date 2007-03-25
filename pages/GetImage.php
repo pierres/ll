@@ -45,6 +45,7 @@ private function loadImage()
 		}
 	catch (Exception $e)
 		{
+		$this->Io->setStatus(Io::NOT_FOUND);
  		$this->showWarning('Das Bild konnte nicht geladen werden.');
 		}
 
@@ -198,7 +199,7 @@ public function show()
 				WHERE
 					lastupdate < ?
 				');
-			
+
 			$stm->bindInteger($refreshTime);
 			$stm->execute();
 			$stm->close();

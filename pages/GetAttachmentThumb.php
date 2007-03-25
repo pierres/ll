@@ -76,6 +76,7 @@ public function show()
 	catch (DBNoDataException $e)
 		{
  		$stm->close();
+		$this->Io->setStatus(Io::NOT_FOUND);
 		$this->showWarning('Datei nicht gefunden');
 		}
 

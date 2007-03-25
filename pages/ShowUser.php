@@ -47,6 +47,7 @@ public function prepare()
 	catch (DBNoDataException $e)
 		{
 		$stm->close();
+		$this->Io->setStatus(Io::NOT_FOUND);
 		$this->showWarning('Kein Benutzer gefunden!');
 		}
 

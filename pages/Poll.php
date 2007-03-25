@@ -96,6 +96,7 @@ public function __construct($pollid = 0, $target = 'Postings')
 		}
 	catch (DBNoDataException $e)
 		{
+		$this->Io->setStatus(Io::NOT_FOUND);
 		$this->showWarning('Keine Umfrage gefunden.');
 		}
 	}

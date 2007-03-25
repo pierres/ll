@@ -82,6 +82,7 @@ catch (DBException $e)
 	catch (DBException $e)
 		{
 		$stm->close();
+		$this->Io->setStatus(Io::NOT_FOUND);
 		$this->showWarning('Forum nicht gefunden.');
 		}
 	}
