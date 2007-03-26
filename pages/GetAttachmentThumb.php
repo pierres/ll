@@ -53,7 +53,6 @@ public function show()
 				WHERE
 					attachments.id = ?
 					AND attachments.id NOT IN (SELECT id FROM attachment_thumbnails)
-					AND attachments.id = attachment_thumbnails.id
 					AND post_attachments.postid = posts.id
 					AND post_attachments.attachment_id = attachments.id
 					AND posts.threadid = threads.id
