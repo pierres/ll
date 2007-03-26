@@ -66,6 +66,7 @@ try
 			threads.firstuserid,
 			threads.firstusername,
 			threads.posts,
+			threads.deleted,
 			summary
 		FROM
 			threads,
@@ -74,8 +75,12 @@ try
 			threads.forumid = 0
 			AND thread_user.threadid = threads.id
 			AND thread_user.userid = ?
+			AND
+				((thread_user.userid = threads.firstuserid
+				AND threads.deleted = 1)
+				OR threads.deleted = 0)
 		ORDER BY
-			threads.lastdate DESC
+			lastdate DESC
 		LIMIT
 			'.$limit
 		);
@@ -161,6 +166,11 @@ protected function listThreads()
 		if ($this->Log->isNew($data['id'], $data['lastdate']))
 			{
 			$data['name'] = '<span class="newthread">neu</span>'.$data['name'];
+			}
+	
+		if($data['deleted'] == 1)
+			{
+			$data['name'] = '<span class="deletedthread">'.$data['name'].'</span>';
 			}
 
 		$status = (!empty($data['poll'])    ? '<span class="poll"></span>' : '');

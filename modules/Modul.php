@@ -28,6 +28,7 @@ private static $availableModules = array
 	'Contact' => 'pages/Contact.php',
 	'DelFile' => 'pages/DelFile.php',
 	'DelPost' => 'pages/DelPost.php',
+	'DelPrivateThread' => 'pages/DelPrivateThread.php',
 	'DelThread' => 'pages/DelThread.php',
 	'DeleteUser' => 'pages/DeleteUser.php',
 	'DeletedPosts' => 'pages/DeletedPosts.php',

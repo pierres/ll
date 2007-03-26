@@ -37,7 +37,8 @@ try
 			threads.name,
 			threads.poll,
 			threads.id,
-			threads.lastdate
+			threads.lastdate,
+			threads.firstuserid
 		FROM
 			threads,
 			thread_user
@@ -45,7 +46,11 @@ try
 			threads.id = ?
 			AND threads.forumid = 0
 			AND thread_user.threadid = threads.id
-			AND thread_user.userid = ?'
+			AND thread_user.userid = ?
+			AND
+				((thread_user.userid = threads.firstuserid
+				AND threads.deleted = 1)
+				OR threads.deleted = 0)'
 		);
 	$stm->bindInteger($this->thread);
 	$stm->bindInteger($this->User->getId());
@@ -194,7 +199,7 @@ catch (DBNoDataException $e)
 
 
 $postings 	= '';
-$i 			= 2;
+$i 		= 2;
 $first 		= true;
 
 
@@ -305,6 +310,10 @@ else
 $reply_button = '<a href="?page=InviteToPrivateThread;id='.$this->Board->getId().';thread='.$thread['id'].'"><span class="button">einladen</span></a>
 <a href="?page=NewPrivatePost;id='.$this->Board->getId().';thread='.$thread['id'].'"><span class="button">antworten</span></a>';
 
+
+$thread_buttons = ($thread['firstuserid'] == $this->User->getId() ?
+	'<tr><td class="pages" colspan="3"><a href="?page=DelPrivateThread;id='.$this->Board->getId().';thread='.$thread['id'].'"><span class="button">Privates Thema löschen</span></a></td></tr>' : '');
+
 $body =
 	'
 	<table class="frame" style="width:100%">
@@ -349,6 +358,7 @@ $body =
 				<a class="pathlink" href="?page=PrivateThreads;id='.$this->Board->getId().'">Private Themen</a>
 			</td>
 		</tr>
+		'.$thread_buttons.'
 	</table>
 	';
 $this->setValue('title', $thread['name']);
