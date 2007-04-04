@@ -66,7 +66,7 @@ public function validateMail($mail)
 	$tld 		= '[a-z]{2,5}';
 	$domain		=  $name.'\.'.$tld;
 
-	return (boolean) preg_match('/^'.$name.'@'.$domain.'$/i', $mail);
+	return (boolean) preg_match('/^'.$name.'@'.$domain.'$/Di', $mail);
 	}
 
 }
