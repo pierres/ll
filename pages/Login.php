@@ -20,8 +20,8 @@ protected function setForm()
 
 	$this->addCheckbox('cookie', 'Keks benutzen');
 
-	$this->addCheckBox('confirmPrivacy', 'Ich bestätige die <a class="link" href="?page=Privacy;id='.$this->Board->getId().'">Datenschutzerklärung</a>');
-	$this->requires('confirmPrivacy');
+// 	$this->addCheckBox('confirmPrivacy', 'Ich bestätige die <a class="link" href="?page=Privacy;id='.$this->Board->getId().'">Datenschutzerklärung</a>');
+// 	$this->requires('confirmPrivacy');
 
 	$this->addElement('passwordoptions', '<br /><br /><a href="?page=ForgotPassword;id='.$this->Board->getId().'"><span class="button">Passwort vergessen?</span></a> <a href="?page=ChangePasswordKey;id='.$this->Board->getId().'"><span class="button">Passwort setzen</span></a>');
 
