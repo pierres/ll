@@ -1,5 +1,6 @@
 <?php
 
+require('NewPost.php');
 
 class EditPost extends NewPost{
 

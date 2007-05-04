@@ -1,6 +1,5 @@
 <?php
 
-require ('modules/IOutput.php');
 
 abstract class GetFile extends Modul implements IOutput{
 

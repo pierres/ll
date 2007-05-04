@@ -1,5 +1,7 @@
 <?php
 
+require('EditThread.php');
+
 class MoveThread extends EditThread{
 
 private $moveto 	= 0;

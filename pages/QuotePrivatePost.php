@@ -1,5 +1,6 @@
 <?php
 
+require('NewPrivatePost.php');
 
 class QuotePrivatePost extends NewPrivatePost{
 

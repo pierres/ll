@@ -1,5 +1,7 @@
 <?php
 
+require('GetAttachment.php');
+
 class GetAttachmentThumb extends GetAttachment{
 
 public function show()

@@ -1,5 +1,6 @@
 <?php
 
+require('NewThread.php');
 
 class EditThread extends NewThread{
 

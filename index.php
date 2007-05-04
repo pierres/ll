@@ -22,12 +22,12 @@ try
 
 	try
 		{
-		Modul::loadModul($page);
+		Page::loadPage($page);
 		}
 	catch (RuntimeException $e)
 		{
 		$page = 'NotFound';
-		Modul::loadModul($page);
+		Page::loadPage($page);
 		}
 
 	$class = new $page();

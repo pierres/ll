@@ -46,11 +46,6 @@ public function prepare()
 		$id = preg_replace('/.*id=(\d+).*/', '$1',  $_SERVER["REQUEST_URI"]);
 		$this->Io->redirect('Impressum', 'id='.$id);
 		}
-	elseif(preg_match('/jabber/', $_SERVER["REQUEST_URI"]))
-		{
-		$id = preg_replace('/.*id=(\d+).*/', '$1',  $_SERVER["REQUEST_URI"]);
-		$this->Io->redirect('Jabber', 'id='.$id);
-		}
 	elseif(preg_match('/id=\d+/', $_SERVER["REQUEST_URI"]))
 		{
 		$id = preg_replace('/.*id=(\d+).*/', '$1',  $_SERVER["REQUEST_URI"]);

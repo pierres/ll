@@ -1,5 +1,6 @@
 <?php
 
+require('Postings.php');
 
 class PrivatePostings extends Postings{
 

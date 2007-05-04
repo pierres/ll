@@ -1,8 +1,6 @@
 <?php
 
-/** FIXME: Nicht geschützt via Form */
-/** TODO: Sollte in ein Modul und eine Page aufgeteilt werden! */
-class Poll extends Page{
+class Poll extends Modul {
 
 private $id 		= 0;
 private $question 	= '';
@@ -13,22 +11,7 @@ private $target 	= '';
 
 public function __construct($pollid = 0, $target = 'Postings')
 	{
-	parent::__construct();
-
-	$this->target = ($this->Io->isRequest('target') ? $this->Io->getString('target') : $target);
-
-	if ($pollid == 0)
-		{
-		try
-			{
-			$pollid = $this->Io->getInt('thread');
-			}
-		catch (IoException $e)
-			{
-			$this->showWarning('Kein Thema angegeben.');
-			}
-		}
-
+	$this->target = $target;
 	$this->id = $pollid;
 
 	try
@@ -191,7 +174,7 @@ private function showForm()
 		'
 		<tr>
 			<td colspan="3" style="padding:0px;">
-			<form method="post" action="?page=Poll;id='.$this->Board->getId().';thread='.$this->id.';target='.$this->target.'">
+			<form method="post" action="?page=SubmitPoll;id='.$this->Board->getId().';thread='.$this->id.';target='.$this->target.'">
 				<table style="width:100%">
 					<tr>
 						<td class="title" colspan="2">
@@ -201,8 +184,8 @@ private function showForm()
 						'.$options.'
 					<tr>
 						<td class="main" colspan="2">
-							<input type="submit" name="submit" value="Abstimmen" />
-							<input type="submit" name="result" value="Ergebnis" />
+							<input class="button" type="submit" name="submit" value="Abstimmen" />
+							<a href="?page='.$this->target.';id='.$this->Board->getId().';thread='.$this->id.';target='.$this->target.';result" class="button">Ergebnis</a>
 						</td>
 					</tr>
 				</table>
@@ -212,61 +195,6 @@ private function showForm()
 		';
 
 	return $body;
-	}
-
-public function prepare()
-	{
-	if ($this->hasVoted())
-		{
-		$this->reload();
-		}
-
-	try
-		{
-		$valueid = $this->Io->getInt('valueid');
-		}
-	catch (IoException $e)
-		{
-		$this->reload();
-		}
-
-	$stm = $this->DB->prepare
-		('
-		INSERT INTO
-			poll_voters
-		SET
-			pollid = ?,
-			userid = ?'
-		);
-	$stm->bindInteger($this->id);
-	$stm->bindInteger($this->User->getId());
-	$stm->execute();
-	$stm->close();
-
-	$stm = $this->DB->prepare
-		('
-		UPDATE
-			poll_values
-		SET
-			votes = votes + 1
-		WHERE
-			id = ?
-			AND pollid = ?'
-		);
-	$stm->bindInteger($valueid);
-	$stm->bindInteger($this->id);
-	$stm->execute();
-	$stm->close();
-	}
-
-protected function reload()
-	{
-	$this->Io->redirect($this->target, 'thread='.$this->id.($this->Io->isRequest('result') ? ';result' : ''));
-	}
-
-public function show()
-	{
-	$this->reload();
 	}
 
 private function hasVoted()

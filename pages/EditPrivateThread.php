@@ -1,5 +1,6 @@
 <?php
 
+require('NewPrivateThread.php');
 
 class EditPrivateThread extends NewPrivateThread{
 

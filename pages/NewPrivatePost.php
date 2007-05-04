@@ -1,6 +1,6 @@
 <?php
 
-
+require('NewPost.php');
 
 class NewPrivatePost extends NewPost {
 
