@@ -235,18 +235,7 @@ private function start($id, $name ,$level, $groups)
 
 	$stm = $this->DB->prepare
 		('
-		DELETE FROM
-			session
-		WHERE
-			id = ?'
-		);
-	$stm->bindInteger($this->id);
-	$stm->execute();
-	$stm->close();
-
-	$stm = $this->DB->prepare
-		('
-		INSERT INTO
+		REPLACE INTO
 			session
 		SET
 			sessionid = ?,
