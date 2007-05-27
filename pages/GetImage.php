@@ -71,7 +71,7 @@ private function loadImage()
 
 	$stm = $this->DB->prepare
 		('
-		INSERT INTO
+		REPLACE INTO
 			images
 		SET
 			url = ?,
