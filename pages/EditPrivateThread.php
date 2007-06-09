@@ -143,10 +143,6 @@ protected function checkAccess()
 
 protected function sendForm()
 	{
-	$summary = str_replace('<br />', ' ', $this->text);
-	$summary = str_replace("\n", ' ', strip_tags($summary));
-	$summary = cutString($summary,  300);
-
 	$stm = $this->DB->prepare(
 		'
 		UPDATE
@@ -158,7 +154,7 @@ protected function sendForm()
 			id = ?'
 		);
 	$stm->bindString(htmlspecialchars($this->topic));
-	$stm->bindString($summary);
+	$stm->bindString(getTextFromHtml($this->text));
 	$stm->bindInteger($this->thread);
 	$stm->execute();
 	$stm->close();

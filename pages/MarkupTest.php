@@ -2,9 +2,9 @@
 
 class MarkupTest extends Form{
 
-protected $text 		= '';
+protected $text 	= '';
 protected $smilies 	= true;
-protected $title 		= 'Markup-Test';
+protected $title 	= 'Markup-Test';
 
 
 protected function setForm()
@@ -25,6 +25,9 @@ protected function setForm()
 
 		$this->addElement('html',
 		'<pre class="preview">'.htmlspecialchars($html).'</pre>');
+
+		$this->addElement('summary',
+		'<pre class="preview">'.getTextFromHtml($html).'</pre>');
 
 		$this->addElement('unmarkup',
 		'<pre class="preview">'.htmlspecialchars($this->text = $this->UnMarkup->fromHtml($html)).'</pre>');

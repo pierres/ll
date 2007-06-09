@@ -158,10 +158,6 @@ protected function sendThreadSummary()
 	$text = $stm->GetColumn();
 	$stm->close();
 
-	$summary = str_replace('<br />', ' ', $text);
-	$summary = str_replace("\n", ' ', strip_tags($summary));
-	$summary = cutString($summary,  300);
-
 	$stm = $this->DB->prepare
 		('
 		UPDATE
@@ -172,7 +168,7 @@ protected function sendThreadSummary()
 			id = ?
 		');
 
-	$stm->bindString($summary);
+	$stm->bindString(getTextFromHtml($text));
 	$stm->bindInteger($this->newthread);
 	$stm->execute();
 	$stm->close();

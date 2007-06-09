@@ -193,10 +193,6 @@ protected function sendForm()
 	$counter = $stm->getColumn();
 	$stm->close();
 
-	$summary = str_replace('<br />', ' ', $this->text);
-	$summary = str_replace("\n", ' ', strip_tags($summary));
-	$summary = cutString($summary,  300);
-
 	$stm = $this->DB->prepare
 		('
 		INSERT INTO
@@ -211,7 +207,7 @@ protected function sendForm()
 	$stm->bindInteger($this->forum);
 	$stm->bindInteger($counter);
 
-	$stm->bindString($summary);
+	$stm->bindString(getTextFromHtml($this->text));
 
 	$stm->execute();
 	$stm->close();

@@ -55,15 +55,10 @@ function formatDate($time)
 function cutString($string, $length)
 	{
 	// Verhindere das Abschneiden im Entity
-	$string = unhtmlspecialchars($string);
+	$string = unhtmlspecialchars(trim($string));
 	$string =  (mb_strlen($string, 'UTF-8') > $length ? mb_substr($string, 0, ($length-3), 'UTF-8').'...' : $string);
 	return htmlspecialchars($string);
 	}
-/*
-function gzdecode($string)
-	{
-	return gzinflate(substr($string, 10));
-	}*/
 
 function generatePassword($length = 8)
 	{
@@ -163,6 +158,16 @@ function getTypeFromFile($file)
 	finfo_close($finfo);
 	
 	return $type;
+	}
+
+function getTextFromHtml($html)
+	{
+	$text = str_replace('<br />', ' ', $html);
+	$text = str_replace('</li>', ' </li>', $text);
+	$text = preg_replace('/\s+/', ' ', $text);
+	$text = cutString(strip_tags($text),  300);
+
+	return $text;
 	}
 
 ?>
