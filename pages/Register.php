@@ -112,11 +112,11 @@ protected function sendForm()
 
 	$this->Mail->setTo($this->email);
 	$this->Mail->setFrom('support@laber-land.de');
-	$this->Mail->setSubject('Registrierung im Laber-Land');
+	$this->Mail->setSubject('Registrierung bei '.$this->Board->getName());
 	$this->Mail->setText(
 'Hallo '.$this->name.'!
 
-Deine Registrierung bei www.laber-land.de war erfolgreich.
+Deine Registrierung bei "'.$this->Board->getName().'" war erfolgreich.
 Du kannst Dein Passwort ändern, wenn Du folgende Seite besuchst:
 '.$this->Io->getURL().'?id='.$this->Board->getId().';page=ChangePasswordKey;userid='.$userid.';key='.$key.'
 
@@ -141,7 +141,7 @@ Schlüssel:	'.$key.'
 			</tr>
 			<tr>
 				<td class="main">
-					Willkommen im Laber-Land, '.htmlspecialchars($this->name).'!
+					Willkommen bei <strong>'.$this->Board->getName().'</strong>, '.htmlspecialchars($this->name).'!
 					<p>
 					Es wurde ein Aktivierungsschlüssel an <em>'.htmlspecialchars($this->email).'</em> geschickt. Mit diesem kannst Du Dein Passwort einrichten.
 					</p>
