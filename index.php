@@ -36,7 +36,15 @@ try
 	}
 catch(IoRequestException $e)
 	{
-	$Io->redirect('Portal', 'forum=1', 1);
+	/** Temporärer Workaround */
+	if ($Io->getHost() == 'www.laber-land.de')
+		{
+		$Io->redirect('Portal', 'forum=1', 1);
+		}
+	else
+		{
+		$Io->redirectToUrl($Io->getURL().'?page=Forums');
+		}
 	}
 
 ?>

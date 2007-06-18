@@ -15,19 +15,27 @@ public function __construct()
 	try
 		{
 		$id = $this->Io->getInt('id');
+
+		try
+			{
+			$board = $this->getBoard($id);
+			}
+		catch (DBNoDataException $e)
+			{
+			$board = $this->getBoard(1);
+			}
 		}
 	catch(IoRequestException $e)
 		{
-		$id = 1;
-		}
-
-	try
-		{
-		$board = $this->getBoard($id);
-		}
-	catch (DBNoDataException $e)
-		{
-		$board = $this->getBoard(1);
+		try
+			{
+			$board = $this->getBoardByHost();
+			}
+		catch (DBNoDataException $e)
+			{
+			/**@TODO: evtl. ein schlechter Fallback */
+			die('kein Board gefunden!');
+			}
 		}
 
 	$this->name 	= $board['name'];
@@ -54,9 +62,31 @@ private function getBoard($id)
 		);
 	$stm->bindInteger($id);
 
-	$id = $stm->getRow();
+	$board = $stm->getRow();
 	$stm->close();
-	return $id;
+	return $board;
+	}
+
+private function getBoardByHost()
+	{
+	$stm = $this->DB->prepare
+		('
+		SELECT
+			id,
+			name,
+			admin,
+			admins,
+			mods
+		FROM
+			boards
+		WHERE
+			host = ?'
+		);
+	$stm->bindString($this->Io->getHost());
+
+	$board = $stm->getRow();
+	$stm->close();
+	return $board;
 	}
 
 public function getId()

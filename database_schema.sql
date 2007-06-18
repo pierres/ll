@@ -1,29 +1,17 @@
 -- phpMyAdmin SQL Dump
--- version 2.9.0
+-- version 2.10.1
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Erstellungszeit: 02. Februar 2007 um 12:38
--- Server Version: 5.0.27
--- PHP-Version: 5.2.0
+-- Erstellungszeit: 18. Juni 2007 um 22:45
+-- Server Version: 5.0.41
+-- PHP-Version: 5.2.3
+
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+
 -- 
 -- Datenbank: `current`
 -- 
-
--- --------------------------------------------------------
-
--- 
--- Tabellenstruktur für Tabelle `attachment_thumbnails`
--- 
-
-CREATE TABLE `attachment_thumbnails` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `name` varchar(200) NOT NULL default '',
-  `size` int(10) unsigned NOT NULL default '0',
-  `type` varchar(100) NOT NULL default '',
-  `content` mediumblob NOT NULL,
-  PRIMARY KEY  (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -43,6 +31,21 @@ CREATE TABLE `attachments` (
   KEY `type` (`type`),
   KEY `userid` (`userid`),
   KEY `uploaded` (`uploaded`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+-- 
+-- Tabellenstruktur für Tabelle `attachment_thumbnails`
+-- 
+
+CREATE TABLE `attachment_thumbnails` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `name` varchar(200) NOT NULL default '',
+  `size` int(10) unsigned NOT NULL default '0',
+  `type` varchar(100) NOT NULL default '',
+  `content` mediumblob NOT NULL,
+  PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -77,6 +80,7 @@ CREATE TABLE `boards` (
   `description` text,
   `admins` int(10) unsigned NOT NULL default '0',
   `mods` int(10) unsigned NOT NULL default '0',
+  `host` varchar(255) NOT NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
@@ -99,21 +103,6 @@ CREATE TABLE `cats` (
 -- --------------------------------------------------------
 
 -- 
--- Tabellenstruktur für Tabelle `forum_cat`
--- 
-
-CREATE TABLE `forum_cat` (
-  `catid` int(10) unsigned NOT NULL default '0',
-  `forumid` int(10) unsigned NOT NULL default '0',
-  `position` tinyint(3) unsigned NOT NULL default '0',
-  KEY `catid` (`catid`),
-  KEY `forumid` (`forumid`),
-  KEY `position` (`position`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
--- 
 -- Tabellenstruktur für Tabelle `forums`
 -- 
 
@@ -131,6 +120,21 @@ CREATE TABLE `forums` (
   PRIMARY KEY  (`id`),
   KEY `boardid` (`boardid`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+-- 
+-- Tabellenstruktur für Tabelle `forum_cat`
+-- 
+
+CREATE TABLE `forum_cat` (
+  `catid` int(10) unsigned NOT NULL default '0',
+  `forumid` int(10) unsigned NOT NULL default '0',
+  `position` tinyint(3) unsigned NOT NULL default '0',
+  KEY `catid` (`catid`),
+  KEY `forumid` (`forumid`),
+  KEY `position` (`position`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -183,6 +187,18 @@ CREATE TABLE `plz` (
 -- --------------------------------------------------------
 
 -- 
+-- Tabellenstruktur für Tabelle `polls`
+-- 
+
+CREATE TABLE `polls` (
+  `id` int(10) unsigned NOT NULL default '0',
+  `question` varchar(200) NOT NULL default '0',
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+-- 
 -- Tabellenstruktur für Tabelle `poll_values`
 -- 
 
@@ -206,31 +222,6 @@ CREATE TABLE `poll_voters` (
   `userid` int(10) unsigned NOT NULL default '0',
   KEY `pollid` (`pollid`),
   KEY `userid` (`userid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
--- 
--- Tabellenstruktur für Tabelle `polls`
--- 
-
-CREATE TABLE `polls` (
-  `id` int(10) unsigned NOT NULL default '0',
-  `question` varchar(200) NOT NULL default '0',
-  PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
--- 
--- Tabellenstruktur für Tabelle `post_attachments`
--- 
-
-CREATE TABLE `post_attachments` (
-  `postid` int(10) unsigned NOT NULL default '0',
-  `attachment_id` int(10) unsigned NOT NULL default '0',
-  KEY `postid` (`postid`),
-  KEY `fileid` (`attachment_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -264,6 +255,19 @@ CREATE TABLE `posts` (
 -- --------------------------------------------------------
 
 -- 
+-- Tabellenstruktur für Tabelle `post_attachments`
+-- 
+
+CREATE TABLE `post_attachments` (
+  `postid` int(10) unsigned NOT NULL default '0',
+  `attachment_id` int(10) unsigned NOT NULL default '0',
+  KEY `postid` (`postid`),
+  KEY `fileid` (`attachment_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+-- 
 -- Tabellenstruktur für Tabelle `session`
 -- 
 
@@ -279,19 +283,6 @@ CREATE TABLE `session` (
   UNIQUE KEY `id` (`id`),
   KEY `lastupdate` (`lastupdate`)
 ) ENGINE=MEMORY DEFAULT CHARSET=utf8 MAX_ROWS=300 AVG_ROW_LENGTH=300;
-
--- --------------------------------------------------------
-
--- 
--- Tabellenstruktur für Tabelle `thread_user`
--- 
-
-CREATE TABLE `thread_user` (
-  `userid` int(10) unsigned NOT NULL default '0',
-  `threadid` int(10) unsigned NOT NULL default '0',
-  KEY `userid` (`userid`),
-  KEY `threadid` (`threadid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -349,14 +340,14 @@ CREATE TABLE `threads_log` (
 -- --------------------------------------------------------
 
 -- 
--- Tabellenstruktur für Tabelle `user_group`
+-- Tabellenstruktur für Tabelle `thread_user`
 -- 
 
-CREATE TABLE `user_group` (
+CREATE TABLE `thread_user` (
   `userid` int(10) unsigned NOT NULL default '0',
-  `groupid` int(10) unsigned NOT NULL default '0',
+  `threadid` int(10) unsigned NOT NULL default '0',
   KEY `userid` (`userid`),
-  KEY `groupid` (`groupid`)
+  KEY `threadid` (`threadid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -389,3 +380,16 @@ CREATE TABLE `users` (
   KEY `realname` (`realname`),
   KEY `lastpost` (`lastpost`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+-- 
+-- Tabellenstruktur für Tabelle `user_group`
+-- 
+
+CREATE TABLE `user_group` (
+  `userid` int(10) unsigned NOT NULL default '0',
+  `groupid` int(10) unsigned NOT NULL default '0',
+  KEY `userid` (`userid`),
+  KEY `groupid` (`groupid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;

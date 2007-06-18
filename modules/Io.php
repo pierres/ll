@@ -158,6 +158,11 @@ public function redirect($class, $param = '', $id = 0)
 	$this->redirectToUrl($this->getURL().'?id='.($id == 0 ? $this->Board->getId() : $id).';page='.$class.$param);
 	}
 
+public function getHost()
+	{
+	return getenv('HTTP_HOST');
+	}
+
 /** TODO: ist dieser Rückgabewert vom Nutzer manipulierbar? */
 public function getURL()
 	{
