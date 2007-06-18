@@ -25,7 +25,7 @@ public function prepare()
 		}
 	elseif(preg_match('/archlinux/', $_SERVER["REQUEST_URI"]))
 		{
-		$this->Io->redirect('Forums', 'id=20');
+		$this->Io->redirectToUrl('http://www.archlinux.de');
 		}
 	elseif(preg_match('/dev/', $_SERVER["REQUEST_URI"]))
 		{
