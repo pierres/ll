@@ -48,8 +48,6 @@ public function __construct()
 
 	$this->config['cookie_hash']			= '';
 
-	$this->config['tls_enabled_message']		= '';
-
 	$this->config['debug']				= false;
 	
 	$this->config['allowed_mime_types']		= array('text/plain', 'text/x-c', 'text/x-c++', 'text/xml',

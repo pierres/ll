@@ -31,7 +31,7 @@ protected function setForm()
 		}
 	else
 		{
-		$tls = $this->Settings->getValue('tls_enabled_message');
+		$tls = '';
 		}
 
 	$this->addElement('tls', $tls.'<br />');

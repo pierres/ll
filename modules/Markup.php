@@ -412,7 +412,9 @@ private function makeNumberedLink($matches)
 	$name = '['.$this->linkNumber.']';
 	$this->linkNumber++;
 
-	if (strpos($url, $this->Settings->getValue('domain')) !== false)
+	/** @FIXME: Does not (allways) work with virtual hosts */
+	if (strpos($url, $this->Settings->getValue('domain')) !== false
+	&& strpos($url, $this->Io->getHost()) !== false)
 		{
 		$target = ' class="link"';
 		}
@@ -451,7 +453,9 @@ private function makeNamedLink($matches, $cutName = false)
 		$cutted = false;
 		}
 
-	if (strpos($url, $this->Settings->getValue('domain')) !== false)
+	/** @FIXME: Does not (allways) work with virtual hosts */
+	if (strpos($url, $this->Settings->getValue('domain')) !== false
+	&& strpos($url, $this->Io->getHost()) !== false)
 		{
 		$target = ' class="link"';
 		}
