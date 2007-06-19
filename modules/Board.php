@@ -34,7 +34,7 @@ public function __construct()
 		catch (DBNoDataException $e)
 			{
 			/**@TODO: evtl. ein schlechter Fallback */
-			die('kein Board gefunden!');
+			$board = $this->getBoard(1);
 			}
 		}
 
