@@ -152,6 +152,10 @@ protected function checkForm()
 				{
 				fclose($fp);
 				}
+			if (gethostbyname($this->Io->getString('host')) != getenv('SERVER_ADDR'))
+				{
+				$this->showWarning('Der Host <em>'.$this->Io->getString('host').'</em> zeigt nicht auf die IP <em>'.getenv('SERVER_ADDR').'</em>.');
+				}
 			}
 		catch (InternalRuntimeException $e)
 			{
