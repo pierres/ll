@@ -84,7 +84,6 @@ private static $availablePages = array
 	'StickThread' => 'pages/StickThread.php',
 	'SubmitPoll' => 'pages/SubmitPoll.php',
 	'Threads' => 'pages/Threads.php',
-	'UpdatePosts' => 'pages/UpdatePosts.php',
 	'UserList' => 'pages/UserList.php',
 	'UserRecent' => 'pages/UserRecent.php'
 	);
