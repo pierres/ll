@@ -103,12 +103,25 @@ private function unmakeHeading($matches)
 	return str_repeat('!', $matches[2]).$matches[1];
 	}
 
+private function unmakeLocalUrl($url)
+	{
+	if (empty($url) || strpos($url, '?') === 0 || strpos($url, '/') === 0)
+		{
+		return 'http'.(!getenv('HTTPS') ? '' : 's').'://'
+			.getenv('HTTP_HOST').$url;
+		}
+	else
+		{
+		return $url;
+		}
+	}
+
 private function unmakeLink($matches)
 	{
 	$url = $matches[1];
 	$name = $matches[2];
 
-	$this->Stack->push( '<'.$url.' '.$name.'>');
+	$this->Stack->push( '<'.$this->unmakeLocalUrl($url).' '.$name.'>');
 
 	return $this->sep.$this->Stack->lastID().$this->sep;
 	}
@@ -116,7 +129,7 @@ private function unmakeLink($matches)
 private function unmakeNumberedLink($matches)
 	{
 	$url = $matches[1];
-	$this->Stack->push( '<'.$url.'>');
+	$this->Stack->push( '<'.$this->unmakeLocalUrl($url).'>');
 
 	return $this->sep.$this->Stack->lastID().$this->sep;
 	}
@@ -124,7 +137,7 @@ private function unmakeNumberedLink($matches)
 private function unmakeCuttedLink($matches)
 	{
 	$url = $matches[1];
-	$this->Stack->push($url);
+	$this->Stack->push($this->unmakeLocalUrl($url));
 
 	return $this->sep.$this->Stack->lastID().$this->sep;
 	}

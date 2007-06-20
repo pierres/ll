@@ -405,25 +405,43 @@ private function makeFTPLink($matches)
 	return $this->makeNamedFTPLink($matches, true);
 	}
 
+private function isLocalHost($url)
+	{
+	return getenv('SERVER_ADDR') == gethostbyname(parse_url($url, PHP_URL_HOST));
+	}
+
+private function makeLocalUrl($url)
+	{
+	$request = parse_url($url);
+	
+	$path = empty($request['path']) ? '' : substr($request['path'], 1);
+	$query = empty($request['query']) ? '' : '?'.$request['query'];
+	$fragment = empty($request['fragment']) ? '' : '#'.$request['fragment'];
+
+	$newUrl = $path.$query.$fragment;
+
+	return empty($newUrl) ? $url : $newUrl;
+	}
+
 private function makeNumberedLink($matches)
 	{
 	$url = $matches[1];
 
-	$name = '['.$this->linkNumber.']';
+	$name = $this->linkNumber;
 	$this->linkNumber++;
 
 	/** @FIXME: Does not (allways) work with virtual hosts */
-	if (strpos($url, $this->Settings->getValue('domain')) !== false
-	&& strpos($url, $this->Io->getHost()) !== false)
+	if ($this->isLocalHost($url))
 		{
 		$target = ' class="link"';
+		$url = $this->makeLocalUrl($url);
 		}
 	else
 		{
 		$target = ' onclick="return !window.open(this.href);" rel="nofollow" class="extlink"';
 		}
 
-	return $this->createStackLink($this->tagElement('numbered', '<a href="'.htmlspecialchars($url, ENT_COMPAT, 'UTF-8').'"'.$target.'>'.htmlspecialchars($name, ENT_COMPAT, 'UTF-8').'</a>'));
+	return $this->createStackLink($this->tagElement('numbered', '<a href="'.htmlspecialchars($url, ENT_COMPAT, 'UTF-8').'"'.$target.'>['.$name.']</a>'));
 	}
 
 private function makeNumberedWWWLink($matches)
@@ -443,6 +461,22 @@ private function makeNamedLink($matches, $cutName = false)
 	$url = $matches[1];
 	$name = $matches[2];
 
+	/** @FIXME: Does not (allways) work with virtual hosts */
+	if ($this->isLocalHost($url))
+		{
+		$target = ' class="link"';
+		$url = $this->makeLocalUrl($url);
+		// $url == $name?
+		if ($matches[1] == $matches[2])
+			{
+			$name = $url;
+			}
+		}
+	else
+		{
+		$target = ' onclick="return !window.open(this.href);" rel="nofollow" class="extlink"';
+		}
+
 	if ($cutName && strlen($name) > 50)
 		{
 		$name = mb_substr($name, 0, 37, 'UTF-8').'...'.mb_substr($name, -10, 'UTF-8');
@@ -453,16 +487,6 @@ private function makeNamedLink($matches, $cutName = false)
 		$cutted = false;
 		}
 
-	/** @FIXME: Does not (allways) work with virtual hosts */
-	if (strpos($url, $this->Settings->getValue('domain')) !== false
-	&& strpos($url, $this->Io->getHost()) !== false)
-		{
-		$target = ' class="link"';
-		}
-	else
-		{
-		$target = ' onclick="return !window.open(this.href);" rel="nofollow" class="extlink"';
-		}
 
 	$link = '<a href="'.htmlspecialchars($url, ENT_COMPAT, 'UTF-8').'"'.$target.'>'.htmlspecialchars($name, ENT_COMPAT, 'UTF-8').'</a>';
 	
