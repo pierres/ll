@@ -5,6 +5,7 @@ class Board extends Modul{
 
 private $id 		= 1;
 private $name 		= '';
+private $host 		= '';
 private $mods		= 0;
 private $admin 		= 0;
 private $admins 	= 0;
@@ -43,6 +44,7 @@ public function __construct()
 	$this->admin 	= $board['admin'];
 	$this->admins 	= $board['admins'];
 	$this->mods 	= $board['mods'];
+	$this->host 	= $board['host'];
 	}
 
 private function getBoard($id)
@@ -54,7 +56,8 @@ private function getBoard($id)
 			name,
 			admin,
 			admins,
-			mods
+			mods,
+			host
 		FROM
 			boards
 		WHERE
@@ -76,7 +79,8 @@ private function getBoardByHost()
 			name,
 			admin,
 			admins,
-			mods
+			mods,
+			host
 		FROM
 			boards
 		WHERE
@@ -112,6 +116,11 @@ public function getAdmins()
 public function getMods()
 	{
 	return $this->mods;
+	}
+
+public function getHost()
+	{
+	return $this->host;
 	}
 
 }

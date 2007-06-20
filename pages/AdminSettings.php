@@ -53,6 +53,10 @@ protected function setForm()
 			$stm->close();
 			}
 		$this->addTextArea('admins', 'Administratoren', $admins, 80, 5);
+
+
+		$this->addText('host', 'Host/Domain', $this->Board->getHost());
+		$this->setLength('host', 6, 100);
 		}
 
 	$mods = '';
@@ -135,6 +139,25 @@ protected function checkForm()
 				}
 			}
 		}
+	if(!$this->Io->isEmpty('host') && ($this->User->isUser($this->Board->getAdmin()) || $this->User->isLevel(User::ADMIN)))
+		{
+		try
+			{
+			$fp = fsockopen($this->Io->getString('host'), 80, $errno, $errstr, 5);
+			if (!$fp)
+				{
+				$this->showWarning('Fehler beim Verbinden mit Host <em>'.$this->Io->getString('host').'</em>: <strong>'.$errstr.'</strong>.');
+				}
+			else
+				{
+				fclose($fp);
+				}
+			}
+		catch (InternalRuntimeException $e)
+			{
+			$this->showWarning('Fehler beim Verbinden mit Host <em>'.$this->Io->getString('host').'</em>:<div style="color:darkred;margin-left:50px;">'.$e->getMessage().'</div>');
+			}
+		}
 
 	if(!$this->Io->isEmpty('mods'))
 		{
@@ -181,6 +204,24 @@ protected function sendForm()
 		$stm->execute();
 		$stm->close();
 		}
+
+	if(!$this->Io->isEmpty('host') && ($this->User->isUser($this->Board->getAdmin()) || $this->User->isLevel(User::ADMIN)))
+		{
+		$stm = $this->DB->prepare
+			('
+			UPDATE
+				boards
+			SET
+				host = ?
+			WHERE
+				id = ?'
+			);
+		$stm->bindString($this->Io->getString('host'));
+		$stm->bindInteger($this->Board->getId());
+		$stm->execute();
+		$stm->close();
+		}
+
 
 	$stm = $this->DB->prepare
 		('

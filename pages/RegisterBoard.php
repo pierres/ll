@@ -72,6 +72,21 @@ protected function sendForm()
 
 	$id = $this->DB->getInsertId();
 
+	/** @TODO: remove hardcoded domain name */
+	$stm = $this->DB->prepare
+		('
+		UPDATE
+			boards
+		SET
+			host = ?
+		WHERE
+			id = ?'
+		);
+	$stm->bindString($id'.forum.laber-land.de');
+	$stm->bindInteger($id);
+	$stm->execute();
+	$stm->close();
+
 	$stm = $this->DB->prepare
 		('
 		INSERT INTO

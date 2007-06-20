@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Erstellungszeit: 18. Juni 2007 um 22:45
+-- Erstellungszeit: 20. Juni 2007 um 09:52
 -- Server Version: 5.0.41
 -- PHP-Version: 5.2.3
 
@@ -81,7 +81,8 @@ CREATE TABLE `boards` (
   `admins` int(10) unsigned NOT NULL default '0',
   `mods` int(10) unsigned NOT NULL default '0',
   `host` varchar(255) NOT NULL,
-  PRIMARY KEY  (`id`)
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY `host` (`host`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
