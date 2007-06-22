@@ -48,6 +48,7 @@ private static $availablePages = array
 	'GetAttachment' => 'pages/GetAttachment.php',
 	'GetAttachmentThumb' => 'pages/GetAttachmentThumb.php',
 	'GetAvatar' => 'pages/GetAvatar.php',
+	'GetId' => 'pages/GetId.php',
 	'GetImage' => 'pages/GetImage.php',
 	'Impressum' => 'pages/Impressum.php',
 	'InviteToPrivateThread' => 'pages/InviteToPrivateThread.php',

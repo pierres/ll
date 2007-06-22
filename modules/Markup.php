@@ -405,15 +405,36 @@ private function makeFTPLink($matches)
 	return $this->makeNamedFTPLink($matches, true);
 	}
 
+/** @TODO: this is evil! */
 private function isLocalHost($url)
 	{
-	return getenv('SERVER_ADDR') == gethostbyname(parse_url($url, PHP_URL_HOST));
+	$request = parse_url($url);
+
+	$time = time();
+
+	if (getenv('SERVER_ADDR') == gethostbyname($request['host']))
+		{
+		try
+			{
+			$result = $this->Io->getRemoteFile($request['scheme'].'://'.$request['host'].(empty($request['port']) ? '' : ':'.$request['port']).'/?page=GetId;key='.$time);
+
+			if ($result['content'] == sha1($this->Settings->getValue('id_key').$time))
+				{
+				return true;
+				}
+			}
+		catch (RuntimeException $e)
+			{
+			}
+		}
+
+	return false;
 	}
 
 private function makeLocalUrl($url)
 	{
 	$request = parse_url($url);
-	
+
 	$path = empty($request['path']) ? '' : substr($request['path'], 1);
 	$query = empty($request['query']) ? '' : '?'.$request['query'];
 	$fragment = empty($request['fragment']) ? '' : '#'.$request['fragment'];
@@ -489,7 +510,7 @@ private function makeNamedLink($matches, $cutName = false)
 
 
 	$link = '<a href="'.htmlspecialchars($url, ENT_COMPAT, 'UTF-8').'"'.$target.'>'.htmlspecialchars($name, ENT_COMPAT, 'UTF-8').'</a>';
-	
+
 	if ($cutted)
 		{
 		$link = $this->tagElement('cutted', $link);
