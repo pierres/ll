@@ -410,6 +410,11 @@ private function isLocalHost($url)
 	{
 	$request = parse_url($url);
 
+	if ($this->Io->getHost() == $request['host'])
+		{
+		return true;
+		}
+
 	$time = time();
 
 	if (getenv('SERVER_ADDR') == gethostbyname($request['host']))
