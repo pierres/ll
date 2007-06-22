@@ -64,13 +64,14 @@ public function out(&$text)
 	{
 	ob_start($this->outputHandler);
 	$this->header ($this->status);
-	$this->header ('Content-Length: '.strlen($text));
+	/** @TODO: required by Apache but does not work with lighttpd */
+	if (function_exists('apache_request_headers'))
+		{
+		$this->header ('Content-Length: '.strlen($text));
+		}
 	$this->header ($this->contentType);
 	echo $text;
- 	while (ob_get_level() > 0)
- 		{
-		ob_end_flush();
- 		}
+	ob_end_flush();
 	exit();
 	}
 
