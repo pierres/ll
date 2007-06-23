@@ -108,7 +108,7 @@ private function unmakeLocalUrl($url)
 	if (empty($url) || strpos($url, '?') === 0 || strpos($url, '/') === 0)
 		{
 		return 'http'.(!getenv('HTTPS') ? '' : 's').'://'
-			.getenv('HTTP_HOST').$url;
+			.getenv('HTTP_HOST').(strpos($url, '?') === 0 ? '/': '').$url;
 		}
 	else
 		{
