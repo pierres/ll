@@ -19,6 +19,11 @@ function __autoload($class)
 try
 	{
 	$page = $Io->getString('page');
+	}
+catch(IoRequestException $e)
+	{
+	$page = 'Forums';
+	}
 
 	try
 		{
@@ -33,18 +38,5 @@ try
 	$class = new $page();
 	$class->prepare();
 	$class->show();
-	}
-catch(IoRequestException $e)
-	{
-	/** Temporärer Workaround */
-	if ($Io->getHost() == 'www.laber-land.de')
-		{
-		$Io->redirect('Portal', 'forum=1', 1);
-		}
-	else
-		{
-		$Io->redirectToUrl($Io->getURL().'?page=Forums');
-		}
-	}
 
 ?>
