@@ -18,16 +18,10 @@ public function prepare()
 
 protected function exitIfCached()
 	{
-	/** @TODO: Find a way to implement this for (f)cgi */
-	if (function_exists('apache_request_headers'))
+	if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']))
 		{
-		$headers = apache_request_headers();
-
-		if (isset($headers['If-Modified-Since']))
-			{
-			header('HTTP/1.1 304 Not Modified');
-			exit;
-			}
+		header('HTTP/1.1 304 Not Modified');
+		exit;
 		}
 	}
 

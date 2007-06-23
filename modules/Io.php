@@ -7,7 +7,6 @@
 */
 class Io extends Modul{
 
-private $outputHandler 	= 'ob_gzhandler';
 private $contentType 	= 'Content-Type: text/html; charset=UTF-8';
 private $status		= 'HTTP/1.1 200 OK';
 
@@ -54,7 +53,7 @@ public function setOutputHandler($handler)
 	{
 	$this->outputHandler = $handler;
 	}
-/** FIXME: XSS->alle Zeilenumbrüche entfernen */
+
 public function setCookie($key, $value, $expire = 0)
 	{
 	setcookie($key, $value, $expire, '', '', getenv('HTTPS'), true);
@@ -62,16 +61,19 @@ public function setCookie($key, $value, $expire = 0)
 
 public function out(&$text)
 	{
-	ob_start($this->outputHandler);
 	$this->header ($this->status);
-	/** @TODO: required by Apache but does not work with lighttpd */
-	if (function_exists('apache_request_headers'))
-		{
-		$this->header ('Content-Length: '.strlen($text));
-		}
 	$this->header ($this->contentType);
+
+	if (strpos($this->getEnv('HTTP_ACCEPT_ENCODING'), 'gzip') !== false)
+		{
+		$this->header('Content-Encoding: gzip');
+		$this->header('Vary: Accept-Encoding');
+		$text = gzencode($text, 3);
+		}
+
+	$this->header('Content-Length: '.strlen($text));
 	echo $text;
-	ob_end_flush();
+
 	exit();
 	}
 
