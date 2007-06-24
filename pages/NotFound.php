@@ -54,7 +54,7 @@ public function prepare()
 	else
 		{
 		$search = urlencode(trim(preg_replace('/\W/', ' ',  str_replace('.php', '', $_SERVER["REQUEST_URI"]))));
-		$this->Io->redirect('Search', 'id=1;search='.$search);
+		$this->Io->redirect('Search', 'search='.$search);
 		}
 	}
 
