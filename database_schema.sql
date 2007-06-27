@@ -81,6 +81,8 @@ CREATE TABLE `boards` (
   `admins` int(10) unsigned NOT NULL default '0',
   `mods` int(10) unsigned NOT NULL default '0',
   `host` varchar(255) NOT NULL,
+  `html` text NOT NULL,
+  `css` text NOT NULL,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `host` (`host`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;

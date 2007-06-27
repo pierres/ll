@@ -10,11 +10,22 @@ protected function setForm()
 
 	$this->addSubmit('Speichern');
 
-	$html = file_get_contents('html/'.$this->Board->getId().'.css');
+	$stm = $this->DB->prepare
+		('
+		SELECT
+			css
+		FROM
+			boards
+		WHERE
+			id = ?'
+		);
+	$stm->bindInteger($this->Board->getId());
+	$css = $stm->getColumn();
+	$stm->close();
 
-	$this->addTextArea('css', 'CSS', $html);
+	$this->addTextArea('css', 'CSS', $css);
 	$this->requires('css');
-	$this->setLength('css', 100, 100000);
+	$this->setLength('css', 100, 50000);
 	}
 
 protected function checkForm()
@@ -23,7 +34,19 @@ protected function checkForm()
 
 protected function sendForm()
 	{
-	file_put_contents('html/'.$this->Board->getId().'.css', $this->Io->getString('css'));
+	$stm = $this->DB->prepare
+		('
+		UPDATE
+			boards
+		SET
+			css = ?
+		WHERE
+			id = ?'
+		);
+	$stm->bindString($this->Io->getString('css'));
+	$stm->bindInteger($this->Board->getId());
+	$stm->execute();
+	$stm->close();
 
 	$this->redirect();
 	}

@@ -10,11 +10,9 @@ protected function setForm()
 
 	$this->addSubmit('Speichern');
 
-	$html = file_get_contents('html/'.$this->Board->getId().'.html');
-
-	$this->addTextArea('html', 'HTML', $html);
+	$this->addTextArea('html', 'HTML', $this->Board->getHtml());
 	$this->requires('html');
-	$this->setLength('html', 100, 100000);
+	$this->setLength('html', 100, 50000);
 	}
 
 protected function checkForm()
@@ -42,7 +40,19 @@ protected function checkForm()
 
 protected function sendForm()
 	{
-	file_put_contents('html/'.$this->Board->getId().'.html', $this->Io->getString('html'));
+	$stm = $this->DB->prepare
+		('
+		UPDATE
+			boards
+		SET
+			html = ?
+		WHERE
+			id = ?'
+		);
+	$stm->bindString($this->Io->getString('html'));
+	$stm->bindInteger($this->Board->getId());
+	$stm->execute();
+	$stm->close();
 
 	$this->redirect();
 	}

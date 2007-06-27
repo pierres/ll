@@ -29,7 +29,7 @@ protected function getParams()
 	{
 	}
 
-private function initDB()
+protected function initDB()
 	{
 	self::__set('DB', new DB(
 		$this->Settings->getValue('sql_user'),

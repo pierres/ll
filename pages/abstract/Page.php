@@ -48,8 +48,11 @@ private static $availablePages = array
 	'GetAttachment' => 'pages/GetAttachment.php',
 	'GetAttachmentThumb' => 'pages/GetAttachmentThumb.php',
 	'GetAvatar' => 'pages/GetAvatar.php',
+	'GetCss' => 'pages/GetCss.php',
 	'GetId' => 'pages/GetId.php',
 	'GetImage' => 'pages/GetImage.php',
+	'GetLLCodes' => 'pages/GetLLCodes.php',
+	'GetSmilies' => 'pages/GetSmilies.php',
 	'Impressum' => 'pages/Impressum.php',
 	'InviteToPrivateThread' => 'pages/InviteToPrivateThread.php',
 	'Login' => 'pages/Login.php',
@@ -207,7 +210,8 @@ public function prepare()
 
 private function sendOutput()
 	{
-	$file = file_get_contents('html/'.$this->Board->getId().'.html');
+// 	$file = file_get_contents('html/'.$this->Board->getId().'.html');
+	$file = $this->Board->getHtml();
 
 	$this->variables['id'] = $this->Board->getId();
 	$this->variables['name'] = $this->Board->getName();
