@@ -210,7 +210,6 @@ public function prepare()
 
 private function sendOutput()
 	{
-// 	$file = file_get_contents('html/'.$this->Board->getId().'.html');
 	$file = $this->Board->getHtml();
 
 	$this->variables['id'] = $this->Board->getId();
