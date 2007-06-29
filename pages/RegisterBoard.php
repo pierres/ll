@@ -3,7 +3,58 @@
 class RegisterBoard extends Form{
 
 private $name = '';
-private $html = <<<eot
+
+protected function setForm()
+	{
+	if(!$this->User->isOnline())
+		{
+		$this->Io->redirect('Login');
+		}
+
+	$this->setValue('title', 'Eigenes Forum einrichten');
+
+	if (!$this->User->isLevel(User::ROOT))
+		{
+		$this->showFailure('nur root darf das!');
+		}
+
+	$this->addSubmit('Registrieren');
+
+	$this->addText('name', 'Der Name des Forums', '', 25);
+	$this->requires('name');
+	$this->setLength('name', 3, 25);
+	}
+
+protected function checkForm()
+	{
+	$this->name = $this->Io->getString('name');
+
+	try
+		{
+		$stm = $this->DB->prepare
+			('
+			SELECT
+				id
+			FROM
+				boards
+			WHERE
+				name = ?
+			');
+		$stm->bindString(htmlspecialchars($this->name));
+		$stm->getColumn();
+		$stm->close();
+
+		$this->showWarning('Name bereits vergeben!');
+		}
+	catch (DBNoDataException $e)
+		{
+		$stm->close();
+		}
+	}
+
+protected function sendForm()
+	{
+	$html = <<<eot
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de">
@@ -43,7 +94,7 @@ private $html = <<<eot
 </body>
 </html>
 eot;
-private $css = <<<eot
+	$css = <<<eot
 body		{
 		font-family:sans-serif;
 		font-size:12px;
@@ -542,58 +593,7 @@ h5{font-size:12px;}
 h6{font-size:10px;}
 eot;
 
-
-protected function setForm()
-	{
-	if(!$this->User->isOnline())
-		{
-		$this->Io->redirect('Login');
-		}
-
-	$this->setValue('title', 'Eigenes Forum einrichten');
-
-	if (!$this->User->isLevel(User::ROOT))
-		{
-		$this->showFailure('nur root darf das!');
-		}
-
-	$this->addSubmit('Registrieren');
-
-	$this->addText('name', 'Der Name des Forums', '', 25);
-	$this->requires('name');
-	$this->setLength('name', 3, 25);
-	}
-
-protected function checkForm()
-	{
-	$this->name = $this->Io->getString('name');
-
-	try
-		{
-		$stm = $this->DB->prepare
-			('
-			SELECT
-				id
-			FROM
-				boards
-			WHERE
-				name = ?
-			');
-		$stm->bindString(htmlspecialchars($this->name));
-		$stm->getColumn();
-		$stm->close();
-
-		$this->showWarning('Name bereits vergeben!');
-		}
-	catch (DBNoDataException $e)
-		{
-		$stm->close();
-		}
-	}
-
-protected function sendForm()
-	{
-	$html = str_replace('<!-- id -->', $board, $this->html);
+	$html = str_replace('<!-- id -->', $board, $html);
 
 	$stm = $this->DB->prepare
 		('
@@ -609,8 +609,8 @@ protected function sendForm()
 	$stm->bindInteger($this->User->getId());
 	$stm->bindString(htmlspecialchars($this->name));
 	$stm->bindInteger(time());
-	$stm->bindString($this->html);
-	$stm->bindString($this->css);
+	$stm->bindString($html);
+	$stm->bindString($css);
 	$stm->execute();
 	$stm->close();
 
@@ -626,7 +626,7 @@ protected function sendForm()
 		WHERE
 			id = ?'
 		);
-	$stm->bindString($id'.forum.laber-land.de');
+	$stm->bindString($id.'forum.laber-land.de');
 	$stm->bindInteger($id);
 	$stm->execute();
 	$stm->close();
