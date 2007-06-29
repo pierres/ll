@@ -593,8 +593,6 @@ h5{font-size:12px;}
 h6{font-size:10px;}
 eot;
 
-	$html = str_replace('<!-- id -->', $board, $html);
-
 	$stm = $this->DB->prepare
 		('
 		INSERT INTO
@@ -603,18 +601,18 @@ eot;
 			admin = ?,
 			name =  ?,
 			regdate = ?,
-			html = ?,
-			css = ?'
+			html = \'\',
+			css = \'\',
+			host = \'\''
 		);
 	$stm->bindInteger($this->User->getId());
 	$stm->bindString(htmlspecialchars($this->name));
 	$stm->bindInteger(time());
-	$stm->bindString($html);
-	$stm->bindString($css);
 	$stm->execute();
 	$stm->close();
 
 	$id = $this->DB->getInsertId();
+	$html = str_replace('<!-- id -->', $id, $html);
 
 	/** @TODO: remove hardcoded domain name */
 	$stm = $this->DB->prepare
@@ -622,11 +620,15 @@ eot;
 		UPDATE
 			boards
 		SET
-			host = ?
+			host = ?,
+			html = ?,
+			css = ?
 		WHERE
 			id = ?'
 		);
 	$stm->bindString($id.'forum.laber-land.de');
+	$stm->bindString($html);
+	$stm->bindString($css);
 	$stm->bindInteger($id);
 	$stm->execute();
 	$stm->close();
@@ -722,8 +724,8 @@ eot;
 				<td class="main">
 					Dein Forum wurde eingerichtet und ist unter folgender Adresse erreichbar:
 					<ul>
-					<li><strong>Forum:</strong> <a href="?page=Forums;id='.$id.'">http://forum.laber-land.de/?page=Forums;id='.$id.'</a></li>
-					<li><strong>Administration:</strong> <a href="?page=AdminIndex;id='.$id.'">http://forum.laber-land.de/?page=AdminIndex;id='.$id.'</a></li>
+					<li><strong>Forum:</strong> <a href="?page=Forums;id='.$id.'">?page=Forums;id='.$id.'</a></li>
+					<li><strong>Administration:</strong> <a href="?page=AdminIndex;id='.$id.'">?page=AdminIndex;id='.$id.'</a></li>
 					</ul>
 				</td>
 			</tr>
