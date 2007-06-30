@@ -348,10 +348,6 @@ public static function delBoard($board)
 	$stm->bindInteger($board);
 	$stm->execute();
 	$stm->close();
-
-	unlink('html'.$board.'.html');
-	unlink('html'.$board.'.css');
-	unlink('html'.$board.'.js');
 	}
 
 /** TODO: Summary erstellen; Änderungen optimieren (nur falls nötig) */
