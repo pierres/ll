@@ -37,7 +37,7 @@ protected function setForm()
 		
 		$this->addRadio('board', 'Welches Board soll gelöscht werden?', $radioArray);
 		$this->requires('board');
-		$this->addCheckBox('sure', 'Mir ist klar, das dadurch alle Daten verloren gehen.');
+		$this->addCheckBox('sure', 'Mir ist klar, dass dadurch alle Daten verloren gehen.');
 		$this->requires('sure');
 		}
 	catch (DBNoDataException $e)

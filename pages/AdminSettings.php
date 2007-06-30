@@ -95,7 +95,8 @@ protected function setForm()
 				admin_address
 			FROM
 				boards
-			WHERE id = ?'
+			WHERE 
+				id = ?'
 			);
 		$stm->bindInteger($this->Board->getId());
 		$address = $stm->getRow();
