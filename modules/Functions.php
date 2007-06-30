@@ -170,4 +170,9 @@ function getTextFromHtml($html)
 	return $text;
 	}
 
+function br2nl($text)
+	{
+	return str_replace('<br />', '', $text);
+	}
+
 ?>

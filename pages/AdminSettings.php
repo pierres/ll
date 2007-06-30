@@ -24,6 +24,34 @@ protected function setForm()
 		$this->requires('admin');
 		}
 
+	$mods = '';
+	try
+		{
+		$stm = $this->DB->prepare
+			('
+			SELECT
+				users.name
+			FROM
+				users,
+				user_group
+			WHERE
+				user_group.userid = users.id
+				AND user_group.groupid = ?'
+			);
+		$stm->bindInteger($this->Board->getMods());
+
+		foreach($stm->getColumnSet() as $mod)
+			{
+			$mods .= $mod."\n";
+			}
+		$stm->close();
+		}
+	catch (DBNoDataException $e)
+		{
+		$stm->close();
+		}
+	$this->addTextArea('mods', 'Moderatoren', $mods, 80, 5);
+
 	if($this->User->isUser($this->Board->getAdmin()) || $this->User->isLevel(User::ADMIN))
 		{
 		$admins = '';
@@ -57,35 +85,34 @@ protected function setForm()
 
 		$this->addText('host', 'Host/Domain', $this->Board->getHost());
 		$this->setLength('host', 6, 100);
-		}
 
-	$mods = '';
-	try
-		{
 		$stm = $this->DB->prepare
 			('
 			SELECT
-				users.name
+				admin_name,
+				admin_email,
+				admin_tel,
+				admin_address
 			FROM
-				users,
-				user_group
-			WHERE
-				user_group.userid = users.id
-				AND user_group.groupid = ?'
+				boards
+			WHERE id = ?'
 			);
-		$stm->bindInteger($this->Board->getMods());
+		$stm->bindInteger($this->Board->getId());
+		$address = $stm->getRow();
 
-		foreach($stm->getColumnSet() as $mod)
-			{
-			$mods .= $mod."\n";
-			}
-		$stm->close();
+		$this->addOutput('<fieldset><legend>Impressum</legend>');
+		$this->addText('admin_name', 'Name', $address['admin_name']);
+		$this->requires('admin_name');
+		$this->addText('admin_email', 'E-Mail', $address['admin_email']);
+		$this->requires('admin_email');
+		$this->addText('admin_tel', 'Telefon', $address['admin_tel']);
+		$this->requires('admin_tel');
+		$this->addTextArea('admin_address', 'Adresse', br2nl($address['admin_address']));
+		$this->requires('admin_address');
+		$this->addOutput('</fieldset>');
 		}
-	catch (DBNoDataException $e)
-		{
-		$stm->close();
-		}
-	$this->addTextArea('mods', 'Moderatoren', $mods, 80, 5);
+
+
 
 	try
 		{
@@ -221,6 +248,29 @@ protected function sendForm()
 				id = ?'
 			);
 		$stm->bindString($this->Io->getString('host'));
+		$stm->bindInteger($this->Board->getId());
+		$stm->execute();
+		$stm->close();
+		}
+
+	if($this->User->isUser($this->Board->getAdmin()) || $this->User->isLevel(User::ADMIN))
+		{
+		$stm = $this->DB->prepare
+			('
+			UPDATE
+				boards
+			SET
+				admin_name = ?,
+				admin_address = ?,
+				admin_email = ?,
+				admin_tel = ?
+			WHERE
+				id = ?'
+			);
+		$stm->bindString($this->Io->getHtml('admin_name'));
+		$stm->bindString(nl2br($this->Io->getHtml('admin_address')));
+		$stm->bindString($this->Io->getHtml('admin_email'));
+		$stm->bindString($this->Io->getHtml('admin_tel'));
 		$stm->bindInteger($this->Board->getId());
 		$stm->execute();
 		$stm->close();
