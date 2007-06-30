@@ -66,8 +66,14 @@ protected function setForm()
 				<textarea name="forums['.$forum['id'].'][description]" cols="80" rows="4">'.$forum['description'].'</textarea>
 				<br />
 				<a href="?page=AdminForumsMove;id='.$this->Board->getId().';forum='.$forum['id'].'"><span class="button">verschieben</span></a>
-				<a href="?page=AdminForumsDel;id='.$this->Board->getId().';forum='.$forum['id'].'"><span class="button" style="background-color:#CC0000">löschen</span></a>
-				</td>
+				<a href="?page=AdminForumsDel;id='.$this->Board->getId().';forum='.$forum['id'].'"><span class="button" style="background-color:#CC0000">löschen</span></a>');
+
+			if ($this->User->isLevel(User::ROOT))
+				{
+				$this->addOutput(' <a href="?page=AdminGlobalForumsMove;id='.$this->Board->getId().';forum='.$forum['id'].'"><span class="button" style="background-color:#CC6600">global verschieben</span></a>');
+				}
+
+			$this->addOutput('</td>
 					<td style="vertical-align:bottom">
 					'.$this->getMods($forum['mods']).'
 					<br />
@@ -75,8 +81,7 @@ protected function setForm()
 					</td>
 				</tr>
 				</table>
-				<br /><br />
-				');
+				<br /><br />');
 			}
 		else
 			{

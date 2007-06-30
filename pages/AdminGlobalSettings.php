@@ -6,6 +6,11 @@ class AdminGlobalSettings extends AdminPage{
 
 public function prepare()
 	{
+	if (!$this->User->isLevel(User::ROOT))
+		{
+		$this->showFailure('kein Zugriff!');
+		}
+
 	$body=
 	'
 	<table class="frame" style="width:80%">
@@ -28,6 +33,9 @@ public function prepare()
 				</li>
 				<li style="margin:20px;">
 				<a href="?page=RenameUser;id='.$this->Board->getId().'"><span class="button">Benutzer umbenennen</span></a>
+				</li>
+				<li style="margin:20px;">
+				<a href="?page=DelBoard;id='.$this->Board->getId().'"><span class="button">Board löschen</span></a>
 				</li>
 			</ul>
 		</td>
