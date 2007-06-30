@@ -28,6 +28,7 @@ protected function setForm()
 			');
 		$stm->bindInteger($this->Board->getId());
 
+		$radioArray = array();
 		foreach ($stm->getRowSet() as $board)
 			{
 			$radioArray[$board['name']] = $board['id'];

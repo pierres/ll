@@ -19,6 +19,7 @@ private static $availablePages = array
 	'AdminForumsDel' => 'pages/AdminForumsDel.php',
 	'AdminForumsDelEx' => 'pages/AdminForumsDelEx.php',
 	'AdminForumsEx' => 'pages/AdminForumsEx.php',
+	'AdminForumsMerge' => 'pages/AdminForumsMerge.php',
 	'AdminForumsMods' => 'pages/AdminForumsMods.php',
 	'AdminForumsMove' => 'pages/AdminForumsMove.php',
 	'AdminGlobalSettings' => 'pages/AdminGlobalSettings.php',

@@ -37,6 +37,9 @@ public function prepare()
 				<li style="margin:20px;">
 				<a href="?page=DelBoard;id='.$this->Board->getId().'"><span class="button">Board löschen</span></a>
 				</li>
+				<li style="margin:20px;">
+				<a href="?page=AdminForumsMerge;id='.$this->Board->getId().'"><span class="button">Foren zusammenlegen</span></a>
+				</li>
 			</ul>
 		</td>
 	</tr>
