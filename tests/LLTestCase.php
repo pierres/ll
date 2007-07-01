@@ -1,6 +1,6 @@
 <?php
 
-require_once 'PHPUnit2/Framework/TestCase.php';
+require_once 'PHPUnit/Framework/TestCase.php';
 require_once ('../modules/Settings.php');
 require_once ('../modules/Functions.php');
 
@@ -9,7 +9,7 @@ function __autoload($class)
 	LLTestCase::loadModul($class);
 	}
 
-abstract class Modul extends PHPUnit2_Framework_TestCase{
+abstract class Modul extends PHPUnit_Framework_TestCase{
 
 private static $loadedModules = array();
 
