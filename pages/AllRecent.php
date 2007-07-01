@@ -7,6 +7,7 @@ class AllRecent extends Page{
 public function prepare()
 	{
 	$this->setValue('title', 'Aktuelles');
+	$this->setValue('meta.robots', 'noindex,nofollow');
 
 	try
 		{
