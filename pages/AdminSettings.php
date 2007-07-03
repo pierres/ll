@@ -207,6 +207,14 @@ protected function checkForm()
 				}
 			}
 		}
+
+	if($this->User->isUser($this->Board->getAdmin()) || $this->User->isLevel(User::ADMIN))
+		{
+		if (!$this->Mail->validateMail($this->Io->getHtml('admin_email')))
+			{
+			$this->showWarning('Keine gültige E-Mail-Adresse angegeben!');
+			}
+		}
 	}
 
 protected function sendForm()

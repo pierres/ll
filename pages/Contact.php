@@ -5,11 +5,32 @@ class Contact extends Form{
 
 private $name = '';
 private $email = '';
-
+private $sendto = '';
 
 
 protected function setForm()
 	{
+	try
+		{
+		$stm = $this->DB->prepare
+			('
+			SELECT
+				admin_email
+			FROM
+				boards
+			WHERE
+				id = ?
+			');
+		$stm->bindInteger($this->Board->getId());
+		$this->sendto = $stm->getColumn();
+		$stm->close();
+		}
+	catch (DBNoDataException $e)
+		{
+		$stm->close();
+		$this->showFailure('Keine Ziel-Adresse gefunden!');
+		}
+
 	if ($this->User->isOnline())
 		{
 		try
@@ -76,11 +97,16 @@ protected function checkForm()
 		{
 		$this->showWarning('Keine gültige E-Mail-Adresse angegeben!');
 		}
+
+	if (!$this->Mail->validateMail($this->sendto))
+		{
+		$this->showFailure('Ziel-Adresse '.$this->sendto.' ungültig!');
+		}
 	}
 
 protected function sendForm()
 	{
-	$this->Mail->setTo('support@laber-land.de');
+	$this->Mail->setTo($this->sendto);
 	$this->Mail->setFrom($this->name.' <'.$this->email.'>');
 	$this->Mail->setSubject($this->Io->getString('subject'));
 	$this->Mail->setText($this->Io->getString('text'));
