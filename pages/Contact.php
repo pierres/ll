@@ -107,7 +107,8 @@ protected function checkForm()
 protected function sendForm()
 	{
 	$this->Mail->setTo($this->sendto);
-	$this->Mail->setFrom($this->name.' <'.$this->email.'>');
+	$this->Mail->setReplyTo($this->name.' <'.$this->email.'>');
+	$this->Mail->setFrom('support@laber-land.de');
 	$this->Mail->setSubject($this->Io->getString('subject'));
 	$this->Mail->setText($this->Io->getString('text'));
 	$this->Mail->send();
