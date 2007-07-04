@@ -5,7 +5,7 @@ class Mail extends Modul{
 
 private $from 		= '';
 private $to 		= '';
-private $replyto 		= '';
+private $replyto 	= '';
 private $text 		= '';
 private $subject 	= '';
 
@@ -24,31 +24,17 @@ public function send()
 
 	mb_internal_encoding('UTF-8');
 	mb_language('uni');
-	mb_send_mail($this->to, $this->subject, $this->text, 'From: '.$this->from."\r\n".(!empty($this->replyto) ? 'Reply-To: '.$this->replyto."\r\n" : ''));
+	mb_send_mail($this->to, $this->subject, $this->text, 'From: '.$this->from."\r\n".(!empty($this->replyto) ? 'Reply-To: '.$this->replyto."\r\n" : '').'Return-Path: '.$this->from."\r\n");
 	}
 
 public function setFrom($from)
 	{
-// 	if ($this->validateMail($from))
-// 		{
-		$this->from = $from;
-// 		}
-// 	else
-// 		{
-// 		throw new MailException('keine gültige Mail-Adresse', 0);
-// 		}
+	$this->from = $from;
 	}
 
 public function setTo($to)
 	{
-// 	if ($this->validateMail($to))
-// 		{
-		$this->to = $to;
-// 		}
-// 	else
-// 		{
-// 		throw new MailException('keine gültige Mail-Adresse', 0);
-// 		}
+	$this->to = $to;
 	}
 
 public function setReplyTo($addess)

@@ -111,7 +111,7 @@ protected function sendForm()
 	$stm->close();
 
 	$this->Mail->setTo($this->email);
-	$this->Mail->setFrom('support@laber-land.de');
+	$this->Mail->setFrom($this->Settings->getValue('email'));
 	$this->Mail->setSubject('Registrierung bei '.$this->Board->getName());
 	$this->Mail->setText(
 'Hallo '.$this->name.'!

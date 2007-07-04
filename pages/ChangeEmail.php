@@ -111,7 +111,7 @@ protected function sendForm()
 	$stm->close();
 
 	$this->Mail->setTo($this->email);
-	$this->Mail->setFrom('support@laber-land.de');
+	$this->Mail->setFrom($this->Settings->getValue('email'));
 	$this->Mail->setSubject('Dein Passwort im Laber-Land');
 	$this->Mail->setText(
 'Hallo '.$this->User->getName().'!

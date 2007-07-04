@@ -13,6 +13,7 @@ public function __construct()
 	$this->config['timezone']			= 'Europe/Berlin';
 
 	$this->config['domain']				= 'localhost';
+	$this->config['email']				= 'root@localhost';
 	$this->config['sql_database'] 			= 'll';
 	$this->config['sql_user']			= '';
 	$this->config['sql_password']			= '';
