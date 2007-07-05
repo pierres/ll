@@ -67,7 +67,7 @@ public function show()
 	</title>
 </head>
 <body>
-<script language="javascript" type="text/javascript">
+<script type="text/javascript">
 <!--
 function getSmiley(text)
 	{
