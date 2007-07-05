@@ -24,7 +24,7 @@ public function send()
 
 	mb_internal_encoding('UTF-8');
 	mb_language('uni');
-	mb_send_mail($this->to, $this->subject, $this->text, 'From: '.$this->from."\r\n".(!empty($this->replyto) ? 'Reply-To: '.$this->replyto."\r\n" : ''), $this->from, '/usr/bin/sendmail -f'.$this->from);
+	mb_send_mail($this->to, $this->subject, $this->text, 'From: '.$this->from."\r\n".(!empty($this->replyto) ? 'Reply-To: '.$this->replyto."\r\n" : ''), '-f'.$this->from);
 	}
 
 public function setFrom($from)
