@@ -99,7 +99,18 @@ $threads = $this->listThreads();
 $stm->close();
 
 $body =
-	'
+	'<script type="text/javascript">
+		/* <![CDATA[ */
+		function writeText(text)
+			{
+			var pos;
+			pos = document;
+			while ( pos.lastChild && pos.lastChild.nodeType == 1 )
+				pos = pos.lastChild;
+			pos.parentNode.appendChild( document.createTextNode(text));
+			}
+		/* ]]> */
+	</script>
 	<table class="frame" style="width:100%">
 		<tr>
 			<td class="title" colspan="2">Thema</td>
@@ -203,11 +214,13 @@ protected function listThreads()
 					</div>
 				</td>
 				<td class="lastpost">
-					<script type="text/javascript">
-						<!--
-						document.write("<div class=\"summary\" style=\"visibility:hidden;\" id=\"summary'.$data['id'].'\">'.$data['summary'].'<\/div>");
-						-->
-					</script>
+					<div class="summary" style="visibility:hidden;" id="summary'.$data['id'].'">
+						<script type="text/javascript">
+							/* <![CDATA[ */
+							writeText("'.$data['summary'].'");
+							/* ]]> */
+						</script>
+					</div>
 					<div>von '.$firstposter.'</div>
 					<div>'.$data['firstdate'].'</div>
 				</td>

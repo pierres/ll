@@ -177,7 +177,9 @@ protected function showForm()
 			</table>
 		</form>
 		<script type="text/javascript">
+			/* <![CDATA[ */
 			document.getElementById("id'.$this->focus.'").focus();
+			/* ]]> */
 		</script>
 		'.$this->tail;
 
@@ -205,6 +207,11 @@ protected function addOutput($value)
 protected function addElement($name,  $value)
 	{
 	$this->elements[$name] = '<div>'.$value.'</div>';
+	}
+
+private function getNextElementId()
+	{
+	return 'id-'.count($this->elements);
 	}
 
 protected function addButton($name, $value)
@@ -239,7 +246,7 @@ protected function addFile($name, $description, $cols = 50)
 	/** Workaround for PHP-"Bug". See http://de3.php.net/manual/en/ini.core.php#ini.post-max-size */
 	$this->request .= ';submit=1';
 
-	$this->addElement($name, '<label for="id'.$name.'">'.$description.'</label><br /><input id="id'.$name.'" type="file" name="'.$name.'" size="'.$cols.'" />');
+	$this->addElement($name, '<label for="'.$this->getNextElementId().'">'.$description.'</label><br /><input id="'.$this->getNextElementId().'" type="file" name="'.$name.'" size="'.$cols.'" />');
 	$this->descriptions[$name] = $description;
 
 	$this->setFocus($name);
@@ -256,7 +263,7 @@ protected function addCheckbox($name, $description, $checked = false)
 		$checked = $this->Io->isRequest($name);
 		}
 
-	$this->addElement($name, '<input type="checkbox" id="id'.$name.'" name="'.$name.'"'.($checked ? ' checked="checked"' : '').' /><label for="id'.$name.'">'.$description.'</label>');
+	$this->addElement($name, '<input type="checkbox" id="'.$this->getNextElementId().'" name="'.$name.'"'.($checked ? ' checked="checked"' : '').' /><label for="'.$this->getNextElementId().'">'.$description.'</label>');
 	$this->descriptions[$name] = $description;
 
 	return $name;
@@ -302,7 +309,7 @@ protected function addTextarea($name, $description = '', $text = '', $cols = 80,
 		{
 		}
 
-	$this->addElement($name, '<label for="id'.$name.'">'.$description.'</label><br /><textarea id="id'.$name.'" name="'.$name.'" cols="'.$cols.'" rows="'.$rows.'">'.htmlspecialchars($text).'</textarea>');
+	$this->addElement($name, '<label for="'.$this->getNextElementId().'">'.$description.'</label><br /><textarea id="'.$this->getNextElementId().'" name="'.$name.'" cols="'.$cols.'" rows="'.$rows.'">'.htmlspecialchars($text).'</textarea>');
 	$this->descriptions[$name] = $description;
 
 	$this->setFocus($name);
@@ -320,7 +327,7 @@ protected function addText($name, $description = '', $text = '', $cols = 80)
 		{
 		}
 
-	$this->addElement($name, '<label for="id'.$name.'">'.$description.'</label><br /><input id="id'.$name.'" type="text" name="'.$name.'" size="'.$cols.'" value="'.htmlspecialchars($text).'" />');
+	$this->addElement($name, '<label for="'.$this->getNextElementId().'">'.$description.'</label><br /><input id="'.$this->getNextElementId().'" type="text" name="'.$name.'" size="'.$cols.'" value="'.htmlspecialchars($text).'" />');
 	$this->descriptions[$name] = $description;
 
 	$this->setFocus($name);
@@ -338,7 +345,7 @@ protected function addPassword($name, $description = '', $text = '', $cols = 80)
 		{
 		}
 
-	$this->addElement($name,  '<label for="id'.$name.'">'.$description.'</label><br /><input id="id'.$name.'" type="password" name="'.$name.'" size="'.$cols.'" value="'.htmlspecialchars($text).'" />');
+	$this->addElement($name,  '<label for="'.$this->getNextElementId().'">'.$description.'</label><br /><input id="'.$this->getNextElementId().'" type="password" name="'.$name.'" size="'.$cols.'" value="'.htmlspecialchars($text).'" />');
 	$this->descriptions[$name] = $description;
 
 	$this->setFocus($name);
@@ -356,7 +363,7 @@ protected function requires($name)
 			// ich war das nicht ;-)
 			$this->elements[$name] = preg_replace('/<\w+? /', '$0style="border-color:red" ', $this->elements[$name]);
 			}
-			else
+		else
 			{
 			$this->showWarning('Ich weiß, daß ich nichts weiß.');
 			}

@@ -115,6 +115,7 @@ protected function checkForm()
 
 protected function sendForm()
 	{
+	/** FIXME: We should remove all links to this forum existing in the target category */
 	$stm = $this->DB->prepare
 		('
 		UPDATE

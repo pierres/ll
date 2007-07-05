@@ -79,7 +79,11 @@ public function getList($resultset)
 				</td>
 				<td class="lastpost">
 					<div class="summary" style="visibility:hidden;" id="summary'.$data['id'].'">
-						'.$data['summary'].'
+						<script type="text/javascript">
+							/* <![CDATA[ */
+							writeText("'.$data['summary'].'");
+							/* ]]> */
+						</script>
 					</div>
 					<div>von '.$firstposter.'</div>
 					<div>'.$data['firstdate'].'</div>

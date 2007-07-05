@@ -88,8 +88,24 @@ protected function setFile()
 				$stm->bindInteger($this->User->getId());
 				$files = $stm->getRowSet();
 
+				$this->addOutput('<script type="text/javascript">
+							/* <![CDATA[ */
+							function writeElement(text)
+								{
+								var div = document.createElementNS("http://www.w3.org/1999/xhtml","div");
+								div.innerHTML = text;
+								var pos;
+								pos = document;
+								while(pos.lastChild && pos.lastChild.nodeType==1)
+									pos = pos.lastChild;
+								var nodes = div.childNodes;
+								while(nodes.length)
+									pos.parentNode.appendChild(nodes[0]);
+								}
+							/* ]]> */
+						</script>');
 				$this->addOutput('<br />Dateien auswählen:<br /><table class="frame" style="margin:10px;font-size:9px;">');
-
+	
 				foreach ($files as $file)
 					{
 					if (strpos($file['type'], 'image/jpeg') === 0 ||
@@ -100,10 +116,10 @@ protected function setFile()
 						$hover = '  onmouseover="javascript:document.getElementById(\'thumb'.$file['id'].'\').style.visibility=\'visible\'"
 							onmouseout="javascript:document.getElementById(\'thumb'.$file['id'].'\').style.visibility=\'hidden\'" ';
 						$preview = '<script type="text/javascript">
-								<!--
-								document.write("<img style=\"visibility:hidden;width:auto;height:auto;position:absolute;\" id=\"thumb'.$file['id'].'\" src=\"?page=GetAttachmentThumb;file='.$file['id'].'\"  alt=\"'.$file['name'].'\" class=\"image\" />");
-								-->
-							</script>';
+									/* <![CDATA[ */
+									writeElement("<img style=\"visibility:hidden;width:auto;height:auto;position:absolute;z-index:10;\" id=\"thumb'.$file['id'].'\" src=\"?page=GetAttachmentThumb;file='.$file['id'].'\"  alt=\"'.$file['name'].'\" class=\"image\" />");
+									/* ]]> */
+								</script>';
 						}
 					else
 						{

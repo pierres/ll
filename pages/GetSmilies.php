@@ -4,7 +4,7 @@ class GetSmilies extends GetFile{
 
 public function prepare()
 	{
-// 	$this->exitIfCached();
+	$this->exitIfCached();
 	}
 
 public function show()

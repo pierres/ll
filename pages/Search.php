@@ -150,7 +150,18 @@ protected function sendForm()
 	if (count($this->warning) == 0)
 		{
 		$body =
-		'
+		'<script type="text/javascript">
+			/* <![CDATA[ */
+			function writeText(text)
+				{
+				var pos;
+				pos = document;
+				while ( pos.lastChild && pos.lastChild.nodeType == 1 )
+					pos = pos.lastChild;
+				pos.parentNode.appendChild( document.createTextNode(text));
+				}
+			/* ]]> */
+		</script>
 		<table class="frame" style="width:100%">
 			<tr>
 				<td class="title" colspan="2">Thema</td>

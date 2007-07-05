@@ -141,7 +141,18 @@ public function prepare()
 		}
 
 	$body =
-		'
+		'<script type="text/javascript">
+			/* <![CDATA[ */
+			function writeText(text)
+				{
+				var pos;
+				pos = document;
+				while ( pos.lastChild && pos.lastChild.nodeType == 1 )
+					pos = pos.lastChild;
+				pos.parentNode.appendChild( document.createTextNode(text));
+				}
+			/* ]]> */
+		</script>
 		<table class="frame" style="width:100%">
 			<tr>
 				<td class="cat" colspan="6"><a href="?page=AllRecent;id='.$this->Board->getId().'" rel="nofollow"><span class="button"><em>Alle</em> aktuellen Beiträge anzeigen</span></a></td>

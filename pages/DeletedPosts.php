@@ -29,14 +29,29 @@ protected function setForm()
 				posts.dat DESC
 			');
 
+		$this->addOutput('<script type="text/javascript">
+					/* <![CDATA[ */
+					function writeText(text)
+						{
+						var pos;
+						pos = document;
+						while ( pos.lastChild && pos.lastChild.nodeType == 1 )
+							pos = pos.lastChild;
+						pos.parentNode.appendChild( document.createTextNode(text));
+						}
+					/* ]]> */
+				</script>');
+
 		foreach ($posts as $post)
 			{
 			$this->addOutput('<input type="checkbox" id="id'.$post['id'].'" name="post[]" value="'.$post['id'].'" /><label for="id'.$post['id'].'"><a onmouseover="javascript:document.getElementById(\'post'.$post['id'].'\').style.visibility=\'visible\'"
-			onmouseout="javascript:document.getElementById(\'post'.$post['id'].'\').style.visibility=\'hidden\'"  href="?page=Postings;id='.$this->Board->getId().';thread='.$post['threadid'].'">'.$post['name'].'</a></label><br /><script type="text/javascript">
-						<!--
-						document.write("<div class=\"summary\" style=\"visibility:hidden;\" id=\"post'.$post['id'].'\">'.cutString(strip_tags($post['text']), 300).'</div>");
-						-->
-					</script>');
+			onmouseout="javascript:document.getElementById(\'post'.$post['id'].'\').style.visibility=\'hidden\'"  href="?page=Postings;id='.$this->Board->getId().';thread='.$post['threadid'].'">'.$post['name'].'</a></label><br /><div class="summary" style="visibility:hidden;" id="post'.$post['id'].'">
+				<script type="text/javascript">
+						/* <![CDATA[ */
+						writeText("'.cutString(strip_tags($post['text']), 300).'");
+						/* ]]> */
+				</script>
+			</div>');
 			}
 		}
 	catch (DBNoDataException $e)
