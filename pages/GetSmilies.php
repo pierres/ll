@@ -4,7 +4,7 @@ class GetSmilies extends GetFile{
 
 public function prepare()
 	{
-	$this->exitIfCached();
+// 	$this->exitIfCached();
 	}
 
 public function show()
@@ -68,7 +68,7 @@ public function show()
 </head>
 <body>
 <script type="text/javascript">
-<!--
+/* <![CDATA[ */
 function getSmiley(text)
 	{
 	text = ' ' + text + ' ';
@@ -90,7 +90,7 @@ function getExtraSmiley(text)
 	getSmiley('<'+text+'>');
 	}
 
-//-->
+/* ]]> */
 </script>
 	<table class="main">
 		<tr>
