@@ -60,6 +60,7 @@ private static $availablePages = array
 	'InviteToPrivateThread' => 'pages/InviteToPrivateThread.php',
 	'Login' => 'pages/Login.php',
 	'Logout' => 'pages/Logout.php',
+	'Map' => 'pages/Map.php',
 	'MarkAllAsRead' => 'pages/MarkAllAsRead.php',
 	'MarkAsRead' => 'pages/MarkAsRead.php',
 	'MarkupTest' => 'pages/MarkupTest.php',
