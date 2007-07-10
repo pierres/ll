@@ -280,6 +280,15 @@ public function testBug93()
 	$this->assertEquals('<!-- cutted --><a href="http://www.laber-land.de/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" onclick="return !window.open(this.href);" rel="nofollow" class="extlink">http://www.laber-land.de/aaaaaaaaaaaa...</a><!-- /cutted -->', $this->Markup->toHtml('http://www.laber-land.de/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'));
 	}
 
+public function testBug121()
+	{
+	$in = '<quote>
+* a</quote>';
+
+	$out = '<blockquote><div><br /><ul><li>a</div></li></ul></blockquote>';
+	$this->assertEquals($out, $this->Markup->toHtml($in));
+	}
+
 }
 
 ?>
