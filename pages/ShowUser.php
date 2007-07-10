@@ -148,7 +148,7 @@ public function prepare()
 			</tr>
 			<tr>
 				<td class="main" colspan="3">
-					<a href="?page=UserRecent;id='.$this->Board->getId().';user='.$this->id.'"><span class="button">aktuelle Beiträge</span></a>
+					<a href="?page=UserRecent;id='.$this->Board->getId().';user='.$this->id.'" rel="nofollow"><span class="button">aktuelle Beiträge</span></a>
 					'.($this->User->isOnline() ? '<a href="?page=NewPrivateThread;id='.$this->Board->getId().';recipients='.$data['name'].'"><span class="button">Neues privates Thema</span></a>' : '').'
 					'.($this->User->isLevel(User::ROOT) ? '<a href="?page=DeleteUser;id='.$this->Board->getId().';user='.$this->id.'"><span class="button">Benutzerkonto löschen</span></a>' : '')
 					.'

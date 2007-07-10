@@ -7,6 +7,7 @@ class UserRecent extends Page{
 public function prepare()
 	{
 	$this->setValue('title', 'Aktuelle Beiträge');
+	$this->setValue('meta.robots', 'noindex,nofollow');
 
 	try
 		{

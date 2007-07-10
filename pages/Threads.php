@@ -65,19 +65,22 @@ catch (DBException $e)
 		$stm = $this->DB->prepare
 			('
 			SELECT
-				boardid
+				forums.boardid,
+				boards.host
 			FROM
-				forums
+				forums,
+				boards
 			WHERE
-				id = ?
-				AND boardid != ?'
+				forums.id = ?
+				AND forums.boardid != ?
+				AND forums.boardid = boards.id'
 			);
 		$stm->bindInteger($this->forum);
 		$stm->bindInteger($this->Board->getId());
-		$boardid = $stm->getColumn();
+		$board = $stm->getRow();
 		$stm->close();
 
-		$this->Io->redirect('Threads','forum='.$this->forum.';thread='.$this->thread, $boardid);
+		$this->Io->redirectToUrl('http'.(!getenv('HTTPS') ? '' : 's').'://'.$board['host'].'/?page=Threads;id='.$board['boardid'].';forum='.$this->forum.';thread='.$this->thread);
 		}
 	catch (DBException $e)
 		{

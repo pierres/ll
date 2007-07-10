@@ -71,21 +71,24 @@ catch (DBNoDataException $e)
 		$stm = $this->DB->prepare
 			('
 			SELECT
-				forums.boardid
+				forums.boardid,
+				boards.host
 			FROM
 				threads,
-				forums
+				forums,
+				boards
 			WHERE
 				threads.id = ?
 				AND forums.id = threads.forumid
-				AND forums.boardid != ?'
+				AND forums.boardid != ?
+				AND boards.id = forums.boardid'
 			);
 		$stm->bindInteger($this->thread);
 		$stm->bindInteger($this->Board->getId());
-		$boardid = $stm->getColumn();
+		$board = $stm->getRow();
 		$stm->close();
 
-		$this->Io->redirect('Postings','thread='.$this->thread.';post='.$this->post, $boardid);
+		$this->Io->redirectToUrl('http'.(!getenv('HTTPS') ? '' : 's').'://'.$board['host'].'/?page=Postings;id='.$board['boardid'].';thread='.$this->thread.';post='.$this->post);
 		}
 	catch (DBNoDataException $e)
 		{
