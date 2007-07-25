@@ -61,9 +61,15 @@ protected function setForm()
 
 protected function sendForm()
 	{
-	foreach($this->Io->getArray('post') as $post)
+	try
 		{
-		AdminFunctions::delPost($post);
+		foreach($this->Io->getArray('post') as $post)
+			{
+			AdminFunctions::delPost($post);
+			}
+		}
+	catch (IoRequestException $e)
+		{
 		}
 	$this->redirect();
 	}

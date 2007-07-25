@@ -60,9 +60,15 @@ protected function setForm()
 
 protected function sendForm()
 	{
-	foreach($this->Io->getArray('thread') as $thread)
+	try
 		{
-		AdminFunctions::delThread($thread);
+		foreach($this->Io->getArray('thread') as $thread)
+			{
+			AdminFunctions::delThread($thread);
+			}
+		}
+	catch (IoRequestException $e)
+		{
 		}
 	$this->redirect();
 	}
