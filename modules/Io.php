@@ -12,6 +12,7 @@ private $status		= 'HTTP/1.1 200 OK';
 
 const NOT_FOUND		= 'HTTP/1.1 404 Not Found';
 const OK		= 'HTTP/1.1 200 OK';
+const FOUND		= 'HTTP/1.1 302 Found';
 
 private $request 	= array();
 
@@ -158,6 +159,7 @@ public function redirect($class, $param = '', $id = 0)
 	{
 	$param = (!empty($param) ? ';'.$param : '');
 
+	$this->header ($this->FOUND);
 	$this->redirectToUrl($this->getURL().'?id='.($id == 0 ? $this->Board->getId() : $id).';page='.$class.$param);
 	}
 
@@ -176,6 +178,7 @@ public function getURL()
 /** FIXME: XSS->alle Zeilenumbrüche entfernen */
 public function redirectToUrl($url)
 	{
+	$this->header ($this->FOUND);
 	$this->header('Location: '.$url);
 	exit();
 	}

@@ -52,13 +52,13 @@ public function show()
 			'
 			<entry>
 				<title>'.$thread['name'].'</title>
-				<link href="'.$this->Io->getURL().'/?page=Postings;id='.$this->Board->getId().';thread='.$thread['id'].';post=-1" />
+				<link href="'.$this->Io->getURL().'?page=Postings;id='.$this->Board->getId().';thread='.$thread['id'].';post=-1" />
 				<id>'.$thread['id'].'</id>
 				<updated>'.date('c', $thread['lastdate']).'</updated>
 				<summary>'.$thread['summary'].'</summary>
 				<author>
 					<name>'.$thread['lastusername'].'</name>
-					<uri>'.$this->Io->getURL().'/?page=ShowUser;id='.$this->Board->getId().';user='.$thread['lastuserid'].'</uri>
+					<uri>'.$this->Io->getURL().'?page=ShowUser;id='.$this->Board->getId().';user='.$thread['lastuserid'].'</uri>
 				</author>
 			</entry>
 			';
@@ -76,7 +76,7 @@ public function show()
 <feed xmlns="http://www.w3.org/2005/Atom">
 	<title>'.$this->Board->getName().'</title>
 	<id>'.$this->Board->getId().'</id>
-	<link href="'.$this->Io->getURL().'/?page=Forums;id='.$this->Board->getId().'" />
+	<link href="'.$this->Io->getURL().'?page=Forums;id='.$this->Board->getId().'" />
 	<updated>'.date('c', $lastdate).'</updated>
 	<author>
 		<name>Pierre Schmitz</name>
