@@ -159,7 +159,7 @@ public function redirect($class, $param = '', $id = 0)
 	{
 	$param = (!empty($param) ? ';'.$param : '');
 
-	$this->header ($this->FOUND);
+	$this->header (Io::FOUND);
 	$this->redirectToUrl($this->getURL().'?id='.($id == 0 ? $this->Board->getId() : $id).';page='.$class.$param);
 	}
 
@@ -178,7 +178,7 @@ public function getURL()
 /** FIXME: XSS->alle Zeilenumbrüche entfernen */
 public function redirectToUrl($url)
 	{
-	$this->header ($this->FOUND);
+	$this->header (Io::FOUND);
 	$this->header('Location: '.$url);
 	exit();
 	}
