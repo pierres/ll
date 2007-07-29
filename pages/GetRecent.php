@@ -51,9 +51,9 @@ public function show()
 			$entries .=
 			'
 			<entry>
+				<id>'.$this->Io->getURL().'?page=Postings;id='.$this->Board->getId().';thread='.$thread['id'].'</id>
 				<title>'.$thread['name'].'</title>
-				<link href="'.$this->Io->getURL().'?page=Postings;id='.$this->Board->getId().';thread='.$thread['id'].';post=-1" />
-				<id>'.$thread['id'].'</id>
+				<link rel="alternate" type="text/html" href="'.$this->Io->getURL().'?page=Postings;id='.$this->Board->getId().';thread='.$thread['id'].';post=-1" />
 				<updated>'.date('c', $thread['lastdate']).'</updated>
 				<summary>'.$thread['summary'].'</summary>
 				<author>
@@ -73,18 +73,16 @@ public function show()
 
 	$content =
 '<?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom">
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="de">
+	<id>'.$this->Io->getURL().'?page=GetRecent;id='.$this->Board->getId().'</id>
 	<title>'.$this->Board->getName().'</title>
-	<id>'.$this->Board->getId().'</id>
-	<link href="'.$this->Io->getURL().'?page=Forums;id='.$this->Board->getId().'" />
+	<link rel="self" type="application/atom+xml" href="'.$this->Io->getURL().'?page=GetRecent;id='.$this->Board->getId().'" />
+	<link rel="alternate" type="text/html" href="'.$this->Io->getURL().'?page=Forums;id='.$this->Board->getId().'" />
 	<updated>'.date('c', $lastdate).'</updated>
-	<author>
-		<name>Pierre Schmitz</name>
-	</author>
 	'.$entries.'
 </feed>';
 
-	$this->sendInlineFile('application/x.atom+xml; charset=UTF-8', 'recent.xml', strlen($content), $content);
+	$this->sendInlineFile('application/atom+xml; charset=UTF-8', 'recent.xml', strlen($content), $content);
 	}
 
 }
