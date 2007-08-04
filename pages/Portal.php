@@ -237,18 +237,24 @@ private function getRecent()
 				UNION
 				(
 					SELECT
-						id,
-						name,
-						lastdate,
-						forumid
+						threads.id,
+						threads.name,
+						threads.lastdate,
+						threads.forumid
 					FROM
-						threads
+						forums,
+						threads,
+						forum_cat,
+						cats
 					WHERE
-						deleted = 0
-						AND forumid != 0
-						AND forumid != ?
+						threads.deleted = 0
+						AND threads.forumid != ?
+						AND threads.forumid = forums.id
+						AND forum_cat.forumid = forums.id
+						AND forum_cat.catid = cats.id
+						AND cats.boardid = ?
 					ORDER BY
-						lastdate DESC
+						threads.lastdate DESC
 					LIMIT
 						25
 				)
@@ -265,24 +271,31 @@ private function getRecent()
 			$stm = $this->DB->prepare
 				('
 				SELECT
-					id,
-					name,
-					lastdate,
-					forumid
+					threads.id,
+					threads.name,
+					threads.lastdate,
+					threads.forumid
 				FROM
-					threads
+					forums,
+					threads,
+					forum_cat,
+					cats
 				WHERE
-					deleted = 0
-					AND forumid != 0
-					AND forumid != ?
+					threads.deleted = 0
+					AND threads.forumid != ?
+					AND threads.forumid = forums.id
+					AND forum_cat.forumid = forums.id
+					AND forum_cat.catid = cats.id
+					AND cats.boardid = ?
 				ORDER BY
-					lastdate DESC
+					threads.lastdate DESC
 				LIMIT
 					25
 				');
 			}
 
 		$stm->bindInteger($this->forum);
+		$stm->bindInteger($this->Board->getId());
 		$threads = $stm->getRowSet();
 		}
 	catch(DBNoDataException $e)
