@@ -270,7 +270,7 @@ reg
 
 	$this->assertEquals($out,  $this->Markup->toHtml($in));
 	}
-	
+
 public function testBug93()
 	{
 	$this->assertEquals('<a href="http://www.laber-land.de" onclick="return !window.open(this.href);" rel="nofollow" class="extlink">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</a>', $this->Markup->toHtml('<http://www.laber-land.de aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa>'));
@@ -286,6 +286,11 @@ public function testBug121()
 * a</quote>';
 
 	$out = '<blockquote><div><br /><ul><li>a</div></li></ul></blockquote>';
+	$this->assertEquals($out, $this->Markup->toHtml($in));
+
+	$in = '<quote></quote></quote><quote></quote>';
+
+	$out = '<blockquote><div></div></blockquote>&lt;/quote&gt;<blockquote><div></div></blockquote>';
 	$this->assertEquals($out, $this->Markup->toHtml($in));
 	}
 
