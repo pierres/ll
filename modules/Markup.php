@@ -16,7 +16,6 @@ private $sepc 			= '';
 */
 private $Stack			= null;
 private $Codes 			= null;
-private $quotes 		= 0;
 
 private $linkNumber 		= 1;
 
@@ -257,47 +256,70 @@ private function makeInlineCode($matches)
 
 	return $this->sepc.$this->Codes->lastID().$this->sepc;
 	}
-// -------------------------------------------------------
-private function openQuote($matches)
-	{
-	$this->quotes++;
-	return (empty($matches[1]) ? '' : '<cite>'.$matches[1].'</cite>').'<blockquote><div>';
-	}
 
-private function closeQuote()
-	{
-	if ($this->quotes == 0)
-		{
-		return '';
-		}
-	else
-		{
-		$this->quotes--;
-		return '</div></blockquote>';
-		}
-	}
-/*
-	Nach langem Hin und Her bin ich auf folgende sehr einfache Lösung gekommen
-	[quote] erhöht quotes um 1, [/quote] zieht 1 ab.
-	Bei 0 wird nicht mehr geschlossen und sollte am Ende quotes > 0 sein,
-	sind noch Tags zu schließen.
-	Das sollte eigentlich immer zuverlässig funktionieren.
-*/
-/** TODO: Vereinfachnung wie unmakeList() */
 private function makeQuote($matches)
 	{
-	$matches[0] = preg_replace_callback('#&lt;quote(?: (.+?))?&gt;#', array($this, 'openQuote'), $matches[0]);
-	$matches[0] = preg_replace_callback('#&lt;/quote&gt;#', array($this, 'closeQuote'), $matches[0]);
+	$text = $matches[0];
+	$pos = 0;
+	$last = 0;
+	$maxPos = strlen($text);
+	$out = '';
+	$open = 0;
 
-	while ($this->quotes > 0)
+	while ($pos <= $maxPos)
 		{
-		$matches[0] .= '</div></blockquote>';
-		$this->quotes--;
+		$start = strpos($text, '&lt;quote', $pos);
+		$end = strpos($text, '&lt;/quote&gt;', $pos);
+
+		if ($start !== false && $end !== false && $start < $end)
+			{
+			$out .= substr($text, $last, $start-$last);
+			$quote = substr($text, $start);
+
+			if (preg_match('#^&lt;quote (.+?)&gt;#s', $quote, $matches))
+				{
+				$pos = $start+13+strlen($matches[1])+1;
+				$open++;
+				$out .= '<cite>'.$matches[1].'</cite><blockquote><div>';
+				}
+			elseif (preg_match('#^&lt;quote&gt;#', $quote))
+				{
+				$pos = $start+13;
+				$open++;
+				$out .= '<blockquote><div>';
+				}
+			else
+				{
+				$out .= '&lt;quote';
+				$pos = $start+9;
+				}
+			}
+		elseif ($end !== false)
+			{
+			$out .= substr($text, $last, $end-$last);
+			if ($open > 0)
+				{
+				$pos = $end+14;
+				$open--;
+				$out .= '</div></blockquote>';
+				}
+			else
+				{
+				$pos = $end+14;
+				$out .= '&lt;/quote&gt;';
+				}
+			}
+		else
+			{
+			break;
+			}
+
+		$last = $pos;
 		}
 
-	return $matches[0];
+	return $out;
 	}
-// -------------------------------------------------------
+
 /**
 	erzeugt Listenelemente (auch geschachtelt)
 */

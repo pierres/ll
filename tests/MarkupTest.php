@@ -285,12 +285,17 @@ public function testBug121()
 	$in = '<quote>
 * a</quote>';
 
-	$out = '<blockquote><div><br /><ul><li>a</div></li></ul></blockquote>';
+	$out = '<blockquote><div><br /><ul><li>a</li></ul></div></blockquote>';
 	$this->assertEquals($out, $this->Markup->toHtml($in));
 
 	$in = '<quote></quote></quote><quote></quote>';
 
 	$out = '<blockquote><div></div></blockquote>&lt;/quote&gt;<blockquote><div></div></blockquote>';
+	$this->assertEquals($out, $this->Markup->toHtml($in));
+
+	$in = 'a<quote>b</quote>c</quote>d<quote>e</quote>f';
+
+	$out = 'a<blockquote><div>b</div></blockquote>c&lt;/quote&gt;d<blockquote><div>e</div></blockquote>f';
 	$this->assertEquals($out, $this->Markup->toHtml($in));
 	}
 
