@@ -125,8 +125,6 @@ private function complieFirstPass($text)
 
 private function complieSecondPass($text)
 	{
-	/** Zitate */
-	$text = preg_replace_callback('#&lt;quote(?: .+?)?&gt;.+&lt;/quote&gt;#s', array($this, 'makeQuote'), $text);
 	/** Überschriften */
 	$text = preg_replace_callback('/^(!{1,6})(.+?)$(\n?)/m', array($this, 'makeHeading'), $text);
 	/** Hervorhebungen */
@@ -142,8 +140,16 @@ private function complieSecondPass($text)
 
 	$text = preg_replace_callback('/\+\+(.+?)\+\+/', array($this, 'makeIns'), $text);
 
+	if ($this->smiliesenabled)
+		{
+		$text = $this->compileSmilies($text);
+		}
+
 	/** Listen */
 	$text = preg_replace_callback('/(?:^\*+ [^\n]+$\n?)+/m',array($this, 'makeList'), $text);
+
+	/** Zitate */
+	$text = preg_replace_callback('#&lt;quote(?: .+?)?&gt;.+&lt;/quote&gt;#s', array($this, 'makeQuote'), $text);
 
 	return $text;
 	}
@@ -206,11 +212,6 @@ public function toHtml($text)
 	$text = $this->complieFirstPass($text);
 	$text = htmlspecialchars($text, ENT_COMPAT, 'UTF-8');
 	$text = $this->complieSecondPass($text);
-
-	if ($this->smiliesenabled)
-		{
-		$text = $this->compileSmilies($text);
-		}
 
 /*
 	Jetzt schreiben wir wieder alle gefundenen Tags zurück
@@ -369,7 +370,7 @@ private function makeList($matches)
 	/* Alle geöffneten Tags auf jeden Fall schließen */
 	$out .= str_repeat('</li></ul>', $cur);
 
-	return $out;
+	return $this->createStackLink($out);
 	}
 
 private function makeHeading($matches)
