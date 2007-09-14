@@ -95,7 +95,7 @@ protected function setForm()
 				admin_address
 			FROM
 				boards
-			WHERE 
+			WHERE
 				id = ?'
 			);
 		$stm->bindInteger($this->Board->getId());
@@ -302,7 +302,11 @@ protected function sendForm()
 	$stm->execute();
 	$stm->close();
 
-	$this->updateAdmins();
+	if($this->User->isUser($this->Board->getAdmin()) || $this->User->isLevel(User::ADMIN))
+		{
+		$this->updateAdmins();
+		}
+
 	$this->updateMods();
 
 	$this->redirect();
