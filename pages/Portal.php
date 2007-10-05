@@ -59,18 +59,6 @@ public function prepare()
 					<table class="frame" style="margin-top:12px;width:100%;">
 						<tr>
 							<td class="title">
-								Wer ist noch hier?
-							</td>
-						</tr>
-						<tr>
-							<td class="post0">
-							'.$this->getOnline().'
-							</td>
-						</tr>
-					</table>
-					<table class="frame" style="margin-top:12px;width:100%;">
-						<tr>
-							<td class="title">
 								Aktive Mitglieder
 							</td>
 						</tr>
@@ -351,20 +339,6 @@ private function getBoards()
 	foreach ($boards as $board)
 		{
 		$result .= '<li style="margin-bottom:5px;"><a href="?page=Forums;id='.$board['id'].'">'.cutString($board['name'], 25).'</a></li>';
-		}
-
-	return $result.'</ul>';
-	}
-
-private function getOnline()
-	{
-	$users = $this->User->getOnline();
-
-	$result = '<ul style="list-style:square;text-align:left;margin:0px;padding-left:12px;">';
-
-	foreach ($users as $user)
-		{
-		$result .= '<li style="margin-bottom:5px;"><a href="?page=ShowUser;user='.$user['id'].';id='.$this->Board->getId().'">'.$user['name'].'</a></li>';
 		}
 
 	return $result.'</ul>';

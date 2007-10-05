@@ -134,13 +134,6 @@ else
 	}
 $stm->close();
 
-$online = array();
-foreach($this->User->getOnline() as $user)
-	{
-	$online[] = '<a href="?page=ShowUser;id='.$this->Board->getId().';user='.$user['id'].'">'.$user['name'].'</a>';
-	}
-$online = implode(', ', $online);
-
 $body =
 	'
 	<table class="frame" style="width:100%">
@@ -159,19 +152,6 @@ $body =
 			</td>
 		</tr>
 		'.$forums.'
-		<tr>
-			<td colspan="5" class="cat">
-				Wer ist auch hier?
-			</td>
-		</tr>
-		<tr>
-			<td class="iconcol">
-				&nbsp;
-			</td>
-			<td colspan="4" class="forumcol">
-				<div class="forumdescr">'.$online.'</div>
-			</td>
-		</tr>
 	</table>
 	';
 

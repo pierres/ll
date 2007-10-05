@@ -310,25 +310,6 @@ private function cookieLogin()
 		}
 	}
 
-public function getOnline()
-	{
-	try
-		{
-		return $this->DB->getRowSet
-			('
-			SELECT
-				id,
-				name
-			FROM
-				session
-			');
-		}
-	catch (DBNoDataException $e)
-		{
-		return array();
-		}
-	}
-
 public function isGroup($id)
 	{
 	if (!$this->isOnline() || empty($id))
