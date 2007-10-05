@@ -38,21 +38,31 @@ public function prepare()
 				threads.posts,
 				forums.id AS forumid,
 				forums.name AS forumname,
-				summary
+				threads.summary
 			FROM
-				forums 	JOIN threads ON threads.forumid = forums.id
-					JOIN posts ON posts.threadid = threads.id AND  posts.userid = ?
+				threads,
+				forums,
+				posts,
+				forum_cat,
+				cats
 			WHERE
 				threads.deleted = 0
+				AND posts.threadid = threads.id
+				AND posts.userid = ?
+				AND threads.forumid = forums.id
+				AND forum_cat.forumid = forums.id
+				AND forum_cat.catid = cats.id
+				AND cats.boardid = ?
 			GROUP BY
 				threads.id
 			ORDER BY
 				threads.lastdate DESC
 			LIMIT
-				25
+				50
 			');
 
 		$stm->bindInteger($user);
+		$stm->bindInteger($this->Board->getId());
 		$result = $stm->getRowSet();
 		}
 	catch (DBNoDataException $e)
@@ -84,10 +94,7 @@ public function prepare()
 				<td class="title">Letzter Beitrag</td>
 				<td class="title">Forum</td>
 			</tr>
-			'.$threads.($this->User->isOnline() ?
-			'<tr>
-				<td class="cat" colspan="6"><a href="?page=MarkAllAsRead;id='.$this->Board->getId().'"><span class="button">Alles als <em>gelesen</em> markieren</span></a></td>
-			</tr>' : '').'
+			'.$threads.'
 		</table>
 		';
 
