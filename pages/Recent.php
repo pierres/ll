@@ -43,7 +43,7 @@ public function prepare()
 						AND thread_user.userid = ?
 					ORDER BY
 						lastdate DESC
-					LIMIT	25
+					LIMIT 50
 				)
 				UNION
 				(
@@ -77,12 +77,11 @@ public function prepare()
 						AND cats.boardid = ?
 					ORDER BY
 						lastdate DESC
-					LIMIT	25
+					LIMIT 50
 				)
 				ORDER BY
 					lastdate DESC
-				LIMIT
-					25
+				LIMIT 50
 				');
 			$stm->bindInteger($this->User->getId());
 			$stm->bindInteger($this->Board->getId());
@@ -122,8 +121,7 @@ public function prepare()
 					AND cats.boardid = ?
 				ORDER BY
 					threads.lastdate DESC
-				LIMIT
-					25
+				LIMIT 50
 				');
 			$stm->bindInteger($this->Board->getId());
 			$result = $stm->getRowSet();
@@ -154,9 +152,6 @@ public function prepare()
 			/* ]]> */
 		</script>
 		<table class="frame" style="width:100%">
-			<tr>
-				<td class="cat" colspan="6"><a href="?page=AllRecent;id='.$this->Board->getId().'" rel="nofollow"><span class="button"><em>Alle</em> aktuellen Beiträge anzeigen</span></a></td>
-			</tr>
 			<tr>
 				<td class="title" colspan="2">Thema</td>
 				<td class="title">Erster Beitrag</td>

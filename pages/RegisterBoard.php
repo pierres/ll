@@ -88,9 +88,6 @@ protected function sendForm()
 	<div id="body">
 		<!-- body -->
 	</div>
-	<div id="webring">
-		<!-- webring -->
-	</div>
 </body>
 </html>
 eot;
@@ -254,11 +251,6 @@ table     	{
 		margin-top:30px;
 		text-align:center;
 		position:relative;
-		}
-
-#webring	{
-		text-align:center;
-		padding-top:10px;
 		}
 
 .cat		{

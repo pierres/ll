@@ -6,9 +6,6 @@ class Search extends Form{
 private $search 	= '';
 private $thread 	= 0;
 
-private $globalSearch 	= '';
-
-
 protected function setForm()
 	{
 	$this->setValue('title', 'Suche');
@@ -18,8 +15,6 @@ protected function setForm()
 	$this->addText('search', 'Suchbegriff', '', 50);
 	$this->requires('search');
 	$this->setLength('search', 3, 50);
-
-	$this->addCheckBox('globalSearch', 'in allen Boards suchen', false);
 
 	$this->isCheckSecurityToken(false);
 	$this->isCheckAntiSpamHash(false);
@@ -36,11 +31,6 @@ protected function checkForm()
 	catch (IoRequestException $e)
 		{
 		$this->thread = 0;
-		}
-
-	if (!$this->Io->isRequest('globalSearch'))
-		{
-		$this->globalSearch = 'AND forums.boardid = '.$this->Board->getId();
 		}
 	}
 
@@ -81,7 +71,7 @@ private function getResult()
 			AGAINST (? IN BOOLEAN MODE)
 			AND threads.forumid = forums.id
 			AND threads.deleted = 0
-			'.$this->globalSearch.'
+			AND forums.boardid = ?
 			ORDER BY score DESC
 		)
 		UNION
@@ -115,7 +105,7 @@ private function getResult()
 			AND threads.forumid = forums.id
 			AND threads.deleted = 0
 			AND posts.deleted = 0
-			'.$this->globalSearch.'
+			AND forums.boardid = ?
 			GROUP BY threads.id
 			ORDER BY score DESC
 		)
@@ -123,8 +113,10 @@ private function getResult()
 		);
 		$stm->bindString($this->search);
 		$stm->bindString($this->search);
+		$stm->bindInteger($this->Board->getId());
 		$stm->bindString($this->search);
 		$stm->bindString($this->search);
+		$stm->bindInteger($this->Board->getId());
 		$result = $stm->getRowSet();
 		}
 	catch (DBNoDataException $e)
@@ -139,7 +131,7 @@ protected function sendForm()
 	{
 	$this->setValue('title', 'Suche nach &quot;'.htmlspecialchars($this->search).'&quot;');
 
-	$params = ';search='.urlencode($this->search).';submit='.($this->Io->isRequest('globalSearch') ? ';globalSearch=' : '');
+	$params = ';search='.urlencode($this->search).';submit=';
 
 	$next = '&nbsp;<a href="?page=Search;id='.$this->Board->getId().';thread='.($this->Settings->getValue('max_threads')+$this->thread).$params.'">&#187;</a>';
 

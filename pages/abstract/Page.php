@@ -27,7 +27,6 @@ private static $availablePages = array
 	'AdminHtml' => 'pages/AdminHtml.php',
 	'AdminIndex' => 'pages/AdminIndex.php',
 	'AdminSettings' => 'pages/AdminSettings.php',
-	'AllRecent' => 'pages/AllRecent.php',
 	'ChangeEmail' => 'pages/ChangeEmail.php',
 	'ChangePassword' => 'pages/ChangePassword.php',
 	'ChangePasswordKey' => 'pages/ChangePasswordKey.php',
@@ -176,37 +175,6 @@ protected function showFailure($text)
 	$this->sendOutput();
 	}
 
-private function getWebring()
-	{
-	try
-		{
-		$boards = $this->DB->getRowSet
-			('
-			SELECT
-				id,
-				name
-			FROM
-				boards
-			ORDER BY
-				id ASC
-			');
-		}
-	catch (DBNoDataException $e)
-		{
-		$boards = array();
-		}
-
-	$menu = '<form action=""><div><select name="link" onchange="location.href=\'?page=Forums;id=\'+this.form.link.options[this.form.link.selectedIndex].value">';
-
-	foreach ($boards as $board)
-		{
-		$selected = ($this->Board->getId() == $board['id'] ? ' selected="selected"': '');
-		$menu .= '<option value="'.$board['id'].'"'.$selected.'>'.$board['name'].'</option>';
-		}
-
-	return $menu.'</select></div></form>';
-	}
-
 public function prepare()
 	{
 	$this->setValue('title', 'Warnung');
@@ -225,8 +193,6 @@ private function sendOutput()
 		{
 		$this->variables['user'] = $this->User->getName();
 		}
-
-	$this->setValue('webring', $this->getWebring());
 
 	$this->setValue('body', $this->getValue('body').'<div style="text-align:right;font-size:8px;margin-top:3px;"><a href="?page=Privacy;id='.$this->Board->getId().'">Datenschutz</a> :: <a href="?page=Impressum;id='.$this->Board->getId().'">Impressum</a></div>');
 
