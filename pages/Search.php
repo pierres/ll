@@ -59,7 +59,10 @@ private function getResult()
 				threads.sticky,
 				threads.poll,
 				threads.posts,
-				MATCH (threads.name) AGAINST (? IN BOOLEAN MODE) AS score,
+				(
+					MATCH (threads.name) AGAINST (? IN BOOLEAN MODE)
+					* (threads.lastdate + threads.firstdate)
+				) AS score,
 				forums.id AS forumid,
 				forums.name AS forumname,
 				summary
@@ -72,7 +75,6 @@ private function getResult()
 			AND threads.forumid = forums.id
 			AND threads.deleted = 0
 			AND forums.boardid = ?
-			ORDER BY score DESC
 		)
 		UNION
 		(
@@ -90,7 +92,10 @@ private function getResult()
 				threads.sticky,
 				threads.poll,
 				threads.posts,
-				MATCH (posts.text) AGAINST (? IN BOOLEAN MODE) as score,
+				(
+					MATCH (posts.text) AGAINST (? IN BOOLEAN MODE)
+					* (threads.lastdate + threads.firstdate)
+				) AS score,
 				forums.id AS forumid,
 				forums.name AS forumname,
 				summary
@@ -107,8 +112,8 @@ private function getResult()
 			AND posts.deleted = 0
 			AND forums.boardid = ?
 			GROUP BY threads.id
-			ORDER BY score DESC
 		)
+		ORDER BY score DESC
 		LIMIT '.$limit
 		);
 		$stm->bindString($this->search);
@@ -171,7 +176,7 @@ protected function sendForm()
 			</tr>
 		</table>
 		';
-	
+
 		$this->appendOutput($body);
 		}
 
