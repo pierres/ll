@@ -178,7 +178,7 @@ protected function showForm()
 		</form>
 		<script type="text/javascript">
 			/* <![CDATA[ */
-			document.getElementById("id'.$this->focus.'").focus();
+			document.getElementById("'.$this->focus.'").focus();
 			/* ]]> */
 		</script>
 		'.$this->tail;
@@ -246,10 +246,9 @@ protected function addFile($name, $description, $cols = 50)
 	/** Workaround for PHP-"Bug". See http://de3.php.net/manual/en/ini.core.php#ini.post-max-size */
 	$this->request .= ';submit=1';
 
+	$this->setFocus();
 	$this->addElement($name, '<label for="'.$this->getNextElementId().'">'.$description.'</label><br /><input id="'.$this->getNextElementId().'" type="file" name="'.$name.'" size="'.$cols.'" />');
 	$this->descriptions[$name] = $description;
-
-	$this->setFocus($name);
 
 	$this->encoding = 'enctype="multipart/form-data"';
 
@@ -309,10 +308,9 @@ protected function addTextarea($name, $description = '', $text = '', $cols = 80,
 		{
 		}
 
+	$this->setFocus();
 	$this->addElement($name, '<label for="'.$this->getNextElementId().'">'.$description.'</label><br /><textarea id="'.$this->getNextElementId().'" name="'.$name.'" cols="'.$cols.'" rows="'.$rows.'">'.htmlspecialchars($text).'</textarea>');
 	$this->descriptions[$name] = $description;
-
-	$this->setFocus($name);
 
 	return $name;
 	}
@@ -327,10 +325,9 @@ protected function addText($name, $description = '', $text = '', $cols = 80)
 		{
 		}
 
+	$this->setFocus();
 	$this->addElement($name, '<label for="'.$this->getNextElementId().'">'.$description.'</label><br /><input id="'.$this->getNextElementId().'" type="text" name="'.$name.'" size="'.$cols.'" value="'.htmlspecialchars($text).'" />');
 	$this->descriptions[$name] = $description;
-
-	$this->setFocus($name);
 
 	return $name;
 	}
@@ -345,10 +342,9 @@ protected function addPassword($name, $description = '', $text = '', $cols = 80)
 		{
 		}
 
+	$this->setFocus();
 	$this->addElement($name,  '<label for="'.$this->getNextElementId().'">'.$description.'</label><br /><input id="'.$this->getNextElementId().'" type="password" name="'.$name.'" size="'.$cols.'" value="'.htmlspecialchars($text).'" />');
 	$this->descriptions[$name] = $description;
-
-	$this->setFocus($name);
 
 	return $name;
 	}
@@ -401,11 +397,11 @@ protected function showWarning($text)
 	$this->warning[] = $text;
 	}
 
-private function setFocus($name)
+private function setFocus()
 	{
 	if(empty($this->focus))
 		{
-		$this->focus = $name;
+		$this->focus = $this->getNextElementId();
 		}
 	}
 
