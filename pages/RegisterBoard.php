@@ -495,7 +495,7 @@ pre		{
 		border-color:black;
 		padding:5px;
 		overflow:auto;
-		width:80%;
+		width:600px;
 		text-align:left;
 		}
 
