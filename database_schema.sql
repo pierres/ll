@@ -1,7 +1,7 @@
 -- phpMyAdmin SQL Dump
 -- version 2.10.1
 -- http://www.phpmyadmin.net
--- 
+--
 -- Host: localhost
 -- Erstellungszeit: 20. Juni 2007 um 09:52
 -- Server Version: 5.0.41
@@ -9,15 +9,15 @@
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
--- 
+--
 -- Datenbank: `current`
--- 
+--
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Tabellenstruktur für Tabelle `attachments`
--- 
+--
 
 CREATE TABLE `attachments` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -35,9 +35,9 @@ CREATE TABLE `attachments` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Tabellenstruktur für Tabelle `attachment_thumbnails`
--- 
+--
 
 CREATE TABLE `attachment_thumbnails` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -50,9 +50,9 @@ CREATE TABLE `attachment_thumbnails` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Tabellenstruktur für Tabelle `avatars`
--- 
+--
 
 CREATE TABLE `avatars` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -65,9 +65,9 @@ CREATE TABLE `avatars` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Tabellenstruktur für Tabelle `boards`
--- 
+--
 
 CREATE TABLE `boards` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -93,9 +93,9 @@ CREATE TABLE `boards` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Tabellenstruktur für Tabelle `cats`
--- 
+--
 
 CREATE TABLE `cats` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -109,9 +109,9 @@ CREATE TABLE `cats` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Tabellenstruktur für Tabelle `forums`
--- 
+--
 
 CREATE TABLE `forums` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -130,9 +130,9 @@ CREATE TABLE `forums` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Tabellenstruktur für Tabelle `forum_cat`
--- 
+--
 
 CREATE TABLE `forum_cat` (
   `catid` int(10) unsigned NOT NULL default '0',
@@ -145,9 +145,9 @@ CREATE TABLE `forum_cat` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Tabellenstruktur für Tabelle `images`
--- 
+--
 
 CREATE TABLE `images` (
   `url` varchar(255) NOT NULL,
@@ -162,9 +162,9 @@ CREATE TABLE `images` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Tabellenstruktur für Tabelle `password_key`
--- 
+--
 
 CREATE TABLE `password_key` (
   `id` int(10) unsigned NOT NULL,
@@ -175,9 +175,9 @@ CREATE TABLE `password_key` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Tabellenstruktur für Tabelle `plz`
--- 
+--
 
 CREATE TABLE `plz` (
   `location` varchar(100) NOT NULL default '',
@@ -193,9 +193,9 @@ CREATE TABLE `plz` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Tabellenstruktur für Tabelle `polls`
--- 
+--
 
 CREATE TABLE `polls` (
   `id` int(10) unsigned NOT NULL default '0',
@@ -205,9 +205,9 @@ CREATE TABLE `polls` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Tabellenstruktur für Tabelle `poll_values`
--- 
+--
 
 CREATE TABLE `poll_values` (
   `pollid` int(10) unsigned NOT NULL default '0',
@@ -220,9 +220,9 @@ CREATE TABLE `poll_values` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Tabellenstruktur für Tabelle `poll_voters`
--- 
+--
 
 CREATE TABLE `poll_voters` (
   `pollid` int(10) unsigned NOT NULL default '0',
@@ -233,9 +233,9 @@ CREATE TABLE `poll_voters` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Tabellenstruktur für Tabelle `posts`
--- 
+--
 
 CREATE TABLE `posts` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -261,9 +261,9 @@ CREATE TABLE `posts` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Tabellenstruktur für Tabelle `post_attachments`
--- 
+--
 
 CREATE TABLE `post_attachments` (
   `postid` int(10) unsigned NOT NULL default '0',
@@ -274,9 +274,9 @@ CREATE TABLE `post_attachments` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Tabellenstruktur für Tabelle `session`
--- 
+--
 
 CREATE TABLE `session` (
   `sessionid` varchar(40) NOT NULL,
@@ -286,6 +286,8 @@ CREATE TABLE `session` (
   `groups` varchar(200) NOT NULL default '',
   `lastupdate` int(10) unsigned NOT NULL default '0',
   `security_token` varchar(40) NOT NULL,
+  `boardid` int(10) unsigned NOT NULL default '0',
+  `hidden` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`sessionid`),
   UNIQUE KEY `id` (`id`),
   KEY `lastupdate` (`lastupdate`)
@@ -293,9 +295,9 @@ CREATE TABLE `session` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Tabellenstruktur für Tabelle `threads`
--- 
+--
 
 CREATE TABLE `threads` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -331,9 +333,9 @@ CREATE TABLE `threads` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Tabellenstruktur für Tabelle `threads_log`
--- 
+--
 
 CREATE TABLE `threads_log` (
   `threadid` int(10) unsigned NOT NULL default '0',
@@ -346,9 +348,9 @@ CREATE TABLE `threads_log` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Tabellenstruktur für Tabelle `thread_user`
--- 
+--
 
 CREATE TABLE `thread_user` (
   `userid` int(10) unsigned NOT NULL default '0',
@@ -359,9 +361,9 @@ CREATE TABLE `thread_user` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Tabellenstruktur für Tabelle `users`
--- 
+--
 
 CREATE TABLE `users` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -380,6 +382,7 @@ CREATE TABLE `users` (
   `plz` mediumint(5) unsigned default NULL,
   `text` text,
   `lastlogin` int(10) unsigned NOT NULL default '0',
+  `hidden` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `name` (`name`(10)),
   KEY `posts` (`posts`),
@@ -390,9 +393,9 @@ CREATE TABLE `users` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Tabellenstruktur für Tabelle `user_group`
--- 
+--
 
 CREATE TABLE `user_group` (
   `userid` int(10) unsigned NOT NULL default '0',
