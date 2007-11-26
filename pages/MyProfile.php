@@ -13,7 +13,7 @@ private $deleteavatar	= false;
 private $avatar 	= array();
 private $hasavatar	= false;
 private $text		= '';
-private $hidden		= false;
+private $hiddenStatus	= false;
 
 
 protected function setForm()
@@ -44,7 +44,7 @@ protected function setForm()
 	$this->addText('plz', 'Deine Postleitzahl', !empty($this->plz) ? $this->plz : '', 5);
 	$this->setLength('plz', 5, 5);
 
-	$this->addCheckBox('hidden', 'Online-Status verstecken', $this->hidden);
+	$this->addCheckBox('hidden', 'Online-Status verstecken', $this->hiddenStatus);
 
 	$this->showAvatar();
 
@@ -174,7 +174,7 @@ protected function checkForm()
 
 	try
 		{
-		$this->hidden = $this->Io->isRequest('hidden');
+		$this->hiddenStatus = $this->Io->isRequest('hidden');
 		}
 	catch (IoRequestException $e)
 		{
@@ -218,7 +218,7 @@ private function getData()
 	$this->plz 		= $data['plz'];
  	$this->hasavatar 	= !empty($data['avatar']) ;
 	$this->text 		= $this->UnMarkup->fromHtml($data['text']);
-	$this->hidden		= ($data['hidden'] == 1);
+	$this->hiddenStatus	= ($data['hidden'] == 1);
 	}
 
 protected function sendForm()
@@ -253,7 +253,7 @@ protected function sendForm()
 	$stm->bindString(htmlspecialchars($this->location));
 	$stm->bindInteger($this->plz);
 	$stm->bindString($text);
-	$stm->bindInteger(($this->hidden ? 1 : 0));
+	$stm->bindInteger(($this->hiddenStatus ? 1 : 0));
 	$stm->bindInteger($this->User->getId());
 
 	$stm->execute();
