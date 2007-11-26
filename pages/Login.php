@@ -59,6 +59,7 @@ protected function sendForm()
 	{
 	if ($this->Io->isRequest('cookie'))
 		{
+		/** @Todo: Das gehört eher nach User **/
 		$this->Io->setCookie('cookieid', $this->User->getId(), (time() + $this->Settings->getValue('max_age')));
 		$this->Io->setCookie('cookiepw', sha1($this->Settings->getValue('cookie_hash').sha1($this->Io->getString('password'))), (time() + $this->Settings->getValue('max_age')));
 		}

@@ -154,7 +154,8 @@ public function login($name, $password, $cookie = false)
 				SELECT
 					id,
 					name,
-					level
+					level,
+					hidden
 				FROM
 					users
 				WHERE
@@ -172,7 +173,8 @@ public function login($name, $password, $cookie = false)
 				SELECT
 					id,
 					name,
-					level
+					level,
+					hidden
 				FROM
 					users
 				WHERE
@@ -218,10 +220,10 @@ public function login($name, $password, $cookie = false)
 		$stm->close();
 		}
 
-	$this->start($data['id'], $data['name'], $data['level'], $gruopArray);
+	$this->start($data['id'], $data['name'], $data['level'], $gruopArray, $data['hidden']);
 	}
 
-private function start($id, $name ,$level, $groups)
+private function start($id, $name ,$level, $groups, $hidden)
 	{
 	$this->collectGarbage();//evtl. könnte man überlegen den Müll öfters zu entfernen
 
@@ -244,7 +246,9 @@ private function start($id, $name ,$level, $groups)
 			level = ?,
 			groups = ?,
 			lastupdate = ?,
-			security_token = ?'
+			security_token = ?,
+			boardid = ?,
+			hidden = ?'
 		);
 	$stm->bindString($this->sessionid);
 	$stm->bindInteger($this->id);
@@ -253,6 +257,8 @@ private function start($id, $name ,$level, $groups)
 	$stm->bindString(implode(',', $this->groups));
 	$stm->bindInteger(time());
 	$stm->bindString($this->securityToken);
+	$stm->bindInteger($this->Board->getId());
+	$stm->bindInteger($hidden);
 	$stm->execute();
 	$stm->close();
 
@@ -308,6 +314,40 @@ private function cookieLogin()
 		$this->Io->setCookie('cookieid', '');
 		$this->Io->setCookie('cookiepw', '');
 		}
+	}
+
+public function getOnline()
+	{
+	$userArray = array();
+
+	try
+		{
+		$stm = $this->DB->prepare
+			('
+			SELECT
+				id,
+				name
+			FROM
+				session
+			WHERE
+				boardid = ?
+				AND hidden = 0
+			');
+		$stm->bindInteger($this->Board->getId());
+
+		foreach ($stm->getRowSet() as $user)
+			{
+			$userArray[] = $user;
+			}
+
+		$stm->close();
+		}
+	catch (DBNoDataException $e)
+		{
+		$stm->close();
+		}
+
+	return $userArray;
 	}
 
 public function isGroup($id)
