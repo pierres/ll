@@ -337,7 +337,7 @@ public function getOnline()
 
 		foreach ($stm->getRowSet() as $user)
 			{
-			$userArray[] = $user;
+			$userArray[] = array('id' => $user['id'], 'name' => $user['name']);
 			}
 
 		$stm->close();
