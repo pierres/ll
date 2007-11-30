@@ -302,7 +302,7 @@ public function testBug121()
 	$in = '<quote>
 * a</quote>';
 
-	$out = '<blockquote><div><br /><ul><li>a</li></ul></div></blockquote>';
+	$out = '&lt;quote&gt;<br /><ul><li>a&lt;/quote&gt;</li></ul>';
 	$this->assertEquals($out, $this->Markup->toHtml($in));
 
 	$in = '<quote></quote></quote><quote></quote>';

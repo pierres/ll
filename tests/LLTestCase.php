@@ -153,7 +153,7 @@ public static function __get($name)
 		}
 	}
 
-public static function __set($name, &$object)
+public static function __set($name, $object)
 	{
 	if (!isset(self::$loadedModules[$name]))
 		{
