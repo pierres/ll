@@ -81,9 +81,12 @@ private function getResult()
 				) AS score,
 				forums.id AS forumid,
 				forums.name AS forumname,
-				summary
+				threads.summary,
+				tags.name AS tag
 			FROM
-				threads,
+				threads
+					LEFT JOIN tags
+					ON threads.tag = tags.id,
 				forums
 			WHERE MATCH
 				(threads.name)
@@ -114,10 +117,13 @@ private function getResult()
 				) AS score,
 				forums.id AS forumid,
 				forums.name AS forumname,
-				summary
+				threads.summary,
+				tags.name AS tag
 			FROM
 				posts,
-				threads,
+				threads
+					LEFT JOIN tags
+					ON threads.tag = tags.id,
 				forums
 			WHERE MATCH
 				(posts.text)

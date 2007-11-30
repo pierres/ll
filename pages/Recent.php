@@ -48,9 +48,12 @@ public function prepare()
 						threads.posts,
 						0 AS forumid,
 						0 AS forumname,
-						threads.summary
+						threads.summary,
+						tags.name AS tag
 					FROM
-						threads,
+						threads
+							LEFT JOIN tags
+							ON threads.tag = tags.id,
 						thread_user
 					WHERE
 						threads.forumid = 0
@@ -79,10 +82,13 @@ public function prepare()
 						threads.posts,
 						forums.id AS forumid,
 						forums.name AS forumname,
-						threads.summary
+						threads.summary,
+						tags.name AS tag
 					FROM
 						forums,
-						threads,
+						threads
+							LEFT JOIN tags
+							ON threads.tag = tags.id,
 						forum_cat,
 						cats
 					WHERE
@@ -123,10 +129,13 @@ public function prepare()
 					threads.posts,
 					forums.id AS forumid,
 					forums.name AS forumname,
-					threads.summary
+					threads.summary,
+					tags.name AS tag
 				FROM
 					forums,
-					threads,
+					threads
+						LEFT JOIN tags
+						ON threads.tag = tags.id,
 					forum_cat,
 					cats
 				WHERE

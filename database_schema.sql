@@ -344,6 +344,7 @@ CREATE TABLE `threads` (
   KEY `firstdate` (`firstdate`),
   KEY `lastdate` (`lastdate`),
   KEY `counter` (`counter`),
+  KEY `tag` (`tag`),
   FULLTEXT KEY `name` (`name`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 

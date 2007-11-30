@@ -54,9 +54,12 @@ public function prepare()
 				threads.posts,
 				forums.id AS forumid,
 				forums.name AS forumname,
-				threads.summary
+				threads.summary,
+				tags.name AS tag
 			FROM
-				threads,
+				threads
+					LEFT JOIN tags
+					ON threads.tag = tags.id,
 				forums,
 				posts,
 				forum_cat,

@@ -56,6 +56,11 @@ public function getList($resultset)
 
 		$data['name'] = cutString($data['name'], 80);
 
+		if(!empty($data['tag']))
+			{
+			$data['name'] = '['.$data['tag'].'] '.$data['name'];
+			}
+
 		if ($this->User->isOnline() && $this->Log->isNew($data['id'], $data['lastdate']))
 			{
 			$data['name'] = '<span class="newthread">neu</span>'.$data['name'];
