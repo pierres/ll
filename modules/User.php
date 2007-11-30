@@ -31,7 +31,6 @@ private $level		= 0;
 private $name		= '';
 private $groups		= array();
 
-
 function __construct()
 	{
 	try
@@ -251,9 +250,10 @@ private function start($id, $name ,$level, $groups, $hidden)
 	$this->level 	= $level;
 	$this->groups 	= $groups;
 
+	/** @TODO: Kann eine Session-ID vorhergesagt werden? */
 	$stm = $this->DB->prepare
 		('
-		REPLACE INTO
+		INSERT INTO
 			session
 		SET
 			sessionid = ?,
@@ -340,7 +340,7 @@ public function getOnline()
 		{
 		$stm = $this->DB->prepare
 			('
-			SELECT
+			SELECT DISTINCT
 				id,
 				name
 			FROM

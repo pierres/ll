@@ -287,10 +287,11 @@ CREATE TABLE `session` (
   `lastupdate` int(10) unsigned NOT NULL default '0',
   `security_token` varchar(40) NOT NULL,
   `boardid` int(10) unsigned NOT NULL default '0',
-  `hidden` tinyint(1) NOT NULL default '0',
-  PRIMARY KEY  (`id`, `boardid`),
-  UNIQUE KEY `id` (`sessionid`),
-  KEY `lastupdate` (`lastupdate`)
+  `hidden` tinyint(1) unsigned NOT NULL default '0',
+  PRIMARY KEY  (`sessionid`),
+  KEY `lastupdate` (`lastupdate`),
+  KEY `boardid` (`boardid`),
+  KEY `id` (`id`)
 ) ENGINE=MEMORY DEFAULT CHARSET=utf8 MAX_ROWS=300 AVG_ROW_LENGTH=300;
 
 -- --------------------------------------------------------
