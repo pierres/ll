@@ -51,7 +51,8 @@ protected function checkInput()
 				posts.text,
 				posts.smilies,
 				threads.forumid,
-				threads.name
+				threads.name,
+				threads.tag
 			FROM
 				posts JOIN threads ON threads.id = posts.threadid
 			WHERE
@@ -117,6 +118,7 @@ protected function checkInput()
 	$this->forum = $data['forumid'];
 	$this->topic = unhtmlspecialchars($data['name']);
 	$this->smilies = ($data['smilies'] == 0 ? false : true);
+	$this->tag = $data['tag'];
 
 	$this->db_poll_question = $this->poll_question;
 	$this->db_poll_options = $this->poll_options;
@@ -164,12 +166,14 @@ protected function sendForm()
 			threads
 		SET
 			name = ?,
-			summary = ?
+			summary = ?,
+			tag = ?
 		WHERE
 			id = ?'
 		);
 	$stm->bindString(htmlspecialchars($this->topic));
 	$stm->bindString(getTextFromHtml($this->text));
+	$stm->bindInteger($this->tag);
 	$stm->bindInteger($this->thread);
 	$stm->execute();
 	$stm->close();

@@ -25,6 +25,7 @@ protected $topic 		= '';
 protected $poll_question 	= '';
 protected $poll_options 	= '';
 protected $forum 		= 0;
+protected $tag			= 0;
 
 protected $title 		= 'Neues Thema erstellen';
 
@@ -56,6 +57,8 @@ protected function setForm()
 	$this->setLength('topic', 3, 100);
 
 	$this->setPoll();
+
+	$this->setTag();
 	}
 
 protected function setPoll()
@@ -119,6 +122,76 @@ protected function setPoll()
 			{
 			$this->addButton('poll', 'Umfrage');
 			}
+		}
+	}
+
+protected function setTag()
+	{
+	$tags = array('<em>kein Tag</em>' => '0');
+
+	try
+		{
+		$stm = $this->DB->prepare
+			('
+			SELECT
+				id,
+				name
+			FROM
+				tags
+			WHERE
+				boardid = ?
+			');
+		$stm->bindInteger($this->Board->getId());
+
+		foreach ($stm->getRowSet() as $tag)
+			{
+			$tags[$tag['name']] = $tag['id'];
+			}
+		$stm->close();
+		}
+	catch (DBNoDataException $e)
+		{
+		$stm->close();
+		}
+
+	$this->addRadio('tag', 'Tag', $tags, $this->tag);
+	}
+
+protected function checkForm()
+	{
+	parent::checkForm();
+
+	try
+		{
+		$this->tag = $this->Io->getInt('tag');
+		}
+	catch (IoException $e)
+		{
+		$this->showFailure('Kein Tag angegeben');
+		}
+
+	try
+		{
+		$stm = $this->DB->prepare
+			('
+			SELECT
+				id
+			FROM
+				tags
+			WHERE
+				boardid = ?
+				AND id = ?
+			');
+		$stm->bindInteger($this->Board->getId());
+		$stm->bindInteger($this->tag);
+
+		$stm->getColumn();
+		$stm->close();
+		}
+	catch (DBNoDataException $e)
+		{
+		$stm->close();
+		$this->tag != 0 && $this->showFailure('Ungültiger Tag angegeben');
 		}
 	}
 
@@ -218,13 +291,14 @@ protected function sendForm()
 			name = ?,
 			forumid = ?,
 			counter = ?,
-			summary = ?'
+			summary = ?,
+			tag = ?'
 		);
 	$stm->bindString(htmlspecialchars($this->topic));
 	$stm->bindInteger($this->forum);
 	$stm->bindInteger($counter);
-
 	$stm->bindString(getTextFromHtml($this->text));
+	$stm->bindInteger($this->tag);
 
 	$stm->execute();
 	$stm->close();

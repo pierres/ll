@@ -135,55 +135,61 @@ try
 		('
 		(
 			SELECT
-				id,
-				poll,
-				name,
-				lastdate,
-				lastuserid,
-				lastusername,
-				firstdate,
-				firstuserid,
-				firstusername,
-				closed,
-				sticky,
-				deleted,
-				posts,
-				forumid,
-				movedfrom,
-				summary
+				threads.id,
+				threads.poll,
+				threads.name,
+				threads.lastdate,
+				threads.lastuserid,
+				threads.lastusername,
+				threads.firstdate,
+				threads.firstuserid,
+				threads.firstusername,
+				threads.closed,
+				threads.sticky,
+				threads.deleted,
+				threads.posts,
+				threads.forumid,
+				threads.movedfrom,
+				threads.summary,
+				tags.name AS tag
 			FROM
 				threads
+					LEFT JOIN tags
+					ON threads.tag = tags.id
 			WHERE
-				forumid = ?
-				'.($this->ismod ? '' : 'AND deleted =  0').'
-				AND sticky = 1
+				threads.forumid = ?
+				'.($this->ismod ? '' : 'AND threads.deleted =  0').'
+				AND threads.sticky = 1
 		)
 		UNION
 		(
 			SELECT
-				id,
-				poll,
-				name,
-				lastdate,
-				lastuserid,
-				lastusername,
-				firstdate,
-				firstuserid,
-				firstusername,
-				closed,
-				sticky,
-				deleted,
-				posts,
-				forumid,
-				movedfrom,
-				summary
+				threads.id,
+				threads.poll,
+				threads.name,
+				threads.lastdate,
+				threads.lastuserid,
+				threads.lastusername,
+				threads.firstdate,
+				threads.firstuserid,
+				threads.firstusername,
+				threads.closed,
+				threads.sticky,
+				threads.deleted,
+				threads.posts,
+				threads.forumid,
+				threads.movedfrom,
+				threads.summary,
+				tags.name AS tag
 			FROM
 				threads
+					LEFT JOIN tags
+					ON threads.tag = tags.id
 			WHERE
-				forumid = ?
-				'.($this->ismod ? '' : 'AND deleted =  0').'
-				AND counter BETWEEN ? AND ?
-				AND sticky = 0
+				threads.forumid = ?
+				'.($this->ismod ? '' : 'AND threads.deleted =  0').'
+				AND threads.counter BETWEEN ? AND ?
+				AND threads.sticky = 0
 		)
 		ORDER BY
 			sticky DESC,
@@ -289,6 +295,11 @@ protected function listThreads()
 
 
 		$data['name'] = cutString($data['name'], 80);
+
+		if(!empty($data['tag']))
+			{
+			$data['name'] = '['.$data['tag'].'] '.$data['name'];
+			}
 
 		if ($this->User->isOnline() && $this->Log->isNew($data['id'], $data['lastdate']))
 			{

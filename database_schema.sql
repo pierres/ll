@@ -297,6 +297,20 @@ CREATE TABLE `session` (
 -- --------------------------------------------------------
 
 --
+-- Tabellenstruktur für Tabelle `tags`
+--
+
+CREATE TABLE `tags` (
+ `id` INT( 10 ) UNSIGNED NOT NULL auto_increment ,
+ `name` VARCHAR( 255 ) NOT NULL ,
+ `boardid` INT( 10 ) UNSIGNED NOT NULL ,
+ PRIMARY KEY ( `id` ) ,
+ INDEX ( `boardid` ) 
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
 -- Tabellenstruktur für Tabelle `threads`
 --
 
@@ -318,6 +332,7 @@ CREATE TABLE `threads` (
   `lastusername` varchar(25) NOT NULL default '',
   `movedfrom` int(10) unsigned NOT NULL default '0',
   `summary` text,
+  `tag` INT( 10 ) UNSIGNED NOT NULL DEFAULT '0',
   PRIMARY KEY  (`id`),
   KEY `forumid` (`forumid`),
   KEY `deleted` (`deleted`),
