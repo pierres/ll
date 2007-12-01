@@ -127,7 +127,7 @@ protected function setPoll()
 
 protected function setTag()
 	{
-	$tags = array('<em>kein Tag</em>' => '0');
+	$tags = array(' ' => '0');
 
 	try
 		{
@@ -154,21 +154,15 @@ protected function setTag()
 		$stm->close();
 		}
 
-	$this->addRadio('tag', 'Tag', $tags, $this->tag);
+	$this->addRadio('tag', 'Status', $tags, $this->tag);
+	$this->requires('tag');
 	}
 
 protected function checkForm()
 	{
 	parent::checkForm();
 
-	try
-		{
-		$this->tag = $this->Io->getInt('tag');
-		}
-	catch (IoException $e)
-		{
-		$this->showFailure('Kein Tag angegeben');
-		}
+	$this->tag = $this->Io->getInt('tag');
 
 	try
 		{
@@ -191,7 +185,7 @@ protected function checkForm()
 	catch (DBNoDataException $e)
 		{
 		$stm->close();
-		$this->tag != 0 && $this->showFailure('Ungültiger Tag angegeben');
+		$this->tag != 0 && $this->showFailure('Ungültiger Status angegeben');
 		}
 	}
 

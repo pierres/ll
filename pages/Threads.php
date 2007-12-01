@@ -298,7 +298,7 @@ protected function listThreads()
 
 		if(!empty($data['tag']))
 			{
-			$data['name'] = '['.$data['tag'].'] '.$data['name'];
+			$data['name'] = '<span class="tag">['.$data['tag'].']</span> '.$data['name'];
 			}
 
 		if ($this->User->isOnline() && $this->Log->isNew($data['id'], $data['lastdate']))

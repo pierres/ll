@@ -21,6 +21,7 @@ class Search extends Form{
 
 private $search 	= '';
 private $thread 	= 0;
+private $tag		= 0;
 
 protected function setForm()
 	{
@@ -32,8 +33,43 @@ protected function setForm()
 	$this->requires('search');
 	$this->setLength('search', 3, 50);
 
+	$this->setTag();
+
 	$this->isCheckSecurityToken(false);
 	$this->isCheckAntiSpamHash(false);
+	}
+
+private function setTag()
+	{
+	$tags = array(' ' => '0');
+
+	try
+		{
+		$stm = $this->DB->prepare
+			('
+			SELECT
+				id,
+				name
+			FROM
+				tags
+			WHERE
+				boardid = ?
+			');
+		$stm->bindInteger($this->Board->getId());
+
+		foreach ($stm->getRowSet() as $tag)
+			{
+			$tags[$tag['name']] = $tag['id'];
+			}
+		$stm->close();
+		}
+	catch (DBNoDataException $e)
+		{
+		$stm->close();
+		}
+
+	$this->addRadio('tag', 'Status', $tags, $this->tag);
+	$this->requires('tag');
 	}
 
 protected function checkForm()
@@ -47,6 +83,32 @@ protected function checkForm()
 	catch (IoRequestException $e)
 		{
 		$this->thread = 0;
+		}
+
+	$this->tag = $this->Io->getInt('tag');
+
+	try
+		{
+		$stm = $this->DB->prepare
+			('
+			SELECT
+				id
+			FROM
+				tags
+			WHERE
+				boardid = ?
+				AND id = ?
+			');
+		$stm->bindInteger($this->Board->getId());
+		$stm->bindInteger($this->tag);
+
+		$stm->getColumn();
+		$stm->close();
+		}
+	catch (DBNoDataException $e)
+		{
+		$stm->close();
+		$this->tag != 0 && $this->showFailure('Ungültiger Status angegeben');
 		}
 	}
 
@@ -93,6 +155,7 @@ private function getResult()
 			AGAINST (? IN BOOLEAN MODE)
 			AND threads.forumid = forums.id
 			AND threads.deleted = 0
+			AND threads.tag = ?
 			AND forums.boardid = ?
 		)
 		UNION
@@ -132,6 +195,7 @@ private function getResult()
 			AND threads.forumid = forums.id
 			AND threads.deleted = 0
 			AND posts.deleted = 0
+			AND threads.tag = ?
 			AND forums.boardid = ?
 			GROUP BY threads.id
 		)
@@ -140,9 +204,11 @@ private function getResult()
 		);
 		$stm->bindString($this->search);
 		$stm->bindString($this->search);
+		$stm->bindInteger($this->tag);
 		$stm->bindInteger($this->Board->getId());
 		$stm->bindString($this->search);
 		$stm->bindString($this->search);
+		$stm->bindInteger($this->tag);
 		$stm->bindInteger($this->Board->getId());
 		$result = $stm->getRowSet();
 		}
