@@ -62,13 +62,14 @@ private function setTag()
 			$tags[$tag['name']] = $tag['id'];
 			}
 		$stm->close();
+		$this->addRadio('tag', 'Status', $tags, $this->tag);
 		}
 	catch (DBNoDataException $e)
 		{
 		$stm->close();
+		$this->addHidden('tag', '0');
 		}
 
-	$this->addRadio('tag', 'Status', $tags, $this->tag);
 	$this->requires('tag');
 	}
 
