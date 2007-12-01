@@ -17,11 +17,11 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-class DeletedPosts extends AdminForm{
+class AdminDeletedThreads extends AdminForm{
 
 protected function setForm()
 	{
-	$this->setValue('title', 'Gelöschte Beiträge');
+	$this->setValue('title', 'Gelöschte Themen');
 	$this->addSubmit('Löschen');
 
 	if (!$this->User->isLevel(User::ROOT))
@@ -31,19 +31,18 @@ protected function setForm()
 
 	try
 		{
-		$posts = $this->DB->getRowSet
+		$threads = $this->DB->getRowSet
 			('
 			SELECT
-				posts.id,
-				posts.threadid,
-				posts.text,
-				threads.name
+				id,
+				name,
+				summary
 			FROM
-				posts JOIN threads ON threads.id = posts.threadid
+				threads
 			WHERE
-				posts.deleted = 1
+				deleted = 1
 			ORDER BY
-				posts.dat DESC
+				lastdate DESC
 			');
 
 		$this->addOutput('<script type="text/javascript">
@@ -59,15 +58,15 @@ protected function setForm()
 					/* ]]> */
 				</script>');
 
-		foreach ($posts as $post)
+		foreach ($threads as $thread)
 			{
-			$this->addOutput('<input type="checkbox" id="id'.$post['id'].'" name="post[]" value="'.$post['id'].'" /><label for="id'.$post['id'].'"><a onmouseover="javascript:document.getElementById(\'post'.$post['id'].'\').style.visibility=\'visible\'"
-			onmouseout="javascript:document.getElementById(\'post'.$post['id'].'\').style.visibility=\'hidden\'"  href="?page=Postings;id='.$this->Board->getId().';thread='.$post['threadid'].'">'.$post['name'].'</a></label><br /><div class="summary" style="visibility:hidden;" id="post'.$post['id'].'">
-				<script type="text/javascript">
-						/* <![CDATA[ */
-						writeText("'.cutString(strip_tags($post['text']), 300).'");
-						/* ]]> */
-				</script>
+			$this->addOutput('<input type="checkbox" id="id'.$thread['id'].'" name="thread[]" value="'.$thread['id'].'" /><label for="id'.$thread['id'].'"><a onmouseover="javascript:document.getElementById(\'post'.$thread['id'].'\').style.visibility=\'visible\'"
+			onmouseout="javascript:document.getElementById(\'post'.$thread['id'].'\').style.visibility=\'hidden\'"  href="?page=Postings;id='.$this->Board->getId().';thread='.$thread['id'].'">'.$thread['name'].'</a></label><br /><div class="summary" style="visibility:hidden;" id="post'.$thread['id'].'">
+			<script type="text/javascript">
+				/* <![CDATA[ */
+				writeText("'.$thread['summary'].'");
+				/* ]]> */
+			</script>
 			</div>');
 			}
 		}
@@ -80,9 +79,9 @@ protected function sendForm()
 	{
 	try
 		{
-		foreach($this->Io->getArray('post') as $post)
+		foreach($this->Io->getArray('thread') as $thread)
 			{
-			AdminFunctions::delPost($post);
+			AdminFunctions::delThread($thread);
 			}
 		}
 	catch (IoRequestException $e)
@@ -94,7 +93,7 @@ protected function sendForm()
 
 protected function redirect()
 	{
-	$this->Io->redirect('DeletedPosts');
+	$this->Io->redirect('AdminDeletedThreads');
 	}
 
 }

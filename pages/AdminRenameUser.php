@@ -17,7 +17,7 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-class RenameUser extends AdminForm{
+class AdminRenameUser extends AdminForm{
 
 private $userid = 0;
 private $currentname = '';

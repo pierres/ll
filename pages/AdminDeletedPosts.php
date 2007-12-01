@@ -17,11 +17,11 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-class DeletedThreads extends AdminForm{
+class AdminDeletedPosts extends AdminForm{
 
 protected function setForm()
 	{
-	$this->setValue('title', 'Gelöschte Themen');
+	$this->setValue('title', 'Gelöschte Beiträge');
 	$this->addSubmit('Löschen');
 
 	if (!$this->User->isLevel(User::ROOT))
@@ -31,18 +31,19 @@ protected function setForm()
 
 	try
 		{
-		$threads = $this->DB->getRowSet
+		$posts = $this->DB->getRowSet
 			('
 			SELECT
-				id,
-				name,
-				summary
+				posts.id,
+				posts.threadid,
+				posts.text,
+				threads.name
 			FROM
-				threads
+				posts JOIN threads ON threads.id = posts.threadid
 			WHERE
-				deleted = 1
+				posts.deleted = 1
 			ORDER BY
-				lastdate DESC
+				posts.dat DESC
 			');
 
 		$this->addOutput('<script type="text/javascript">
@@ -58,15 +59,15 @@ protected function setForm()
 					/* ]]> */
 				</script>');
 
-		foreach ($threads as $thread)
+		foreach ($posts as $post)
 			{
-			$this->addOutput('<input type="checkbox" id="id'.$thread['id'].'" name="thread[]" value="'.$thread['id'].'" /><label for="id'.$thread['id'].'"><a onmouseover="javascript:document.getElementById(\'post'.$thread['id'].'\').style.visibility=\'visible\'"
-			onmouseout="javascript:document.getElementById(\'post'.$thread['id'].'\').style.visibility=\'hidden\'"  href="?page=Postings;id='.$this->Board->getId().';thread='.$thread['id'].'">'.$thread['name'].'</a></label><br /><div class="summary" style="visibility:hidden;" id="post'.$thread['id'].'">
-			<script type="text/javascript">
-				/* <![CDATA[ */
-				writeText("'.$thread['summary'].'");
-				/* ]]> */
-			</script>
+			$this->addOutput('<input type="checkbox" id="id'.$post['id'].'" name="post[]" value="'.$post['id'].'" /><label for="id'.$post['id'].'"><a onmouseover="javascript:document.getElementById(\'post'.$post['id'].'\').style.visibility=\'visible\'"
+			onmouseout="javascript:document.getElementById(\'post'.$post['id'].'\').style.visibility=\'hidden\'"  href="?page=Postings;id='.$this->Board->getId().';thread='.$post['threadid'].'">'.$post['name'].'</a></label><br /><div class="summary" style="visibility:hidden;" id="post'.$post['id'].'">
+				<script type="text/javascript">
+						/* <![CDATA[ */
+						writeText("'.cutString(strip_tags($post['text']), 300).'");
+						/* ]]> */
+				</script>
 			</div>');
 			}
 		}
@@ -79,9 +80,9 @@ protected function sendForm()
 	{
 	try
 		{
-		foreach($this->Io->getArray('thread') as $thread)
+		foreach($this->Io->getArray('post') as $post)
 			{
-			AdminFunctions::delThread($thread);
+			AdminFunctions::delPost($post);
 			}
 		}
 	catch (IoRequestException $e)
@@ -93,7 +94,7 @@ protected function sendForm()
 
 protected function redirect()
 	{
-	$this->Io->redirect('DeletedThreads');
+	$this->Io->redirect('AdminDeletedPosts');
 	}
 
 }

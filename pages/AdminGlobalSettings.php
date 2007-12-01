@@ -42,16 +42,19 @@ public function prepare()
 		<td class="main">
 			<ul>
 				<li style="margin:20px;">
-				<a href="?page=DeletedThreads;id='.$this->Board->getId().'"><span class="button">Gelöschte Themen</span></a>
+				<a href="?page=AdminDeletedThreads;id='.$this->Board->getId().'"><span class="button">Gelöschte Themen</span></a>
 				</li>
 				<li style="margin:20px;">
-				<a href="?page=DeletedPosts;id='.$this->Board->getId().'"><span class="button">Gelöschte Beiträge</span></a>
+				<a href="?page=AdminDeletedPosts;id='.$this->Board->getId().'"><span class="button">Gelöschte Beiträge</span></a>
 				</li>
 				<li style="margin:20px;">
-				<a href="?page=RenameUser;id='.$this->Board->getId().'"><span class="button">Benutzer umbenennen</span></a>
+				<a href="?page=AdminRenameUser;id='.$this->Board->getId().'"><span class="button">Benutzer umbenennen</span></a>
 				</li>
 				<li style="margin:20px;">
-				<a href="?page=DelBoard;id='.$this->Board->getId().'"><span class="button">Board löschen</span></a>
+				<a href="?page=AdminCreateBoard;id='.$this->Board->getId().'"><span class="button">Board erstellen</span></a>
+				</li>
+				<li style="margin:20px;">
+				<a href="?page=AdminDelBoard;id='.$this->Board->getId().'"><span class="button">Board löschen</span></a>
 				</li>
 				<li style="margin:20px;">
 				<a href="?page=AdminForumsMerge;id='.$this->Board->getId().'"><span class="button">Foren zusammenlegen</span></a>

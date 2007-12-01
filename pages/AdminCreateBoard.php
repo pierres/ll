@@ -17,7 +17,7 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-class RegisterBoard extends Form{
+class AdminCreateBoard extends Form{
 
 private $name = '';
 
@@ -28,16 +28,16 @@ protected function setForm()
 		$this->Io->redirect('Login');
 		}
 
-	$this->setValue('title', 'Eigenes Forum einrichten');
+	$this->setValue('title', 'Neues Board erstellen');
 
 	if (!$this->User->isLevel(User::ROOT))
 		{
 		$this->showFailure('nur root darf das!');
 		}
 
-	$this->addSubmit('Registrieren');
+	$this->addSubmit('Erstellen');
 
-	$this->addText('name', 'Der Name des Forums', '', 25);
+	$this->addText('name', 'Der Name des Boards', '', 25);
 	$this->requires('name');
 	$this->setLength('name', 3, 25);
 	}
@@ -600,6 +600,8 @@ h3{font-size:16px;}
 h4{font-size:14px;}
 h5{font-size:12px;}
 h6{font-size:10px;}
+
+.tag {color:#FFCC00;}
 eot;
 
 	$stm = $this->DB->prepare
@@ -726,12 +728,12 @@ eot;
 		<table class="frame">
 			<tr>
 				<td class="title">
-					Registrierung erfolgreich
+					Board eingerichtet
 				</td>
 			</tr>
 			<tr>
 				<td class="main">
-					Dein Forum wurde eingerichtet und ist unter folgender Adresse erreichbar:
+					Dein Board wurde eingerichtet und ist unter folgender Adresse erreichbar:
 					<ul>
 					<li><strong>Forum:</strong> <a href="?page=Forums;id='.$id.'">?page=Forums;id='.$id.'</a></li>
 					<li><strong>Administration:</strong> <a href="?page=AdminIndex;id='.$id.'">?page=AdminIndex;id='.$id.'</a></li>
@@ -741,7 +743,7 @@ eot;
 		</table>
 		';
 
-	$this->setValue('title', 'Forum erfolgreich eingerichtet');
+	$this->setValue('title', 'Board erfolgreich eingerichtet');
 	$this->setValue('body', $body);
 	}
 

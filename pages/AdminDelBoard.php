@@ -17,7 +17,7 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-class DelBoard extends AdminForm{
+class AdminDelBoard extends AdminForm{
 
 protected function setForm()
 	{
@@ -91,7 +91,7 @@ protected function sendForm()
 
 protected function redirect()
 	{
-	$this->Io->redirect('DelBoard');
+	$this->Io->redirect('AdminDelBoard');
 	}
 
 }
