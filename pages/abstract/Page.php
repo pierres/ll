@@ -62,6 +62,7 @@ private static $availablePages = array
 	'EditPost' => 'pages/EditPost.php',
 	'EditPrivatePost' => 'pages/EditPrivatePost.php',
 	'EditPrivateThread' => 'pages/EditPrivateThread.php',
+	'EditTag' => 'pages/EditTag.php',
 	'EditThread' => 'pages/EditThread.php',
 	'ForgotPassword' => 'pages/ForgotPassword.php',
 	'Forums' => 'pages/Forums.php',

@@ -282,7 +282,7 @@ foreach ($result as $data)
 			if ($first && $this->post == 0)
 				{
 				$edit_button = (($this->ismod or $this->User->isUser($data['userid'])) ?
-							' <a href="?page=EditThread;id='.$this->Board->getId().';thread='.$this->thread.'"><span class="button">Thema ändern</span></a>' : '');
+							' <a href="?page=EditThread;id='.$this->Board->getId().';thread='.$this->thread.'"><span class="button">Thema ändern</span></a> <a href="?page=EditTag;id='.$this->Board->getId().';thread='.$thread['id'].'"><span class="button">Status ändern</span></a>' : '');
 
 				$del_button = ($this->ismod ?
 							' <a href="?page=DelThread;id='.$this->Board->getId().';thread='.$this->thread.'"><span class="button">Thema löschen</span></a>' : '');
@@ -401,7 +401,7 @@ $thread_buttons = ($this->ismod ?
 	'<tr><td class="pages" colspan="3"><a href="?page=DelThread;id='.$this->Board->getId().';thread='.$thread['id'].'"><span class="button">Thema löschen</span></a>
 	<a href="?page=MoveThread;id='.$this->Board->getId().';thread='.$thread['id'].'"><span class="button">Thema verschieben</span></a>
 	<a href="?page=CloseThread;id='.$this->Board->getId().';thread='.$thread['id'].'"><span class="button">Thema '.($closed ? 'öffnen' : 'schließen').'</span></a>
-	<a href="?page=StickThread;id='.$this->Board->getId().';thread='.$thread['id'].';stick=1"><span class="button">Thema festsetzen</span></a></td></tr>' : '');
+	<a href="?page=StickThread;id='.$this->Board->getId().';thread='.$thread['id'].'"><span class="button">Thema festsetzen</span></a></td></tr>' : '');
 
 $reply_button = (!$closed && $thread['deleted'] == 0 ? '<a href="?page=NewPost;id='.$this->Board->getId().';thread='.$thread['id'].'"><span class="button">antworten</span></a>' : '');
 
