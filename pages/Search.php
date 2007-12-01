@@ -224,7 +224,7 @@ protected function sendForm()
 	{
 	$this->setValue('title', 'Suche nach &quot;'.htmlspecialchars($this->search).'&quot;');
 
-	$params = ';search='.urlencode($this->search).';submit=';
+	$params = ';search='.urlencode($this->search).';submit=;tag='.$this->tag;
 
 	$next = '&nbsp;<a href="?page=Search;id='.$this->Board->getId().';thread='.($this->Settings->getValue('max_threads')+$this->thread).$params.'">&#187;</a>';
 

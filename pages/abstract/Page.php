@@ -75,7 +75,6 @@ private static $availablePages = array
 	'GetLLCodes' => 'pages/GetLLCodes.php',
 	'GetRecent' => 'pages/GetRecent.php',
 	'GetSmilies' => 'pages/GetSmilies.php',
-	'ImportTags' => 'pages/ImportTags.php',
 	'Impressum' => 'pages/Impressum.php',
 	'InviteToPrivateThread' => 'pages/InviteToPrivateThread.php',
 	'Login' => 'pages/Login.php',

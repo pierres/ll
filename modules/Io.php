@@ -102,7 +102,7 @@ public function isRequest($name)
 
 public function isEmpty($name)
 	{
-	return (strlen($this->request[$name]) == 0);
+	return !$this->isRequest($name) || (strlen($this->request[$name]) == 0);
 	}
 
 public function isEmptyString($name)
