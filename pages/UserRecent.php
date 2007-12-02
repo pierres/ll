@@ -77,8 +77,8 @@ public function prepare()
 			ORDER BY
 				threads.lastdate DESC
 			LIMIT
-				50
-			');
+				'.$this->Settings->getValue('max_threads')
+			);
 
 		$stm->bindInteger($user);
 		$stm->bindInteger($this->Board->getId());

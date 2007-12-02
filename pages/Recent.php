@@ -60,9 +60,6 @@ public function prepare()
 						AND thread_user.threadid = threads.id
 						AND threads.deleted = 0
 						AND thread_user.userid = ?
-					ORDER BY
-						lastdate DESC
-					LIMIT 50
 				)
 				UNION
 				(
@@ -97,14 +94,11 @@ public function prepare()
 						AND forum_cat.forumid = forums.id
 						AND forum_cat.catid = cats.id
 						AND cats.boardid = ?
-					ORDER BY
-						lastdate DESC
-					LIMIT 50
 				)
 				ORDER BY
 					lastdate DESC
-				LIMIT 50
-				');
+				LIMIT '.$this->Settings->getValue('max_threads')
+				);
 			$stm->bindInteger($this->User->getId());
 			$stm->bindInteger($this->Board->getId());
 			$result = $stm->getRowSet();
@@ -146,8 +140,8 @@ public function prepare()
 					AND cats.boardid = ?
 				ORDER BY
 					threads.lastdate DESC
-				LIMIT 50
-				');
+				LIMIT '.$this->Settings->getValue('max_threads')
+				);
 			$stm->bindInteger($this->Board->getId());
 			$result = $stm->getRowSet();
 			}

@@ -152,12 +152,11 @@ private function getResult()
 					ON threads.tag = tags.id,
 				forums
 			WHERE MATCH
-				(threads.name)
-			AGAINST (? IN BOOLEAN MODE)
-			AND threads.forumid = forums.id
-			AND threads.deleted = 0
-			AND threads.tag = ?
-			AND forums.boardid = ?
+				(threads.name) AGAINST (? IN BOOLEAN MODE)
+				AND threads.forumid = forums.id
+				AND threads.deleted = 0
+				AND threads.tag = ?
+				AND forums.boardid = ?
 		)
 		UNION
 		(
@@ -190,15 +189,14 @@ private function getResult()
 					ON threads.tag = tags.id,
 				forums
 			WHERE MATCH
-				(posts.text)
-			AGAINST (? IN BOOLEAN MODE)
-			AND posts.threadid = threads.id
-			AND threads.forumid = forums.id
-			AND threads.deleted = 0
-			AND posts.deleted = 0
-			AND threads.tag = ?
-			AND forums.boardid = ?
-			GROUP BY threads.id
+				(posts.text) AGAINST (? IN BOOLEAN MODE)
+				AND posts.threadid = threads.id
+				AND threads.forumid = forums.id
+				AND threads.deleted = 0
+				AND posts.deleted = 0
+				AND threads.tag = ?
+				AND forums.boardid = ?
+				GROUP BY threads.id
 		)
 		ORDER BY score DESC
 		LIMIT '.$limit
