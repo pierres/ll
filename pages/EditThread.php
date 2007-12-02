@@ -60,10 +60,15 @@ protected function checkInput()
 				AND threads.deleted = 0
 				AND threads.closed = 0
 				AND threads.id = ?
+				AND (
+					threads.tag = 0
+					OR threads.tag IN (SELECT tags.id FROM tags WHERE boardid = ?)
+				)
 			ORDER BY
 				posts.dat ASC
 			');
 		$stm->bindInteger($this->thread);
+		$stm->bindInteger($this->Board->GetId());
 		$data = $stm->getRow();
 		$stm->close();
 		}
