@@ -40,6 +40,7 @@ private static $availableModules = array
 	'Mail' => 'modules/Mail.php',
 	'Markup' => 'modules/Markup.php',
 	'Modul' => 'modules/Modul.php',
+	'ObjectCache' => 'modules/ObjectCache.php',
 	'Settings' => 'modules/Settings.php',
 	'Stack' => 'modules/Stack.php',
 	'ThreadList' => 'modules/ThreadList.php',

@@ -216,6 +216,16 @@ private function sendOutput()
 
 	$this->setValue('body', $this->getValue('body').'<div style="text-align:right;font-size:8px;margin-top:3px;"><a href="?page=Privacy;id='.$this->Board->getId().'">Datenschutz</a> :: <a href="?page=Impressum;id='.$this->Board->getId().'">Impressum</a></div>');
 
+	if ($this->Settings->getValue('debug') && function_exists('xdebug_time_index'))
+		{
+		$this->setValue('body', $this->getValue('body').
+			'<div style="text-align:left;font-size:10px;font-family:monospace;margin-top:3px;">
+			Ausführungszeit:&nbsp;&nbsp;&nbsp;'.xdebug_time_index().' s<br />
+			Speicherverbrauch:&nbsp;'.(xdebug_peak_memory_usage()/1024).' KByte
+			</div>'
+			);
+		}
+
 	foreach ($this->variables as $key => $value)
 		{
 		$file = str_replace('<!-- '.$key.' -->', $value, $file);
