@@ -30,34 +30,39 @@ public function show()
 
 	try
 		{
-		$stm = $this->DB->prepare
-			('
-			SELECT
-				threads.id,
-				threads.name,
-				threads.lastdate,
-				threads.lastusername,
-				threads.lastuserid,
-				threads.summary
-			FROM
-				threads,
-				forum_cat,
-				cats
-			WHERE
-				threads.deleted = 0
-				AND forum_cat.forumid = threads.forumid
-				AND forum_cat.catid = cats.id
-				AND cats.boardid = ?
-			ORDER BY
-				threads.lastdate DESC
-			LIMIT
-				25
-			');
-		$stm->bindInteger($this->Board->getId());
+		if (!($result = $this->ObjectCache->getObject('LL:GetRecent::'.$this->Board->getId())))
+			{
+			$stm = $this->DB->prepare
+				('
+				SELECT
+					threads.id,
+					threads.name,
+					threads.lastdate,
+					threads.lastusername,
+					threads.lastuserid,
+					threads.summary
+				FROM
+					threads,
+					forum_cat,
+					cats
+				WHERE
+					threads.deleted = 0
+					AND forum_cat.forumid = threads.forumid
+					AND forum_cat.catid = cats.id
+					AND cats.boardid = ?
+				ORDER BY
+					threads.lastdate DESC
+				LIMIT
+					25
+				');
+			$stm->bindInteger($this->Board->getId());
+			$result = $stm->getRowSet()->toArray();
+			$this->ObjectCache->addObject('LL:GetRecent::'.$this->Board->getId(), $result, 10*60);
+			}
 
 		$lastdate = 0;
 
-		foreach($stm->getRowSet() as $thread)
+		foreach($result as $thread)
 			{
 			if ($thread['lastdate'] > $lastdate)
 				{
@@ -79,13 +84,15 @@ public function show()
 			</entry>
 			';
 			}
-		$stm->close();
 		}
 	catch (DBNoDataException $e)
 		{
-		$stm->close();
 		}
 
+	if (isset($stm))
+		{
+		$stm->close();
+		}
 
 	$content =
 '<?xml version="1.0" encoding="utf-8"?>

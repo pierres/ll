@@ -224,9 +224,28 @@ function __construct($link)
 }
 // ------------------------------------------------------------------------------------------------------
 
-interface IDBResult extends Iterator{}
+abstract class ADBResult implements Iterator{
 
-class DBResult implements IDBResult{
+public function toArray()
+	{
+	$array = array();
+
+	foreach ($this as $key => $value)
+		{
+		$row = array();
+		foreach ($value as $rowKey => $rowValue)
+			{
+			$row[$rowKey] = $rowValue;
+			}
+		$array[$key] = $row;
+		}
+
+	return $array;
+	}
+
+}
+
+class DBResult extends ADBResult{
 
 private $result		= null;
 private $row 		= null;
@@ -481,7 +500,7 @@ public function getNumRows()
 
 // ------------------------------------------------------------------------------------------------------
 
-class DBStatementResult implements IDBResult{
+class DBStatementResult extends ADBResult{
 
 private $stm 		= null;
 private $row 		= null;
@@ -542,7 +561,5 @@ public function valid()
 	}
 
 }
-
-
 
 ?>
