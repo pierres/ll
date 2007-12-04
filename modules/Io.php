@@ -180,12 +180,11 @@ public function getHost()
 	return getenv('HTTP_HOST');
 	}
 
-/** TODO: ist dieser Rückgabewert vom Nutzer manipulierbar? */
 public function getURL()
 	{
 	return 'http'.(!getenv('HTTPS') ? '' : 's').'://'
 			.getenv('HTTP_HOST')
-			.dirname($_SERVER['PHP_SELF']);
+			.dirname(getenv('SCRIPT_NAME'));
 	}
 /** FIXME: XSS->alle Zeilenumbrüche entfernen */
 public function redirectToUrl($url)
