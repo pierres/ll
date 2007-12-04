@@ -21,16 +21,14 @@ class GetRecent extends GetFile{
 
 public function prepare()
 	{
-	$this->initDB();
 	}
 
 public function show()
 	{
-	$entries = '';
-
-	try
+	if (!($content = $this->ObjectCache->getObject('LL:GetRecent:Atom:'.$this->Io->getInt('id'))))
 		{
-		if (!($result = $this->ObjectCache->getObject('LL:GetRecent::'.$this->Board->getId())))
+		$this->initDB();
+		try
 			{
 			$stm = $this->DB->prepare
 				('
@@ -56,45 +54,44 @@ public function show()
 					25
 				');
 			$stm->bindInteger($this->Board->getId());
-			$result = $stm->getRowSet()->toArray();
-			$this->ObjectCache->addObject('LL:GetRecent::'.$this->Board->getId(), $result, 10*60);
-			}
+			$result = $stm->getRowSet();
 
-		$lastdate = 0;
-
-		foreach($result as $thread)
-			{
-			if ($thread['lastdate'] > $lastdate)
+			$lastdate = 0;
+			$entries = '';
+	
+			foreach($result as $thread)
 				{
-				$lastdate = $thread['lastdate'];
+				if ($thread['lastdate'] > $lastdate)
+					{
+					$lastdate = $thread['lastdate'];
+					}
+	
+				$entries .=
+				'
+				<entry>
+					<id>'.$this->Io->getURL().'?page=Postings;id='.$this->Board->getId().';thread='.$thread['id'].'</id>
+					<title>'.$thread['name'].'</title>
+					<link rel="alternate" type="text/html" href="'.$this->Io->getURL().'?page=Postings;id='.$this->Board->getId().';thread='.$thread['id'].';post=-1" />
+					<updated>'.date('c', $thread['lastdate']).'</updated>
+					<summary>'.$thread['summary'].'</summary>
+					<author>
+						<name>'.$thread['lastusername'].'</name>
+						<uri>'.$this->Io->getURL().'?page=ShowUser;id='.$this->Board->getId().';user='.$thread['lastuserid'].'</uri>
+					</author>
+				</entry>
+				';
 				}
-
-			$entries .=
-			'
-			<entry>
-				<id>'.$this->Io->getURL().'?page=Postings;id='.$this->Board->getId().';thread='.$thread['id'].'</id>
-				<title>'.$thread['name'].'</title>
-				<link rel="alternate" type="text/html" href="'.$this->Io->getURL().'?page=Postings;id='.$this->Board->getId().';thread='.$thread['id'].';post=-1" />
-				<updated>'.date('c', $thread['lastdate']).'</updated>
-				<summary>'.$thread['summary'].'</summary>
-				<author>
-					<name>'.$thread['lastusername'].'</name>
-					<uri>'.$this->Io->getURL().'?page=ShowUser;id='.$this->Board->getId().';user='.$thread['lastuserid'].'</uri>
-				</author>
-			</entry>
-			';
 			}
-		}
-	catch (DBNoDataException $e)
-		{
-		}
+		catch (DBNoDataException $e)
+			{
+			}
+	
+		if (isset($stm))
+			{
+			$stm->close();
+			}
 
-	if (isset($stm))
-		{
-		$stm->close();
-		}
-
-	$content =
+		$content =
 '<?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="de">
 	<id>'.$this->Io->getURL().'?page=GetRecent;id='.$this->Board->getId().'</id>
@@ -104,6 +101,9 @@ public function show()
 	<updated>'.date('c', $lastdate).'</updated>
 	'.$entries.'
 </feed>';
+
+		$this->ObjectCache->addObject('LL:GetRecent:Atom:'.$this->Board->getId(), $content, 15*60);
+		}
 
 	$this->sendInlineFile('application/atom+xml; charset=UTF-8', 'recent.xml', strlen($content), $content);
 	}

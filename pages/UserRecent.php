@@ -36,57 +36,53 @@ public function prepare()
 
 	try
 		{
-		if (!($result = $this->ObjectCache->getObject('LL:UserRecent:'.$user.':'.$this->Board->getId())))
-			{
-			$stm = $this->DB->prepare
-				('
-				SELECT
-					threads.id,
-					threads.name,
-					threads.lastdate,
-					threads.posts,
-					threads.lastuserid,
-					threads.lastusername,
-					threads.firstdate,
-					threads.firstuserid,
-					threads.firstusername,
-					threads.closed,
-					threads.sticky,
-					threads.poll,
-					threads.posts,
-					forums.id AS forumid,
-					forums.name AS forumname,
-					threads.summary,
-					tags.name AS tag
-				FROM
-					threads
-						LEFT JOIN tags
-						ON threads.tag = tags.id,
-					forums,
-					posts,
-					forum_cat,
-					cats
-				WHERE
-					threads.deleted = 0
-					AND posts.threadid = threads.id
-					AND posts.userid = ?
-					AND threads.forumid = forums.id
-					AND forum_cat.forumid = forums.id
-					AND forum_cat.catid = cats.id
-					AND cats.boardid = ?
-				GROUP BY
-					threads.id
-				ORDER BY
-					threads.lastdate DESC
-				LIMIT
-					'.$this->Settings->getValue('max_threads')
-				);
-	
-			$stm->bindInteger($user);
-			$stm->bindInteger($this->Board->getId());
-			$result = $stm->getRowSet()->toArray();
-			$this->ObjectCache->addObject('LL:UserRecent:'.$user.':'.$this->Board->getId(), $result, 30*60);
-			}
+		$stm = $this->DB->prepare
+			('
+			SELECT
+				threads.id,
+				threads.name,
+				threads.lastdate,
+				threads.posts,
+				threads.lastuserid,
+				threads.lastusername,
+				threads.firstdate,
+				threads.firstuserid,
+				threads.firstusername,
+				threads.closed,
+				threads.sticky,
+				threads.poll,
+				threads.posts,
+				forums.id AS forumid,
+				forums.name AS forumname,
+				threads.summary,
+				tags.name AS tag
+			FROM
+				threads
+					LEFT JOIN tags
+					ON threads.tag = tags.id,
+				forums,
+				posts,
+				forum_cat,
+				cats
+			WHERE
+				threads.deleted = 0
+				AND posts.threadid = threads.id
+				AND posts.userid = ?
+				AND threads.forumid = forums.id
+				AND forum_cat.forumid = forums.id
+				AND forum_cat.catid = cats.id
+				AND cats.boardid = ?
+			GROUP BY
+				threads.id
+			ORDER BY
+				threads.lastdate DESC
+			LIMIT
+				'.$this->Settings->getValue('max_threads')
+			);
+
+		$stm->bindInteger($user);
+		$stm->bindInteger($this->Board->getId());
+		$result = $stm->getRowSet();
 		}
 	catch (DBNoDataException $e)
 		{
