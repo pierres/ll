@@ -35,9 +35,9 @@ public function show()
 				SELECT
 					threads.id,
 					threads.name,
-					threads.lastdate,
-					threads.lastusername,
-					threads.lastuserid,
+					threads.firstdate,
+					threads.firstusername,
+					threads.firstuserid,
 					threads.summary
 				FROM
 					threads,
@@ -49,7 +49,7 @@ public function show()
 					AND forum_cat.catid = cats.id
 					AND cats.boardid = ?
 				ORDER BY
-					threads.lastdate DESC
+					threads.firstdate DESC
 				LIMIT
 					25
 				');
@@ -61,9 +61,9 @@ public function show()
 	
 			foreach($result as $thread)
 				{
-				if ($thread['lastdate'] > $lastdate)
+				if ($thread['firstdate'] > $lastdate)
 					{
-					$lastdate = $thread['lastdate'];
+					$lastdate = $thread['firstdate'];
 					}
 	
 				$entries .=
@@ -72,11 +72,11 @@ public function show()
 					<id>'.$this->Io->getURL().'?page=Postings;id='.$this->Board->getId().';thread='.$thread['id'].'</id>
 					<title>'.$thread['name'].'</title>
 					<link rel="alternate" type="text/html" href="'.$this->Io->getURL().'?page=Postings;id='.$this->Board->getId().';thread='.$thread['id'].';post=-1" />
-					<updated>'.date('c', $thread['lastdate']).'</updated>
+					<updated>'.date('c', $thread['firstdate']).'</updated>
 					<summary>'.$thread['summary'].'</summary>
 					<author>
-						<name>'.$thread['lastusername'].'</name>
-						<uri>'.$this->Io->getURL().'?page=ShowUser;id='.$this->Board->getId().';user='.$thread['lastuserid'].'</uri>
+						<name>'.$thread['firstusername'].'</name>
+						<uri>'.$this->Io->getURL().'?page=ShowUser;id='.$this->Board->getId().';user='.$thread['firstuserid'].'</uri>
 					</author>
 				</entry>
 				';
