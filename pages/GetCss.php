@@ -22,31 +22,35 @@ class GetCss extends GetFile{
 public function prepare()
 	{
 	$this->exitIfCached();
-	$this->initDB();
 	}
 
 public function show()
 	{
-	try
+	if (!($css = $this->ObjectCache->getObject('LL:GetCss:Css:'.$this->Io->getInt('id'))))
 		{
-		$stm = $this->DB->prepare
-			('
-			SELECT
-				css
-			FROM
-				boards
-			WHERE
-				id = ?'
-			);
-		$stm->bindInteger($this->Board->GetId());
-		$css = $stm->getColumn();
-		$stm->close();
-		}
-	catch (DBNoDataException $e)
-		{
-		$stm->close();
-		$this->Io->setStatus(Io::NOT_FOUND);
-		$this->showWarning('Datei nicht gefunden');
+		$this->initDB();
+		try
+			{
+			$stm = $this->DB->prepare
+				('
+				SELECT
+					css
+				FROM
+					boards
+				WHERE
+					id = ?'
+				);
+			$stm->bindInteger($this->Board->GetId());
+			$css = $stm->getColumn();
+			$stm->close();
+			}
+		catch (DBNoDataException $e)
+			{
+			$stm->close();
+			$this->Io->setStatus(Io::NOT_FOUND);
+			$this->showWarning('Datei nicht gefunden');
+			}
+		$this->ObjectCache->addObject('LL:GetCss:Css:'.$this->Board->getId(), $css, 60*60);
 		}
 
 	$this->Io->setContentType('Content-Type: text/css; charset=UTF-8');
