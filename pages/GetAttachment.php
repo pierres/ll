@@ -32,6 +32,64 @@ protected function getParams()
 		{
 		$this->showWarning('keine Datei angegeben');
 		}
+
+	$this->checkAccess();
+	}
+
+protected function checkAccess()
+	{
+	try
+		{
+		/** if one of the threads is private return 0 */
+		$stm = $this->DB->prepare
+			('
+			SELECT
+				MIN(threads.forumid)
+			FROM
+				posts,
+				post_attachments,
+				threads
+			WHERE
+				post_attachments.attachment_id = ?
+				AND post_attachments.postid = posts.id
+				AND posts.threadid = threads.id'
+			);
+		$stm->bindInteger($this->file);
+		$forumid = $stm->getColumn();
+		$stm->close();
+
+		/** it seems to be a Private Thread */
+		if ($forumid == 0)
+			{
+			$stm = $this->DB->prepare
+				('
+				SELECT
+					post_attachments.attachment_id
+				FROM
+					posts,
+					post_attachments,
+					threads,
+					thread_user
+				WHERE
+					post_attachments.attachment_id = ?
+					AND post_attachments.postid = posts.id
+					AND posts.threadid = threads.id
+					AND threads.forumid = 0
+					AND thread_user.threadid = threads.id
+					AND thread_user.userid = ?'
+				);
+			$stm->bindInteger($this->file);
+			$stm->bindInteger($this->User->getId());
+			$this->file = $stm->getColumn();
+			$stm->close();
+			}
+		}
+	catch (DBNoDataException $e)
+		{
+		$stm->close();
+		$this->Io->setStatus(Io::NOT_FOUND);
+		$this->showWarning('Datei nicht gefunden');
+		}
 	}
 
 public function show()
@@ -41,31 +99,16 @@ public function show()
 		$stm = $this->DB->prepare
 			('
 			SELECT
-				attachments.name,
-				attachments.type,
-				attachments.content,
-				attachments.size
+				name,
+				type,
+				content,
+				size
 			FROM
-				attachments,
-				posts,
-				post_attachments,
-				threads,
-				thread_user
+				attachments
 			WHERE
-				attachments.id = ?
-				AND post_attachments.postid = posts.id
-				AND post_attachments.attachment_id = attachments.id
-				AND posts.threadid = threads.id
-				AND(	(
-					threads.forumid = 0
-					AND thread_user.threadid = threads.id
-					AND thread_user.userid = ?
-					)
-				OR
-					threads.forumid > 0)'
+				id = ?'
 			);
 		$stm->bindInteger($this->file);
-		$stm->bindInteger($this->User->getId());
 		$data = $stm->getRow();
 		$stm->close();
 		}

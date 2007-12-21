@@ -36,24 +36,10 @@ public function show()
 					attachment_thumbnails.size
 				FROM
 					attachments,
-					attachment_thumbnails,
-					posts,
-					post_attachments,
-					threads,
-					thread_user
+					attachment_thumbnails
 				WHERE
 					attachments.id = ?
 					AND attachments.id = attachment_thumbnails.id
-					AND post_attachments.postid = posts.id
-					AND post_attachments.attachment_id = attachments.id
-					AND posts.threadid = threads.id
-					AND(	(
-						threads.forumid = 0
-						AND thread_user.threadid = threads.id
-						AND thread_user.userid = ?
-						)
-					OR
-						threads.forumid > 0)
 			)
 			UNION
 			(
@@ -64,30 +50,14 @@ public function show()
 					attachments.size
 				FROM
 					attachments,
-					attachment_thumbnails,
-					posts,
-					post_attachments,
-					threads,
-					thread_user
+					attachment_thumbnails
 				WHERE
 					attachments.id = ?
 					AND attachments.id NOT IN (SELECT id FROM attachment_thumbnails)
-					AND post_attachments.postid = posts.id
-					AND post_attachments.attachment_id = attachments.id
-					AND posts.threadid = threads.id
-					AND(	(
-						threads.forumid = 0
-						AND thread_user.threadid = threads.id
-						AND thread_user.userid = ?
-						)
-					OR
-						threads.forumid > 0)
 			)'
 			);
 		$stm->bindInteger($this->file);
-		$stm->bindInteger($this->User->getId());
 		$stm->bindInteger($this->file);
-		$stm->bindInteger($this->User->getId());
 		$data = $stm->getRow();
 		$stm->close();
 		}
