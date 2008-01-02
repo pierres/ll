@@ -260,7 +260,12 @@ protected function addFile($name, $description, $cols = 50)
 	{
 	$this->addHidden('MAX_FILE_SIZE', $this->Settings->getValue('file_size'));
 	/** Workaround for PHP-"Bug". See http://de3.php.net/manual/en/ini.core.php#ini.post-max-size */
-	$this->request .= ';submit=1';
+	$this->request .= ';fileUploadCheck'.$name.'=1';
+
+	if ($this->Io->isRequest('fileUploadCheck'.$name) && empty($_POST) && empty($_FILES))
+		{
+		$this->showWarning('Die Datei ist größer als '.ini_get('upload_max_filesize').'Byte.');
+		}
 
 	$this->setFocus();
 	$this->addElement($name, '<label for="'.$this->getNextElementId().'">'.$description.'</label><br /><input id="'.$this->getNextElementId().'" type="file" name="'.$name.'" size="'.$cols.'" />');
