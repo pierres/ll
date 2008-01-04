@@ -95,6 +95,7 @@ catch (DBNoDataException $e)
 				boards
 			WHERE
 				threads.id = ?
+				AND threads.deleted = 0
 				AND forums.id = threads.forumid
 				AND forums.boardid != ?
 				AND boards.id = forums.boardid'
