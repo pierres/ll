@@ -32,26 +32,16 @@ public function __construct()
 	{
 	try
 		{
-		$id = $this->Io->getInt('id');
-
-		try
-			{
-			$board = $this->getBoard($id);
-			}
-		catch (DBNoDataException $e)
-			{
-			$board = $this->getBoard(1);
-			}
+		$board = $this->getBoardByHost();
 		}
-	catch(IoRequestException $e)
+	catch (DBNoDataException $e)
 		{
 		try
 			{
-			$board = $this->getBoardByHost();
+			$board = $this->getBoard($this->Io->getInt('id'));
 			}
-		catch (DBNoDataException $e)
+		catch (Exception $e)
 			{
-			/** @TODO: evtl. ein schlechter Fallback */
 			$board = $this->getBoard(1);
 			}
 		}

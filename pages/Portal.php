@@ -55,7 +55,9 @@ public function prepare()
 
 	$this->setValue('title', 'Portal');
 
-	$body =
+	if (!($body = $this->ObjectCache->getObject('LL:Portal::'.$this->Board->getId())))
+		{
+		$body =
 		'
 		<table>
 			<tr>
@@ -145,6 +147,8 @@ public function prepare()
 		</table>
 		';
 
+		$this->ObjectCache->addObject('LL:Portal::'.$this->Board->getId(), $body, 60*60);
+		}
 
 	$this->setValue('body', $body);
 	}
@@ -227,88 +231,30 @@ private function getRecent()
 	/** TODO Potentiell teure Anfrage */
 	try
 		{
-		if ($this->User->isOnline())
-			{
-			$stm = $this->DB->prepare
-				('
-				(
-					SELECT
-						threads.id,
-						threads.name,
-						threads.lastdate,
-						threads.forumid
-					FROM
-						threads,
-						thread_user
-					WHERE
-						threads.forumid = 0
-						AND threads.deleted = 0
-						AND thread_user.threadid = threads.id
-						AND thread_user.userid = ?
-					ORDER BY
-						lastdate DESC
-					LIMIT
-						25
-				)
-				UNION
-				(
-					SELECT
-						threads.id,
-						threads.name,
-						threads.lastdate,
-						threads.forumid
-					FROM
-						forums,
-						threads,
-						forum_cat,
-						cats
-					WHERE
-						threads.deleted = 0
-						AND threads.forumid != ?
-						AND threads.forumid = forums.id
-						AND forum_cat.forumid = forums.id
-						AND forum_cat.catid = cats.id
-						AND cats.boardid = ?
-					ORDER BY
-						threads.lastdate DESC
-					LIMIT
-						25
-				)
-				ORDER BY
-					lastdate DESC
-				LIMIT
-					25
-				');
-
-			$stm->bindInteger($this->User->getId());
-			}
-		else
-			{
-			$stm = $this->DB->prepare
-				('
-				SELECT
-					threads.id,
-					threads.name,
-					threads.lastdate,
-					threads.forumid
-				FROM
-					forums,
-					threads,
-					forum_cat,
-					cats
-				WHERE
-					threads.deleted = 0
-					AND threads.forumid != ?
-					AND threads.forumid = forums.id
-					AND forum_cat.forumid = forums.id
-					AND forum_cat.catid = cats.id
-					AND cats.boardid = ?
-				ORDER BY
-					threads.lastdate DESC
-				LIMIT
-					25
-				');
-			}
+		$stm = $this->DB->prepare
+			('
+			SELECT
+				threads.id,
+				threads.name,
+				threads.lastdate,
+				threads.forumid
+			FROM
+				forums,
+				threads,
+				forum_cat,
+				cats
+			WHERE
+				threads.deleted = 0
+				AND threads.forumid != ?
+				AND threads.forumid = forums.id
+				AND forum_cat.forumid = forums.id
+				AND forum_cat.catid = cats.id
+				AND cats.boardid = ?
+			ORDER BY
+				threads.lastdate DESC
+			LIMIT
+				25
+			');
 
 		$stm->bindInteger($this->forum);
 		$stm->bindInteger($this->Board->getId());
@@ -330,14 +276,7 @@ private function getRecent()
 			$thread['name'] = '<span class="newthread">neu</span>'.$thread['name'];
 			}
 
-		if ($thread['forumid'] == 0)
-			{
-			$result .= '<li style="margin-bottom:5px;"><a href="?page=PrivatePostings;thread='.$thread['id'].';post=-1;id='.$this->Board->getId().'">'.$thread['name'].'</a></li>';
-			}
-		else
-			{
 			$result .= '<li style="margin-bottom:5px;"><a href="?page=Postings;thread='.$thread['id'].';post=-1;id='.$this->Board->getId().'">'.$thread['name'].'</a></li>';
-			}
 		}
 	$stm->close();
 
@@ -351,7 +290,7 @@ private function getBoards()
 		$boards = $this->DB->getRowSet
 			('
 			SELECT
-				id,
+				host,
 				name
 			FROM
 				boards
@@ -366,7 +305,7 @@ private function getBoards()
 
 	foreach ($boards as $board)
 		{
-		$result .= '<li style="margin-bottom:5px;"><a href="?page=Forums;id='.$board['id'].'">'.cutString($board['name'], 25).'</a></li>';
+		$result .= '<li style="margin-bottom:5px;"><a href="http://'.$board['host'].'">'.cutString($board['name'], 25).'</a></li>';
 		}
 
 	return $result.'</ul>';
