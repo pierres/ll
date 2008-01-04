@@ -183,11 +183,6 @@ private function getNews()
 
 		foreach ($stm->getRowSet() as $thread)
 			{
-			if ($this->User->isOnline() && $this->Log->isNew($thread['id'], $thread['firstdate']))
-				{
-				$thread['name'] = '<span class="newthread">neu</span>'.$thread['name'];
-				}
-
 			$result .=
 				'
 				<table class="frame" style="width:100%;margin-bottom:12px;">
@@ -270,13 +265,7 @@ private function getRecent()
 	foreach ($threads as $thread)
 		{
 		$thread['name'] = cutString($thread['name'], 28);
-
-		if ($this->User->isOnline() && $this->Log->isNew($thread['id'], $thread['lastdate']))
-			{
-			$thread['name'] = '<span class="newthread">neu</span>'.$thread['name'];
-			}
-
-			$result .= '<li style="margin-bottom:5px;"><a href="?page=Postings;thread='.$thread['id'].';post=-1;id='.$this->Board->getId().'">'.$thread['name'].'</a></li>';
+		$result .= '<li style="margin-bottom:5px;"><a href="?page=Postings;thread='.$thread['id'].';post=-1;id='.$this->Board->getId().'">'.$thread['name'].'</a></li>';
 		}
 	$stm->close();
 
@@ -410,7 +399,5 @@ private function getNewMembers()
 	}
 
 }
-
-
 
 ?>
