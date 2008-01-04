@@ -43,6 +43,7 @@ public function show()
 			$stm->bindInteger($this->Board->GetId());
 			$css = $stm->getColumn();
 			$stm->close();
+			$this->ObjectCache->addObject('LL:GetCss:Css:'.$this->Board->getId(), $css, 60*60);
 			}
 		catch (DBNoDataException $e)
 			{
@@ -50,7 +51,6 @@ public function show()
 			$this->Io->setStatus(Io::NOT_FOUND);
 			$this->showWarning('Datei nicht gefunden');
 			}
-		$this->ObjectCache->addObject('LL:GetCss:Css:'.$this->Board->getId(), $css, 60*60);
 		}
 
 	$this->Io->setContentType('Content-Type: text/css; charset=UTF-8');
