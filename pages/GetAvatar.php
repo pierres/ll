@@ -21,19 +21,6 @@ class GetAvatar extends GetFile{
 
 private $user = 0;
 
-public function prepare()
-	{
-	$this->exitIfCached();
-
-	/** We do not need any expencive security check */
-	if (!$this->Io->isRequest('sessionid'))
-		{
-		$this->showWarning('Nur für Mitglieder!');
-		}
-
-	$this->getParams();
-	}
-
 protected function getParams()
 	{
 	try
@@ -48,34 +35,30 @@ protected function getParams()
 
 public function show()
 	{
-	if (!($data = $this->ObjectCache->getObject('LL:GetAvatar:Data:'.$this->user)))
+	$this->initDB();
+	try
 		{
-		$this->initDB();
-		try
-			{
-			$stm = $this->DB->prepare
-				('
-				SELECT
-					type,
-					name,
-					content,
-					size
-				FROM
-					avatars
-				WHERE
-					id = ?'
-				);
-			$stm->bindInteger($this->user);
-			$data = $stm->getRow();
-			$stm->close();
-			$this->ObjectCache->addObject('LL:GetAvatar:Data:'.$this->user, $data, 60*60);
-			}
-		catch (DBNoDataException $e)
-			{
-			$stm->close();
-			$this->Io->setStatus(Io::NOT_FOUND);
-			$this->showWarning('Datei nicht gefunden');
-			}
+		$stm = $this->DB->prepare
+			('
+			SELECT
+				type,
+				name,
+				content,
+				size
+			FROM
+				avatars
+			WHERE
+				id = ?'
+			);
+		$stm->bindInteger($this->user);
+		$data = $stm->getRow();
+		$stm->close();
+		}
+	catch (DBNoDataException $e)
+		{
+		$stm->close();
+		$this->Io->setStatus(Io::NOT_FOUND);
+		$this->showWarning('Datei nicht gefunden');
 		}
 
 	$this->sendInlineFile($data['type'], $data['name'], $data['size'], $data['content']);
