@@ -32,7 +32,7 @@ protected $title 		= 'Neues Thema erstellen';
 
 protected function setForm()
 	{
-	/** FIXME: Das machen wir zweimal um das Thema oben zu haben...sollte man in Form beheben */
+	$this->checkInput();	// doing this here to ensure we initialize the topic if it allready exists
 	try
 		{
 		$this->topic = $this->Io->getString('topic');
@@ -41,18 +41,7 @@ protected function setForm()
 		{
 		}
 	$this->addText('topic', 'Thema', $this->topic);
-
 	parent::setForm();
-
-	try
-		{
-		$this->topic = $this->Io->getString('topic');
-		}
-	catch (IoException $e)
-		{
-		}
-
-	$this->addText('topic', 'Thema', $this->topic);
 	$this->requires('topic');
 	$this->setLength('topic', 3, 100);
 
