@@ -19,6 +19,8 @@
 */
 class GetRecent extends GetFile{
 
+private $init = false;
+
 public function prepare()
 	{
 	}
@@ -32,12 +34,14 @@ public function show()
 	catch (IoRequestException $e)
 		{
 		// ok, we have to initialize the Board module then...
+		$this->initDB();
+		$this->init = true;
 		$id = $this->Board->getId();
 		}
 
 	if (!($content = $this->ObjectCache->getObject('LL:GetRecent:Atom:'.$id)))
 		{
-		$this->initDB();
+		!$this->init && $this->initDB();
 		try
 			{
 			$stm = $this->DB->prepare
