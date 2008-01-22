@@ -316,6 +316,13 @@ public function testBug121()
 	$this->assertEquals($out, $this->Markup->toHtml($in));
 	}
 
+public function testBug131()
+	{
+	$in = '<quote>a<quote>b</quote>';
+	$out = '<blockquote><div>a<blockquote><div>b</div></blockquote></div></blockquote>';
+	$this->assertEquals($out, $this->Markup->toHtml($in));
+	}
+
 }
 
 ?>

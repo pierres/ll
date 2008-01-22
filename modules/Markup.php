@@ -330,6 +330,9 @@ private function makeQuote($matches)
 		$last = $pos;
 		}
 
+	/* Alle geöffneten Tags auf jeden Fall schließen */
+	$out .= str_repeat('</div></blockquote>', $open);
+
 	return $out;
 	}
 
