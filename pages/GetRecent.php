@@ -25,7 +25,17 @@ public function prepare()
 
 public function show()
 	{
-	if (!($content = $this->ObjectCache->getObject('LL:GetRecent:Atom:'.$this->Io->getInt('id'))))
+	try
+		{
+		$id = $this->Io->getInt('id');
+		}
+	catch (IoRequestException $e)
+		{
+		// ok, we have to initialize the Board module then...
+		$id = $this->Board->getId();
+		}
+
+	if (!($content = $this->ObjectCache->getObject('LL:GetRecent:Atom:'.$id)))
 		{
 		$this->initDB();
 		try
