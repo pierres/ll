@@ -232,12 +232,19 @@ public function toArray()
 
 	foreach ($this as $key => $value)
 		{
-		$row = array();
-		foreach ($value as $rowKey => $rowValue)
+		if (is_array($value))
 			{
-			$row[$rowKey] = $rowValue;
+			$row = array();
+			foreach ($value as $rowKey => $rowValue)
+				{
+				$row[$rowKey] = $rowValue;
+				}
+			$array[$key] = $row;
 			}
-		$array[$key] = $row;
+		else
+			{
+			$array[$key] = $value;
+			}
 		}
 
 	return $array;
