@@ -42,6 +42,13 @@ protected function setForm()
 		}
 	$this->addText('topic', 'Thema', $this->topic);
 	parent::setForm();
+	try
+		{
+		$this->topic = $this->Io->getString('topic');
+		}
+	catch (IoException $e)
+		{
+		}
 	$this->requires('topic');
 	$this->setLength('topic', 3, 100);
 
