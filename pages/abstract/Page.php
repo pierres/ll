@@ -55,7 +55,6 @@ private static $availablePages = array
 	'ChangePassword' => 'pages/ChangePassword.php',
 	'ChangePasswordKey' => 'pages/ChangePasswordKey.php',
 	'CloseThread' => 'pages/CloseThread.php',
-	'Contact' => 'pages/Contact.php',
 	'DelFile' => 'pages/DelFile.php',
 	'DelPost' => 'pages/DelPost.php',
 	'DelPrivateThread' => 'pages/DelPrivateThread.php',

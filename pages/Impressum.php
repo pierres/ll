@@ -63,7 +63,7 @@ public function prepare()
 						</tr>
 						<tr>
 							<td style="padding-right:20px;font-weight:bold;">E-Mail</td>
-							<td><a href="?page=Contact;id='.$this->Board->getId().'" class="link">'.$board['admin_email'].'</a></td>
+							<td>'.$board['admin_email'].'</td>
 						</tr>
 						<tr>
 							<td style="padding-right:20px;font-weight:bold;">Telefon</td>
@@ -87,7 +87,7 @@ public function prepare()
 						</tr>
 						<tr>
 							<td style="padding-right:20px;font-weight:bold;">E-Mail</td>
-							<td><a href="?page=Contact;id=1" class="link">pschmitz&#64;laber-land.de</a></td>
+							<td>pschmitz&#64;laber-land.de</td>
 						</tr>
 						<tr>
 							<td style="padding-right:20px;font-weight:bold;">Telefon</td>
