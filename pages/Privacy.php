@@ -38,7 +38,6 @@ public function prepare()
 						<strong>Speicherung und Verarbeitung von Daten</strong>
 						<p>Alle Zugriffe auf diese Seiten werden protokolliert. Hierbei werden folgende Daten erfasst:
 						<ul style="margin:10px;">
-							<li><em>IP</em> des Clients</li>
 							<li><em>Datum und Uhrzeit</em> des Zugriffs</li>
 							<li><em>Anfrage</em> des Clients</li>
 							<li><em>Rückgabecode</em> des Servers</li>
