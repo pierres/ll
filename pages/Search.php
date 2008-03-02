@@ -21,6 +21,7 @@ class Search extends Form{
 
 private $search 	= '';
 private $thread 	= 0;
+private $threads 	= 0;
 private $tag		= 0;
 
 protected function setForm()
@@ -115,106 +116,108 @@ protected function checkForm()
 
 private function getResult()
 	{
-	$result = array();
-
-	$limit = $this->thread.','.$this->Settings->getValue('max_threads');
-
 	try
 		{
-		$stm = $this->DB->prepare
-		('
-		(
-			SELECT
-				threads.id,
-				threads.name,
-				threads.lastdate,
-				threads.posts,
-				threads.lastuserid,
-				threads.lastusername,
-				threads.firstdate,
-				threads.firstuserid,
-				threads.firstusername,
-				threads.closed,
-				threads.sticky,
-				threads.poll,
-				threads.posts,
-				(
-					MATCH (threads.name) AGAINST (? IN BOOLEAN MODE)
-					* (threads.lastdate + threads.firstdate)
-				) AS score,
-				forums.id AS forumid,
-				forums.name AS forumname,
-				threads.summary,
-				tags.name AS tag
-			FROM
-				threads
-					LEFT JOIN tags
-					ON threads.tag = tags.id,
-				forums
-			WHERE MATCH
-				(threads.name) AGAINST (? IN BOOLEAN MODE)
-				AND threads.forumid = forums.id
-				AND threads.deleted = 0
-				AND threads.tag = ?
-				AND forums.boardid = ?
-		)
-		UNION
-		(
-			SELECT
-				threads.id,
-				threads.name,
-				threads.lastdate,
-				threads.posts,
-				threads.lastuserid,
-				threads.lastusername,
-				threads.firstdate,
-				threads.firstuserid,
-				threads.firstusername,
-				threads.closed,
-				threads.sticky,
-				threads.poll,
-				threads.posts,
-				(
-					MATCH (posts.text) AGAINST (? IN BOOLEAN MODE)
-					* (threads.lastdate + threads.firstdate)
-				) AS score,
-				forums.id AS forumid,
-				forums.name AS forumname,
-				threads.summary,
-				tags.name AS tag
-			FROM
-				posts,
-				threads
-					LEFT JOIN tags
-					ON threads.tag = tags.id,
-				forums
-			WHERE MATCH
-				(posts.text) AGAINST (? IN BOOLEAN MODE)
-				AND posts.threadid = threads.id
-				AND threads.forumid = forums.id
-				AND threads.deleted = 0
-				AND posts.deleted = 0
-				AND threads.tag = ?
-				AND forums.boardid = ?
-				GROUP BY threads.id
-		)
-		ORDER BY score DESC
-		LIMIT '.$limit
-		);
-		$stm->bindString($this->search);
-		$stm->bindString($this->search);
-		$stm->bindInteger($this->tag);
-		$stm->bindInteger($this->Board->getId());
-		$stm->bindString($this->search);
-		$stm->bindString($this->search);
-		$stm->bindInteger($this->tag);
-		$stm->bindInteger($this->Board->getId());
-		$result = $stm->getRowSet();
+		if (!($result = $this->ObjectCache->getObject('LL:Search:'.$this->Board->getId().':'.$this->tag.':'.sha1($this->search))))
+			{
+			$stm = $this->DB->prepare
+			('
+			(
+				SELECT
+					threads.id,
+					threads.name,
+					threads.lastdate,
+					threads.posts,
+					threads.lastuserid,
+					threads.lastusername,
+					threads.firstdate,
+					threads.firstuserid,
+					threads.firstusername,
+					threads.closed,
+					threads.sticky,
+					threads.poll,
+					threads.posts,
+					(
+						MATCH (threads.name) AGAINST (? IN BOOLEAN MODE)
+						* (threads.lastdate + threads.firstdate)
+					) AS score,
+					forums.id AS forumid,
+					forums.name AS forumname,
+					threads.summary,
+					tags.name AS tag
+				FROM
+					threads
+						LEFT JOIN tags
+						ON threads.tag = tags.id,
+					forums
+				WHERE MATCH
+					(threads.name) AGAINST (? IN BOOLEAN MODE)
+					AND threads.forumid = forums.id
+					AND threads.deleted = 0
+					'.($this->tag > 0 ? 'AND threads.tag = ?' : '').'
+					AND forums.boardid = ?
+			)
+			UNION
+			(
+				SELECT
+					threads.id,
+					threads.name,
+					threads.lastdate,
+					threads.posts,
+					threads.lastuserid,
+					threads.lastusername,
+					threads.firstdate,
+					threads.firstuserid,
+					threads.firstusername,
+					threads.closed,
+					threads.sticky,
+					threads.poll,
+					threads.posts,
+					(
+						MATCH (posts.text) AGAINST (? IN BOOLEAN MODE)
+						* (threads.lastdate + threads.firstdate)
+					) AS score,
+					forums.id AS forumid,
+					forums.name AS forumname,
+					threads.summary,
+					tags.name AS tag
+				FROM
+					posts,
+					threads
+						LEFT JOIN tags
+						ON threads.tag = tags.id,
+					forums
+				WHERE MATCH
+					(posts.text) AGAINST (? IN BOOLEAN MODE)
+					AND posts.threadid = threads.id
+					AND threads.forumid = forums.id
+					AND threads.deleted = 0
+					AND posts.deleted = 0
+					'.($this->tag > 0 ? 'AND threads.tag = ?' : '').'
+					AND forums.boardid = ?
+					GROUP BY threads.id
+			)
+			ORDER BY score DESC'
+			);
+			$stm->bindString($this->search);
+			$stm->bindString($this->search);
+			$this->tag > 0 && $stm->bindInteger($this->tag);
+			$stm->bindInteger($this->Board->getId());
+			$stm->bindString($this->search);
+			$stm->bindString($this->search);
+			$this->tag > 0 && $stm->bindInteger($this->tag);
+			$stm->bindInteger($this->Board->getId());
+			$result = $stm->getRowSet()->toArray();
+			$this->ObjectCache->addObject('LL:Search:'.$this->Board->getId().':'.$this->tag.':'.sha1($this->search), $result, 10*60);
+			}
 		}
 	catch (DBNoDataException $e)
 		{
+		$result = array();
 		$this->showWarning('Leider nichts gefunden');
 		}
+
+	$this->threads = count($result);
 
 	return $result;
 	}
@@ -223,13 +226,15 @@ protected function sendForm()
 	{
 	$this->setValue('title', 'Suche nach &quot;'.htmlspecialchars($this->search).'&quot;');
 
-	$params = ';search='.urlencode($this->search).';submit=;tag='.$this->tag;
+	$threads = $this->ThreadList->getList(
+			array_slice(
+				$this->getResult(),
+				$this->thread,
+				$this->Settings->getValue('max_threads')
+				)
+				);
 
-	$next = '&nbsp;<a href="?page=Search;id='.$this->Board->getId().';thread='.($this->Settings->getValue('max_threads')+$this->thread).$params.'">&#187;</a>';
-
-	$last = ($this->thread > 0 ? '<a href="?page=Search;id='.$this->Board->getId().';thread='.nat($this->thread-$this->Settings->getValue('max_threads')).$params.'">&#171;</a>' : '');
-
-	$threads = $this->ThreadList->getList($this->getResult());
+	$pages = $this->getPages();
 
 	if (count($this->warning) == 0)
 		{
@@ -255,11 +260,13 @@ protected function sendForm()
 				<td class="title">Forum</td>
 			</tr>
 			<tr>
-				<td class="pages" colspan="6">'.$last.$next.'&nbsp;</td>
+				<td class="pages" colspan="5">'.$pages.'&nbsp;</td>
+				<td class="pages">Ergebnis '.($this->thread+1).' bis '.($this->thread+$this->Settings->getValue('max_threads')).' von '.$this->threads.'</td>
 			</tr>
 			'.$threads.'
 			<tr>
-				<td class="pages" colspan="6">'.$last.$next.'&nbsp;</td>
+				<td class="pages" colspan="5">'.$pages.'&nbsp;</td>
+				<td class="pages">Ergebnis '.($this->thread+1).' bis '.($this->thread+$this->Settings->getValue('max_threads')).' von '.$this->threads.'</td>
 			</tr>
 		</table>
 		';
@@ -268,6 +275,58 @@ protected function sendForm()
 		}
 
 	$this->showForm();
+	}
+
+protected function getPages()
+	{
+	$params = ';search='.urlencode($this->search).';submit=;tag='.$this->tag;
+	$pages = '';
+
+	if ($this->thread > ($this->Settings->getValue('max_threads')))
+		{
+		$pages .= '<a href="?page='.$this->getName().';id='.$this->Board->getId().$params.'">&laquo;</a>';
+		}
+
+	if ($this->thread > 0)
+		{
+		$pages .= ' <a href="?page='.$this->getName().';id='.$this->Board->getId().$params.';thread='.nat($this->thread-$this->Settings->getValue('max_threads')).'">&lsaquo;</a>';
+		}
+
+	for ($i = 0; $i < ($this->threads / $this->Settings->getValue('max_threads')) && ($this->threads / $this->Settings->getValue('max_threads')) > 1; $i++)
+		{
+		if ($this->thread < $this->Settings->getValue('max_threads') * ($i-9))
+			{
+			$i = $this->Settings->getValue('max_threads') * ($i-4);
+			continue;
+			}
+		elseif($this->thread > $this->Settings->getValue('max_threads') * ($i+9))
+			{
+			continue;
+			}
+
+		if ($this->thread == ($this->Settings->getValue('max_threads') * $i))
+			{
+			$pages .= ' <strong>'.($i+1).'</strong>';
+			}
+		else
+			{
+			$pages .= ' <a href="?page='.$this->getName().';id='.$this->Board->getId().$params.';thread='.($this->Settings->getValue('max_threads') * $i).'">'.($i+1).'</a>';
+			}
+		}
+
+	if ($this->threads > $this->Settings->getValue('max_threads')+$this->thread)
+		{
+		$pages .= ' <a href="?page='.$this->getName().';id='.$this->Board->getId().$params.';thread='.($this->Settings->getValue('max_posts')+$this->thread).'">&rsaquo;</a>';
+		}
+
+	$lastpage = $this->Settings->getValue('max_threads') *nat($this->threads / $this->Settings->getValue('max_threads'));
+
+	if ($this->thread < $lastpage-$this->Settings->getValue('max_threads'))
+		{
+		$pages .= ' <a href="?page='.$this->getName().';id='.$this->Board->getId().$params.';thread='.$lastpage.'">&raquo;</a>';
+		}
+
+	return $pages;
 	}
 
 
