@@ -99,7 +99,7 @@ public function prepare()
 					'.$data['realname'].'
 					'.($this->User->isLevel(User::ROOT) ? '(<a href="mailto:'.$data['email'].'">'.$data['email'].'</a>)' : '').'
 				</td>
-				<td class="main" rowspan="7">
+				<td class="main" rowspan="9">
 					<div style="height:100px;width:150px;overflow:hidden;">'.$avatar.'</div>
 				</td>
 			</tr>
@@ -131,7 +131,7 @@ public function prepare()
 				<td class="main" style="vertical-align:top;width:150px;">
 					Dabei seit:
 				</td>
-				<td class="main" colspan="2">
+				<td class="main">
 					'.$data['regdate'].'<br />
 					das sind '.$regdays.' Tage
 				</td>
@@ -140,7 +140,7 @@ public function prepare()
 				<td class="main" style="vertical-align:top;width:150px;">
 					Letzter Beitrag:
 				</td>
-				<td class="main" colspan="2">
+				<td class="main">
 					'.$data['lastpost'].'<br />
 					das war vor '.$lastpostdays.' Tagen
 				</td>
@@ -149,7 +149,7 @@ public function prepare()
 				<td class="main" style="vertical-align:top;width:150px;">
 					Beitr&auml;ge:
 				</td>
-				<td class="main" colspan="2">
+				<td class="main">
 					'.$data['posts'].'<br />
 					das sind '.$postsperday.' pro Tag
 				</td>
@@ -158,12 +158,12 @@ public function prepare()
 				<td class="main" style="vertical-align:top;width:150px;">
 					Freier Text
 				</td>
-				<td class="main" colspan="2">
+				<td class="main">
 					'.$data['text'].'
 				</td>
 			</tr>
 			<tr>
-				<td class="main" colspan="3">
+				<td class="main" colspan="2">
 					<a href="?page=UserRecent;id='.$this->Board->getId().';user='.$this->id.'" rel="nofollow"><span class="button">aktuelle Beiträge</span></a>
 					'.($this->User->isOnline() ? '<a href="?page=NewPrivateThread;id='.$this->Board->getId().';recipients='.$data['name'].'"><span class="button">Neues privates Thema</span></a>' : '').'
 					'.($this->User->isLevel(User::ROOT) ? '<a href="?page=DeleteUser;id='.$this->Board->getId().';user='.$this->id.'"><span class="button">Benutzerkonto löschen</span></a>' : '')
