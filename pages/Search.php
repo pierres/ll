@@ -197,7 +197,8 @@ private function getResult()
 					AND forums.boardid = ?
 					GROUP BY threads.id
 			)
-			ORDER BY score DESC'
+			ORDER BY score DESC
+			LIMIT 1000'
 			);
 			$stm->bindString($this->search);
 			$stm->bindString($this->search);
