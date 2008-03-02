@@ -198,7 +198,7 @@ private function getResult()
 					GROUP BY threads.id
 			)
 			ORDER BY score DESC
-			LIMIT 1000'
+			LIMIT 500'
 			);
 			$stm->bindString($this->search);
 			$stm->bindString($this->search);
@@ -209,7 +209,11 @@ private function getResult()
 			$this->tag > 0 && $stm->bindInteger($this->tag);
 			$stm->bindInteger($this->Board->getId());
 			$result = $stm->getRowSet()->toArray();
-			$this->ObjectCache->addObject('LL:Search:'.$this->Board->getId().':'.$this->tag.':'.sha1($this->search), $result, 10*60);
+			$this->ObjectCache->addObject('LL:Search:'.$this->Board->getId().':'.$this->tag.':'.sha1($this->search), gzcompress(serialize($result)), 5*60);
+			}
+		else
+			{
+			$result = unserialize(gzuncompress($result));
 			}
 		}
 	catch (DBNoDataException $e)
