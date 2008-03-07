@@ -118,7 +118,7 @@ private function getResult()
 	{
 	try
 		{
-		if (!($result = $this->ObjectCache->getObject('LL:Search:'.$this->Board->getId().':'.$this->tag.':'.sha1($this->search))))
+		if (!($result = $this->PersistentCache->getObject('LL:Search:'.$this->Board->getId().':'.$this->tag.':'.$this->search)))
 			{
 			$stm = $this->DB->prepare
 			('
@@ -198,7 +198,7 @@ private function getResult()
 					GROUP BY threads.id
 			)
 			ORDER BY score DESC
-			LIMIT 500'
+			LIMIT 1000'
 			);
 			$stm->bindString($this->search);
 			$stm->bindString($this->search);
@@ -209,11 +209,7 @@ private function getResult()
 			$this->tag > 0 && $stm->bindInteger($this->tag);
 			$stm->bindInteger($this->Board->getId());
 			$result = $stm->getRowSet()->toArray();
-			$this->ObjectCache->addObject('LL:Search:'.$this->Board->getId().':'.$this->tag.':'.sha1($this->search), gzcompress(serialize($result)), 5*60);
-			}
-		else
-			{
-			$result = unserialize(gzuncompress($result));
+			$this->PersistentCache->addObject('LL:Search:'.$this->Board->getId().':'.$this->tag.':'.$this->search, $result, 3*60*60);
 			}
 		}
 	catch (DBNoDataException $e)

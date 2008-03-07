@@ -17,15 +17,8 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-interface IObjectCache {
 
-public function addObject($key, $object, $ttl = 0);
-
-public function getObject($key);
-
-}
-
-class ObjectCache implements IObjectCache{
+class ObjectCache implements ICache{
 
 private $cache = null;
 
@@ -57,7 +50,7 @@ public function getObject($key)
 
 }
 
-class NOOPObjectCache implements IObjectCache{
+class NOOPObjectCache implements ICache{
 
 public function addObject($key, $object, $ttl = 0)
 	{
@@ -70,7 +63,7 @@ public function getObject($key)
 	}
 }
 
-class APCObjectCache implements IObjectCache{
+class APCObjectCache implements ICache{
 
 public function addObject($key, $object, $ttl = 0)
 	{
@@ -83,7 +76,7 @@ public function getObject($key)
 	}
 }
 
-class XCacheObjectCache implements IObjectCache{
+class XCacheObjectCache implements ICache{
 
 public function addObject($key, $object, $ttl = 0)
 	{
