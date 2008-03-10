@@ -191,7 +191,7 @@ $body =
 	</table>
 	';
 
-$this->setValue('title', $this->Board->getName());
+$this->setValue('title', 'Übersicht');
 $this->setValue('body', $body);
 }
 
