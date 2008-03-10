@@ -70,8 +70,6 @@ private function setTag()
 		$stm->close();
 		$this->addHidden('tag', '0');
 		}
-
-	$this->requires('tag');
 	}
 
 protected function checkForm()
@@ -87,7 +85,14 @@ protected function checkForm()
 		$this->thread = 0;
 		}
 
-	$this->tag = $this->Io->getInt('tag');
+	try
+		{
+		$this->tag = $this->Io->getInt('tag');
+		}
+	catch (IoRequestException $e)
+		{
+		$this->tag = 0;
+		}
 
 	try
 		{
