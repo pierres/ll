@@ -116,7 +116,7 @@ function getExtraSmiley(text)
 				<a href="javascript:getSmiley(';D')"><img src="images/smilies/grin.gif" alt="grin" class="smiley" /></a>
 				<a href="javascript:getSmiley('::)')"><img src="images/smilies/rolleyes.gif" alt="rolleyes" class="smiley" /></a>
 				<a href="javascript:getSmiley(':-)')"><img src="images/smilies/smiley.gif" alt="smiley" class="smiley" /></a>
-				<a href="javascript:getSmiley(':-\\')"><img src="images/smilies/undecided.gif" alt="undecided" class="smiley" /></a>
+				<a href="javascript:getSmiley(':-\\\')"><img src="images/smilies/undecided.gif" alt="undecided" class="smiley" /></a>
 				<a href="javascript:getSmiley(':-X')"><img src="images/smilies/lipsrsealed.gif" alt="lipsrsealed" class="smiley" /></a>
 				<a href="javascript:getSmiley(':-[')"><img src="images/smilies/embarassed.gif" alt="embarassed" class="smiley" /></a>
 				<a href="javascript:getSmiley(':-*')"><img src="images/smilies/kiss.gif" alt="kiss" class="smiley" /></a>
