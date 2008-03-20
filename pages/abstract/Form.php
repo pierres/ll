@@ -124,14 +124,28 @@ private function checkAntiSpamHash()
 			}
 		catch (IoRequestException $e)
 			{
-			sleep($this->Settings->getValue('antispam_wait'));
-			$this->showFailure('Ungültige Formulardaten empfangen. Stelle sicher, daß Cookies für diese Domain angenommen werden.');
+			try
+				{
+				$time = $this->Io->getInt('AlternateAntiSpamTime');
+
+				if ($this->Io->isEmpty('AlternateAntiSpamHashHead'))
+					{
+					return $this->showWarning('Bitte den Sicherheitscode bestätigen!');
+					}
+
+				$hash = $this->Io->getHex('AlternateAntiSpamHashHead').$this->Io->getHex('AlternateAntiSpamHashTail');
+				}
+			catch (IoRequestException $e)
+				{
+				sleep($this->Settings->getValue('antispam_wait'));
+				$this->showFailure('Ungültige Formulardaten empfangen. Stelle sicher, daß Cookies für diese Domain angenommen werden.');
+				}
 			}
 
 		if ($hash != sha1($time.$this->Settings->getValue('antispam_hash')))
 			{
 			sleep($this->Settings->getValue('antispam_wait'));
-			$this->showFailure('Manipulierte Formulardaten empfangen. Geh weg!');
+			$this->showFailure('Fehlerhafte Formulardaten empfangen. Überprüfe den Sicherheitscode!');
 			}
 
 		if ($now - $time > $this->Settings->getValue('antispam_timeout'))
@@ -150,8 +164,41 @@ private function addAntiSpamHash()
 	{
 	if ($this->isCheckAntiSpamHash && !$this->User->isOnline())
 		{
-		$this->addOutput('<div style="background-image:url(?page=FunnyDot);background-repeat:no-repeat;visibility:hidden;">&nbsp;</div>');
+		$this->addAlternateAntiSpamHash();
+
+		$this->appendOutput('<div style="background-image:url(?page=FunnyDot);background-repeat:no-repeat;visibility:hidden;">&nbsp;</div>');
 		}
+	}
+
+private function addAlternateAntiSpamHash()
+	{
+	try
+		{
+		$hashHead = $this->Io->getHex('AlternateAntiSpamHashHead');
+
+		if ($this->Io->isEmptyString('AlternateAntiSpamHashHead'))
+			{
+			throw new IoRequestException('AlternateAntiSpamHashHead');
+			}
+
+		$time = $this->Io->getInt('AlternateAntiSpamTime');
+		}
+	catch (IoRequestException $e)
+		{
+		$hashHead = '';
+		$time = time();
+		}
+
+	$hash = sha1($time.$this->Settings->getValue('antispam_hash'));
+	$this->Io->setCookie('AlternateAntiSpamTime', $time);
+	$this->Io->setCookie('AlternateAntiSpamHashTail', substr($hash, 4));
+
+
+	$name = 'AlternateAntiSpamHashHead';
+	$description = 'Sicherheitscode bestätigen: <strong>'.substr($hash, 0, 4).'</strong>';
+
+	$this->addElement($name, '<div style="display:none;"><label for="'.$this->getNextElementId().'">'.$description.'</label><br /><input id="'.$this->getNextElementId().'" type="text" name="'.$name.'" size="4" value="'.$hashHead.'" /></div>');
+	$this->descriptions[$name] = $description;
 	}
 
 protected function isCheckAntiSpamHash($bool = true)
