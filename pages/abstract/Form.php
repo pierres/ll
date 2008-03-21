@@ -166,7 +166,7 @@ private function addAntiSpamHash()
 		{
 		$this->addAlternateAntiSpamHash();
 
-		$this->appendOutput('<div style="background-image:url(?page=FunnyDot);background-repeat:no-repeat;visibility:hidden;">&nbsp;</div>');
+		$this->appendOutput('<div style="background-image:url(?page=FunnyDot);background-repeat:no-repeat;visibility:hidden;width:1px;height:1px;">&nbsp;</div>');
 		}
 	}
 
