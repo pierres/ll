@@ -38,11 +38,19 @@ public function __construct()
 		{
 		try
 			{
-			$board = $this->getBoard($this->Io->getInt('id'));
+			$this->id = $this->Io->getInt('id');
+			$board = $this->getBoard($this->id);
 			}
 		catch (Exception $e)
 			{
-			$board = $this->getBoard(1);
+			try
+				{
+				$board = $this->getBoard('1');
+				}
+			catch (Exception $e)
+				{
+				die('FATAL ERROR: board not found!');
+				}
 			}
 		}
 
