@@ -45,7 +45,7 @@ public function __construct()
 			{
 			try
 				{
-				$board = $this->getBoard('1');
+				$board = $this->getBoard(1);
 				}
 			catch (Exception $e)
 				{
