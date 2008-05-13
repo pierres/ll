@@ -111,7 +111,8 @@ private function query($query)
 
 public function getRowSet($query)
 	{
-	return new DBResult($this->query($query));
+	$result = $this->query($query);
+	return new DBResult($result);
 	}
 
 public function getRow($query)
