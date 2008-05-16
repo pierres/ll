@@ -89,15 +89,6 @@ protected function checkForm()
 			$name = trim($tag['name']);
 			$this->showWarning('Kein Tag-Name angegeben.');
 			}
-		else
-			{
-			$name = trim($tag['name']);
-			if (empty($name))
-				{
-				$name = trim($tag['name']);
-				$this->showWarning('Kein Tag-Name angegeben.');
-				}
-			}
 		}
 	}
 

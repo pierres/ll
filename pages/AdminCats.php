@@ -102,17 +102,7 @@ protected function checkForm()
 
 		if (empty($cat['name']))
 			{
-			$name = trim($cat['name']);
 			$this->showWarning('Kein Kategorie-Name angegeben.');
-			}
-		else
-			{
-			$name = trim($cat['name']);
-			if (empty($name))
-				{
-				$name = trim($cat['name']);
-				$this->showWarning('Kein Kategorie-Name angegeben.');
-				}
 			}
 		}
 	}

@@ -97,7 +97,7 @@ public function getHtml($name)
 
 public function isRequest($name)
 	{
-	return isset($this->request[$name]);
+	return isset($this->request[$name]) && is_unicode($this->request[$name]);
 	}
 
 public function isEmpty($name)
@@ -107,17 +107,21 @@ public function isEmpty($name)
 
 public function isEmptyString($name)
 	{
-	$this->request[$name] = trim($this->request[$name]);
-	return empty($this->request[$name]);
+	if(!$this->isEmpty($name))
+		{
+		$request = trim($this->request[$name]);
+		return empty($request);
+		}
+	else
+		{
+		return true;
+		}
 	}
-/**
-* FIXME: Prüfe Seiteneffekt bei leerem Rückgabewert
-*/
+
 public function getString($name)
 	{
-	if (isset($this->request[$name]))
+	if ($this->isRequest($name))
 		{
-		/** FIXME: trim wird hier evtl. nicht erwartet! */
 		$this->request[$name] = trim($this->request[$name]);
 		return $this->request[$name];
 		}
@@ -154,6 +158,16 @@ public function getArray($name)
 	{
 	if(isset($this->request[$name]) && is_array($this->request[$name]))
 		{
+		foreach($this->request[$name] as $key => $value)
+			{
+			if (!is_unicode($value))
+				{
+				throw new IoRequestException($name);
+				}
+
+			$this->request[$name][$key] = trim($value);
+			}
+
 		return $this->request[$name];
 		}
 	else
@@ -164,7 +178,7 @@ public function getArray($name)
 
 public function getLength($name)
 	{
-	return (empty($this->request[$name]) ? 0 : strlen($this->getString($name)));
+	return $this->isEmpty($name) ? 0 : strlen($this->getString($name));
 	}
 /** FIXME: XSS->alle Zeilenumbrüche entfernen */
 public function redirect($class, $param = '', $id = 0)

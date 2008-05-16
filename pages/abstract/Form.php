@@ -436,9 +436,9 @@ protected function requires($name)
 
 protected function setLength($name, $min, $max)
 	{
-	if ($this->isSubmit() && $this->Io->isRequest($name))
+	if ($this->isSubmit() && !$this->Io->isEmptyString($name))
 		{
-		$length = strlen(htmlspecialchars($this->Io->getString($name)));
+		$length = strlen($this->Io->getHTML($name));
 
 		if ($length > 0 && $length < $min)
 			{
