@@ -71,8 +71,6 @@ public function __construct()
 								'image/gif', 'image/jpeg', 'image/png',
 								'application/pdf', 'application/x-bzip2', 'application/x-gzip', 'application/x-zip');
 
-	$this->config['id_key']				= '';
-
 	if (file_exists('LocalSettings.php'))
 		{
 		include ('LocalSettings.php');

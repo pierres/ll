@@ -73,7 +73,6 @@ private static $availablePages = array
 	'GetAttachmentThumb' => 'pages/GetAttachmentThumb.php',
 	'GetAvatar' => 'pages/GetAvatar.php',
 	'GetCss' => 'pages/GetCss.php',
-	'GetId' => 'pages/GetId.php',
 	'GetImage' => 'pages/GetImage.php',
 	'GetLLCodes' => 'pages/GetLLCodes.php',
 	'GetOpenSearch' => 'pages/GetOpenSearch.php',

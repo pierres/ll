@@ -443,35 +443,11 @@ private function makeFTPLink($matches)
 	return $this->makeNamedFTPLink($matches, true);
 	}
 
-/** @TODO: this is evil! */
 private function isLocalHost($url)
 	{
 	$request = parse_url($url);
 
-	if ($this->Io->getHost() == $request['host'])
-		{
-		return true;
-		}
-
-	$time = time();
-
-	if (getenv('SERVER_ADDR') == gethostbyname($request['host']))
-		{
-		try
-			{
-			$result = $this->Io->getRemoteFile($request['scheme'].'://'.$request['host'].(empty($request['port']) ? '' : ':'.$request['port']).'/?page=GetId;key='.$time);
-
-			if ($result['content'] == sha1($this->Settings->getValue('id_key').$time))
-				{
-				return true;
-				}
-			}
-		catch (RuntimeException $e)
-			{
-			}
-		}
-
-	return false;
+	return ($this->Io->getHost() == $request['host']);
 	}
 
 private function makeLocalUrl($url)
@@ -494,7 +470,6 @@ private function makeNumberedLink($matches)
 	$name = $this->linkNumber;
 	$this->linkNumber++;
 
-	/** @FIXME: Does not (allways) work with virtual hosts */
 	if ($this->isLocalHost($url))
 		{
 		$target = ' class="link"';
@@ -525,7 +500,6 @@ private function makeNamedLink($matches, $cutName = false)
 	$url = $matches[1];
 	$name = $matches[2];
 
-	/** @FIXME: Does not (allways) work with virtual hosts */
 	if ($this->isLocalHost($url))
 		{
 		$target = ' class="link"';
