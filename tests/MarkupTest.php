@@ -323,32 +323,6 @@ public function testBug131()
 	$this->assertEquals($out, $this->Markup->toHtml($in));
 	}
 
-public function testBug165()
-	{
-	// this might be ugly...
-	$_REQUEST['test_bad'] = 'ab'.chr(27);
-	$_REQUEST['test_good'] = 'abc';
-
-	try
-		{
-		$this->Io->getString('test_bad');
-		$this->fail('test_bad should not be accepted!');
-		}
-	catch (IoRequestException $e)
-		{
-		}
-
-	try
-		{
-		$test_good = $this->Io->getString('test_good');
-		$this->assertEquals($test_good, $_REQUEST['test_good']);
-		}
-	catch (IoRequestException $e)
-		{
-		$this->fail($e);
-		}
-	}
-
 }
 
 ?>
