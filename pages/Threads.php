@@ -74,36 +74,8 @@ try
 catch (DBException $e)
 	{
 	$stm->close();
-	// Falls das Forum nicht (mehr) im aktuellen Board ist versuchen wir es zu finden.
-	// (und wir stellen sicher, daß wir nicht auf die gleiche Seite weiterleiten.)
-	try
-		{
-		$stm = $this->DB->prepare
-			('
-			SELECT
-				forums.boardid,
-				boards.host
-			FROM
-				forums,
-				boards
-			WHERE
-				forums.id = ?
-				AND forums.boardid != ?
-				AND forums.boardid = boards.id'
-			);
-		$stm->bindInteger($this->forum);
-		$stm->bindInteger($this->Board->getId());
-		$board = $stm->getRow();
-		$stm->close();
-
-		$this->Io->redirectToUrl('http'.(!getenv('HTTPS') ? '' : 's').'://'.$board['host'].'/?page=Threads;id='.$board['boardid'].';forum='.$this->forum.';thread='.$this->thread);
-		}
-	catch (DBException $e)
-		{
-		$stm->close();
-		$this->Io->setStatus(Io::NOT_FOUND);
-		$this->showWarning('Forum nicht gefunden.');
-		}
+	$this->Io->setStatus(Io::NOT_FOUND);
+	$this->showWarning('Forum nicht gefunden.');
 	}
 
 $this->ismod = $this->User->isGroup($forum['mods']) || $this->User->isMod();

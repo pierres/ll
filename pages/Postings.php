@@ -80,39 +80,8 @@ try
 catch (DBNoDataException $e)
 	{
 	$stm->close();
-	// Falls das Thema nicht (mehr) im aktuellen Board ist versuchen wir es zu finden.
-	// (und wir stellen sicher, daß wir nicht auf die gleiche Seite weiterleiten.)
-	try
-		{
-		$stm = $this->DB->prepare
-			('
-			SELECT
-				forums.boardid,
-				boards.host
-			FROM
-				threads,
-				forums,
-				boards
-			WHERE
-				threads.id = ?
-				AND threads.deleted = 0
-				AND forums.id = threads.forumid
-				AND forums.boardid != ?
-				AND boards.id = forums.boardid'
-			);
-		$stm->bindInteger($this->thread);
-		$stm->bindInteger($this->Board->getId());
-		$board = $stm->getRow();
-		$stm->close();
-
-		$this->Io->redirectToUrl('http'.(!getenv('HTTPS') ? '' : 's').'://'.$board['host'].'/?page=Postings;id='.$board['boardid'].';thread='.$this->thread.';post='.$this->post);
-		}
-	catch (DBNoDataException $e)
-		{
-		$stm->close();
-		$this->Io->setStatus(Io::NOT_FOUND);
-		$this->showWarning('Thema nicht gefunden.');
-		}
+	$this->Io->setStatus(Io::NOT_FOUND);
+	$this->showWarning('Thema nicht gefunden.');
 	}
 
 $this->ismod = $this->User->isGroup($thread['mods']) || $this->User->isMod();
