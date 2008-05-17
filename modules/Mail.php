@@ -71,7 +71,7 @@ public function setText($text)
 
 public function validateMail($mail)
 	{
-	$name 		= '[a-z0-9](?:[a-z0-9_\-\.]*[a-z0-9])?';
+	$name 		= '[a-z0-9](?:[a-z0-9_\-\.]*)?';
 	$tld 		= '[a-z]{2,5}';
 	$domain		=  $name.'\.'.$tld;
 
