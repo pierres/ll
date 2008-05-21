@@ -17,6 +17,7 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
+
 function hexVal($in)
 	{
 	$result = preg_replace('/[^0-9a-fA-F]/', '', $in);
@@ -182,19 +183,37 @@ function resizeImage($image, $type, $size)
 
 function getTypeFromContent($content)
 	{
-	$finfo = finfo_open(FILEINFO_MIME);
-	$type = finfo_buffer($finfo, $content);
-	finfo_close($finfo);
-	
+	if (function_exists('finfo_open'))
+		{
+		$finfo = finfo_open(FILEINFO_MIME);
+		$type = finfo_buffer($finfo, $content);
+		finfo_close($finfo);
+		}
+	elseif (function_exists('mime_content_type'))
+		{
+		$type = mime_content_type($content);
+		}
+	else
+		{
+		$type = 'application/octet-stream';
+		}
+
 	return $type;
 	}
 
 function getTypeFromFile($file)
 	{
-	$finfo = finfo_open(FILEINFO_MIME);
-	$type = finfo_file($finfo, $file);
-	finfo_close($finfo);
-	
+	if (function_exists('finfo_open'))
+		{
+		$finfo = finfo_open(FILEINFO_MIME);
+		$type = finfo_file($finfo, $file);
+		finfo_close($finfo);
+		}
+	else
+		{
+		$type = getTypeFromContent(file_get_contents($file));
+		}
+
 	return $type;
 	}
 
