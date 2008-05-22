@@ -191,7 +191,12 @@ function getTypeFromContent($content)
 		}
 	elseif (function_exists('mime_content_type'))
 		{
-		$type = mime_content_type($content);
+		$tmp = ini_get('upload_tmp_dir');
+		$tmp = empty($tmp) ? '/tmp' : $tmp;
+		$file = tempnam($tmp.'/', 'mime_content_type-');
+		file_put_contents($file, $content);
+		$type = mime_content_type($file);
+		unlink($file);
 		}
 	else
 		{
@@ -209,9 +214,13 @@ function getTypeFromFile($file)
 		$type = finfo_file($finfo, $file);
 		finfo_close($finfo);
 		}
+	elseif (function_exists('mime_content_type'))
+		{
+		$type = mime_content_type($file);
+		}
 	else
 		{
-		$type = getTypeFromContent(file_get_contents($file));
+		$type = 'application/octet-stream';
 		}
 
 	return $type;
