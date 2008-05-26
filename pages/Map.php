@@ -17,12 +17,13 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
+
 class Map extends Page{
 
 
 public function prepare()
 	{
-	$this->setValue('title', 'Laber-Landkarte');
+	$this->setValue('title', 'Benutzer-Landkarte');
 
 	$stm = $this->DB->prepare
 		('
@@ -57,7 +58,7 @@ public function prepare()
 		<table class="frame">
 			<tr>
 				<td class="title">
-					Laber-Landkarte
+					Benutzer-Landkarte
 				</td>
 			</tr>
 			<tr>

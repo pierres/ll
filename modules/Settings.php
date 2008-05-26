@@ -25,10 +25,11 @@ private $config = array();
 
 public function __construct()
 	{
+	$this->config['default_id']			= 1;
+
 	$this->config['locale']				= 'de_DE.utf8';
 	$this->config['timezone']			= 'Europe/Berlin';
 
-	$this->config['domain']				= 'localhost';
 	$this->config['email']				= 'root@localhost';
 	$this->config['sql_database'] 			= 'll';
 	$this->config['sql_user']			= '';

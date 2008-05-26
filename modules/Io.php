@@ -221,7 +221,7 @@ private function curlInit($url)
 	curl_setopt($curl, CURLOPT_MAXREDIRS, 3);
 	curl_setopt($curl, CURLOPT_TIMEOUT, 5);
 	curl_setopt($curl, CURLOPT_ENCODING, '');
-	curl_setopt($curl, CURLOPT_USERPWD, 'anonymous:support@laber-land.de');
+	curl_setopt($curl, CURLOPT_USERPWD, 'anonymous:'.$this->Settings->getValue('email'));
 
 	return $curl;
 	}

@@ -214,7 +214,17 @@ private function sendOutput()
 		$this->variables['user'] = $this->User->getName();
 		}
 
-	$this->setValue('body', $this->getValue('body').'<div style="text-align:right;font-size:8px;margin-top:3px;"><a href="?page=Privacy;id='.$this->Board->getId().'">Datenschutz</a> :: <a href="?page=Impressum;id='.$this->Board->getId().'">Impressum</a></div>');
+	$this->setValue('body', $this->getValue('body').
+		'
+		<div style="text-align:right;font-size:10px;margin-top:5px;">
+			<a href="?page=Privacy;id='.$this->Board->getId().'">Datenschutz</a> ::
+			<a href="?page=Impressum;id='.$this->Board->getId().'">Impressum</a>
+		</div>
+		<div style="text-align:right;font-size:10px;margin-top:30px;">
+			Powered by <a href="http://www.laber-land.de">LL 3.2</a><br />
+			&copy; Copyright 2002&ndash;2008 Pierre Schmitz
+		</div>
+		');
 
 	if ($this->Settings->getValue('debug') && function_exists('xdebug_time_index'))
 		{
