@@ -17,9 +17,11 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
+
 class AdminCreateBoard extends Form{
 
 private $name = '';
+private $host = '';
 
 protected function setForm()
 	{
@@ -37,14 +39,19 @@ protected function setForm()
 
 	$this->addSubmit('Erstellen');
 
-	$this->addText('name', 'Der Name des Boards', '', 25);
+	$this->addText('name', 'Der Name des Boards', '', 50);
 	$this->requires('name');
-	$this->setLength('name', 3, 25);
+	$this->setLength('name', 3, 100);
+
+	$this->addText('host', 'Host/Domain', '', 50);
+	$this->requires('host');
+	$this->setLength('host', 6, 100);
 	}
 
 protected function checkForm()
 	{
 	$this->name = $this->Io->getString('name');
+	$this->host = $this->Io->getString('host');
 
 	try
 		{
@@ -56,12 +63,14 @@ protected function checkForm()
 				boards
 			WHERE
 				name = ?
+				OR host = ?
 			');
 		$stm->bindString(htmlspecialchars($this->name));
+		$stm->bindString(htmlspecialchars($this->host));
 		$stm->getColumn();
 		$stm->close();
 
-		$this->showWarning('Name bereits vergeben!');
+		$this->showWarning('Name oder Host/Domain bereits vergeben!');
 		}
 	catch (DBNoDataException $e)
 		{
@@ -79,14 +88,13 @@ protected function sendForm()
 	<meta http-equiv="content-type" content="application/xhtml+xml; charset=UTF-8" />
 	<meta http-equiv="content-language" content="de" />
 	<meta http-equiv="expires" content="120" />
-	<meta name="description" content="Laber-Land - Forengemeinschaft" />
-	<meta name="keywords" content="<!-- title -->,<!-- name --> ,laber-land,pierre,schmitz,forum,foren,board,bulletin,kostenlos,webmaster,werbefrei,ll3" />
+	<meta name="keywords" content="<!-- title -->,<!-- name -->" />
 	<meta name="title" content="<!-- name --> <!-- title -->" />
-	<meta name="author" content="Pierre Schmitz" />
 	<meta name="robots" content="<!-- meta.robots -->" />
 	<meta name="revisit-after" content="3 days" />
 	<link rel="shortcut icon" href="favicon.ico" />
 	<link rel="stylesheet" media="screen" href="?page=GetCss;id=<!-- id -->" />
+	<link rel="alternate" type="application/atom+xml" title="<!-- name -->" href="?page=GetRecent;id=<!-- id -->" />
 	<title>
 		<!-- name --> :: <!-- title -->
 	</title>
@@ -513,6 +521,7 @@ pre		{
 		padding:5px;
 		overflow:auto;
 		width:600px;
+		max-height:600px;
 		text-align:left;
 		}
 
@@ -612,116 +621,25 @@ eot;
 			admin = ?,
 			name =  ?,
 			regdate = ?,
-			html = \'\',
-			css = \'\',
-			host = \'\''
-		);
+			html = ?,
+			css = ?,
+			host = ?,
+			admin_name = \'\',
+			admin_address = \'\',
+			admin_email = \'\',
+			admin_tel = \'\',
+			description = \'\'
+		');
 	$stm->bindInteger($this->User->getId());
 	$stm->bindString(htmlspecialchars($this->name));
 	$stm->bindInteger(time());
+	$stm->bindString($html);
+	$stm->bindString($css);
+	$stm->bindString(htmlspecialchars($this->host));
 	$stm->execute();
 	$stm->close();
 
 	$id = $this->DB->getInsertId();
-	$html = str_replace('<!-- id -->', $id, $html);
-
-	/** @TODO: remove hardcoded domain name */
-	$stm = $this->DB->prepare
-		('
-		UPDATE
-			boards
-		SET
-			host = ?,
-			html = ?,
-			css = ?
-		WHERE
-			id = ?'
-		);
-	$stm->bindString($id.'forum.laber-land.de');
-	$stm->bindString($html);
-	$stm->bindString($css);
-	$stm->bindInteger($id);
-	$stm->execute();
-	$stm->close();
-
-	$stm = $this->DB->prepare
-		('
-		INSERT INTO
-			cats
-		SET
-			name = \'Allgemeines\',
-			boardid = ?'
-		);
-	$stm->bindInteger($id);
-	$stm->execute();
-	$stm->close();
-
-	$cat = $this->DB->getInsertId();
-
-	$stm = $this->DB->prepare
-		('
-		INSERT INTO
-			forum_cat
-		SET
-			catid = ?,
-			forumid = 5,
-			position = 1
-		');
-	$stm->bindInteger($cat);
-	$stm->execute();
-	$stm->close();
-
-	$stm = $this->DB->prepare
-		('
-		INSERT INTO
-			forum_cat
-		SET
-			catid = ?,
-			forumid = 8,
-			position = 2
-		');
-	$stm->bindInteger($cat);
-	$stm->execute();
-	$stm->close();
-
-	$stm = $this->DB->prepare
-		('
-		INSERT INTO
-			forum_cat
-		SET
-			catid = ?,
-			forumid = 9,
-			position = 3
-		');
-	$stm->bindInteger($cat);
-	$stm->execute();
-	$stm->close();
-
-	$stm = $this->DB->prepare
-		('
-		INSERT INTO
-			forum_cat
-		SET
-			catid = ?,
-			forumid = 202,
-			position = 4
-		');
-	$stm->bindInteger($cat);
-	$stm->execute();
-	$stm->close();
-
-	$stm = $this->DB->prepare
-		('
-		INSERT INTO
-			forum_cat
-		SET
-			catid = ?,
-			forumid = 7,
-			position = 5
-		');
-	$stm->bindInteger($cat);
-	$stm->execute();
-	$stm->close();
 
 	$body =
 		'
@@ -747,8 +665,6 @@ eot;
 	$this->setValue('body', $body);
 	}
 
-
 }
-
 
 ?>
