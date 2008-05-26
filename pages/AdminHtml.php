@@ -40,7 +40,7 @@ protected function checkForm()
 
 	if (!preg_match('<!-- title -->', $this->Io->getString('html')))
 		{
-		$this->showWarning('Der body-Tag fehlt!');
+		$this->showWarning('Der title-Tag fehlt!');
 		}
 
 	if (!preg_match('<!-- menu -->', $this->Io->getString('html')))

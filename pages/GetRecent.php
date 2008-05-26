@@ -42,6 +42,10 @@ public function show()
 	if (!($content = $this->ObjectCache->getObject('LL:GetRecent:Atom:'.$id)))
 		{
 		!$this->init && $this->initDB();
+
+		$lastdate = 0;
+		$entries = '';
+
 		try
 			{
 			$stm = $this->DB->prepare
@@ -70,16 +74,13 @@ public function show()
 			$stm->bindInteger($this->Board->getId());
 			$result = $stm->getRowSet();
 
-			$lastdate = 0;
-			$entries = '';
-	
 			foreach($result as $thread)
 				{
 				if ($thread['firstdate'] > $lastdate)
 					{
 					$lastdate = $thread['firstdate'];
 					}
-	
+
 				$entries .=
 				'
 				<entry>
@@ -99,7 +100,7 @@ public function show()
 		catch (DBNoDataException $e)
 			{
 			}
-	
+
 		if (isset($stm))
 			{
 			$stm->close();

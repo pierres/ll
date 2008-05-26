@@ -95,6 +95,7 @@ protected function sendForm()
 	<link rel="shortcut icon" href="favicon.ico" />
 	<link rel="stylesheet" media="screen" href="?page=GetCss;id=<!-- id -->" />
 	<link rel="alternate" type="application/atom+xml" title="<!-- name -->" href="?page=GetRecent;id=<!-- id -->" />
+	<link rel="search" type="application/opensearchdescription+xml" href="?page=GetOpenSearch;id=<!-- id -->" title="<!-- name -->" />
 	<title>
 		<!-- name --> :: <!-- title -->
 	</title>
