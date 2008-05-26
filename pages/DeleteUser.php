@@ -81,6 +81,7 @@ protected function checkForm()
 	{
 	}
 
+/** TODO: move to AdminFunctinos */
 protected function sendForm()
 	{
 	if ($this->Io->getInt('confirm') == 1)
@@ -99,6 +100,17 @@ protected function sendForm()
 		$stm = $this->DB->prepare
 			('
 			DELETE FROM
+				avatars
+			WHERE
+				id = ?'
+			);
+		$stm->bindInteger($this->user);
+		$stm->execute();
+		$stm->close();
+
+		$stm = $this->DB->prepare
+			('
+			DELETE FROM
 				poll_voters
 			WHERE
 				userid = ?'
@@ -107,8 +119,6 @@ protected function sendForm()
 		$stm->execute();
 		$stm->close();
 
-	/** TODO: ggf. müssen dann die Links in posts auch gelöscht werden */
-	/*
 		$stm = $this->DB->prepare
 			('
 			DELETE FROM
@@ -119,7 +129,33 @@ protected function sendForm()
 		$stm->bindInteger($this->user);
 		$stm->execute();
 		$stm->close();
-	*/
+
+		$this->DB->execute
+			('
+			DELETE FROM
+				attachment_thumbnails
+			WHERE
+				id NOT IN (SELECT id FROM attachments)
+			');
+
+		$this->DB->execute
+			('
+			DELETE FROM
+				post_attachments
+			WHERE
+				attachment_id NOT IN (SELECT id FROM attachments)
+			');
+
+		$this->DB->execute
+			('
+			UPDATE
+				posts
+			SET
+				file = 0
+			WHERE
+				file = 1
+				AND id NOT IN (SELECT postid FROM post_attachments)
+			');
 
 		$stm = $this->DB->prepare
 			('
@@ -131,6 +167,28 @@ protected function sendForm()
 		$stm->bindInteger($this->user);
 		$stm->execute();
 		$stm->close();
+
+		/** Remove orphaned PrivateThreads */
+		try
+			{
+			$privateThreads = $this->DB->getColumnSet
+				('
+				SELECT
+					id
+				FROM
+					threads
+				WHERE
+					forumid = 0
+					AND id NOT IN (SELECT threadid FROM thread_user)
+				');
+			foreach ($privateThreads as $privateThread)
+				{
+				AdminFunctions::delThread($privateThread);
+				}
+			}
+		catch (DBNoDataException $e)
+			{
+			}
 
 		$stm = $this->DB->prepare
 			('

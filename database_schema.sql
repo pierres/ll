@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 26. Mai 2008 um 18:16
+-- Erstellungszeit: 26. Mai 2008 um 23:16
 -- Server Version: 5.0.51
 -- PHP-Version: 5.2.6
 
@@ -40,7 +40,7 @@ CREATE TABLE `attachments` (
 --
 
 CREATE TABLE `attachment_thumbnails` (
-  `id` int(10) unsigned NOT NULL auto_increment,
+  `id` int(10) unsigned NOT NULL,
   `name` varchar(200) NOT NULL default '',
   `size` int(10) unsigned NOT NULL default '0',
   `type` varchar(100) NOT NULL default '',
@@ -55,7 +55,7 @@ CREATE TABLE `attachment_thumbnails` (
 --
 
 CREATE TABLE `avatars` (
-  `id` int(10) unsigned NOT NULL auto_increment,
+  `id` int(10) unsigned NOT NULL,
   `name` varchar(200) NOT NULL default '',
   `size` int(10) unsigned NOT NULL default '0',
   `type` varchar(100) NOT NULL default '',

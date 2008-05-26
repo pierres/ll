@@ -112,6 +112,7 @@ public static function delPost($post)
 
 private static function removeThread($thread)
 	{
+	/** FIXME: redundant */
 	$stm = self::__get('DB')->prepare
 		('
 		DELETE FROM
