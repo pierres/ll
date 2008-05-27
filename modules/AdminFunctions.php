@@ -365,6 +365,17 @@ public static function delBoard($board)
 	$stm->bindInteger($board);
 	$stm->execute();
 	$stm->close();
+
+	$stm = self::__get('DB')->prepare
+		('
+		DELETE FROM
+			tags
+		WHERE
+			boardid = ?'
+		);
+	$stm->bindInteger($board);
+	$stm->execute();
+	$stm->close();
 	}
 
 /** TODO: Summary erstellen; Änderungen optimieren (nur falls nötig) */
@@ -663,6 +674,208 @@ public static function getUserName($id)
 	return $name;
 	}
 
+public static function delUser($id)
+	{
+	$stm = self::__get('DB')->prepare
+		('
+		DELETE FROM
+			users
+		WHERE
+			id = ?'
+		);
+	$stm->bindInteger($id);
+	$stm->execute();
+	$stm->close();
+
+	$stm = self::__get('DB')->prepare
+		('
+		DELETE FROM
+			avatars
+		WHERE
+			id = ?'
+		);
+	$stm->bindInteger($id);
+	$stm->execute();
+	$stm->close();
+
+	$stm = self::__get('DB')->prepare
+		('
+		DELETE FROM
+			poll_voters
+		WHERE
+			userid = ?'
+		);
+	$stm->bindInteger($id);
+	$stm->execute();
+	$stm->close();
+
+	$stm = self::__get('DB')->prepare
+		('
+		DELETE FROM
+			attachments
+		WHERE
+			userid = ?'
+		);
+	$stm->bindInteger($id);
+	$stm->execute();
+	$stm->close();
+
+	self::__get('DB')->execute
+		('
+		DELETE FROM
+			attachment_thumbnails
+		WHERE
+			id NOT IN (SELECT id FROM attachments)
+		');
+
+	self::__get('DB')->execute
+		('
+		DELETE FROM
+			post_attachments
+		WHERE
+			attachment_id NOT IN (SELECT id FROM attachments)
+		');
+
+	self::__get('DB')->execute
+		('
+		UPDATE
+			posts
+		SET
+			file = 0
+		WHERE
+			file = 1
+			AND id NOT IN (SELECT postid FROM post_attachments)
+		');
+
+	$stm = self::__get('DB')->prepare
+		('
+		DELETE FROM
+			thread_user
+		WHERE
+			userid = ?'
+		);
+	$stm->bindInteger($id);
+	$stm->execute();
+	$stm->close();
+
+	/** Remove orphaned PrivateThreads */
+	try
+		{
+		$privateThreads = self::__get('DB')->getColumnSet
+			('
+			SELECT
+				id
+			FROM
+				threads
+			WHERE
+				forumid = 0
+				AND id NOT IN (SELECT threadid FROM thread_user)
+			');
+		foreach ($privateThreads as $privateThread)
+			{
+			AdminFunctions::delThread($privateThread);
+			}
+		}
+	catch (DBNoDataException $e)
+		{
+		}
+
+	$stm = self::__get('DB')->prepare
+		('
+		DELETE FROM
+			threads_log
+		WHERE
+			userid = ?'
+		);
+	$stm->bindInteger($id);
+	$stm->execute();
+	$stm->close();
+
+	$stm = self::__get('DB')->prepare
+		('
+		DELETE FROM
+			user_group
+		WHERE
+			userid = ?'
+		);
+	$stm->bindInteger($id);
+	$stm->execute();
+	$stm->close();
+
+	$stm = self::__get('DB')->prepare
+		('
+		DELETE FROM
+			password_key
+		WHERE
+			id = ?'
+		);
+	$stm->bindInteger($id);
+	$stm->execute();
+	$stm->close();
+
+	$stm = self::__get('DB')->prepare
+		('
+		UPDATE
+			threads
+		SET
+			firstuserid = 0
+		WHERE
+			firstuserid = ?'
+		);
+	$stm->bindInteger($id);
+	$stm->execute();
+	$stm->close();
+
+	$stm = self::__get('DB')->prepare
+		('
+		UPDATE
+			threads
+		SET
+			lastuserid = 0
+		WHERE
+			lastuserid = ?'
+		);
+	$stm->bindInteger($id);
+	$stm->execute();
+	$stm->close();
+
+	$stm = self::__get('DB')->prepare
+		('
+		UPDATE
+			posts
+		SET
+			userid = 0
+		WHERE
+			userid = ?'
+		);
+	$stm->bindInteger($id);
+	$stm->execute();
+	$stm->close();
+
+	$stm = self::__get('DB')->prepare
+		('
+		UPDATE
+			posts
+		SET
+			editby = 0
+		WHERE
+			editby = ?'
+		);
+	$stm->bindInteger($id);
+	$stm->execute();
+	$stm->close();
+
+	$stm = self::__get('DB')->prepare
+		('
+		DELETE FROM
+			session
+		WHERE
+			id = ?'
+		);
+	$stm->bindInteger($id);
+	$stm->execute();
+	$stm->close();
+	}
 
 }
 
