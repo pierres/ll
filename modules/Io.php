@@ -241,10 +241,17 @@ public function getRemoteFile($url)
 	{
 	$curl = $this->curlInit($url);
 	$content = curl_exec($curl);
-// 	$ype = curl_getinfo($curl, CURLINFO_CONTENT_TYPE);
+ 	$type = curl_getinfo($curl, CURLINFO_CONTENT_TYPE);
 	curl_close($curl);
 
-	$type = getTypeFromContent($content);
+	try
+		{
+		$type = $this->getTypeFromContent($content);
+		}
+	catch (IoMimeException $e)
+		{
+		// we will use the type provides by the client
+		}
 
 	if (!$this->isAllowedType($type))
 		{
@@ -258,14 +265,20 @@ public function getUploadedFile($name)
 	{
 	if (isset($_FILES[$name]) && is_uploaded_file($_FILES[$name]['tmp_name']))
 		{
-		$type = getTypeFromFile($_FILES[$name]['tmp_name']);
-
-		if (!$this->isAllowedType($type))
+		try
 			{
-			throw new IoMimeException('Dateien des Typs <strong>'.htmlspecialchars($type).'</strong> dürfen nicht hochgeladen werden! Folgende Typen sind erlaubt:<ul><li>'.implode('</li><li>', $this->Settings->getValue('allowed_mime_types')).'</li></ul>');
+			$_FILES[$name]['type'] = $this->getTypeFromFile($_FILES[$name]['tmp_name']);
+			}
+		catch (IoMimeException $e)
+			{
+			// we will use the type provides by the client
 			}
 
-		$_FILES[$name]['type'] = $type;
+		if (!$this->isAllowedType($_FILES[$name]['type']))
+			{
+			throw new IoMimeException('Dateien des Typs <strong>'.htmlspecialchars($_FILES[$name]['type']).'</strong> dürfen nicht hochgeladen werden! Folgende Typen sind erlaubt:<ul><li>'.implode('</li><li>', $this->Settings->getValue('allowed_mime_types')).'</li></ul>');
+			}
+
 		return $_FILES[$name];
 		}
 	elseif (isset($_FILES[$name]) && $_FILES[$name]['error'] > 0 && !empty($_FILES[$name]['name']))
@@ -287,6 +300,38 @@ public function getUploadedFile($name)
 		{
 		throw new IoException('Datei wurde nicht hochgeladen!');
 		}
+	}
+
+private function getTypeFromContent($content)
+	{
+	if (function_exists('finfo_open'))
+		{
+		$finfo = finfo_open(FILEINFO_MIME);
+		$type = finfo_buffer($finfo, $content);
+		finfo_close($finfo);
+		}
+	else
+		{
+		throw new IoMimeException('No fileinfo module found');
+		}
+
+	return $type;
+	}
+
+private function getTypeFromFile($file)
+	{
+	if (function_exists('finfo_open'))
+		{
+		$finfo = finfo_open(FILEINFO_MIME);
+		$type = finfo_file($finfo, $file);
+		finfo_close($finfo);
+		}
+	else
+		{
+		throw new IoMimeException('No fileinfo module found');
+		}
+
+	return $type;
 	}
 
 private function isAllowedType($type)

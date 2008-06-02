@@ -21,14 +21,13 @@ abstract class GetFile extends Modul implements IOutput{
 
 public function prepare()
 	{
+	$this->initDB();
 	if (!$this->User->isOnline())
 		{
 		$this->showWarning('Nur für Mitglieder!');
 		}
 
 	$this->exitIfCached();
-	$this->initDB();
-
 	$this->getParams();
 	}
 

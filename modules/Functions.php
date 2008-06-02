@@ -181,51 +181,6 @@ function resizeImage($image, $type, $size)
 	return $thumb;
 	}
 
-function getTypeFromContent($content)
-	{
-	if (function_exists('finfo_open'))
-		{
-		$finfo = finfo_open(FILEINFO_MIME);
-		$type = finfo_buffer($finfo, $content);
-		finfo_close($finfo);
-		}
-	elseif (function_exists('mime_content_type'))
-		{
-		$tmp = ini_get('upload_tmp_dir');
-		$tmp = empty($tmp) ? '/tmp' : $tmp;
-		$file = tempnam($tmp.'/', 'mime_content_type-');
-		file_put_contents($file, $content);
-		$type = mime_content_type($file);
-		unlink($file);
-		}
-	else
-		{
-		$type = 'application/octet-stream';
-		}
-
-	return $type;
-	}
-
-function getTypeFromFile($file)
-	{
-	if (function_exists('finfo_open'))
-		{
-		$finfo = finfo_open(FILEINFO_MIME);
-		$type = finfo_file($finfo, $file);
-		finfo_close($finfo);
-		}
-	elseif (function_exists('mime_content_type'))
-		{
-		$type = mime_content_type($file);
-		}
-	else
-		{
-		$type = 'application/octet-stream';
-		}
-
-	return $type;
-	}
-
 function getTextFromHtml($html)
 	{
 	$text = str_replace('<br />', ' ', $html);
