@@ -45,7 +45,7 @@ protected function setForm()
 			{
 			$this->addOutput
 				('
-				<input type="text" name="tag['.$tag['id'].'][name]" size="74" value="'.$tag['name'].'" />
+				<input type="text" name="tag['.$tag['id'].']" size="74" value="'.$tag['name'].'" />
 				<a href="?page=AdminTagsDel;id='.$this->Board->getId().';tag='.$tag['id'].'"><span class="button" style="background-color:#CC0000">löschen</span></a>
 				<br /><br />
 				');
@@ -109,9 +109,9 @@ protected function sendForm()
 
 		foreach($this->tags as $id => $tag)
 			{
-			if (isset($tag['name']) && isset($id))
+			if (isset($tag) && isset($id))
 				{
-				$stm->bindString(htmlspecialchars($tag['name']));
+				$stm->bindString(htmlspecialchars($tag));
 				$stm->bindInteger($this->Board->getId());
 				$stm->bindInteger($id);
 				$stm->execute();
