@@ -270,7 +270,7 @@ foreach ($result as $data)
 
 	$poster = (!empty($data['userid']) ? '<a href="?page=ShowUser;id='.$this->Board->getId().';user='.$data['userid'].'">'.$data['name'].'</a>' : $data['username']);
 
-	$avatar = (empty($data['avatar']) || !$this->User->isOnline() ? '' : '<img src="?page=GetAvatar;user='.$data['userid'].'" class="avatar" />');
+	$avatar = (empty($data['avatar']) ? '' : '<img src="?page=GetAvatar;user='.$data['userid'].'" class="avatar" />');
 
 	if ($data['file'] == 1)
 		{

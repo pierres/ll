@@ -314,9 +314,9 @@ foreach ($result as $data)
 
 	$poster = (!empty($data['userid']) ? '<a href="?page=ShowUser;id='.$this->Board->getId().';user='.$data['userid'].'">'.$data['name'].'</a>' : $data['username']);
 
-	$avatar = (empty($data['avatar']) || !$this->User->isOnline() ? '' : '<img src="?page=GetAvatar;user='.$data['userid'].'" class="avatar" alt="" />');
+	$avatar = (empty($data['avatar']) ? '' : '<img src="?page=GetAvatar;user='.$data['userid'].'" class="avatar" alt="" />');
 
-	if ($data['file'] == 1 && $this->User->isOnline())
+	if ($data['file'] == 1)
 		{
 		$files = $this->getFiles($data['id']);
 		}
