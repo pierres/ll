@@ -53,6 +53,7 @@ public function __construct()
 	$this->config['quota']				= 10*1024*1024; //10 MByte
 	$this->config['files']				= 100;
 	$this->config['avatar_size']			= 60;
+	$this->config['file_refresh']			= 60*60; //1 hour
 
 	$this->config['thumb_size']			= 300;
 	$this->config['max_image_file_size']		= 2*1024*1024; //2 MByte

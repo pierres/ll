@@ -81,7 +81,7 @@ public function prepare()
 	$data['regdate'] = formatDate($data['regdate']);
 	$data['lastpost'] = formatDate($data['lastpost']);
 
-	$avatar = (empty($data['avatar']) || !$this->User->isOnline() ? '' : '<img src="?page=GetAvatar;user='.$data['id'].'" class="avatar" alt="" />');
+	$avatar = (empty($data['avatar']) ? '' : '<img src="?page=GetAvatar;user='.$data['id'].'" class="avatar" alt="" />');
 
 	$body =
 		'

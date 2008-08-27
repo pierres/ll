@@ -69,21 +69,21 @@ public function getObject($key)
 				`key` = ?
 			');
 		$stm->bindString($key);
-		
+
 		$value = unserialize($stm->getColumn());
 		}
 	catch (DBNoDataException $e)
 		{
 		}
 	$stm->close();
-	
+
 	return $value;
 	}
 
 private function collectGarbage()
 	{
-	/* Ignore 99% of requests */
-	if (!mt_rand(0, 100))
+	/* Ignore 49% of requests */
+	if (!mt_rand(0, 50))
 		{
 		try
 			{
