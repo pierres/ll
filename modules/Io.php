@@ -154,22 +154,21 @@ public function getHex($name)
 	return hexVal($this->getString($name));
 	}
 
-private function checkArray(&$key, $value)
+private function checkArray(&$value, $key)
 	{
 	if (!is_unicode($value))
 		{
 		throw new IoRequestException($key);
 		}
 
-	$key = trim($value);
+	$value = trim($value);
 	}
 
 public function getArray($name)
 	{
 	if(isset($this->request[$name]) && is_array($this->request[$name]))
 		{
-		#FIXME: This seems totally broken
-		#array_walk_recursive($this->request[$name], array($this, 'checkArray'));
+		array_walk_recursive($this->request[$name], array($this, 'checkArray'));
 
 		return $this->request[$name];
 		}
