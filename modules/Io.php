@@ -154,19 +154,21 @@ public function getHex($name)
 	return hexVal($this->getString($name));
 	}
 
+private function checkArray(&$key, $value)
+	{
+	if (!is_unicode($value))
+		{
+		throw new IoRequestException($key);
+		}
+
+	$key = trim($value);
+	}
+
 public function getArray($name)
 	{
 	if(isset($this->request[$name]) && is_array($this->request[$name]))
 		{
-		foreach($this->request[$name] as $key => $value)
-			{
-			if (!is_unicode($value))
-				{
-				throw new IoRequestException($name);
-				}
-
-			$this->request[$name][$key] = trim($value);
-			}
+		array_walk_recursive($this->request[$name], array($this, 'checkArray'));
 
 		return $this->request[$name];
 		}
