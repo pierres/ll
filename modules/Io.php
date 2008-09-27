@@ -168,7 +168,8 @@ public function getArray($name)
 	{
 	if(isset($this->request[$name]) && is_array($this->request[$name]))
 		{
-		array_walk_recursive($this->request[$name], array($this, 'checkArray'));
+		#FIXME: This seems totally broken
+		#array_walk_recursive($this->request[$name], array($this, 'checkArray'));
 
 		return $this->request[$name];
 		}
