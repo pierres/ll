@@ -81,12 +81,11 @@ protected function checkForm()
 	{
 	}
 
-/** TODO: move to AdminFunctinos */
 protected function sendForm()
 	{
 	if ($this->Io->getInt('confirm') == 1)
 		{
-		AdminFunctinos::delUser($this->user);
+		AdminFunctions::delUser($this->user);
 
 		if ($this->user == $this->User->getId())
 			{
