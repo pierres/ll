@@ -80,7 +80,8 @@ protected function sendForm()
 				thread_user WRITE,
 				threads WRITE,
 				threads_log WRITE,
-				user_group WRITE
+				user_group WRITE,
+				tags WRITE
 			');
 	AdminFunctions::delBoard($this->Io->getInt('board'));
 	$this->DB->execute('UNLOCK TABLES');
