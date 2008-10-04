@@ -17,6 +17,7 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
+
 ini_set('docref_root', 'http://www.php.net/');
 set_exception_handler('ExceptionHandler');
 set_error_handler('ErrorHandler');
@@ -26,23 +27,24 @@ function ExceptionHandler(Exception $e)
 	try
 		{
 		$screen = '<?xml version="1.0" encoding="UTF-8" ?>
-			<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "xhtml11.dtd">
-			<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de">
-			<head>
-			<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-			<title>'.get_class($e).'</title>
-			</head>
-			<body>
-				<h1 style="font-size:16px;">'.get_class($e).'</h1>
-				<pre style="overflow:auto;">'.$e->getMessage().'</pre>
-				<pre>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
+"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<title>'.get_class($e).'</title>
+</head>
+<body>
+<h1 style="font-size:16px;">'.get_class($e).'</h1>
+<pre style="overflow:auto;">'.$e->getMessage().'</pre>
+<pre>
 <strong>Code</strong>: '.$e->getCode().'
 <strong>File</strong>: '.$e->getFile().'
 <strong>Line</strong>: '.$e->getLine().'</pre>
-				<h2 style="font-size:14px;">Trace:</h2>
-				<pre>'.$e->getTraceAsString().'</pre>
-			</body>
-			</html>';
+<h2 style="font-size:14px;">Trace:</h2>
+<pre>'.$e->getTraceAsString().'</pre>
+</body>
+</html>';
 
 		if (Modul::__get('Settings')->getValue('debug'))
 			{
@@ -61,10 +63,10 @@ function ExceptionHandler(Exception $e)
 
 			$mail = Modul::__get('Mail');
 
-			$mail->setTo('support@laber-land.de');
-			$mail->setFrom('support@laber-land.de');
+			$mail->setTo(Modul::__get('Settings')->getValue('email'));
+			$mail->setFrom(Modul::__get('Settings')->getValue('email'));
 			$mail->setSubject('LL-Error');
-			$mail->setText($screen);
+			$mail->setText(strip_tags($screen));
 			$mail->send();
 
 			$screen = '<?xml version="1.0" encoding="UTF-8" ?>
@@ -78,7 +80,7 @@ function ExceptionHandler(Exception $e)
 				<h1 style="font-size:16px;">Fehler in Modul '.get_class($e).'</h1>
 				<p>Es ist ein schwerer Fehler aufgetreten. Die LL-Administration wurde bereits benachrichtigt. Das Problem wird sobald wie möglich behoben.</p>
 				<h2 style="font-size:14px;">Kontakt</h2>
-				<p><a href="mailto:support@laber-land.de">support@laber-land.de</a></p>
+				<p><a href="'.mailto:Modul::__get('Settings')->getValue('email').'">'.Modul::__get('Settings')->getValue('email').'</a></p>
 			</body>
 			</html>';
 
@@ -95,9 +97,6 @@ function ExceptionHandler(Exception $e)
 		}
 	}
 
-/**
-* Hiermit sorgen wir dafür, daß auch PHP-Fehler eine Exception werfen.
-*/
 function ErrorHandler($code, $string, $file, $line)
 	{
 	throw new InternalRuntimeException ($string, $code, $file, $line);
