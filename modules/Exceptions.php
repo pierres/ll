@@ -80,7 +80,7 @@ function ExceptionHandler(Exception $e)
 				<h1 style="font-size:16px;">Fehler in Modul '.get_class($e).'</h1>
 				<p>Es ist ein schwerer Fehler aufgetreten. Die LL-Administration wurde bereits benachrichtigt. Das Problem wird sobald wie möglich behoben.</p>
 				<h2 style="font-size:14px;">Kontakt</h2>
-				<p><a href="'.mailto:Modul::__get('Settings')->getValue('email').'">'.Modul::__get('Settings')->getValue('email').'</a></p>
+				<p><a href="mailto:'.Modul::__get('Settings')->getValue('email').'">'.Modul::__get('Settings')->getValue('email').'</a></p>
 			</body>
 			</html>';
 
