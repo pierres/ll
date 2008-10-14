@@ -402,6 +402,7 @@ CREATE TABLE `users` (
   `realname` varchar(100) NOT NULL default '',
   `password` varchar(40) NOT NULL,
   `email` varchar(100) NOT NULL default '',
+  `jabber` varchar(100) NOT NULL default '',
   `birthday` int(11) NOT NULL default '0',
   `posts` int(10) unsigned NOT NULL default '0',
   `regdate` int(10) unsigned NOT NULL default '0',

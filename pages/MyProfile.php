@@ -22,7 +22,7 @@ class MyProfile extends Form{
 private $realname 	= '';
 private $gender 	= 0;
 private $birthday 	= 0;
-private $email 		= '';
+private $jabber		= '';
 private $location 	= '';
 private $plz		= '';
 private $deleteavatar	= false;
@@ -46,6 +46,9 @@ protected function setForm()
 
 	$this->addText('realname', 'Dein Name', $this->realname);
 	$this->setLength('realname', 3, 100);
+
+	$this->addText('jabber', 'Deine Jabber-Adresse', $this->jabber);
+	$this->setLength('jabber', 6, 50);
 
 	$gender = array('männlich' => 1, 'weiblich' => 2, 'weiß nicht' => 0);
 	$this->addRadio('gender', 'Geschlecht', $gender, $this->gender);
@@ -75,6 +78,40 @@ protected function checkForm()
 	try
 		{
 		$this->location = $this->Io->getString('location');
+		}
+	catch (IoRequestException $e)
+		{
+		}
+
+	try
+		{
+		$this->jabber = $this->Io->getString('jabber');
+
+		if (!$this->Mail->validateMail($this->jabber))
+			{
+			$this->showWarning('Keine gültige Jabber-Adresse angegeben!');
+			}
+
+		try
+			{
+			$stm = $this->DB->prepare
+				('
+				SELECT
+					id
+				FROM
+					users
+				WHERE
+					jabber = ?'
+				);
+			$stm->bindString($this->jabber);
+			$stm->getColumn();
+			$stm->close();
+			$this->showWarning('Jabber-Adresse bereits vergeben!');
+			}
+		catch (DBNoDataException $e)
+			{
+			$stm->close();
+			}
 		}
 	catch (IoRequestException $e)
 		{
@@ -205,6 +242,7 @@ private function getData()
 			('
 			SELECT
 				realname,
+				jabber,
 				gender,
 				birthday,
 				location,
@@ -228,6 +266,7 @@ private function getData()
 		}
 
 	$this->realname 	= unhtmlspecialchars($data['realname']);
+	$this->jabber 		= unhtmlspecialchars($data['jabber']);
 	$this->gender		= $data['gender'];
 	$this->birthday		= $data['birthday'];
 	$this->location 	= unhtmlspecialchars($data['location']);
@@ -254,6 +293,7 @@ protected function sendForm()
 			users
 		SET
 			realname = ?,
+			jabber = ?,
 			gender = ?,
 			birthday = ?,
 			location = ?,
@@ -264,6 +304,7 @@ protected function sendForm()
 			id = ?'
 		);
 	$stm->bindString(htmlspecialchars($this->realname));
+	$stm->bindString(htmlspecialchars($this->jabber));
 	$stm->bindInteger($this->gender);
 	$stm->bindInteger($this->birthday);
 	$stm->bindString(htmlspecialchars($this->location));
