@@ -431,6 +431,7 @@ private function bindResult()
 		}
 
 	$params[] = &$this->stm;
+	$row = null;
 
 	while ($field = mysqli_fetch_field($data))
 		{
