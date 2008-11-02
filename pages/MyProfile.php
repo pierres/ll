@@ -87,30 +87,35 @@ protected function checkForm()
 		{
 		$this->jabber = $this->Input->Request->getString('jabber');
 
-		if (!$this->Mail->validateMail($this->jabber))
+		if (!$this->Input->Request->isEmpty('jabber'))
 			{
-			$this->showWarning('Keine gültige Jabber-Adresse angegeben!');
-			}
+			if (!$this->Mail->validateMail($this->jabber))
+				{
+				$this->showWarning('Keine gültige Jabber-Adresse angegeben!');
+				}
 
-		try
-			{
-			$stm = $this->DB->prepare
-				('
-				SELECT
-					id
-				FROM
-					users
-				WHERE
-					jabber = ?'
-				);
-			$stm->bindString($this->jabber);
-			$stm->getColumn();
-			$stm->close();
-			$this->showWarning('Jabber-Adresse bereits vergeben!');
-			}
-		catch (DBNoDataException $e)
-			{
-			$stm->close();
+			try
+				{
+				$stm = $this->DB->prepare
+					('
+					SELECT
+						id
+					FROM
+						users
+					WHERE
+						jabber = ?
+						AND id <> ?'
+					);
+				$stm->bindString($this->jabber);
+				$stm->bindInteger($this->User->getId());
+				$stm->getColumn();
+				$stm->close();
+				$this->showWarning('Jabber-Adresse bereits vergeben!');
+				}
+			catch (DBNoDataException $e)
+				{
+				$stm->close();
+				}
 			}
 		}
 	catch (RequestException $e)
@@ -201,19 +206,19 @@ protected function checkForm()
 
 	try
 		{
-		$this->avatar = $this->Input->Request->getUploadedFile('avatar');
+		$this->avatar = $this->Input->getUploadedFile('avatar');
 
-		if ($this->avatar['size'] >= $this->Settings->getValue('file_size'))
+		if ($this->avatar->getFileSize() >= $this->Settings->getValue('file_size'))
 			{
 			$this->showWarning('Neuer Avatar ist zu groß!');
 			}
 
-		if (strpos($this->avatar['type'], 'image/') !== 0)
+		if (strpos($this->avatar->getFileType(), 'image/') !== 0)
 			{
 			$this->showWarning('Neuer Avatar ist kein Bild!');
 			}
 		}
-	catch (RequestException $e)
+	catch (FileException $e)
 		{
 		}
 
@@ -345,11 +350,11 @@ private function sendAvatar()
 	{
 	try
 		{
-		$content = resizeImage(file_get_contents($this->avatar['tmp_name']), $this->avatar['type'], $this->Settings->getValue('avatar_size'));
+		$content = resizeImage($this->avatar->getFileContent(), $this->avatar->getFileType(), $this->Settings->getValue('avatar_size'));
 		}
 	catch (Exception $e)
 		{
-		$content = file_get_contents($this->avatar['tmp_name']);
+		$content = $this->avatar->getFileContent();
 		}
 
 	if ($this->hasavatar)
@@ -382,15 +387,13 @@ private function sendAvatar()
 			);
 		}
 
-	$stm->bindString(htmlspecialchars($this->avatar['name']));
-	$stm->bindString($this->avatar['type']);
-	$stm->bindInteger(strlen($content));
+	$stm->bindString(htmlspecialchars($this->avatar->getFileName()));
+	$stm->bindString($this->avatar->getFileType());
+	$stm->bindInteger($this->avatar->getFileSize());
 	$stm->bindString($content);
 	$stm->bindInteger($this->User->getId());
 	$stm->execute();
 	$stm->close();
-
-	unlink($this->avatar['tmp_name']);
 
 	$stm = $this->DB->prepare
 		('

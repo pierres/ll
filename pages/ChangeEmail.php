@@ -134,7 +134,7 @@ protected function sendForm()
 'Hallo '.$this->User->getName().'!
 
 Du kannst Dein Passwort ändern, wenn Du folgende Seite besuchst:
-'.$this->Input->Request->getURL().'?id='.$this->Board->getId().';page=ChangePasswordKey;userid='.$this->User->getId().';key='.$key.'
+'.$this->Input->getURL().'?id='.$this->Board->getId().';page=ChangePasswordKey;userid='.$this->User->getId().';key='.$key.'
 
 Sollte obiger Link bei Deinem Mail-Programm nicht funktionieren,
 so wähle im Anmelde-Dialog die Option "Passwort setzen" und gebe folgende Daten an:

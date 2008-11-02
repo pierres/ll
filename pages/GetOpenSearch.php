@@ -31,8 +31,8 @@ public function show()
 <OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
 <ShortName>'.$this->Board->getName().'</ShortName>
 <Description>'.$this->Board->getName().' :: Foren-Suche</Description>
-<Image height="16" width="16" type="image/x-icon">'.$this->Input->Request->getURL().'/favicon.ico</Image>
-<Url type="text/html" method="get" template="'.$this->Input->Request->getURL().'/?page=Search;submit=;search={searchTerms}"/>
+<Image height="16" width="16" type="image/x-icon">'.$this->Input->getURL().'/favicon.ico</Image>
+<Url type="text/html" method="get" template="'.$this->Input->getURL().'/?page=Search;submit=;search={searchTerms}"/>
 </OpenSearchDescription>';
 
 	$this->Output->setContentType('Content-Type: application/opensearchdescription+xml; charset=UTF-8');

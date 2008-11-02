@@ -39,7 +39,7 @@ protected function setForm()
 	$this->setLength('email', 6, 50);
 
 	$this->addElement('emailhint', '<span style="font-size:10px;color:red;">Achte auf die Gültigkeit dieser Adresse,<br /> da die Zugangsdaten dorthin verschickt werden.</span><br /><br />');
-	
+
 	$this->addCheckBox('confirmPrivacy', 'Ich bestätige die <a class="link" href="?page=Privacy;id='.$this->Board->getId().'">Datenschutzerklärung</a>');
 	$this->requires('confirmPrivacy');
 	}
@@ -135,7 +135,7 @@ protected function sendForm()
 
 Deine Registrierung bei "'.$this->Board->getName().'" war erfolgreich.
 Du kannst Dein Passwort ändern, wenn Du folgende Seite besuchst:
-'.$this->Input->Request->getURL().'?id='.$this->Board->getId().';page=ChangePasswordKey;userid='.$userid.';key='.$key.'
+'.$this->Input->getURL().'?id='.$this->Board->getId().';page=ChangePasswordKey;userid='.$userid.';key='.$key.'
 
 Sollte obiger Link bei Deinem Mail-Programm nicht funktionieren,
 so wähle im Anmelde-Dialog die Option "Passwort setzen" und gebe folgende Daten an:
