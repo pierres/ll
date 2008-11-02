@@ -83,7 +83,7 @@ protected function sendForm()
 				user_group WRITE,
 				tags WRITE
 			');
-	AdminFunctions::delBoard($this->Io->getInt('board'));
+	AdminFunctions::delBoard($this->Input->Request->getInt('board'));
 	$this->DB->execute('UNLOCK TABLES');
 
 	$this->redirect();
@@ -92,7 +92,7 @@ protected function sendForm()
 
 protected function redirect()
 	{
-	$this->Io->redirect('AdminDelBoard');
+	$this->Output->redirect('AdminDelBoard');
 	}
 
 }

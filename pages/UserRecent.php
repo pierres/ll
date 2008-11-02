@@ -27,11 +27,11 @@ public function prepare()
 
 	try
 		{
-		$user = $this->Io->getInt('user');
+		$user = $this->Input->Request->getInt('user');
 		}
-	catch (IoRequestException $e)
+	catch (RequestException $e)
 		{
-		$this->Io->redirect('Recent');
+		$this->Output->redirect('Recent');
 		}
 
 	try

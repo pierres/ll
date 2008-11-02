@@ -26,9 +26,9 @@ protected function getParams()
 	{
 	try
 		{
-		$this->file = $this->Io->getInt('file');
+		$this->file = $this->Input->Request->getInt('file');
 		}
-	catch (IoRequestException $e)
+	catch (RequestException $e)
 		{
 		$this->showWarning('keine Datei angegeben');
 		}
@@ -87,7 +87,7 @@ protected function checkAccess()
 	catch (DBNoDataException $e)
 		{
 		$stm->close();
-		$this->Io->setStatus(Io::NOT_FOUND);
+		$this->Output->setStatus(Output::NOT_FOUND);
 		$this->showWarning('Datei nicht gefunden');
 		}
 	}
@@ -115,7 +115,7 @@ public function show()
 	catch (DBNoDataException $e)
 		{
 		$stm->close();
-		$this->Io->setStatus(Io::NOT_FOUND);
+		$this->Output->setStatus(Output::NOT_FOUND);
 		$this->showWarning('Datei nicht gefunden');
 		}
 

@@ -28,8 +28,8 @@ public function prepare()
 
 protected function exitIfCached()
 	{
-	if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])
-	&& strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) <= time() - $this->Settings->getValue('file_refresh'))
+	if ($this->Input->Server->isValid('HTTP_IF_MODIFIED_SINCE')
+	&& strtotime($this->Input->Server->getString('HTTP_IF_MODIFIED_SINCE')) <= time() - $this->Settings->getValue('file_refresh'))
 		{
 		header('HTTP/1.1 304 Not Modified');
 		exit;

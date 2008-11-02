@@ -33,7 +33,7 @@ protected function setForm()
 
 	try
 		{
-		$this->forum = $this->Io->getInt('forum');
+		$this->forum = $this->Input->Request->getInt('forum');
 
 		$stm = $this->DB->prepare
 			('
@@ -53,7 +53,7 @@ protected function setForm()
 	catch(Exception $e)
 		{
 		$stm->close();
-		$this->Io->redirect('AdminCats');
+		$this->Output->redirect('AdminCats');
 		}
 
 	$this->addHidden('forum', $this->forum);
@@ -90,9 +90,9 @@ protected function setForm()
 
 protected function checkForm()
 	{
-	if(!$this->Io->isEmpty('mods'))
+	if(!$this->Input->Request->isEmpty('mods'))
 		{
-		$mods = array_map('trim', explode("\n", $this->Io->getString('mods')));
+		$mods = array_map('trim', explode("\n", $this->Input->Request->getString('mods')));
 
 		foreach ($mods as $mod)
 			{
@@ -117,7 +117,7 @@ protected function sendForm()
 
 protected function redirect()
 	{
-	$this->Io->redirect('AdminForumsMods', 'forum='.$this->forum);
+	$this->Output->redirect('AdminForumsMods', 'forum='.$this->forum);
 	}
 
 private function updateMods()

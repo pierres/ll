@@ -26,11 +26,11 @@ protected function setForm()
 	{
 	try
 		{
-		$this->forum = $this->Io->getInt('forum');
+		$this->forum = $this->Input->Request->getInt('forum');
 		}
-	catch(IoRequestException $e)
+	catch(RequestException $e)
 		{
-		$this->Io->redirect('AdminCats');
+		$this->Output->redirect('AdminCats');
 		}
 
 	try
@@ -59,7 +59,7 @@ protected function setForm()
 	catch (DBNoDataException $e)
 		{
 		$stm->close();
-		$this->Io->redirect('AdminCats');
+		$this->Output->redirect('AdminCats');
 		}
 
 	$this->setValue('title', 'Forum löschen');
@@ -85,7 +85,7 @@ protected function sendForm()
 
 protected function redirect()
 	{
-	$this->Io->redirect('AdminForums', 'cat='.$this->cat);
+	$this->Output->redirect('AdminForums', 'cat='.$this->cat);
 	}
 
 }

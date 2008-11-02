@@ -65,8 +65,8 @@ protected function setForm()
 
 protected function checkForm()
 	{
-	$this->source = $this->Io->getInt('source');
-	$this->target = $this->Io->getInt('target');
+	$this->source = $this->Input->Request->getInt('source');
+	$this->target = $this->Input->Request->getInt('target');
 	if ($this->source == $this->target)
 		{
 		$this->showWarning('Quell- und Ziel-Forum sind identisch!');
@@ -107,7 +107,7 @@ protected function sendForm()
 
 protected function redirect()
 	{
-	$this->Io->redirect('AdminGlobalSettings');
+	$this->Output->redirect('AdminGlobalSettings');
 	}
 
 

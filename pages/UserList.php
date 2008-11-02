@@ -31,9 +31,9 @@ public function prepare()
 
 	try
 		{
-		$this->user = $this->Io->getInt('user');
+		$this->user = $this->Input->Request->getInt('user');
 		}
-	catch (IoRequestException $e)
+	catch (RequestException $e)
 		{
 		$this->user = 0;
 		}
@@ -41,23 +41,23 @@ public function prepare()
 
 	try
 		{
-		$this->orderby = $this->Io->getString('orderby');
+		$this->orderby = $this->Input->Request->getString('orderby');
 
 		if (!in_array($this->orderby, array('regdate', 'name', 'posts', 'realname')))
 			{
 			$this->orderby = 'posts';
 			}
 		}
-	catch (IoRequestException $e)
+	catch (RequestException $e)
 		{
 		$this->orderby = 'posts';
 		}
 
 	try
 		{
-		$this->sort = $this->Io->getInt('sort');
+		$this->sort = $this->Input->Request->getInt('sort');
 		}
-	catch (IoRequestException $e)
+	catch (RequestException $e)
 		{
 		$this->sort = 1;
 		}

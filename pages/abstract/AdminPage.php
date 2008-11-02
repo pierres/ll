@@ -27,7 +27,7 @@ public function __construct()
 	if (!$this->User->isAdmin())
 		{
 		//$this->showWarning('Zutritt verboten!');
-		$this->Io->redirect('Forums');
+		$this->Output->redirect('Forums');
 		}
 	}
 

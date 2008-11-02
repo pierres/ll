@@ -447,7 +447,14 @@ private function isLocalHost($url)
 	{
 	$request = parse_url($url);
 
-	return ($this->Io->getHost() == $request['host']);
+	try
+		{
+		return ($this->Input->getHost() == $request['host']);
+		}
+	catch (RequestException $e)
+		{
+		return false;
+		}
 	}
 
 private function makeLocalUrl($url)

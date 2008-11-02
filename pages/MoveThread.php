@@ -39,10 +39,10 @@ protected function checkForm()
 	{
 	try
 		{
-		$this->moveto = $this->Io->getInt('moveto');
+		$this->moveto = $this->Input->Request->getInt('moveto');
 		$this->checkAccess($this->moveto);
 		}
-	catch (IoRequestException $e)
+	catch (RequestException $e)
 		{
 		$this->showWarning('Wohin damit?');
 		}
@@ -144,7 +144,7 @@ protected function sendForm()
 
 protected function redirect()
 	{
-	$this->Io->redirect('Threads', 'forum='.$this->moveto);
+	$this->Output->redirect('Threads', 'forum='.$this->moveto);
 	}
 
 }

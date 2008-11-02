@@ -241,7 +241,7 @@ private function sendOutput()
 		$file = str_replace('<!-- '.$key.' -->', $value, $file);
 		}
 
-	$this->Io->out($file);
+	$this->Output->writeOutput($file);
 	}
 
 public function show()

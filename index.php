@@ -23,10 +23,12 @@ require ('modules/Modul.php');
 require ('modules/Settings.php');
 require ('modules/Exceptions.php');
 require ('modules/Functions.php');
-require ('modules/Io.php');
+require ('modules/Input.php');
+require ('modules/Output.php');
 
 Modul::__set('Settings', new Settings());
-$Io = Modul::__set('Io', new Io());
+$Input = Modul::__set('Input', new Input());
+$Output = Modul::__set('Output', new Output());
 
 function __autoload($class)
 	{
@@ -35,9 +37,9 @@ function __autoload($class)
 
 try
 	{
-	$page = $Io->getString('page');
+	$page = $Input->Request->getString('page');
 	}
-catch(IoRequestException $e)
+catch(RequestException $e)
 	{
 	$page = 'Forums';
 	}

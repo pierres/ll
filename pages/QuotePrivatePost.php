@@ -49,11 +49,11 @@ protected function checkInput()
 				AND posts.id = ?'
 			);
 		$stm->bindInteger($this->User->getId());
-		$stm->bindInteger($this->Io->getInt('post'));
+		$stm->bindInteger($this->Input->Request->getInt('post'));
 		$data = $stm->getRow();
 		$stm->close();
 		}
-	catch (IoException $e)
+	catch (RequestException $e)
 		{
 		$stm->close();
 		$this->showFailure('Kein Beitrag angegeben!');

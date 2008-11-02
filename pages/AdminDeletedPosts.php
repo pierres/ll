@@ -80,12 +80,12 @@ protected function sendForm()
 	{
 	try
 		{
-		foreach($this->Io->getArray('post') as $post)
+		foreach($this->Input->Request->getArray('post') as $post)
 			{
 			AdminFunctions::delPost($post);
 			}
 		}
-	catch (IoRequestException $e)
+	catch (RequestException $e)
 		{
 		}
 	$this->redirect();
@@ -94,7 +94,7 @@ protected function sendForm()
 
 protected function redirect()
 	{
-	$this->Io->redirect('AdminDeletedPosts');
+	$this->Output->redirect('AdminDeletedPosts');
 	}
 
 }

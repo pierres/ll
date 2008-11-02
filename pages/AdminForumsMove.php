@@ -26,11 +26,11 @@ protected function setForm()
 	{
 	try
 		{
-		$this->forum = $this->Io->getInt('forum');
+		$this->forum = $this->Input->Request->getInt('forum');
 		}
-	catch (IoRequestException $e)
+	catch (RequestException $e)
 		{
-		$this->Io->redirect('AdminCats');
+		$this->Output->redirect('AdminCats');
 		}
 
 	try
@@ -55,7 +55,7 @@ protected function setForm()
 	catch (DBNoDataException $e)
 		{
 		$stm->close();
-		$this->Io->redirect('AdminCats');
+		$this->Output->redirect('AdminCats');
 		}
 
 	$this->setValue('title', 'Forum verschieben');
@@ -110,7 +110,7 @@ protected function checkForm()
 				id = ?
 				AND boardid = ?'
 			);
-		$stm->bindInteger($this->Io->getInt('newcat'));
+		$stm->bindInteger($this->Input->Request->getInt('newcat'));
 		$stm->bindInteger($this->Board->getId());
 		$stm->getColumn();
 		$stm->close();
@@ -118,12 +118,12 @@ protected function checkForm()
 	catch(DBNoDataException $e)
 		{
 		$stm->close();
-		$this->Io->redirect('AdminCats');
+		$this->Output->redirect('AdminCats');
 		}
-	catch(IoRequestException $e)
+	catch(RequestException $e)
 		{
 		$stm->close();
-		$this->Io->redirect('AdminCats');
+		$this->Output->redirect('AdminCats');
 		}
 	}
 
@@ -139,7 +139,7 @@ protected function sendForm()
 			catid = ?
 			AND forumid = ?'
 		);
-	$stm->bindInteger($this->Io->getInt('newcat'));
+	$stm->bindInteger($this->Input->Request->getInt('newcat'));
 	$stm->bindInteger($this->cat);
 	$stm->bindInteger($this->forum);
 	$stm->execute();
@@ -150,7 +150,7 @@ protected function sendForm()
 
 protected function redirect()
 	{
-	$this->Io->redirect('AdminForums', 'cat='.$this->Io->getInt('newcat'));
+	$this->Output->redirect('AdminForums', 'cat='.$this->Input->Request->getInt('newcat'));
 	}
 
 

@@ -47,7 +47,7 @@ public function prepare()
 						</ul>
 						Diese Daten werden für statistische Zwecke oder zur Erkennung von Angriffen verwendet. Diese Daten werden eine Woche lang archiviert. Hier ein beispielhafter Log-Eintrag:
 						<div style="margin:5px;margin-left:30px;color:black;background-color:white;border:1px black solid;padding:2px;font-family:monospace;width:600px">127.0.0.1 - - [31/Jan/2007:09:49:14 +0100] "GET /images/bg.png<br />
-						HTTP/1.1" 200 154 "'.$this->Io->getURL().'/?page=Privacy;id=20" "Mozilla/5.0<br />
+						HTTP/1.1" 200 154 "'.$this->Input->Request->getURL().'/?page=Privacy;id=20" "Mozilla/5.0<br />
 						(compatible; Konqueror/3.5) KHTML/3.5.6 (like Gecko)"</div>
 						</p>
 						</li>

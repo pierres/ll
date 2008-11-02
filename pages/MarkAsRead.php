@@ -27,9 +27,9 @@ public function prepare()
 		{
 		try
 			{
-			$forum = $this->Io->getInt('forum');
+			$forum = $this->Input->Request->getInt('forum');
 			}
-		catch (IoRequestException $e)
+		catch (RequestException $e)
 			{
 			return;
 			}
@@ -66,7 +66,7 @@ public function prepare()
 
 public function show()
 	{
-	$this->Io->redirect('Forums');
+	$this->Output->redirect('Forums');
 	}
 
 }

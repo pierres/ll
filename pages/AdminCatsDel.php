@@ -25,9 +25,9 @@ protected function setForm()
 	{
 	try
 		{
-		$this->cat = $this->Io->getInt('cat');
+		$this->cat = $this->Input->Request->getInt('cat');
 		}
-	catch(IoRequestException $e)
+	catch(RequestException $e)
 		{
 		$this->redirect();
 		}
@@ -76,7 +76,7 @@ protected function sendForm()
 
 protected function redirect()
 	{
-	$this->Io->redirect('AdminCats');
+	$this->Output->redirect('AdminCats');
 	}
 
 }

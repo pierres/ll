@@ -35,9 +35,9 @@ function __construct()
 	{
 	try
 		{
-		$sessionid = $this->Io->getHex('sessionid');
+		$sessionid = $this->Input->Cookie->getHex('sessionid');
 		}
-	catch (IoRequestException $e)
+	catch (RequestException $e)
 		{
 		return $this->cookieLogin();
 		}
@@ -65,7 +65,7 @@ function __construct()
 	catch (DBNoDataException $e)
 		{
 		$stm->close();
-		$this->Io->setCookie('sessionid', '');
+		$this->Output->setCookie('sessionid', '');
 		return $this->cookieLogin();
 		}
 
@@ -148,9 +148,9 @@ public function logout()
 	$stm->execute();
 	$stm->close();
 
-	$this->Io->setCookie('sessionid', '');
-	$this->Io->setCookie('cookieid', '');
-	$this->Io->setCookie('cookiepw', '');
+	$this->Output->setCookie('sessionid', '');
+	$this->Output->setCookie('cookieid', '');
+	$this->Output->setCookie('cookiepw', '');
 
 	$this->id 	= 0;
 	$this->level 	= 0;
@@ -278,7 +278,7 @@ private function start($id, $name ,$level, $groups, $hidden)
 	$stm->execute();
 	$stm->close();
 
-	$this->Io->setCookie('sessionid', $this->sessionid);
+	$this->Output->setCookie('sessionid', $this->sessionid);
 
 	$stm = $this->DB->prepare
 		('
@@ -313,10 +313,10 @@ private function cookieLogin()
 	{
 	try
 		{
-		$id = $this->Io->getInt('cookieid');
-		$pw = $this->Io->getHex('cookiepw');
+		$id = $this->Input->Cookie->getInt('cookieid');
+		$pw = $this->Input->Cookie->getHex('cookiepw');
 		}
-	catch (IoRequestException $e)
+	catch (RequestException $e)
 		{
 		return;
 		}
@@ -327,8 +327,8 @@ private function cookieLogin()
 		}
 	catch (LoginException $e)
 		{
-		$this->Io->setCookie('cookieid', '');
-		$this->Io->setCookie('cookiepw', '');
+		$this->Output->setCookie('cookieid', '');
+		$this->Output->setCookie('cookiepw', '');
 		}
 	}
 

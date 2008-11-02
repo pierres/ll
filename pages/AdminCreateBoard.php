@@ -27,7 +27,7 @@ protected function setForm()
 	{
 	if(!$this->User->isOnline())
 		{
-		$this->Io->redirect('Login');
+		$this->Output->redirect('Login');
 		}
 
 	$this->setValue('title', 'Neues Board erstellen');
@@ -50,8 +50,8 @@ protected function setForm()
 
 protected function checkForm()
 	{
-	$this->name = $this->Io->getString('name');
-	$this->host = $this->Io->getString('host');
+	$this->name = $this->Input->Request->getString('name');
+	$this->host = $this->Input->Request->getString('host');
 
 	try
 		{

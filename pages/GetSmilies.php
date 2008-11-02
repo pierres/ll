@@ -397,7 +397,7 @@ function getExtraSmiley(text)
 </html>
 eot;
 
-	$this->Io->out($smilies);
+	$this->Output->writeOutput($smilies);
 	}
 
 }

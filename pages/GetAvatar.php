@@ -25,9 +25,9 @@ protected function getParams()
 	{
 	try
 		{
-		$this->user = $this->Io->getInt('user');
+		$this->user = $this->Input->Request->getInt('user');
 		}
-	catch (IoRequestException $e)
+	catch (RequestException $e)
 		{
 		$this->showWarning('kein Benutzer angegeben');
 		}
@@ -57,7 +57,7 @@ public function show()
 	catch (DBNoDataException $e)
 		{
 		$stm->close();
-		$this->Io->setStatus(Io::NOT_FOUND);
+		$this->Output->setStatus(Output::NOT_FOUND);
 		$this->showWarning('Datei nicht gefunden');
 		}
 

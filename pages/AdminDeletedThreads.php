@@ -79,12 +79,12 @@ protected function sendForm()
 	{
 	try
 		{
-		foreach($this->Io->getArray('thread') as $thread)
+		foreach($this->Input->Request->getArray('thread') as $thread)
 			{
 			AdminFunctions::delThread($thread);
 			}
 		}
-	catch (IoRequestException $e)
+	catch (RequestException $e)
 		{
 		}
 	$this->redirect();
@@ -93,7 +93,7 @@ protected function sendForm()
 
 protected function redirect()
 	{
-	$this->Io->redirect('AdminDeletedThreads');
+	$this->Output->redirect('AdminDeletedThreads');
 	}
 
 }

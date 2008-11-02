@@ -28,9 +28,9 @@ protected function setForm()
 	{
 	try
 		{
-		$this->post = $this->Io->getInt('post');
+		$this->post = $this->Input->Request->getInt('post');
 		}
-	catch (IoException $e)
+	catch (RequestException $e)
 		{
 		$this->showFailure('Kein Beitrag angegeben!');
 		}
@@ -120,7 +120,7 @@ protected function updateForum()
 
 protected function redirect()
 	{
-	$this->Io->redirect('Postings', 'thread='.$this->thread);
+	$this->Output->redirect('Postings', 'thread='.$this->thread);
 	}
 
 }

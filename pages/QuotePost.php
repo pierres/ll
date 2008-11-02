@@ -50,11 +50,11 @@ protected function checkInput()
 				AND posts.threadid = threads.id
 				AND posts.id = ?'
 			);
-		$stm->bindInteger($this->Io->getInt('post'));
+		$stm->bindInteger($this->Input->Request->getInt('post'));
 		$data = $stm->getRow();
 		$stm->close();
 		}
-	catch (IoException $e)
+	catch (RequestException $e)
 		{
 		$stm->close();
 		$this->showFailure('Kein Beitrag angegeben!');
@@ -78,7 +78,7 @@ protected function checkForm()
 	{
 	if (!$this->User->isOnline())
 		{
-		$text = preg_replace('/\s*<quote .+?>.+<\/quote>\s*/s', '', $this->Io->getString('text'));
+		$text = preg_replace('/\s*<quote .+?>.+<\/quote>\s*/s', '', $this->Input->Request->getString('text'));
 		if (empty($text))
 			{
 			$this->showWarning('Du mußt auch selbst etwas dazu schreiben!');

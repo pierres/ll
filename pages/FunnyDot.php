@@ -24,8 +24,8 @@ public function prepare()
 	{
 	$time = time();
 
-	$this->Io->setCookie('AntiSpamTime', $time);
-	$this->Io->setCookie('AntiSpamHash', sha1($time.$this->Settings->getValue('antispam_hash')));
+	$this->Output->setCookie('AntiSpamTime', $time);
+	$this->Output->setCookie('AntiSpamHash', sha1($time.$this->Settings->getValue('antispam_hash')));
 	}
 
 public function show()

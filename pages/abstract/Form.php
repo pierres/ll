@@ -32,6 +32,7 @@ protected $focus	= '';
 
 private $encoding 	= '';
 private $request	= '';
+private $method		= 'post';
 
 private $tail		= '';
 
@@ -44,7 +45,7 @@ public function prepare()
 	$this->setValue('meta.robots', 'noindex,nofollow');
 	$this->setForm();
 
-	if ($this->Io->isRequest('submit') && count($this->warning) == 0)
+	if ($this->Input->Request->isValid('submit') && count($this->warning) == 0)
 		{
 		$this->checkAntiSpamHash();
 		$this->checkSecurityToken();
@@ -73,6 +74,11 @@ protected function setForm()
 		}
 	}
 
+public function setMethod($method)
+	{
+	$this->method = $method;
+	}
+
 private function addSecurityToken()
 	{
 	if ($this->isCheckSecurityToken && $this->User->isOnline())
@@ -92,9 +98,9 @@ private function checkSecurityToken()
 		{
 		try
 			{
-			$token = $this->Io->getHex('SecurityToken');
+			$token = $this->Input->Request->getHex('SecurityToken');
 			}
-		catch (IoRequestException $e)
+		catch (RequestException $e)
 			{
 			$this->showFailure('Sicherheitsverletzung: Aktion nicht erlaubt!');
 			}
@@ -119,23 +125,23 @@ private function checkAntiSpamHash()
 
 		try
 			{
-			$time = $this->Io->getInt('AntiSpamTime');
-			$hash = $this->Io->getHex('AntiSpamHash');
+			$time = $this->Input->Cookie->getInt('AntiSpamTime');
+			$hash = $this->Input->Cookie->getHex('AntiSpamHash');
 			}
-		catch (IoRequestException $e)
+		catch (RequestException $e)
 			{
 			try
 				{
-				$time = $this->Io->getInt('AlternateAntiSpamTime');
+				$time = $this->Input->Cookie->getInt('AlternateAntiSpamTime');
 
-				if ($this->Io->isEmpty('AlternateAntiSpamHashHead'))
+				if ($this->Input->Request->isEmpty('AlternateAntiSpamHashHead'))
 					{
 					return $this->showWarning('Bitte den Sicherheitscode bestätigen!');
 					}
 
-				$hash = $this->Io->getHex('AlternateAntiSpamHashHead').$this->Io->getHex('AlternateAntiSpamHashTail');
+				$hash = $this->Input->Cookie->getHex('AlternateAntiSpamHashHead').$this->Input->Request->getHex('AlternateAntiSpamHashTail');
 				}
-			catch (IoRequestException $e)
+			catch (RequestException $e)
 				{
 				sleep($this->Settings->getValue('antispam_wait'));
 				$this->showFailure('Ungültige Formulardaten empfangen. Stelle sicher, daß Cookies für diese Domain angenommen werden.');
@@ -174,24 +180,24 @@ private function addAlternateAntiSpamHash()
 	{
 	try
 		{
-		$hashHead = $this->Io->getHex('AlternateAntiSpamHashHead');
+		$hashHead = $this->Input->Cookie->getHex('AlternateAntiSpamHashHead');
 
-		if ($this->Io->isEmptyString('AlternateAntiSpamHashHead'))
+		if ($this->Input->Cookie->isEmptyString('AlternateAntiSpamHashHead'))
 			{
-			throw new IoRequestException('AlternateAntiSpamHashHead');
+			throw new RequestException('AlternateAntiSpamHashHead');
 			}
 
-		$time = $this->Io->getInt('AlternateAntiSpamTime');
+		$time = $this->Input->Cookie->getInt('AlternateAntiSpamTime');
 		}
-	catch (IoRequestException $e)
+	catch (RequestException $e)
 		{
 		$hashHead = '';
 		$time = time();
 		}
 
 	$hash = sha1($time.$this->Settings->getValue('antispam_hash'));
-	$this->Io->setCookie('AlternateAntiSpamTime', $time);
-	$this->Io->setCookie('AlternateAntiSpamHashTail', substr($hash, 4));
+	$this->Output->setCookie('AlternateAntiSpamTime', $time);
+	$this->Output->setCookie('AlternateAntiSpamHashTail', substr($hash, 4));
 
 
 	$name = 'AlternateAntiSpamHashHead';
@@ -217,7 +223,7 @@ protected function showForm()
 
 	$body =
 		$this->getWarning().'
-		<form '.$this->encoding.' method="post" action="?page='.$this->getName().';id='.$this->Board->getId().$this->request.'">
+		<form '.$this->encoding.' method="'.$this->method.'" action="?page='.$this->getName().';id='.$this->Board->getId().$this->request.'">
 			<table class="frame">
 				<tr>
 					<td class="title">
@@ -294,7 +300,7 @@ protected function isSubmit()
 	{
 	foreach ($this->buttons as $name => $value)
 		{
-		if ($this->Io->isRequest($name))
+		if ($this->Input->Request->isValid($name))
 			{
 			return true;
 			}
@@ -309,7 +315,7 @@ protected function addFile($name, $description, $cols = 50)
 	/** Workaround for PHP-"Bug". See http://de3.php.net/manual/en/ini.core.php#ini.post-max-size */
 	$this->request .= ';fileUploadCheck'.$name.'=1';
 
-	if ($this->Io->isRequest('fileUploadCheck'.$name) && empty($_POST) && empty($_FILES))
+	if ($this->Input->Request->isValid('fileUploadCheck'.$name) && empty($_POST) && empty($_FILES))
 		{
 		$this->showWarning('Die Datei ist größer als '.ini_get('upload_max_filesize').'Byte.');
 		}
@@ -327,7 +333,7 @@ protected function addCheckbox($name, $description, $checked = false)
 	{
 	if ($this->isSubmit())
 		{
-		$checked = $this->Io->isRequest($name);
+		$checked = $this->Input->Request->isValid($name);
 		}
 
 	$this->addElement($name, '<input type="checkbox" id="'.$this->getNextElementId().'" name="'.$name.'"'.($checked ? ' checked="checked"' : '').' /><label for="'.$this->getNextElementId().'">'.$description.'</label>');
@@ -342,9 +348,9 @@ protected function addRadio($name, $description, $array, $default = '')
 
 	foreach ($array as $key => $value)
 		{
-		if ($this->isSubmit() && $this->Io->isRequest($name))
+		if ($this->isSubmit() && $this->Input->Request->isValid($name))
 			{
-			$checked = ($this->Io->getString($name) == $value);
+			$checked = ($this->Input->Request->getString($name) == $value);
 			}
 		else
 			{
@@ -370,9 +376,9 @@ protected function addTextarea($name, $description = '', $text = '', $cols = 80,
 	{
 	try
 		{
-		$text = $this->Io->getString($name);
+		$text = $this->Input->Request->getString($name);
 		}
-	catch (IoRequestException $e)
+	catch (RequestException $e)
 		{
 		}
 
@@ -387,9 +393,9 @@ protected function addText($name, $description = '', $text = '', $cols = 80)
 	{
 	try
 		{
-		$text = $this->Io->getString($name);
+		$text = $this->Input->Request->getString($name);
 		}
-	catch (IoRequestException $e)
+	catch (RequestException $e)
 		{
 		}
 
@@ -404,9 +410,9 @@ protected function addPassword($name, $description = '', $text = '', $cols = 80)
 	{
 	try
 		{
-		$text = $this->Io->getString($name);
+		$text = $this->Input->Request->getString($name);
 		}
-	catch (IoRequestException $e)
+	catch (RequestException $e)
 		{
 		}
 
@@ -419,7 +425,7 @@ protected function addPassword($name, $description = '', $text = '', $cols = 80)
 
 protected function requires($name)
 	{
-	if ($this->isSubmit() && $this->Io->isEmpty($name))
+	if ($this->isSubmit() && $this->Input->Request->isEmpty($name))
 		{
 		if (isset($this->elements[$name]))
 			{
@@ -436,9 +442,9 @@ protected function requires($name)
 
 protected function setLength($name, $min, $max)
 	{
-	if ($this->isSubmit() && !$this->Io->isEmptyString($name))
+	if ($this->isSubmit() && !$this->Input->Request->isEmptyString($name))
 		{
-		$length = strlen($this->Io->getHTML($name));
+		$length = strlen($this->Input->Request->getHTML($name));
 
 		if ($length > 0 && $length < $min)
 			{
@@ -447,7 +453,7 @@ protected function setLength($name, $min, $max)
 			}
 		// Workaround for Bug #1 (will not Work for Markup!)
 		elseif ($length > $max)
-		//elseif ($this->Io->getLength($name) > $max)
+		//elseif ($this->Input->Request->getLength($name) > $max)
 			{
 			$this->showWarning('Im Feld "'.$this->descriptions[$name].'" sind '.($length-$max).' Zeichen zuviel.');
 			$this->elements[$name] = preg_replace('/<\w+? /', '$0style="border-color:orange" ', $this->elements[$name]);

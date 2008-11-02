@@ -48,9 +48,9 @@ protected function checkInput()
 	{
 	try
 		{
-		$this->thread = $this->Io->getInt('thread');
+		$this->thread = $this->Input->Request->getInt('thread');
 		}
-	catch (IoException $e)
+	catch (RequestException $e)
 		{
 		$this->showFailure('Kein Thema angegeben!');
 		}
@@ -95,7 +95,7 @@ protected function updateForum()
 
 public function show()
 	{
-	$this->Io->redirect('Postings', 'thread='.$this->thread);
+	$this->Output->redirect('Postings', 'thread='.$this->thread);
 	}
 
 }

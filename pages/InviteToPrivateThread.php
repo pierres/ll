@@ -34,7 +34,7 @@ protected function setForm()
 
 	try
 		{
-		$this->thread = $this->Io->getInt('thread');
+		$this->thread = $this->Input->Request->getInt('thread');
 		$stm = $this->DB->prepare
 			('
 			SELECT
@@ -92,9 +92,9 @@ protected function setForm()
 
 protected function checkForm()
 	{
-	if ($this->Io->isRequest('recipients'))
+	if ($this->Input->Request->isValid('recipients'))
 		{
-		$recipients = array_map('trim', explode(',', $this->Io->getString('recipients')));
+		$recipients = array_map('trim', explode(',', $this->Input->Request->getString('recipients')));
 
 		try
 			{
@@ -137,7 +137,7 @@ protected function sendForm()
 		}
 	$stm->close();
 
-	$this->Io->redirect('PrivatePostings', 'thread='.$this->thread);
+	$this->Output->redirect('PrivatePostings', 'thread='.$this->thread);
 	}
 
 }

@@ -33,9 +33,9 @@ if (!$this->User->isOnline())
 
 try
 	{
-	$this->thread = nat($this->Io->getInt('thread'));
+	$this->thread = nat($this->Input->Request->getInt('thread'));
 	}
-catch (IoRequestException $e)
+catch (RequestException $e)
 	{
 	$this->thread = 0;
 	}

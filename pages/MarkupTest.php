@@ -30,10 +30,10 @@ protected function setForm()
 
 	$this->addSubmit('Abschicken');
 
-	if (!$this->Io->isEmpty('text'))
+	if (!$this->Input->Request->isEmpty('text'))
 		{
-		$this->text = $this->Io->getString('text');
-		$this->Markup->enableSmilies($this->Io->isRequest('smilies'));
+		$this->text = $this->Input->Request->getString('text');
+		$this->Markup->enableSmilies($this->Input->Request->isValid('smilies'));
 
 		$html = $this->Markup->toHtml($this->text);
 
@@ -59,8 +59,8 @@ protected function setForm()
 
 protected function checkForm()
 	{
-	$this->smilies = $this->Io->isRequest('smilies');
- 	$this->text = $this->Io->getString('text');
+	$this->smilies = $this->Input->Request->isValid('smilies');
+ 	$this->text = $this->Input->Request->getString('text');
 	}
 
 protected function sendForm()

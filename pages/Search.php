@@ -74,22 +74,22 @@ private function setTag()
 
 protected function checkForm()
 	{
-	$this->search = $this->Io->getString('search');
+	$this->search = $this->Input->Request->getString('search');
 
 	try
 		{
-		$this->thread = $this->Io->getInt('thread');
+		$this->thread = $this->Input->Request->getInt('thread');
 		}
-	catch (IoRequestException $e)
+	catch (RequestException $e)
 		{
 		$this->thread = 0;
 		}
 
 	try
 		{
-		$this->tag = $this->Io->getInt('tag');
+		$this->tag = $this->Input->Request->getInt('tag');
 		}
-	catch (IoRequestException $e)
+	catch (RequestException $e)
 		{
 		$this->tag = 0;
 		}

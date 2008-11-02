@@ -26,9 +26,9 @@ protected function setForm()
 	{
 	try
 		{
-		$this->thread = $this->Io->getInt('thread');
+		$this->thread = $this->Input->Request->getInt('thread');
 		}
-	catch (IoException $e)
+	catch (RequestException $e)
 		{
 		$this->showFailure('Kein Privates Thema angegeben!');
 		}
@@ -96,7 +96,7 @@ protected function sendForm()
 
 protected function redirect()
 	{
-	$this->Io->redirect('PrivatePostings', 'thread='.$this->thread);
+	$this->Output->redirect('PrivatePostings', 'thread='.$this->thread);
 	}
 
 }

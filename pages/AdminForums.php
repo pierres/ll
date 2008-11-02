@@ -25,9 +25,9 @@ protected function setForm()
 	{
 	try
 		{
-		$this->cat = $this->Io->getInt('cat');
+		$this->cat = $this->Input->Request->getInt('cat');
 		}
-	catch (IoRequestException $e)
+	catch (RequestException $e)
 		{
 		$this->showFailure('Keine Kategorie angegeben');
 		}
@@ -196,7 +196,7 @@ protected function checkForm()
 	catch(DBNoDataException $e)
 		{
 		$stm->close();
-		$this->Io->redirect('AdminCats');
+		$this->Output->redirect('AdminCats');
 		}
 	}
 
@@ -204,11 +204,11 @@ protected function sendForm()
 	{
 	try
 		{
-		$forums = $this->Io->getArray('forums');
+		$forums = $this->Input->Request->getArray('forums');
 		}
-	catch (IoRequestException $e)
+	catch (RequestException $e)
 		{
-		if ($this->Io->isEmpty('newname'))
+		if ($this->Input->Request->isEmpty('newname'))
 			{
 			$this->redirect();
 			}
@@ -258,7 +258,7 @@ protected function sendForm()
 		$stm2->close();
 		}
 
-	if (!$this->Io->isEmpty('newname'))
+	if (!$this->Input->Request->isEmpty('newname'))
 		{
 		$stm = $this->DB->prepare
 			('
@@ -269,8 +269,8 @@ protected function sendForm()
 				description = ?,
 				boardid = ?'
 			);
-		$stm->bindString($this->Io->getHtml('newname'));
-		$stm->bindString($this->Io->getHtml('newdescription'));
+		$stm->bindString($this->Input->Request->getHtml('newname'));
+		$stm->bindString($this->Input->Request->getHtml('newdescription'));
 		$stm->bindInteger($this->Board->getId());
 		$stm->execute();
 		$stm->close();
@@ -284,7 +284,7 @@ protected function sendForm()
 				position = ?,
 				catid = ?'
 			);
-		$stm->bindInteger($this->Io->getInt('newposition'));
+		$stm->bindInteger($this->Input->Request->getInt('newposition'));
 		$stm->bindInteger($this->cat);
 		$stm->execute();
 		$stm->close();
@@ -295,7 +295,7 @@ protected function sendForm()
 
 protected function redirect()
 	{
-	$this->Io->redirect('AdminForums', 'cat='.$this->cat);
+	$this->Output->redirect('AdminForums', 'cat='.$this->cat);
 	}
 
 

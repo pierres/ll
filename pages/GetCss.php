@@ -26,7 +26,7 @@ public function prepare()
 
 public function show()
 	{
-	if (!($css = $this->ObjectCache->getObject('LL:GetCss:Css:'.$this->Io->getInt('id'))))
+	if (!($css = $this->ObjectCache->getObject('LL:GetCss:Css:'.$this->Input->Request->getInt('id'))))
 		{
 		$this->initDB();
 		try
@@ -48,13 +48,13 @@ public function show()
 		catch (DBNoDataException $e)
 			{
 			$stm->close();
-			$this->Io->setStatus(Io::NOT_FOUND);
+			$this->Output->setStatus(Output::NOT_FOUND);
 			$this->showWarning('Datei nicht gefunden');
 			}
 		}
 
-	$this->Io->setContentType('Content-Type: text/css; charset=UTF-8');
-	$this->Io->out($css);
+	$this->Output->setContentType('Content-Type: text/css; charset=UTF-8');
+	$this->Output->writeOutput($css);
 	}
 
 }

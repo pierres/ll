@@ -46,8 +46,8 @@ protected function setForm()
 
 protected function checkForm()
 	{
-	$this->name = $this->Io->getString('name');
-	$this->email = $this->Io->getString('email');
+	$this->name = $this->Input->Request->getString('name');
+	$this->email = $this->Input->Request->getString('email');
 
 	if (!$this->Mail->validateMail($this->email))
 		{
@@ -135,7 +135,7 @@ protected function sendForm()
 
 Deine Registrierung bei "'.$this->Board->getName().'" war erfolgreich.
 Du kannst Dein Passwort ändern, wenn Du folgende Seite besuchst:
-'.$this->Io->getURL().'?id='.$this->Board->getId().';page=ChangePasswordKey;userid='.$userid.';key='.$key.'
+'.$this->Input->Request->getURL().'?id='.$this->Board->getId().';page=ChangePasswordKey;userid='.$userid.';key='.$key.'
 
 Sollte obiger Link bei Deinem Mail-Programm nicht funktionieren,
 so wähle im Anmelde-Dialog die Option "Passwort setzen" und gebe folgende Daten an:

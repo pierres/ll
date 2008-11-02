@@ -26,7 +26,7 @@ protected function setForm()
 
 	$this->addSubmit('Einloggen');
 
-	$this->addText('name', 'Dein Name', !$this->Io->isEmpty('name') ? $this->Io->getHtml('name') : '', 25);
+	$this->addText('name', 'Dein Name', !$this->Input->Request->isEmpty('name') ? $this->Input->Request->getHtml('name') : '', 25);
 	$this->requires('name');
 	$this->setLength('name', 3, 25);
 
@@ -41,9 +41,9 @@ protected function setForm()
 
 	$this->addElement('passwordoptions', '<br /><br /><a href="?page=ForgotPassword;id='.$this->Board->getId().'"><span class="button">Passwort vergessen?</span></a> <a href="?page=ChangePasswordKey;id='.$this->Board->getId().'"><span class="button">Passwort setzen</span></a>');
 
-	if(!$this->Io->getEnv('HTTPS'))
+	if(!$this->Input->Server->isValid('HTTPS'))
 		{
-		$tls = '<br /><a href="https://'.$this->Io->getEnv('HTTP_HOST').'/?page=Login;id='.$this->Board->getId().'"><span class="button">TLS-Verschlüsselung</span></a> ';
+		$tls = '<br /><a href="https://'.$this->Input->Server->getString('HTTP_HOST').'/?page=Login;id='.$this->Board->getId().'"><span class="button">TLS-Verschlüsselung</span></a> ';
 		}
 	else
 		{
@@ -55,8 +55,8 @@ protected function setForm()
 
 protected function checkForm()
 	{
-	$name = $this->Io->getHtml('name');
-	$password = $this->Io->getString('password');
+	$name = $this->Input->Request->getHtml('name');
+	$password = $this->Input->Request->getString('password');
 
 	try
 		{
@@ -73,14 +73,14 @@ protected function checkForm()
 
 protected function sendForm()
 	{
-	if ($this->Io->isRequest('cookie'))
+	if ($this->Input->Request->isValid('cookie'))
 		{
 		/** @Todo: Das gehört eher nach User **/
-		$this->Io->setCookie('cookieid', $this->User->getId(), (time() + $this->Settings->getValue('max_age')));
-		$this->Io->setCookie('cookiepw', sha1($this->Settings->getValue('cookie_hash').sha1($this->Io->getString('password'))), (time() + $this->Settings->getValue('max_age')));
+		$this->Output->setCookie('cookieid', $this->User->getId(), (time() + $this->Settings->getValue('max_age')));
+		$this->Output->setCookie('cookiepw', sha1($this->Settings->getValue('cookie_hash').sha1($this->Input->Request->getString('password'))), (time() + $this->Settings->getValue('max_age')));
 		}
 
-	$this->Io->redirect('Forums');
+	$this->Output->redirect('Forums');
 	}
 
 }

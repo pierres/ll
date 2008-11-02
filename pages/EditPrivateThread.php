@@ -33,10 +33,10 @@ protected function checkInput()
 	{
 	try
 		{
-		$this->thread = $this->Io->getInt('thread');
+		$this->thread = $this->Input->Request->getInt('thread');
 		$this->addHidden('thread', $this->thread);
 		}
-	catch (IoException $e)
+	catch (RequestException $e)
 		{
 		$this->showFailure('Kein Thema angegeben!');
 		}
@@ -176,7 +176,7 @@ protected function sendForm()
 	$stm->execute();
 	$stm->close();
 
-	if ($this->Io->isRequest('poll_question') && $this->Io->isRequest('poll_options'))
+	if ($this->Input->Request->isValid('poll_question') && $this->Input->Request->isValid('poll_options'))
 		{
 		if ($this->poll_options != $this->db_poll_options || $this->poll_question != $this->db_poll_question)
 			{
@@ -244,7 +244,7 @@ protected function sendForm()
 
 protected function sendFile($postid)
 	{
-	if($this->User->isOnline() && $this->Io->isRequest('addfile'))
+	if($this->User->isOnline() && $this->Input->Request->isValid('addfile'))
 		{
 		$stm = $this->DB->prepare
 			('

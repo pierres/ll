@@ -285,7 +285,7 @@ www.laber-land.de/images/logo.png
 </html>
 eot;
 
-	$this->Io->out($smilies);
+	$this->Output->writeOutput($smilies);
 	}
 
 }

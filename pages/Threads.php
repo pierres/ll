@@ -30,18 +30,18 @@ public function prepare(){
 
 try
 	{
-	$this->forum = $this->Io->getInt('forum');
+	$this->forum = $this->Input->Request->getInt('forum');
 	}
-catch (IoRequestException $e)
+catch (RequestException $e)
 	{
 	$this->showWarning('Kein Forum angegeben.');
 	}
 
 try
 	{
-	$this->thread = nat($this->Io->getInt('thread'));
+	$this->thread = nat($this->Input->Request->getInt('thread'));
 	}
-catch (IoRequestException $e)
+catch (RequestException $e)
 	{
 	$this->thread = 0;
 	}
@@ -74,7 +74,7 @@ try
 catch (DBException $e)
 	{
 	$stm->close();
-	$this->Io->setStatus(Io::NOT_FOUND);
+	$this->Output->setStatus(Output::NOT_FOUND);
 	$this->showWarning('Forum nicht gefunden.');
 	}
 

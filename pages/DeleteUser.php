@@ -25,9 +25,9 @@ protected function setForm()
 	{
 	try
 		{
-		$this->user = $this->Io->getInt('user');
+		$this->user = $this->Input->Request->getInt('user');
 		}
-	catch (IoException $e)
+	catch (RequestException $e)
 		{
 		$this->showFailure('Kein Benutzer angegeben');
 		}
@@ -83,7 +83,7 @@ protected function checkForm()
 
 protected function sendForm()
 	{
-	if ($this->Io->getInt('confirm') == 1)
+	if ($this->Input->Request->getInt('confirm') == 1)
 		{
 		AdminFunctions::delUser($this->user);
 
@@ -93,7 +93,7 @@ protected function sendForm()
 			}
 		}
 
-	$this->Io->redirect('Forums');
+	$this->Output->redirect('Forums');
 	}
 
 }

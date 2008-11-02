@@ -151,17 +151,17 @@ protected function checkForm()
 	{
 	try
 		{
-		$this->file = $this->Io->getUploadedFile('file');
+		$this->file = $this->Input->getUploadedFile('file');
+
+		if ($this->file->getFileSize() >= $this->Settings->getValue('file_size'))
+			{
+			$this->showWarning('Datei ist zu groß!');
+			return;
+			}
 		}
-	catch (IoException $e)
+	catch (FileException $e)
 		{
 		$this->showWarning($e->getMessage());
-		return;
-		}
-
-	if ($this->file['size'] >= $this->Settings->getValue('file_size'))
-		{
-		$this->showWarning('Datei ist zu groß!');
 		return;
 		}
 
@@ -188,7 +188,7 @@ protected function checkForm()
 		$data['quota'] = 0;
 		}
 
-	if ($data['quota'] + $this->file['size'] >=  $this->Settings->getValue('quota'))
+	if ($data['quota'] + $this->file->getFileSize() >=  $this->Settings->getValue('quota'))
 		{
 		$this->showWarning('Dein Speicherplatz ist voll!');
 		}
@@ -201,8 +201,6 @@ protected function checkForm()
 
 protected function sendForm()
 	{
-	$content = file_get_contents($this->file['tmp_name']);
-
 	$stm = $this->DB->prepare
 		('
 		INSERT INTO
@@ -210,34 +208,32 @@ protected function sendForm()
 		SET
 			name = ?,
 			type = ?,
-			size = ?,
 			content = ?,
+			size = ?,
 			userid = ?,
 			uploaded = ?'
 		);
-	$stm->bindString(htmlspecialchars($this->file['name']));
-	$stm->bindString($this->file['type']);
-	$stm->bindInteger(strlen($content));
-	$stm->bindString($content);
+	$stm->bindString(htmlspecialchars($this->file->getFileName()));
+	$stm->bindString($this->file->getFileType());
+	$stm->bindString($this->file->getFileContent());
+	$stm->bindInteger($this->file->getFileSize());
 	$stm->bindInteger($this->User->getId());
 	$stm->bindInteger(time());
 	$stm->execute();
 	$stm->close();
 
-	unlink($this->file['tmp_name']);
-
-	if (strpos($this->file['type'], 'image/jpeg') === 0 ||
-			strpos($this->file['type'], 'image/pjpeg') === 0 ||
-			strpos($this->file['type'], 'image/png') === 0 ||
-			strpos($this->file['type'], 'image/gif') === 0)
+	if (strpos($this->file->getFileType(), 'image/jpeg') === 0 ||
+			strpos($this->file->getFileType(), 'image/pjpeg') === 0 ||
+			strpos($this->file->getFileType(), 'image/png') === 0 ||
+			strpos($this->file->getFileType(), 'image/gif') === 0)
 			{
 			try
 				{
-				$thumbcontent = resizeImage($content, $this->file['type'], $this->Settings->getValue('thumb_size'));
+				$thumbcontent = resizeImage($this->file->getFileContent(), $this->file->getFileType(), $this->Settings->getValue('thumb_size'));
 				}
 			catch (Exception $e)
 				{
-				$this->Io->redirect('MyFiles');
+				$this->Output->redirect('MyFiles');
 				}
 
 			$stm = $this->DB->prepare
@@ -257,7 +253,7 @@ protected function sendForm()
 			$stm->close();
 			}
 
-	$this->Io->redirect('MyFiles');
+	$this->Output->redirect('MyFiles');
 	}
 
 }

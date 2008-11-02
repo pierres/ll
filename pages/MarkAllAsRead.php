@@ -55,7 +55,7 @@ public function prepare()
 
 public function show()
 	{
-	$this->Io->redirect('Forums');
+	$this->Output->redirect('Forums');
 	}
 
 }

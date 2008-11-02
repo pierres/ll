@@ -38,7 +38,7 @@ public function __construct()
 		{
 		try
 			{
-			$this->id = $this->Io->getInt('id');
+			$this->id = $this->Input->Request->getInt('id');
 			$board = $this->getBoard($this->id);
 			}
 		catch (Exception $e)
@@ -104,7 +104,7 @@ private function getBoardByHost()
 		WHERE
 			host = ?'
 		);
-	$stm->bindString($this->Io->getHost());
+	$stm->bindString($this->Input->getHost());
 
 	$board = $stm->getRow();
 	$stm->close();

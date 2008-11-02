@@ -26,9 +26,9 @@ public function prepare()
 	{
 	try
 		{
-		$this->id = $this->Io->getInt('user');
+		$this->id = $this->Input->Request->getInt('user');
 		}
-	catch (IoRequestException $e)
+	catch (RequestException $e)
 		{
 		$this->showWarning('Kein Benutzer angegeben!');
 		}
@@ -63,7 +63,7 @@ public function prepare()
 	catch (DBNoDataException $e)
 		{
 		$stm->close();
-		$this->Io->setStatus(Io::NOT_FOUND);
+		$this->Output->setStatus(Output::NOT_FOUND);
 		$this->showWarning('Kein Benutzer gefunden!');
 		}
 

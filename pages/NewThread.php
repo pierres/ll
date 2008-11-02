@@ -35,18 +35,18 @@ protected function setForm()
 	$this->checkInput();	// doing this here to ensure we initialize the topic if it allready exists
 	try
 		{
-		$this->topic = $this->Io->getString('topic');
+		$this->topic = $this->Input->Request->getString('topic');
 		}
-	catch (IoException $e)
+	catch (RequestException $e)
 		{
 		}
 	$this->addText('topic', 'Thema', $this->topic);
 	parent::setForm();
 	try
 		{
-		$this->topic = $this->Io->getString('topic');
+		$this->topic = $this->Input->Request->getString('topic');
 		}
-	catch (IoException $e)
+	catch (RequestException $e)
 		{
 		}
 	$this->requires('topic');
@@ -61,15 +61,15 @@ protected function setPoll()
 	{
 	if ($this->User->isOnline())
 		{
-		if (($this->Io->isRequest('poll')) && !$this->Io->isRequest('nopoll'))
+		if (($this->Input->Request->isValid('poll')) && !$this->Input->Request->isValid('nopoll'))
 			{
 			$this->addButton('nopoll', 'keine Umfrage');
 
 			try
 				{
-				$this->poll_question = $this->Io->getString('poll_question');
+				$this->poll_question = $this->Input->Request->getString('poll_question');
 				}
-			catch (IoRequestException $e)
+			catch (RequestException $e)
 				{
 				}
 
@@ -79,7 +79,7 @@ protected function setPoll()
 
 			try
 				{
-				$this->poll_options = $this->Io->getString('poll_options');
+				$this->poll_options = $this->Input->Request->getString('poll_options');
 				$poll_options = explode("\n", $this->poll_options);
 				$i = 1;
 				foreach($poll_options as $poll_option)
@@ -106,7 +106,7 @@ protected function setPoll()
 					$this->showWarning('Sind das zu wenige oder zu wenige Antwortmöglichkeiten?');
 					}
 				}
-			catch (IoRequestException $e)
+			catch (RequestException $e)
 				{
 				}
 
@@ -159,7 +159,7 @@ protected function checkForm()
 	{
 	parent::checkForm();
 
-	$this->tag = $this->Io->getInt('tag');
+	$this->tag = $this->Input->Request->getInt('tag');
 
 	try
 		{
@@ -192,9 +192,9 @@ protected function checkInput()
 		{
 		try
 			{
-			$this->forum = $this->Io->getInt('forum');
+			$this->forum = $this->Input->Request->getInt('forum');
 			}
-		catch (IoException $e)
+		catch (RequestException $e)
 			{
 			$this->showFailure('Kein Forum angegeben');
 			}
@@ -205,7 +205,7 @@ protected function checkInput()
 
 protected function sendPoll()
 	{
-	if ($this->Io->isRequest('poll') && $this->User->isOnline())
+	if ($this->Input->Request->isValid('poll') && $this->User->isOnline())
 		{
 		$poll_options = explode("\n",$this->poll_options);
 		$stm = $this->DB->prepare

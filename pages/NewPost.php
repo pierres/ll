@@ -45,10 +45,10 @@ protected function setForm()
 	$this->addButton('preview', 'Vorschau');
 
 
-	if ($this->Io->isRequest('preview') && !$this->Io->isEmpty('text'))
+	if ($this->Input->Request->isValid('preview') && !$this->Input->Request->isEmpty('text'))
 		{
-		$this->text = $this->Io->getString('text');
-		$this->Markup->enableSmilies($this->Io->isRequest('smilies'));
+		$this->text = $this->Input->Request->getString('text');
+		$this->Markup->enableSmilies($this->Input->Request->isValid('smilies'));
 		/** TODO: position of preview-window is not allways optimal */
 		$this->addElement('previewwindow',
 		'<div class="preview">'.$this->Markup->toHtml($this->text).'</div>');
@@ -81,7 +81,7 @@ protected function setFile()
 	{
 	if ($this->User->isOnline())
 		{
-		if (($this->Io->isRequest('addfile')) && !$this->Io->isRequest('nofile'))
+		if (($this->Input->Request->isValid('addfile')) && !$this->Input->Request->isValid('nofile'))
 			{
 			$this->addButton('nofile', 'keine Dateien');
 
@@ -121,7 +121,7 @@ protected function setFile()
 							/* ]]> */
 						</script>');
 				$this->addOutput('<br />Dateien auswählen:<br /><table class="frame" style="margin:10px;font-size:9px;">');
-	
+
 				foreach ($files as $file)
 					{
 					if (strpos($file['type'], 'image/jpeg') === 0 ||
@@ -217,13 +217,13 @@ protected function getLastPosts()
 
 protected function sendFile($postid)
 	{
-	if($this->User->isOnline() && $this->Io->isRequest('addfile'))
+	if($this->User->isOnline() && $this->Input->Request->isValid('addfile'))
 		{
 		try
 			{
-			$files = $this->Io->getArray('files');
+			$files = $this->Input->Request->getArray('files');
 			}
-		catch (IoRequestException $e)
+		catch (RequestException $e)
 			{
 			$files = array();
 			}
@@ -301,26 +301,22 @@ protected function checkNewFile()
 		{
 		try
 			{
-			$this->file = $this->Io->getUploadedFile('file');
-			}
-		catch (IoFileSizeException $e)
-			{
-			$this->showWarning($e->getMessage());
-			return;
-			}
-		catch (IoMimeException $e)
-			{
-			$this->showWarning($e->getMessage());
-			return;
-			}
-		catch (IoException $e)
-			{
-			return;
-			}
+			$this->file = $this->Input->getUploadedFile('file');
 
-		if ($this->file['size'] >= $this->Settings->getValue('file_size'))
+			if ($this->file->getFileSize() >= $this->Settings->getValue('file_size'))
+				{
+				$this->showWarning('Datei ist zu groß!');
+				return;
+				}
+			}
+		catch (FileNotUploadedException $e)
 			{
-			$this->showWarning('Datei ist zu groß!');
+			return;
+			}
+		catch (FileException $e)
+			{
+			$this->showWarning($e->getMessage());
+			return;
 			}
 
 		try
@@ -345,7 +341,7 @@ protected function checkNewFile()
 			return;
 			}
 
-		if ($data['quota'] + $this->file['size'] >=  $this->Settings->getValue('quota'))
+		if ($data['quota'] + $this->file->getFileSize() >=  $this->Settings->getValue('quota'))
 			{
 			$this->showWarning('Dein Speicherplatz ist voll!');
 			}
@@ -361,8 +357,6 @@ protected function sendNewFile($files)
 	{
 	if ($this->User->isOnline() && !empty($this->file))
 		{
-		$content = file_get_contents($this->file['tmp_name']);
-
 		$stm = $this->DB->prepare
 			('
 			INSERT INTO
@@ -370,15 +364,15 @@ protected function sendNewFile($files)
 			SET
 				name = ?,
 				type = ?,
-				size = ?,
 				content = ?,
+				size = ?,
 				userid = ?,
 				uploaded = ?'
 			);
-		$stm->bindString(htmlspecialchars($this->file['name']));
-		$stm->bindString($this->file['type']);
-		$stm->bindInteger(strlen($content));
-		$stm->bindString($content);
+		$stm->bindString(htmlspecialchars($this->file->getFileName()));
+		$stm->bindString($this->file->getFileType());
+		$stm->bindString($this->file->getFileContent());
+		$stm->bindInteger($this->file->getFileSize());
 		$stm->bindInteger($this->User->getId());
 		$stm->bindInteger(time());
 
@@ -389,16 +383,14 @@ protected function sendNewFile($files)
 
 		$files[$fileID] = '';
 
-		unlink($this->file['tmp_name']);
-
-		if (strpos($this->file['type'], 'image/jpeg') === 0 ||
-			strpos($this->file['type'], 'image/pjpeg') === 0 ||
-			strpos($this->file['type'], 'image/png') === 0 ||
-			strpos($this->file['type'], 'image/gif') === 0)
+		if (strpos($this->file->getFileType(), 'image/jpeg') === 0 ||
+			strpos($this->file->getFileType(), 'image/pjpeg') === 0 ||
+			strpos($this->file->getFileType(), 'image/png') === 0 ||
+			strpos($this->file->getFileType(), 'image/gif') === 0)
 			{
 			try
 				{
-				$thumbcontent = resizeImage($content, $this->file['type'], $this->Settings->getValue('thumb_size'));
+				$thumbcontent = resizeImage($this->file->getFileContent(), $this->file->getFileType(), $this->Settings->getValue('thumb_size'));
 				}
 			catch (Exception $e)
 				{
@@ -443,11 +435,11 @@ protected function checkInput()
 				AND deleted = 0
 				AND id = ?'
 			);
-		$stm->bindInteger($this->Io->getInt('thread'));
+		$stm->bindInteger($this->Input->Request->getInt('thread'));
 		$data = $stm->getRow();
 		$stm->close();
 		}
-	catch (IoException $e)
+	catch (RequestException $e)
 		{
 		$stm->close();
 		$this->showFailure('Kein Thema angegeben!');
@@ -472,10 +464,10 @@ protected function checkInput()
 
 protected function checkForm()
 	{
-	$this->smilies = $this->Io->isRequest('smilies');
-	$this->text = $this->Io->getString('text');
+	$this->smilies = $this->Input->Request->isValid('smilies');
+	$this->text = $this->Input->Request->getString('text');
 
-	if (!$this->User->isOnline() && !$this->Io->isEmpty('name'))
+	if (!$this->User->isOnline() && !$this->Input->Request->isEmpty('name'))
 		{
 		try
 			{
@@ -489,11 +481,11 @@ protected function checkForm()
 				WHERE
 					name = ?'
 				);
-			$stm->bindString($this->Io->getHtml('name'));
+			$stm->bindString($this->Input->Request->getHtml('name'));
 			$user = $stm->getRow();
 			$stm->close();
 
-			$this->showWarning('Der Name <strong><a href="?page=ShowUser;user='.$user['id'].';id='.$this->Board->getId().'">'.$user['name'].'</a></strong> wurde bereits registriert. <strong><a href="?page=Login;id='.$this->Board->getId().';name='.urlencode($this->Io->getHtml('name')).'">Melde Dich an</a></strong>, falls dies Dein Benutzer-Konto ist.');
+			$this->showWarning('Der Name <strong><a href="?page=ShowUser;user='.$user['id'].';id='.$this->Board->getId().'">'.$user['name'].'</a></strong> wurde bereits registriert. <strong><a href="?page=Login;id='.$this->Board->getId().';name='.urlencode($this->Input->Request->getHtml('name')).'">Melde Dich an</a></strong>, falls dies Dein Benutzer-Konto ist.');
 			}
 		catch (DBNoDataException $e)
 			{
@@ -540,9 +532,9 @@ protected function sendForm()
 		}
 	else
 		{
-// 		if (!$this->Io->isEmpty('name'))
+// 		if (!$this->Input->Request->isEmpty('name'))
 // 			{
-			$username = $this->Io->getHtml('name');
+			$username = $this->Input->Request->getHtml('name');
 // 			}
 // 		else
 // 			{

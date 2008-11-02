@@ -44,8 +44,8 @@ protected function setForm()
 
 protected function checkForm()
 	{
-	$this->currentname = $this->Io->getString('currentname');
-	$this->newname = $this->Io->getString('newname');
+	$this->currentname = $this->Input->Request->getString('currentname');
+	$this->newname = $this->Input->Request->getString('newname');
 
 	try
 		{

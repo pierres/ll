@@ -50,7 +50,7 @@ protected function setForm()
 
 protected function checkForm()
 	{
-	$this->password = sha1($this->Io->getString('password'));
+	$this->password = sha1($this->Input->Request->getString('password'));
 
 	try
 		{
@@ -75,9 +75,9 @@ protected function checkForm()
 		$this->showWarning('Passwort ist falsch');
 		}
 
-	$this->newpassword = sha1($this->Io->getString('newpassword'));
+	$this->newpassword = sha1($this->Input->Request->getString('newpassword'));
 
-	if ($this->newpassword != sha1($this->Io->getString('confirm')))
+	if ($this->newpassword != sha1($this->Input->Request->getString('confirm')))
 		{
 		$this->showWarning('Du hast Dich vertippt!');
 		}
@@ -99,12 +99,12 @@ protected function sendForm()
 	$stm->execute();
 	$stm->close();
 
-	if($this->Io->isRequest('cookiepw') && $this->Io->getHex('cookiepw') == $this->password)
+	if($this->Input->Request->isValid('cookiepw') && $this->Input->Request->getHex('cookiepw') == $this->password)
 		{
-		$this->Io->setCookie('cookiepw', sha1($this->Settings->getValue('cookie_hash').$this->newpassword));
+		$this->Output->setCookie('cookiepw', sha1($this->Settings->getValue('cookie_hash').$this->newpassword));
 		}
 
-	$this->Io->redirect('MyProfile');
+	$this->Output->redirect('MyProfile');
 	}
 
 }

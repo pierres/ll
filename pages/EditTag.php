@@ -68,10 +68,10 @@ private function checkInput()
 	{
 	try
 		{
-		$this->thread = $this->Io->getInt('thread');
+		$this->thread = $this->Input->Request->getInt('thread');
 		$this->addHidden('thread', $this->thread);
 		}
-	catch (IoException $e)
+	catch (RequestException $e)
 		{
 		$this->showFailure('Kein Thema angegeben!');
 		}
@@ -116,7 +116,7 @@ private function checkInput()
 
 protected function checkForm()
 	{
-	$this->tag = $this->Io->getInt('tag');
+	$this->tag = $this->Input->Request->getInt('tag');
 
 	try
 		{
@@ -194,7 +194,7 @@ protected function sendForm()
 
 protected function redirect()
 	{
-	$this->Io->redirect('Threads', 'forum='.$this->forum);
+	$this->Output->redirect('Threads', 'forum='.$this->forum);
 	}
 
 }

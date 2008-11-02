@@ -50,11 +50,11 @@ protected function checkInput()
 				AND threads.id = ?'
 			);
 		$stm->bindInteger($this->User->getId());
-		$stm->bindInteger($this->Io->getInt('thread'));
+		$stm->bindInteger($this->Input->Request->getInt('thread'));
 		$this->thread = $stm->getColumn();
 		$stm->close();
 		}
-	catch (IoException $e)
+	catch (RequestException $e)
 		{
 		$stm->close();
 		$this->showFailure('Kein Thema angegeben!');

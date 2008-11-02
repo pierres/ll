@@ -40,8 +40,8 @@ protected function setForm()
 
 protected function checkForm()
 	{
-	$this->name = $this->Io->getHtml('name');
-	$this->email = $this->Io->getString('email');
+	$this->name = $this->Input->Request->getHtml('name');
+	$this->email = $this->Input->Request->getString('email');
 
 	try
 		{
@@ -104,7 +104,7 @@ protected function sendForm()
 'Hallo '.$this->name.'!
 
 Du kannst Dein Passwort ändern, wenn Du folgende Seite besuchst:
-'.$this->Io->getURL().'?id='.$this->Board->getId().';page=ChangePasswordKey;userid='.$this->id.';key='.$key.'
+'.$this->Input->Request->getURL().'?id='.$this->Board->getId().';page=ChangePasswordKey;userid='.$this->id.';key='.$key.'
 
 Sollte obiger Link bei Deinem Mail-Programm nicht funktionieren,
 so wähle im Anmelde-Dialog die Option "Passwort setzen" und gebe folgende Daten an:
@@ -116,7 +116,7 @@ so kannst Du diese Nachricht ignorieren.
 Dein altes Passwort bleibt dann weiterhin gültig.');
 	$this->Mail->send();
 
-	$this->Io->redirect('Login');
+	$this->Output->redirect('Login');
 	}
 }
 

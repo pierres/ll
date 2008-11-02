@@ -28,18 +28,18 @@ public function prepare(){
 
 try
 	{
-	$this->thread = $this->Io->getInt('thread');
+	$this->thread = $this->Input->Request->getInt('thread');
 	}
-catch (IoRequestException $e)
+catch (RequestException $e)
 	{
 	$this->showWarning('Kein Thema angegeben');
 	}
 
 try
 	{
-	$this->post = $this->Io->getInt('post');
+	$this->post = $this->Input->Request->getInt('post');
 	}
-catch (IoRequestException $e)
+catch (RequestException $e)
 	{
 	$this->post = 0;
 	}
@@ -80,7 +80,7 @@ try
 catch (DBNoDataException $e)
 	{
 	$stm->close();
-	$this->Io->setStatus(Io::NOT_FOUND);
+	$this->Output->setStatus(Output::NOT_FOUND);
 	$this->showWarning('Thema nicht gefunden.');
 	}
 

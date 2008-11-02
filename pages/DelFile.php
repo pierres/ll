@@ -30,9 +30,9 @@ protected function setForm()
 
 	try
 		{
-		$this->file = $this->Io->getInt('file');
+		$this->file = $this->Input->Request->getInt('file');
 		}
-	catch (IoRequestException $e)
+	catch (RequestException $e)
 		{
 		$this->showFailure('Keine Datei angegeben!');
 		}
@@ -163,7 +163,7 @@ protected function sendForm()
 
 protected function redirect()
 	{
-	$this->Io->redirect('MyFiles');
+	$this->Output->redirect('MyFiles');
 	}
 
 

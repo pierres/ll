@@ -29,7 +29,7 @@ protected function setForm()
 	{
 	if ($this->User->isOnline())
 		{
-		$this->Io->redirect('ChangePassword');
+		$this->Output->redirect('ChangePassword');
 		}
 
 	$this->setValue('title', 'Passwort ändern');
@@ -56,10 +56,10 @@ protected function checkForm()
 	{
 	try
 		{
-		$this->id = $this->Io->getInt('userid');
-		$this->key = $this->Io->getString('key');
+		$this->id = $this->Input->Request->getInt('userid');
+		$this->key = $this->Input->Request->getString('key');
 		}
-	catch (IoRequestException $e)
+	catch (RequestException $e)
 		{
 		$this->showFailure('Kein Schlüssel übergeben!');
 		}
@@ -89,9 +89,9 @@ protected function checkForm()
 		$this->showWarning('Falscher Schlüssel! Möglicherweise ist Dein Schlüssel abgelaufen, da zuviel Zeit zwischen Registrierung und Aktivierung verstrichen ist.<br />Lasse Dir bitte <a class="link" href="?page=ForgotPassword;id='.$this->Board->getId().'">erneut einen Schlüssel zusenden</a> und aktiviere Dein Konto umgehend.');
 		}
 
-	$this->newpassword = sha1($this->Io->getString('newpassword'));
+	$this->newpassword = sha1($this->Input->Request->getString('newpassword'));
 
-	if ($this->newpassword != sha1($this->Io->getString('confirm')))
+	if ($this->newpassword != sha1($this->Input->Request->getString('confirm')))
 		{
 		$this->showWarning('Du hast Dich vertippt!');
 		}
@@ -149,7 +149,7 @@ protected function sendForm()
 		$this->showFailure('Falsches Passwort.');
 		}
 
-	$this->Io->redirect('Forums');
+	$this->Output->redirect('Forums');
 	}
 
 }

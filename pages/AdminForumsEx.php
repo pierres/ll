@@ -27,11 +27,11 @@ protected function setForm()
 	{
 	try
 		{
-		$this->cat = $this->Io->getInt('cat');
+		$this->cat = $this->Input->Request->getInt('cat');
 		}
-	catch (IoRequestException $e)
+	catch (RequestException $e)
 		{
-		$this->Io->redirect('AdminCats');
+		$this->Output->redirect('AdminCats');
 		}
 
 	$this->setValue('title', 'Externe Foren hinzufügen');
@@ -116,7 +116,7 @@ protected function checkForm()
 	catch (DBNoDataException $e)
 		{
 		$stm->close();
-		$this->Io->redirect('AdminCats');
+		$this->Output->redirect('AdminCats');
 		}
 	}
 
@@ -124,9 +124,9 @@ protected function sendForm()
 	{
 	try
 		{
-		$forums = $this->Io->getArray('forums');
+		$forums = $this->Input->Request->getArray('forums');
 		}
-	catch (IoRequestException $e)
+	catch (RequestException $e)
 		{
 		$this->redirect();
 		}
@@ -176,7 +176,7 @@ protected function sendForm()
 
 protected function redirect()
 	{
-	$this->Io->redirect('AdminForums', 'cat='.$this->cat);
+	$this->Output->redirect('AdminForums', 'cat='.$this->cat);
 	}
 
 

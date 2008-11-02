@@ -33,22 +33,22 @@ protected function setForm()
 
 protected function checkForm()
 	{
-	if (!preg_match('<!-- body -->', $this->Io->getString('html')))
+	if (!preg_match('<!-- body -->', $this->Input->Request->getString('html')))
 		{
 		$this->showWarning('Der body-Tag fehlt!');
 		}
 
-	if (!preg_match('<!-- title -->', $this->Io->getString('html')))
+	if (!preg_match('<!-- title -->', $this->Input->Request->getString('html')))
 		{
 		$this->showWarning('Der title-Tag fehlt!');
 		}
 
-	if (!preg_match('<!-- menu -->', $this->Io->getString('html')))
+	if (!preg_match('<!-- menu -->', $this->Input->Request->getString('html')))
 		{
 		$this->showWarning('Der menu-Tag fehlt!');
 		}
 
-	if (!preg_match('<!-- user -->', $this->Io->getString('html')))
+	if (!preg_match('<!-- user -->', $this->Input->Request->getString('html')))
 		{
 		$this->showWarning('Der user-Tag fehlt!');
 		}
@@ -65,7 +65,7 @@ protected function sendForm()
 		WHERE
 			id = ?'
 		);
-	$stm->bindString($this->Io->getString('html'));
+	$stm->bindString($this->Input->Request->getString('html'));
 	$stm->bindInteger($this->Board->getId());
 	$stm->execute();
 	$stm->close();
@@ -75,7 +75,7 @@ protected function sendForm()
 
 protected function redirect()
 	{
-	$this->Io->redirect('AdminHtml');
+	$this->Output->redirect('AdminHtml');
 	}
 
 }

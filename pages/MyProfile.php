@@ -77,15 +77,15 @@ protected function checkForm()
 	{
 	try
 		{
-		$this->location = $this->Io->getString('location');
+		$this->location = $this->Input->Request->getString('location');
 		}
-	catch (IoRequestException $e)
+	catch (RequestException $e)
 		{
 		}
 
 	try
 		{
-		$this->jabber = $this->Io->getString('jabber');
+		$this->jabber = $this->Input->Request->getString('jabber');
 
 		if (!$this->Mail->validateMail($this->jabber))
 			{
@@ -113,13 +113,13 @@ protected function checkForm()
 			$stm->close();
 			}
 		}
-	catch (IoRequestException $e)
+	catch (RequestException $e)
 		{
 		}
 
 	try
 		{
-		$this->plz 	= $this->Io->getInt('plz');
+		$this->plz 	= $this->Input->Request->getInt('plz');
 
 		try
 			{
@@ -150,29 +150,29 @@ protected function checkForm()
 				}
 			}
 		}
-	catch (IoRequestException $e)
+	catch (RequestException $e)
 		{
 		}
 
 	try
 		{
-		$this->realname = $this->Io->getString('realname');
+		$this->realname = $this->Input->Request->getString('realname');
 		}
-	catch (IoRequestException $e)
+	catch (RequestException $e)
 		{
 		}
 
 	try
 		{
-		$this->gender = $this->Io->getInt('gender');
+		$this->gender = $this->Input->Request->getInt('gender');
 		}
-	catch (IoRequestException $e)
+	catch (RequestException $e)
 		{
 		}
 
 	try
 		{
-		$birthday = $this->Io->getString('birthday');
+		$birthday = $this->Input->Request->getString('birthday');
 
 		if (!empty($birthday))
 			{
@@ -192,16 +192,16 @@ protected function checkForm()
 			$this->birthday = 0;
 			}
 		}
-	catch (IoRequestException $e)
+	catch (RequestException $e)
 		{
 		$this->birthday = 0;
 		}
 
-	$this->deleteavatar = $this->Io->isRequest('deleteavatar');
+	$this->deleteavatar = $this->Input->Request->isValid('deleteavatar');
 
 	try
 		{
-		$this->avatar = $this->Io->getUploadedFile('avatar');
+		$this->avatar = $this->Input->Request->getUploadedFile('avatar');
 
 		if ($this->avatar['size'] >= $this->Settings->getValue('file_size'))
 			{
@@ -213,23 +213,23 @@ protected function checkForm()
 			$this->showWarning('Neuer Avatar ist kein Bild!');
 			}
 		}
-	catch (IoException $e)
+	catch (RequestException $e)
 		{
 		}
 
 	try
 		{
-		$this->text 	= $this->Io->getString('text');
+		$this->text 	= $this->Input->Request->getString('text');
 		}
-	catch (IoRequestException $e)
+	catch (RequestException $e)
 		{
 		}
 
 	try
 		{
-		$this->hiddenStatus = $this->Io->isRequest('hidden');
+		$this->hiddenStatus = $this->Input->Request->isValid('hidden');
 		}
-	catch (IoRequestException $e)
+	catch (RequestException $e)
 		{
 		}
 	}
@@ -316,16 +316,16 @@ protected function sendForm()
 	$stm->execute();
 	$stm->close();
 
-	if (!empty($this->avatar) && !$this->Io->isRequest('deleteavatar'))
+	if (!empty($this->avatar) && !$this->Input->Request->isValid('deleteavatar'))
 		{
 		$this->sendAvatar();
 		}
-	elseif($this->hasavatar && $this->Io->isRequest('deleteavatar'))
+	elseif($this->hasavatar && $this->Input->Request->isValid('deleteavatar'))
 		{
 		$this->deleteAvatar();
 		}
 
-	$this->Io->redirect('MyProfile');
+	$this->Output->redirect('MyProfile');
 	}
 
 private function showAvatar()

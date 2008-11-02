@@ -96,7 +96,7 @@ public function __construct($pollid = 0, $target = 'Postings')
 		}
 	catch (DBNoDataException $e)
 		{
-		$this->Io->setStatus(Io::NOT_FOUND);
+		$this->Output->setStatus(Output::NOT_FOUND);
 		$this->setValue('meta.robots', 'noindex,nofollow');
 		$this->showWarning('Keine Umfrage gefunden.');
 		}
@@ -105,7 +105,7 @@ public function __construct($pollid = 0, $target = 'Postings')
 
 public function showPoll()
 	{
-	if ($this->Io->isRequest('result') || $this->hasVoted())
+	if ($this->Input->Request->isValid('result') || $this->hasVoted())
 		{
 		return $this->showResult();
 		}

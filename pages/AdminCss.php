@@ -59,7 +59,7 @@ protected function sendForm()
 		WHERE
 			id = ?'
 		);
-	$stm->bindString($this->Io->getString('css'));
+	$stm->bindString($this->Input->Request->getString('css'));
 	$stm->bindInteger($this->Board->getId());
 	$stm->execute();
 	$stm->close();
@@ -69,7 +69,7 @@ protected function sendForm()
 
 protected function redirect()
 	{
-	$this->Io->redirect('AdminCss');
+	$this->Output->redirect('AdminCss');
 	}
 
 }

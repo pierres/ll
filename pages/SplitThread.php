@@ -33,9 +33,9 @@ protected function setForm()
 
 	try
 		{
-		$this->post = $this->Io->getInt('post');
+		$this->post = $this->Input->Request->getInt('post');
 		}
-	catch (IoRequestException $e)
+	catch (RequestException $e)
 		{
 		$this->showWarning('Welcher Beitrag?');
 		}
@@ -44,9 +44,9 @@ protected function setForm()
 
 	try
 		{
-		$this->newtopic = $this->Io->getString('newtopic');
+		$this->newtopic = $this->Input->Request->getString('newtopic');
 		}
-	catch (IoException $e)
+	catch (RequestException $e)
 		{
 		}
 
@@ -193,7 +193,7 @@ protected function sendThreadSummary()
 
 protected function redirect()
 	{
-	$this->Io->redirect('Threads', 'forum='.$this->forum);
+	$this->Output->redirect('Threads', 'forum='.$this->forum);
 	}
 
 }

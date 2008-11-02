@@ -25,7 +25,7 @@ public function prepare()
 	{
 	$this->User->logout();
 
-	$this->Io->redirect('Forums');
+	$this->Output->redirect('Forums');
 	}
 
 

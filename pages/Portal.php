@@ -25,9 +25,9 @@ public function prepare()
 	{
 	try
 		{
-		$this->forum = $this->Io->getInt('forum');
+		$this->forum = $this->Input->Request->getInt('forum');
 		}
-	catch (IoRequestException $e)
+	catch (RequestException $e)
 		{
 		try
 			{
@@ -49,7 +49,7 @@ public function prepare()
 		catch(DBNoDataException $e)
 			{
 			$stm->close();
-			$this->Io->redirect('Forums');
+			$this->Output->redirect('Forums');
 			}
 		}
 

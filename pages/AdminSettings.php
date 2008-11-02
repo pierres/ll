@@ -159,7 +159,7 @@ protected function checkForm()
 		{
 		try
 			{
-			$this->admin = AdminFunctions::getUserId($this->Io->getString('admin'));
+			$this->admin = AdminFunctions::getUserId($this->Input->Request->getString('admin'));
 			}
 		catch (DBNoDataException $e)
 			{
@@ -167,9 +167,9 @@ protected function checkForm()
 			}
 		}
 
-	if(!$this->Io->isEmpty('admins') && ($this->User->isUser($this->Board->getAdmin()) || $this->User->isLevel(User::ADMIN)))
+	if(!$this->Input->Request->isEmpty('admins') && ($this->User->isUser($this->Board->getAdmin()) || $this->User->isLevel(User::ADMIN)))
 		{
-		$admins = array_map('trim', explode("\n", $this->Io->getString('admins')));
+		$admins = array_map('trim', explode("\n", $this->Input->Request->getString('admins')));
 
 		foreach ($admins as $admin)
 			{
@@ -183,33 +183,33 @@ protected function checkForm()
 				}
 			}
 		}
-	if(!$this->Io->isEmpty('host') && ($this->User->isUser($this->Board->getAdmin()) || $this->User->isLevel(User::ADMIN)))
+	if(!$this->Input->Request->isEmpty('host') && ($this->User->isUser($this->Board->getAdmin()) || $this->User->isLevel(User::ADMIN)))
 		{
 		try
 			{
-			$fp = fsockopen($this->Io->getString('host'), 80, $errno, $errstr, 5);
+			$fp = fsockopen($this->Input->Request->getString('host'), 80, $errno, $errstr, 5);
 			if (!$fp)
 				{
-				$this->showWarning('Fehler beim Verbinden mit Host <em>'.$this->Io->getString('host').'</em>: <strong>'.$errstr.'</strong>.');
+				$this->showWarning('Fehler beim Verbinden mit Host <em>'.$this->Input->Request->getString('host').'</em>: <strong>'.$errstr.'</strong>.');
 				}
 			else
 				{
 				fclose($fp);
 				}
-			if (gethostbyname($this->Io->getString('host')) != getenv('SERVER_ADDR'))
+			if (gethostbyname($this->Input->Request->getString('host')) != getenv('SERVER_ADDR'))
 				{
-				$this->showWarning('Der Host <em>'.$this->Io->getString('host').'</em> zeigt nicht auf die IP <em>'.getenv('SERVER_ADDR').'</em>.');
+				$this->showWarning('Der Host <em>'.$this->Input->Request->getString('host').'</em> zeigt nicht auf die IP <em>'.getenv('SERVER_ADDR').'</em>.');
 				}
 			}
 		catch (InternalRuntimeException $e)
 			{
-			$this->showWarning('Fehler beim Verbinden mit Host <em>'.$this->Io->getString('host').'</em>:<div style="color:darkred;margin-left:50px;">'.$e->getMessage().'</div>');
+			$this->showWarning('Fehler beim Verbinden mit Host <em>'.$this->Input->Request->getString('host').'</em>:<div style="color:darkred;margin-left:50px;">'.$e->getMessage().'</div>');
 			}
 		}
 
-	if(!$this->Io->isEmpty('mods'))
+	if(!$this->Input->Request->isEmpty('mods'))
 		{
-		$mods = array_map('trim', explode("\n", $this->Io->getString('mods')));
+		$mods = array_map('trim', explode("\n", $this->Input->Request->getString('mods')));
 
 		foreach ($mods as $mod)
 			{
@@ -226,7 +226,7 @@ protected function checkForm()
 
 	if($this->User->isUser($this->Board->getAdmin()) || $this->User->isLevel(User::ADMIN))
 		{
-		if (!$this->Mail->validateMail($this->Io->getHtml('admin_email')))
+		if (!$this->Mail->validateMail($this->Input->Request->getHtml('admin_email')))
 			{
 			$this->showWarning('Keine gültige E-Mail-Adresse angegeben!');
 			}
@@ -235,7 +235,7 @@ protected function checkForm()
 
 protected function sendForm()
 	{
-	$description = $this->Markup->toHtml($this->Io->getString('description'));
+	$description = $this->Markup->toHtml($this->Input->Request->getString('description'));
 	// BugFix for Bug#1
 	if ($length = strlen($description) > 65536)
 		{
@@ -261,7 +261,7 @@ protected function sendForm()
 		$stm->close();
 		}
 
-	if(!$this->Io->isEmpty('host') && ($this->User->isUser($this->Board->getAdmin()) || $this->User->isLevel(User::ADMIN)))
+	if(!$this->Input->Request->isEmpty('host') && ($this->User->isUser($this->Board->getAdmin()) || $this->User->isLevel(User::ADMIN)))
 		{
 		$stm = $this->DB->prepare
 			('
@@ -272,7 +272,7 @@ protected function sendForm()
 			WHERE
 				id = ?'
 			);
-		$stm->bindString($this->Io->getString('host'));
+		$stm->bindString($this->Input->Request->getString('host'));
 		$stm->bindInteger($this->Board->getId());
 		$stm->execute();
 		$stm->close();
@@ -292,10 +292,10 @@ protected function sendForm()
 			WHERE
 				id = ?'
 			);
-		$stm->bindString($this->Io->getHtml('admin_name'));
-		$stm->bindString(nl2br($this->Io->getHtml('admin_address')));
-		$stm->bindString($this->Io->getHtml('admin_email'));
-		$stm->bindString($this->Io->getHtml('admin_tel'));
+		$stm->bindString($this->Input->Request->getHtml('admin_name'));
+		$stm->bindString(nl2br($this->Input->Request->getHtml('admin_address')));
+		$stm->bindString($this->Input->Request->getHtml('admin_email'));
+		$stm->bindString($this->Input->Request->getHtml('admin_tel'));
 		$stm->bindInteger($this->Board->getId());
 		$stm->execute();
 		$stm->close();
@@ -312,7 +312,7 @@ protected function sendForm()
 		WHERE
 			id = ?'
 		);
-	$stm->bindString($this->Io->getHtml('name'));
+	$stm->bindString($this->Input->Request->getHtml('name'));
 	$stm->bindString($description);
 	$stm->bindInteger($this->Board->getId());
 	$stm->execute();
@@ -330,7 +330,7 @@ protected function sendForm()
 
 protected function redirect()
 	{
-	$this->Io->redirect('AdminSettings');
+	$this->Output->redirect('AdminSettings');
 	}
 
 private function updateMods()

@@ -17,26 +17,37 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-if (!defined('IN_LL'))
+
+abstract class File extends Modul {
+
+abstract public function getFileName();
+abstract public function getFileSize();
+abstract public function getFileType();
+abstract public function getFileContent();
+
+protected function isAllowedType($type)
 	{
-	die('403');
+	foreach ($this->Settings->getValue('allowed_mime_types') as $allowedType)
+		{
+		// prüfe keine exakte Übereinstimmung
+		if (strpos($type, $allowedType) === 0)
+			{
+			return true;
+			}
+		}
+
+	return false;
+	}
+}
+
+
+class FileException extends RuntimeException{
+
+function __construct($message)
+	{
+	parent::__construct($message, 0);
 	}
 
-$this->config['locale']			= 'de_DE.utf8';
-$this->config['timezone']		= 'Europe/Berlin';
-
-$this->config['email']			= 'root@localhost';
-
-$this->config['sql_database'] 		= 'll';
-$this->config['sql_user']		= 'root';
-$this->config['sql_password']		= '';
-
-$this->config['log_dir'] 		= '';
-$this->config['mail_log_dir'] 		= '';
-
-$this->config['antispam_hash']		= '';
-$this->config['cookie_hash']		= '';
-
-$this->config['debug']			= false;
+}
 
 ?>

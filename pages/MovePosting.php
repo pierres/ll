@@ -31,10 +31,10 @@ protected function setForm()
 
 	try
 		{
-		$this->post = $this->Io->getInt('post');
+		$this->post = $this->Input->Request->getInt('post');
 		$this->addHidden('post', $this->post);
 		}
-	catch (IoRequestException $e)
+	catch (RequestException $e)
 		{
 		$this->showWarning('Welcher Beitrag?');
 		}
@@ -48,10 +48,10 @@ protected function checkForm()
 	{
 	try
 		{
-		$this->moveto = $this->Io->getInt('moveto');
+		$this->moveto = $this->Input->Request->getInt('moveto');
  		$this->checkAccessMoveto();
 		}
-	catch (IoRequestException $e)
+	catch (RequestException $e)
 		{
 		$this->showWarning('Wohin damit?');
 		}
@@ -194,7 +194,7 @@ protected function sendForm()
 
 protected function redirect()
 	{
-	$this->Io->redirect('Threads', 'forum='.$this->forum);
+	$this->Output->redirect('Threads', 'forum='.$this->forum);
 	}
 
 }

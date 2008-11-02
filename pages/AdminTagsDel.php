@@ -25,9 +25,9 @@ protected function setForm()
 	{
 	try
 		{
-		$this->tag = $this->Io->getInt('tag');
+		$this->tag = $this->Input->Request->getInt('tag');
 		}
-	catch(IoRequestException $e)
+	catch(RequestException $e)
 		{
 		$this->redirect();
 		}
@@ -99,7 +99,7 @@ protected function sendForm()
 
 protected function redirect()
 	{
-	$this->Io->redirect('AdminTags');
+	$this->Output->redirect('AdminTags');
 	}
 
 }

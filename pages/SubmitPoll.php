@@ -26,18 +26,18 @@ private $target 	= '';
 
 public function prepare()
 	{
-	$this->target = ($this->Io->isRequest('target') ? $this->Io->getString('target') : 'Postings');
+	$this->target = ($this->Input->Request->isValid('target') ? $this->Input->Request->getString('target') : 'Postings');
 
 	try
 		{
-		$this->id = $this->Io->getInt('thread');
+		$this->id = $this->Input->Request->getInt('thread');
 		}
-	catch (IoException $e)
+	catch (RequestException $e)
 		{
 		$this->showWarning('Kein Thema angegeben.');
 		}
 	
-	if ($this->Io->isRequest('result'))
+	if ($this->Input->Request->isValid('result'))
 		{
 		$this->reload();
 		}
@@ -90,7 +90,7 @@ public function prepare()
 		}
 	catch (DBNoDataException $e)
 		{
-		$this->Io->setStatus(Io::NOT_FOUND);
+		$this->Output->setStatus(Output::NOT_FOUND);
 		$this->setValue('meta.robots', 'noindex,nofollow');
 		$this->showWarning('Keine Umfrage gefunden.');
 		}
@@ -98,7 +98,7 @@ public function prepare()
 
 protected function reload()
 	{
-	$this->Io->redirect($this->target, 'thread='.$this->id.($this->Io->isRequest('result') ? ';result' : ''));
+	$this->Output->redirect($this->target, 'thread='.$this->id.($this->Input->Request->isValid('result') ? ';result' : ''));
 	}
 
 public function show()
@@ -110,9 +110,9 @@ public function show()
 
 	try
 		{
-		$valueid = $this->Io->getInt('valueid');
+		$valueid = $this->Input->Request->getInt('valueid');
 		}
-	catch (IoException $e)
+	catch (RequestException $e)
 		{
 		$this->reload();
 		}

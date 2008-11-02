@@ -63,11 +63,11 @@ protected function checkForm()
 	{
 	try
 		{
-		$this->tags = $this->Io->getArray('tag');
+		$this->tags = $this->Input->Request->getArray('tag');
 		}
-	catch (IoRequestException $e)
+	catch (RequestException $e)
 		{
-		if ($this->Io->isEmpty('newname'))
+		if ($this->Input->Request->isEmpty('newname'))
 			{
 			$this->showWarning('Kein Tag angegeben.');
 			}
@@ -120,7 +120,7 @@ protected function sendForm()
 		$stm->close();
 		}
 
-	if (!$this->Io->isEmptyString('newname'))
+	if (!$this->Input->Request->isEmptyString('newname'))
 		{
 		$stm = $this->DB->prepare
 			('
@@ -131,7 +131,7 @@ protected function sendForm()
 				boardid = ?'
 			);
 
-		$stm->bindString($this->Io->getHtml('newname'));
+		$stm->bindString($this->Input->Request->getHtml('newname'));
 		$stm->bindInteger($this->Board->getId());
 		$stm->execute();
 		$stm->close();
@@ -142,7 +142,7 @@ protected function sendForm()
 
 protected function redirect()
 	{
-	$this->Io->redirect('AdminTags');
+	$this->Output->redirect('AdminTags');
 	}
 
 }

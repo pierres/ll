@@ -19,6 +19,7 @@
 */
 class GetImage extends GetFile{
 
+private $file 		= null;
 private $url 		= '';
 private $name 		= '';
 private $thumb		= false;
@@ -26,65 +27,70 @@ private $thumb		= false;
 
 protected function getParams()
 	{
-	$this->thumb = $this->Io->isRequest('thumb');
+	$this->thumb = $this->Input->Request->isValid('thumb');
 
 	try
 		{
-		$this->url = $this->Io->getString('url');
+		$url = $this->Input->Request->getString('url');
 		}
-	catch (IoRequestException $e)
+	catch (RequestException $e)
 		{
 		$this->showWarning('keine Datei angegeben');
 		}
 
-	if (empty($this->url))
+	if ($this->Input->Request->isEmpty('url'))
 		{
 		$this->showWarning('keine Datei angegeben');
 		}
 
-	$this->name = preg_replace('/.*\/([^\/]+)/', '$1', $this->url);
+	try
+		{
+		$this->file = $this->Input->getRemoteFile($url);
+		}
+	catch (FileException $e)
+		{
+		$this->showWarning($e->getMessage());
+		}
 	}
 
 private function loadImage()
 	{
 	try
 		{
-		if ($this->Io->getRemoteFileSize($this->url) > $this->Settings->getValue('max_image_file_size'))
+		// ask the remote Server first...
+		if ($this->file->getRemoteFileSize() > $this->Settings->getValue('max_image_file_size'))
+			{
+			$this->showWarning('Diese Datei ist zu groß.');
+			}
+		// ...but do not trust him (this fetches the file first)
+		if ($this->file->getFileSize() > $this->Settings->getValue('max_image_file_size'))
 			{
 			$this->showWarning('Diese Datei ist zu groß.');
 			}
 
-		$file = $this->Io->getRemoteFile($this->url);
+		if (	strpos($this->file->getFileType(), 'image/jpeg') !== 0 &&
+			strpos($this->file->getFileType(), 'image/png') !== 0 &&
+			strpos($this->file->getFileType(), 'image/gif') !== 0)
+			{
+			$this->showWarning('Diese URL enthält kein Bild.');
+			}
+
+		try
+			{
+			$thumbcontent = resizeImage($this->file->getFileContent(), $this->file->getFileType(), $this->Settings->getValue('thumb_size'));
+			}
+		catch (Exception $e)
+			{
+			$thumbcontent = '';
+			}
 		}
-	catch (IOMimeExceptionException $e)
+	catch (FileException $e)
 		{
- 		$this->showWarning('Diese URL enthält kein Bild.');
-		}
-	catch (Exception $e)
-		{
-		$this->Io->setStatus(Io::NOT_FOUND);
+		$this->Output->setStatus(Output::NOT_FOUND);
  		$this->showWarning('Das Bild konnte nicht geladen werden.');
 		}
 
-	if (	strpos($file['type'], 'image/jpeg') !== 0 &&
-		strpos($file['type'], 'image/png') !== 0 &&
-		strpos($file['type'], 'image/gif') !== 0)
-		{
- 		$this->showWarning('Diese URL enthält kein Bild.');
-		}
-
-	$file['size'] = strlen($file['content']);
-
-	try
-		{
-		$file['thumbcontent'] = resizeImage($file['content'], $file['type'], $this->Settings->getValue('thumb_size'));
-		}
-	catch (Exception $e)
-		{
-		$file['thumbcontent'] = '';
-		}
-
-	$file['thumbsize'] = strlen($file['thumbcontent']);
+	$thumbsize = strlen($thumbcontent);
 
 	$stm = $this->DB->prepare
 		('
@@ -99,23 +105,23 @@ private function loadImage()
 			thumbsize = ?,
 			lastupdate = ?'
 		);
-	$stm->bindString($this->url);
-	$stm->bindString($file['type']);
-	$stm->bindInteger($file['size']);
-	$stm->bindString($file['content']);
-	$stm->bindString($file['thumbcontent']);
-	$stm->bindInteger($file['thumbsize']);
+	$stm->bindString($this->file->getFileUrl());
+	$stm->bindString($this->file->getFileType());
+	$stm->bindInteger($this->file->getFileSize());
+	$stm->bindString($this->file->getFileContent());
+	$stm->bindString($thumbcontent);
+	$stm->bindInteger($thumbsize);
 	$stm->bindInteger(time());
 	$stm->execute();
 	$stm->close();
 
-	if ($this->thumb && $file['thumbsize'] > 0)
+	if ($this->thumb && $thumbsize > 0)
 		{
-		return array('type' => $file['type'], 'content' => $file['thumbcontent'], 'size' => $file['thumbsize'], 'name' => $this->name);
+		return array('type' => $this->file->getFileType(), 'content' => $thumbcontent, 'size' => $thumbsize, 'name' => $this->file->getFileName());
 		}
 	else
 		{
-		return array('type' => $file['type'], 'content' => $file['content'], 'size' => $file['size'], 'name' => $this->name);
+		return array('type' => $this->file->getFileType(), 'content' => $this->file->getFileContent(), 'size' => $this->file->getFileSize(), 'name' => $this->file->getFileName());
 		}
 	}
 
@@ -228,7 +234,7 @@ public function show()
 		$data = $this->loadImage();
 		}
 
-	$this->sendInlineFile($data['type'], $this->name, $data['size'], $data['content']);
+	$this->sendInlineFile($data['type'], $this->file->getFileName(), $data['size'], $data['content']);
 	}
 
 }

@@ -29,10 +29,10 @@ protected function checkInput()
 	{
 	try
 		{
-		$this->post = $this->Io->getInt('post');
+		$this->post = $this->Input->Request->getInt('post');
 		$this->addHidden('post', $this->post);
 		}
-	catch (IoException $e)
+	catch (RequestException $e)
 		{
 		$this->showFailure('Kein Beitrag angegeben!');
 		}
@@ -122,7 +122,7 @@ protected function sendForm()
 
 protected function sendFile($postid)
 	{
-	if($this->User->isOnline() && $this->Io->isRequest('addfile'))
+	if($this->User->isOnline() && $this->Input->Request->isValid('addfile'))
 		{
 		$stm = $this->DB->prepare
 			('

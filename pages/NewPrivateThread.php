@@ -36,9 +36,9 @@ protected function setForm()
 
 	try
 		{
-		$this->topic = $this->Io->getString('topic');
+		$this->topic = $this->Input->Request->getString('topic');
 		}
-	catch (IoException $e)
+	catch (RequestException $e)
 		{
 		}
 	$this->addText('topic', 'Thema', $this->topic);
@@ -48,9 +48,9 @@ protected function setForm()
 
 	try
 		{
-		$this->topic = $this->Io->getString('topic');
+		$this->topic = $this->Input->Request->getString('topic');
 		}
-	catch (IoException $e)
+	catch (RequestException $e)
 		{
 		}
 	$this->requires('topic');
@@ -63,9 +63,9 @@ protected function addRecipients()
 	{
 	try
 		{
-		$this->recipients = $this->Io->getString('recipients');
+		$this->recipients = $this->Input->Request->getString('recipients');
 		}
-	catch (IoException $e)
+	catch (RequestException $e)
 		{
 		}
 	$this->addText('recipients', 'Empfänger');
@@ -74,15 +74,15 @@ protected function addRecipients()
 
 protected function setPoll()
 	{
-	if (($this->Io->isRequest('poll')) && !$this->Io->isRequest('nopoll'))
+	if (($this->Input->Request->isValid('poll')) && !$this->Input->Request->isValid('nopoll'))
 		{
 		$this->addButton('nopoll', 'keine Umfrage');
 
 		try
 			{
-			$this->poll_question = $this->Io->getString('poll_question');
+			$this->poll_question = $this->Input->Request->getString('poll_question');
 			}
-		catch (IoRequestException $e)
+		catch (RequestException $e)
 			{
 			}
 
@@ -92,7 +92,7 @@ protected function setPoll()
 
 		try
 			{
-			$this->poll_options = $this->Io->getString('poll_options');
+			$this->poll_options = $this->Input->Request->getString('poll_options');
 			$poll_options = explode("\n", $this->poll_options);
 			$i = 1;
 			foreach($poll_options as $poll_option)
@@ -119,7 +119,7 @@ protected function setPoll()
 				$this->showWarning('Sind das zu wenige oder zu wenige Antwortmöglichkeiten?');
 				}
 			}
-		catch (IoRequestException $e)
+		catch (RequestException $e)
 			{
 			}
 
@@ -174,7 +174,7 @@ protected function checkRecipients()
 
 protected function sendPoll()
 	{
-	if ($this->Io->isRequest('poll'))
+	if ($this->Input->Request->isValid('poll'))
 		{
 		$poll_options = explode("\n",$this->poll_options);
 		$stm = $this->DB->prepare
