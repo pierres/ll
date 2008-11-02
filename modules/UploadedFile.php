@@ -67,7 +67,7 @@ public function __construct($name)
 		}
 	else
 		{
-		throw new FileException('Datei wurde nicht hochgeladen!');
+		throw new FileNotUploadedException('Datei wurde nicht hochgeladen!');
 		}
 	}
 
