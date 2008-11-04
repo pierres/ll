@@ -101,7 +101,7 @@ CREATE TABLE `cache` (
   `key` varchar(255) NOT NULL,
   `value` mediumblob NOT NULL,
   `expires` int(11) NULL,
-  PRIMARY KEY  (`key`(30)),
+  PRIMARY KEY  (`key`(100)),
   KEY `expires` (`expires`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
