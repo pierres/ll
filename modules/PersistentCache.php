@@ -29,24 +29,47 @@ public function __construct()
 
 public function addObject($key, $object, $ttl = 0)
 	{
-	try
+	if ($ttl <= 0)
 		{
-		$stm = $this->DB->prepare
-			('
-			REPLACE INTO
-				cache
-			SET
-				`key` = ?,
-				value = ?,
-				expires = ?
-			');
-		$stm->bindString($key);
-		$stm->bindString(serialize($object));
-		$stm->bindInteger(($this->time + $ttl));
-		$stm->execute();
+		try
+			{
+			$stm = $this->DB->prepare
+				('
+				REPLACE INTO
+					cache
+				SET
+					`key` = ?,
+					value = ?
+				');
+			$stm->bindString($key);
+			$stm->bindString(serialize($object));
+			$stm->execute();
+			}
+		catch (DBException $e)
+			{
+			}
 		}
-	catch (DBException $e)
+	else
 		{
+		try
+			{
+			$stm = $this->DB->prepare
+				('
+				REPLACE INTO
+					cache
+				SET
+					`key` = ?,
+					value = ?,
+					expires = ?
+				');
+			$stm->bindString($key);
+			$stm->bindString(serialize($object));
+			$stm->bindInteger(($this->time + $ttl));
+			$stm->execute();
+			}
+		catch (DBException $e)
+			{
+			}
 		}
 	$stm->close();
 	}
