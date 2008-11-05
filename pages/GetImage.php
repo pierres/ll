@@ -20,8 +20,6 @@
 class GetImage extends GetFile{
 
 private $file 		= null;
-private $url 		= '';
-private $name 		= '';
 private $thumb		= false;
 
 
@@ -148,7 +146,6 @@ public function showWarning($text)
 	$data['type'] = 'image/png';
 	$data['size'] = strlen($content);
 	$data['content'] = $content;
-	$this->url = 'Warning.png';
 
 	$this->sendInlineFile($data['type'], 'Warning.png', $data['size'], $data['content']);
 	}
@@ -187,8 +184,8 @@ public function show()
 					AND thumbsize = 0
 				)
 				');
-			$stm->bindString($this->url);
-			$stm->bindString($this->url);
+			$stm->bindString($this->file->getFileUrl());
+			$stm->bindString($this->file->getFileUrl());
 			$data = $stm->getRow();
 			$stm->close();
 			}
@@ -206,7 +203,7 @@ public function show()
 				WHERE
 					url = ?
 				');
-			$stm->bindString($this->url);
+			$stm->bindString($this->file->getFileUrl());
 			$data = $stm->getRow();
 			$stm->close();
 			}
