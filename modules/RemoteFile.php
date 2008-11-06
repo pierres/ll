@@ -90,7 +90,7 @@ public function getFileContent()
 		{
 		$curl = $this->curlInit($this->url);
 		$this->content = curl_exec($curl);
-		$type = curl_getinfo($curl, CURLINFO_CONTENT_TYPE);
+		$this->type = curl_getinfo($curl, CURLINFO_CONTENT_TYPE);
 		curl_close($curl);
 
 		try
@@ -119,8 +119,9 @@ private function curlInit($url)
 	$curl = curl_init($url);
 	curl_setopt($curl, CURLOPT_FAILONERROR, true);
 	curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-	curl_setopt($curl, CURLOPT_MAXREDIRS, 3);
-	curl_setopt($curl, CURLOPT_TIMEOUT, 5);
+	curl_setopt($curl, CURLOPT_MAXREDIRS, 1);
+	curl_setopt($curl, CURLOPT_TIMEOUT, 10);
+	curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 5);
 	curl_setopt($curl, CURLOPT_ENCODING, '');
 	curl_setopt($curl, CURLOPT_USERPWD, 'anonymous:'.$this->Settings->getValue('email'));
 
