@@ -230,22 +230,22 @@ foreach ($result as $data)
 
 	if ($data['dat'] > $lastVisit)
 		{
-		$data['dat'] = '<span class="newthread">neu</span>'.formatDate($data['dat']);
+		$data['dat'] = '<span class="newthread">neu</span>'.$this->L10n->getDateTime($data['dat']);
 		}
 	else
 		{
-		$data['dat'] = formatDate($data['dat']);
+		$data['dat'] = $this->L10n->getDateTime($data['dat']);
 		}
 
 	if ($data['editdate'] > 0)
 		{
 		if (empty($data['editorname']))
 			{
-			$edited = '<div class="postedit">am '.formatDate($data['editdate']).' geändert</div>';
+			$edited = '<div class="postedit">am '.$this->L10n->getDateTime($data['editdate']).' geändert</div>';
 			}
 		else
 			{
-			$edited = '<div class="postedit">von <a href="?page=ShowUser;id='.$this->Board->getId().';user='.$data['editby'].'">'.$data['editorname'].'</a> am '.formatDate($data['editdate']).' geändert</div>';
+			$edited = '<div class="postedit">von <a href="?page=ShowUser;id='.$this->Board->getId().';user='.$data['editby'].'">'.$data['editorname'].'</a> am '.$this->L10n->getDateTime($data['editdate']).' geändert</div>';
 			}
 		}
 	else

@@ -78,8 +78,8 @@ public function prepare()
 	$postsperday = round($data['posts'] / (($now - $data['regdate']) / 86400));
 	$lastpostdays = ($data['lastpost'] > 0 ? floor(($now - $data['lastpost']) / 86400) : 0);
 
-	$data['regdate'] = formatDate($data['regdate']);
-	$data['lastpost'] = formatDate($data['lastpost']);
+	$data['regdate'] = $this->L10n->getDateTime($data['regdate']);
+	$data['lastpost'] = $this->L10n->getDateTime($data['lastpost']);
 
 	$avatar = (empty($data['avatar']) ? '' : '<img src="?page=GetAvatar;user='.$data['id'].'" class="avatar" alt="" />');
 

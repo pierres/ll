@@ -77,9 +77,6 @@ public function __construct()
 		{
 		include ('LocalSettings.php');
 		}
-
-	setlocale(LC_ALL, $this->config['locale']);
-	date_default_timezone_set($this->config['timezone']);
 	}
 
 

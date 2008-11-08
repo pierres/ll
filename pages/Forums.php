@@ -114,7 +114,7 @@ else
 	$icon = $old;
 	}
 
-	$data['lastdate'] = formatDate($data['lastdate']);
+	$data['lastdate'] = $this->L10n->getDateTime($data['lastdate']);
 
 	$lastposter =
 		(empty($data['lastuserid'])
@@ -162,10 +162,10 @@ $body =
 	<table class="frame" style="width:100%">
 		<tr>
 			<td colspan="2" class="title">
-				Forum
+				'.$this->L10n->getText('Forum').'
 			</td>
 			<td class="title">
-				Themen
+				'.$this->L10n->getText('Threads').'
 			</td>
 			<td class="title">
 				Beiträge
@@ -256,7 +256,7 @@ private function getPrivateThreads()
 
 	$icon = ($this->Log->isNew($data['lastthread'], $data['lastdate']) ? '<span class="new"></span>' : '<span class="old"></span>');
 
-	$data['lastdate'] = formatDate($data['lastdate']);
+	$data['lastdate'] = $this->L10n->getDateTime($data['lastdate']);
 
 	$lastposter =
 		(empty($data['lastuserid'])

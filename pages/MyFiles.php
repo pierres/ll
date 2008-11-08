@@ -105,7 +105,7 @@ protected function setForm()
 		$list .= '<tr>
 		<td'.$hover.'><a  onclick="return !window.open(this.href);" class="link" href="?page=GetAttachment;file='.$file['id'].'">'.$file['name'].'</a></td>
 		<td style="text-align:right;">'.$preview.round($file['size'] / 1024, 2).'</td>
-		<td style="text-align:right;">'.formatDate($file['uploaded']).'</td>
+		<td style="text-align:right;">'.$this->L10n->getDateTime($file['uploaded']).'</td>
 		<td style="text-align:right;"><a href="?page=DelFile;id='.$this->Board->getId().';file='.$file['id'].'"><span class="button" style="background-color:#CC0000">X</span></a></td>
 		</tr>';
 		}

@@ -70,27 +70,6 @@ if (!function_exists('is_unicode'))
 		}
 	}
 
-/**
-* gibt die Tageszeit aus
-* @param &$time Unix-Zeitstempel
-*/
-function formatDate($time)
-	{
-	if (empty($time))
-		{
-		return '';
-		}
-
-	$return = date('j.n.Y \u\m G:i', $time);
-
-	if (date('zY',$time) == date('zY'))
-		{
-		$return = '<strong>'.$return.'</strong>';
-		}
-
-	return $return;
-	}
-
 function cutString($string, $length)
 	{
 	// Verhindere das Abschneiden im Entity

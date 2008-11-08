@@ -79,8 +79,8 @@ public function getList($resultset)
 			? $data['firstusername']
 			: '<a href="?page=ShowUser;id='.$this->Board->getId().';user='.$data['firstuserid'].'">'.$data['firstusername'].'</a>');
 
-		$data['lastdate'] = formatDate($data['lastdate']);
-		$data['firstdate'] = formatDate($data['firstdate']);
+		$data['lastdate'] = $this->L10n->getDateTime($data['lastdate']);
+		$data['firstdate'] = $this->L10n->getDateTime($data['firstdate']);
 
 		$threads .=
 			'

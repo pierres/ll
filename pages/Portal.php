@@ -193,7 +193,7 @@ private function getNews()
 					</tr>
 					<tr>
 						<td class="post0">
-							<div class="postdate" style="margin-bottom:5px;">'.formatDate($thread['firstdate']).'</div>
+							<div class="postdate" style="margin-bottom:5px;">'.$this->L10n->getDateTime($thread['firstdate']).'</div>
 							<div>'.$thread['summary'].'</div>
 							<div class="postdate" style="margin-top:5px;">
 							'.(empty($thread['firstuserid']) ? $thread['firstusername'] : '<a href="?page=ShowUser;id='.$this->Board->getId().';user='.$thread['firstuserid'].'">'.$thread['firstusername'].'</a>').'

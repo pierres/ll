@@ -17,7 +17,7 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-abstract class Modul{
+abstract class Modul {
 
 private static $loadedModules = array();
 
@@ -35,6 +35,7 @@ private static $availableModules = array
 	'Exceptions' => 'modules/Exceptions.php',
 	'Functions' => 'modules/Functions.php',
 	'Input' => 'modules/Input.php',
+	'L10n' => 'modules/L10n.php',
 	'Log' => 'modules/Log.php',
 	'Mail' => 'modules/Mail.php',
 	'Markup' => 'modules/Markup.php',
