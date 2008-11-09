@@ -26,46 +26,47 @@ require ('modules/UploadedFile.php');
 
 class Input extends Modul {
 
-	public $Get 	= null;
-	public $Post 	= null;
-	public $Cookie 	= null;
-	public $Request	= null;
-	public $Env 	= null;
-	public $Server 	= null;
+public $Get 	= null;
+public $Post 	= null;
+public $Cookie 	= null;
+public $Request	= null;
+public $Env 	= null;
+public $Server 	= null;
 
-	public function __construct()
-		{
-		$_REQUEST = array_merge($_GET, $_POST);
+public function __construct()
+	{
+	$_REQUEST = array_merge($_GET, $_POST);
 
-		$this->Get 	= new Request($_GET);
-		$this->Post 	= new Request($_POST);
-		$this->Cookie 	= new Request($_COOKIE);
-		$this->Request 	= new Request($_REQUEST);
-		$this->Env 	= new Request($_ENV);
-		$this->Server 	= new Request($_SERVER);
-		}
+	$this->Get 	= new Request($_GET);
+	$this->Post 	= new Request($_POST);
+	$this->Cookie 	= new Request($_COOKIE);
+	$this->Request 	= new Request($_REQUEST);
+	$this->Env 	= new Request($_ENV);
+	$this->Server 	= new Request($_SERVER);
+	}
 
-	public function getHost()
-		{
-		return $this->Server->getString('HTTP_HOST');
-		}
+public function getHost()
+	{
+	return $this->Server->getString('HTTP_HOST');
+	}
 
-	public function getURL()
-		{
-		return 'http'.(!$this->Server->isValid('HTTPS') ? '' : 's').'://'
-				.$this->getHost()
-				.dirname($this->Server->getString('SCRIPT_NAME'));
-		}
+public function getURL()
+	{
+	return 'http'.(!$this->Server->isValid('HTTPS') ? '' : 's').'://'
+			.$this->getHost()
+			.dirname($this->Server->getString('SCRIPT_NAME'));
+	}
 
-	public function getRemoteFile($url)
-		{
-		return new RemoteFile($url);
-		}
+public function getRemoteFile($url)
+	{
+	return new RemoteFile($url);
+	}
 
-	public function getUploadedFile($url)
-		{
-		return new UploadedFile($url);
-		}
+public function getUploadedFile($url)
+	{
+	return new UploadedFile($url);
+	}
+
 }
 
 ?>

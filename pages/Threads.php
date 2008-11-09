@@ -34,7 +34,7 @@ try
 	}
 catch (RequestException $e)
 	{
-	$this->showWarning('Kein Forum angegeben.');
+	$this->showWarning($this->L10n->getText('No forum specified.'));
 	}
 
 try
@@ -75,7 +75,7 @@ catch (DBException $e)
 	{
 	$stm->close();
 	$this->Output->setStatus(Output::NOT_FOUND);
-	$this->showWarning('Forum nicht gefunden.');
+	$this->showWarning('Forum not found.');
 	}
 
 $this->ismod = $this->User->isGroup($forum['mods']) || $this->User->isMod();
@@ -201,10 +201,10 @@ $body =
 	</script>
 	<table class="frame" style="width:100%">
 		<tr>
-			<td class="title" colspan="2">Thema</td>
-			<td class="title">Erster Beitrag</td>
-			<td class="title">Beiträge</td>
-			<td class="title">Letzter Beitrag</td>
+			<td class="title" colspan="2">'.$this->L10n->getText('Topic').'</td>
+			<td class="title">'.$this->L10n->getText('First post').'</td>
+			<td class="title">'.$this->L10n->getText('Replies').'</td>
+			<td class="title">'.$this->L10n->getText('Last post').'</td>
 		</tr>
 		<tr>
 			<td class="path" colspan="5">
@@ -218,14 +218,14 @@ $body =
 		<tr>
 			<td class="pages" colspan="4">'.$pages.'</td>
 			<td class="pages">
-			<a href="?page=NewThread;id='.$this->Board->getId().';forum='.$this->forum.'"><span class="button">Neues Thema</span></a>
+			<a href="?page=NewThread;id='.$this->Board->getId().';forum='.$this->forum.'"><span class="button">'.$this->L10n->getText('Post new topic').'</span></a>
 			</td>
 		</tr>
 		'.$threads.'
 		<tr>
 			<td class="pages" colspan="4">'.$pages.'</td>
 			<td class="pages">
-			<a href="?page=NewThread;id='.$this->Board->getId().';forum='.$this->forum.'"><span class="button">Neues Thema</span></a>
+			<a href="?page=NewThread;id='.$this->Board->getId().';forum='.$this->forum.'"><span class="button">'.$this->L10n->getText('Post new topic').'</span></a>
 			</td>
 		</tr>
 		<tr>
@@ -275,7 +275,7 @@ protected function listThreads()
 
 		if ($this->User->isOnline() && $this->Log->isNew($data['id'], $data['lastdate']))
 			{
-			$data['name'] = '<span class="newthread">neu</span>'.$data['name'];
+			$data['name'] = '<span class="newthread">'.$this->L10n->getText('new').'</span>'.$data['name'];
 			}
 
 		if($data['deleted'] == 1)
@@ -334,10 +334,10 @@ protected function listThreads()
 					<div>'.$data['firstdate'].'</div>
 				</td>
 				<td class="countcol">
-					'.$data['posts'].'
+					'.$this->L10n->getNumber($data['posts']).'
 				</td>
 				<td class="lastpost">
-					<div>von '.$lastposter.'</div>
+					<div>'.$this->L10n->getText('by').' '.$lastposter.'</div>
 					<div><a href="?page=Postings;id='.$this->Board->getId().';thread='.$data['id'].';post=-1">'.$data['lastdate'].'</a></div>
 				</td>
 			</tr>

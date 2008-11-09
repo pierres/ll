@@ -32,7 +32,7 @@ try
 	}
 catch (RequestException $e)
 	{
-	$this->showWarning('Kein Thema angegeben');
+	$this->showWarning($this->L10n->getText('No topic specified.'));
 	}
 
 try
@@ -81,7 +81,7 @@ catch (DBNoDataException $e)
 	{
 	$stm->close();
 	$this->Output->setStatus(Output::NOT_FOUND);
-	$this->showWarning('Thema nicht gefunden.');
+	$this->showWarning($this->L10n->getText('Topic not found.'));
 	}
 
 $this->ismod = $this->User->isGroup($thread['mods']) || $this->User->isMod();
@@ -145,7 +145,7 @@ if ($this->post < 0)
 
 if ($thread['deleted'] == 1 && !$this->ismod)
 	{
-	$this->showWarning('Thema nicht gefunden.');
+	$this->showWarning($this->L10n->getText('Topic not found.'));
 	}
 
 
@@ -222,7 +222,7 @@ foreach ($result as $data)
 
 	if ($this->User->isOnline() && $data['dat'] > $lastVisit)
 		{
-		$data['dat'] = '<span class="newthread">neu</span>'.$this->L10n->getDateTime($data['dat']);
+		$data['dat'] = '<span class="newthread">'.$this->L10n->getText('new').'</span>'.$this->L10n->getDateTime($data['dat']);
 		}
 	else
 		{
@@ -233,11 +233,11 @@ foreach ($result as $data)
 		{
 		if (empty($data['editorname']))
 			{
-			$edited = '<div class="postedit">am '.$this->L10n->getDateTime($data['editdate']).' geändert</div>';
+			$edited = '<div class="postedit">'.$this->L10n->getText('edited at').' '.$this->L10n->getDateTime($data['editdate']).'</div>';
 			}
 		else
 			{
-			$edited = '<div class="postedit">von <a href="?page=ShowUser;id='.$this->Board->getId().';user='.$data['editby'].'">'.$data['editorname'].'</a> am '.$this->L10n->getDateTime($data['editdate']).' geändert</div>';
+			$edited = '<div class="postedit">'.$this->L10n->getText('Last edited by').' <a href="?page=ShowUser;id='.$this->Board->getId().';user='.$data['editby'].'">'.$data['editorname'].'</a> ('.$this->L10n->getDateTime($data['editdate']).')</div>';
 			}
 		}
 	else
@@ -252,10 +252,10 @@ foreach ($result as $data)
 			if ($first && $this->post == 0)
 				{
 				$edit_button = (($this->ismod or $this->User->isUser($data['userid'])) ?
-							' <a href="?page=EditThread;id='.$this->Board->getId().';thread='.$this->thread.'"><span class="button">Thema ändern</span></a> <a href="?page=EditTag;id='.$this->Board->getId().';thread='.$thread['id'].'"><span class="button">Status ändern</span></a>' : '');
+							' <a href="?page=EditThread;id='.$this->Board->getId().';thread='.$this->thread.'"><span class="button">'.$this->L10n->getText('Edit topic').'</span></a> <a href="?page=EditTag;id='.$this->Board->getId().';thread='.$thread['id'].'"><span class="button">'.$this->L10n->getText('Edit tag').'</span></a>' : '');
 
 				$del_button = ($this->ismod ?
-							' <a href="?page=DelThread;id='.$this->Board->getId().';thread='.$this->thread.'"><span class="button">Thema löschen</span></a>' : '');
+							' <a href="?page=DelThread;id='.$this->Board->getId().';thread='.$this->thread.'"><span class="button">'.$this->L10n->getText('Delete topic').'</span></a>' : '');
 
 				$split_button = '';
 				$move_button = '';
@@ -265,16 +265,16 @@ foreach ($result as $data)
 			else
 				{
 				$edit_button = (($this->ismod or $this->User->isUser($data['userid'])) ?
-							' <a href="?page=EditPost;id='.$this->Board->getId().';post='.$data['id'].'"><span class="button">ändern</span></a>' : '');
+							' <a href="?page=EditPost;id='.$this->Board->getId().';post='.$data['id'].'"><span class="button">'.$this->L10n->getText('Edit post').'</span></a>' : '');
 
 				$del_button = ($this->ismod ?
-							' <a href="?page=DelPost;id='.$this->Board->getId().';post='.$data['id'].'"><span class="button">löschen</span></a>' : '');
+							' <a href="?page=DelPost;id='.$this->Board->getId().';post='.$data['id'].'"><span class="button">'.$this->L10n->getText('Delete post').'</span></a>' : '');
 
 				$split_button = ($this->ismod ?
-							' <a href="?page=SplitThread;id='.$this->Board->getId().';post='.$data['id'].'"><span class="button">abzweigen</span></a>' : '');
+							' <a href="?page=SplitThread;id='.$this->Board->getId().';post='.$data['id'].'"><span class="button">'.$this->L10n->getText('Split topic').'</span></a>' : '');
 
 				$move_button = ($this->ismod ?
-							' <a href="?page=MovePosting;id='.$this->Board->getId().';post='.$data['id'].'"><span class="button">verschieben</span></a>' : '');
+							' <a href="?page=MovePosting;id='.$this->Board->getId().';post='.$data['id'].'"><span class="button">'.$this->L10n->getText('Move post').'</span></a>' : '');
 				}
 			}
 		else
@@ -285,7 +285,7 @@ foreach ($result as $data)
 			$move_button = '';
 			}
 
-		$quote_button = '<a href="?page=QuotePost;id='.$this->Board->getId().';post='.$postid.'"><span class="button">zitieren</span></a>';
+		$quote_button = '<a href="?page=QuotePost;id='.$this->Board->getId().';post='.$postid.'"><span class="button">'.$this->L10n->getText('Quote post').'</span></a>';
 		}
 	elseif($thread['deleted'] == 1)
 		{
@@ -304,7 +304,7 @@ foreach ($result as $data)
 
 		if ($this->User->isOnline() && $deleted && !$closed)
 			{
-			$del_button = ($this->ismod ? ' <a href="?page=DelPost;id='.$this->Board->getId().';post='.$data['id'].'"><span class="button">wiederherstellen</span></a>' : '');
+			$del_button = ($this->ismod ? ' <a href="?page=DelPost;id='.$this->Board->getId().';post='.$data['id'].'"><span class="button">'.$this->L10n->getText('Recover post').'</span></a>' : '');
 			}
 		else
 			{
@@ -368,12 +368,12 @@ else
 	}
 
 $thread_buttons = ($this->ismod ?
-	'<tr><td class="pages" colspan="3"><a href="?page=DelThread;id='.$this->Board->getId().';thread='.$thread['id'].'"><span class="button">Thema löschen</span></a>
-	<a href="?page=MoveThread;id='.$this->Board->getId().';thread='.$thread['id'].'"><span class="button">Thema verschieben</span></a>
-	<a href="?page=CloseThread;id='.$this->Board->getId().';thread='.$thread['id'].'"><span class="button">Thema '.($closed ? 'öffnen' : 'schließen').'</span></a>
-	<a href="?page=StickThread;id='.$this->Board->getId().';thread='.$thread['id'].'"><span class="button">Thema festsetzen</span></a></td></tr>' : '');
+	'<tr><td class="pages" colspan="3"><a href="?page=DelThread;id='.$this->Board->getId().';thread='.$thread['id'].'"><span class="button">'.$this->L10n->getText('Delete topic').'</span></a>
+	<a href="?page=MoveThread;id='.$this->Board->getId().';thread='.$thread['id'].'"><span class="button">'.$this->L10n->getText('Move topic').'</span></a>
+	<a href="?page=CloseThread;id='.$this->Board->getId().';thread='.$thread['id'].'"><span class="button">'.($closed ? $this->L10n->getText('Open topic') : $this->L10n->getText('Close topic')).'</span></a>
+	<a href="?page=StickThread;id='.$this->Board->getId().';thread='.$thread['id'].'"><span class="button">'.$this->L10n->getText('Stick topic').'</span></a></td></tr>' : '');
 
-$reply_button = (!$closed && $thread['deleted'] == 0 ? '<a href="?page=NewPost;id='.$this->Board->getId().';thread='.$thread['id'].'"><span class="button">antworten</span></a>' : '');
+$reply_button = (!$closed && $thread['deleted'] == 0 ? '<a href="?page=NewPost;id='.$this->Board->getId().';thread='.$thread['id'].'"><span class="button">'.$this->L10n->getText('Post reply').'</span></a>' : '');
 
 $body =
 	'

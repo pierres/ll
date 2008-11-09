@@ -27,7 +27,8 @@ public function __construct()
 	{
 	$this->config['default_id']			= 1;
 
-	$this->config['locale']				= 'de_DE.utf8';
+	$this->config['locales']			= array('de' => 'de_DE.utf8',
+							        'en' => 'en_US.utf8');
 	$this->config['timezone']			= 'Europe/Berlin';
 
 	$this->config['email']				= 'root@localhost';

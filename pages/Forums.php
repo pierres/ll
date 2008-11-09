@@ -118,8 +118,8 @@ else
 
 	$lastposter =
 		(empty($data['lastuserid'])
-		? (empty($data['lastusername']) ? '' : 'von '.$data['lastusername'])
-		: 'von <a href="?page=ShowUser;id='.$this->Board->getId().';user='.$data['lastuserid'].'">'.$data['lastusername'].'</a>'
+		? (empty($data['lastusername']) ? '' : $this->L10n->getText('by').' '.$data['lastusername'])
+		: $this->L10n->getText('by').' <a href="?page=ShowUser;id='.$this->Board->getId().';user='.$data['lastuserid'].'">'.$data['lastusername'].'</a>'
 		);
 
 	$forums .= $catheader.
@@ -133,10 +133,10 @@ else
 					<div class="forumdescr">'.$data['description'].'</div>
 				</td>
 				<td class="countcol">
-					'.$data['threads'].'
+					'.$this->L10n->getNumber($data['threads']).'
 				</td>
 				<td class="countcol">
-					'.$data['posts'].'
+					'.$this->L10n->getNumber($data['posts']).'
 				</td>
 				<td class="lastpost">
 					<div><a href="?page=Postings;id='.$this->Board->getId().';thread='.$data['lastthread'].';post=-1">'.cutString($data['threadname'], 20).'</a></div>
@@ -165,19 +165,19 @@ $body =
 				'.$this->L10n->getText('Forum').'
 			</td>
 			<td class="title">
-				'.$this->L10n->getText('Threads').'
+				'.$this->L10n->getText('Topics').'
 			</td>
 			<td class="title">
-				Beiträge
+				'.$this->L10n->getText('Posts').'
 			</td>
 			<td class="title">
-				Letzter Beitrag
+				'.$this->L10n->getText('Last post').'
 			</td>
 		</tr>
 		'.$forums.'
 		<tr>
 			<td colspan="5" class="cat">
-				Wer ist auch hier?
+				'.$this->L10n->getText('Who is online?').'
 			</td>
 		</tr>
 		<tr>
@@ -191,7 +191,7 @@ $body =
 	</table>
 	';
 
-$this->setValue('title', 'Übersicht');
+$this->setValue('title', $this->L10n->getText('Index'));
 $this->setValue('body', $body);
 }
 
@@ -260,8 +260,8 @@ private function getPrivateThreads()
 
 	$lastposter =
 		(empty($data['lastuserid'])
-		? (empty($data['lastusername']) ? '' : 'von '.$data['lastusername'])
-		: 'von <a href="?page=ShowUser;id='.$this->Board->getId().';user='.$data['lastuserid'].'">'.$data['lastusername'].'</a>'
+		? (empty($data['lastusername']) ? '' : $this->L10n->getText('by').' '.$data['lastusername'])
+		: $this->L10n->getText('by').' <a href="?page=ShowUser;id='.$this->Board->getId().';user='.$data['lastuserid'].'">'.$data['lastusername'].'</a>'
 		);
 
 	return
@@ -271,14 +271,14 @@ private function getPrivateThreads()
 				'.$icon.'
 			</td>
 			<td class="forumcol">
-				<div class="forumtitle"><a href="?page=PrivateThreads;id='.$this->Board->getId().'">Private Themen</a></div>
-				<div class="forumdescr">Hier kannst Du Dich mit anderen Mitgliedern in einem privaten Bereich unterhalten.</div>
+				<div class="forumtitle"><a href="?page=PrivateThreads;id='.$this->Board->getId().'">'.$this->L10n->getText('Private topics').'</a></div>
+				<div class="forumdescr">'.$this->L10n->getText('Discuss with other members in a private area.').'</div>
 			</td>
 			<td class="countcol">
-				'.$data['threads'].'
+				'.$this->L10n->getNumber($data['threads']).'
 			</td>
 			<td class="countcol">
-				'.$data['posts'].'
+				'.$this->L10n->getNumber($data['posts']).'
 			</td>
 			<td class="lastpost">
 				<div><a href="?page=PrivatePostings;id='.$this->Board->getId().';thread='.$data['lastthread'].';post=-1">'.cutString($data['threadname'], 20).'</a></div>

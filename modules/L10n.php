@@ -20,16 +20,66 @@
 
 class L10n extends Modul {
 
+private $localeInfo = array();
+private $locale = '';
+
 public function __construct()
 	{
-	setlocale(LC_ALL, $this->Settings->getValue('locale'));
+
+			$this->locale = 'de_DE.utf8';
+// 	$this->locale = $this->getAcceptLanguage();
+	$this->initLocale();
+	}
+
+private function initLocale()
+	{
+	putenv('LC_ALL='.$this->locale);
+	putenv('LANGUAGE='.$this->locale);
+	setlocale(LC_ALL, $this->locale);
+
 	date_default_timezone_set($this->Settings->getValue('timezone'));
+
+	$this->localeInfo = localeconv();
 
 	if (function_exists('bindtextdomain'))
 		{
-		bindtextdomain('LL', 'l10n');
-		textdomain('LL');
+		bindtextdomain('messages', 'l10n');
+		textdomain('messages');
 		}
+	}
+
+private function getAcceptLanguage()
+	{
+	$locales = $this->Settings->getValue('locales');
+
+	try
+		{
+		foreach(explode(',', $this->Input->Server->getString('HTTP_ACCEPT_LANGUAGE')) as $lang)
+			{
+			$lang = substr(strtolower(trim($lang)), 0, 2);
+
+			if (isset($locales[$lang]))
+				{
+				return $locales[$lang];
+				}
+			}
+		}
+	catch (RequestException $e)
+		{
+		}
+
+	return array_shift($locales);
+	}
+
+public function getLocale()
+	{
+	return $this->locale;
+	}
+
+public function setLocale($locale)
+	{
+	$this->locale = $locale;
+	$this->initLocale();
 	}
 
 public function getText($text)
@@ -57,6 +107,60 @@ public function getTime($timestamp = null)
 public function getDateTime($timestamp = null)
 	{
 	return strftime('%c', $timestamp);
+	}
+
+// @TODO: add singular
+public function getEpoch($seconds)
+	{
+	$minutes 	= 60;
+	$hours 		= 60 * $minutes;
+	$days 		= 24 * $hours;
+	$weeks 		= 7 * $days;
+	$months 	= 4 * $weeks;
+	$years 		= 12 * $months;
+
+	if ($seconds >= $years)
+		{
+		$result = round($seconds / $years, 2);
+		$postfix = '&nbsp;'.$this->getText('years');
+		}
+	elseif ($seconds >= $months)
+		{
+		$result =  round($seconds / $months, 2);
+		$postfix = '&nbsp;'.$this->getText('months');
+		}
+	elseif ($seconds >= $weeks)
+		{
+		$result =  round($seconds / $weeks, 2);
+		$postfix = '&nbsp;'.$this->getText('weeks');
+		}
+	elseif ($seconds >= $days)
+		{
+		$result =  round($seconds / $days, 2);
+		$postfix = '&nbsp;'.$this->getText('days');
+		}
+	elseif ($seconds >= $hours)
+		{
+		$result =  round($seconds / $hours, 2);
+		$postfix = '&nbsp;'.$this->getText('hours');
+		}
+	elseif ($seconds >= $minutes)
+		{
+		$result =  round($seconds / $minutes, 2);
+		$postfix = '&nbsp;'.$this->getText('minutes');
+		}
+	else
+		{
+		$result =  round($seconds, 2);
+		$postfix = '&nbsp;'.$this->getText('seconds');
+		}
+
+	return $result.$postfix;
+	}
+
+public function getNumber($number, $decimals = 0)
+	{
+	return number_format($number, $decimals, $this->localeInfo['decimal_point'], $this->localeInfo['thousands_sep']);
 	}
 
 }

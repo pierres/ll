@@ -1,0 +1,185 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: LL\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-11-09 15:43+0100\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Pierre Schmitz <pschmitz@laber-land.de>\n"
+"Language-Team: Pierre Schmitz <pschmitz@laber-land.de>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: German\n"
+"X-Poedit-Country: GERMANY\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-KeywordsList: getText\n"
+"X-Poedit-SearchPath-0: ../../..\n"
+
+#: ../../../modules/L10n.php:125
+msgid "years"
+msgstr "Jahre"
+
+#: ../../../modules/L10n.php:130
+msgid "months"
+msgstr "Monate"
+
+#: ../../../modules/L10n.php:135
+msgid "weeks"
+msgstr "Wochen"
+
+#: ../../../modules/L10n.php:140
+msgid "days"
+msgstr "Tage"
+
+#: ../../../modules/L10n.php:145
+msgid "hours"
+msgstr "Stunden"
+
+#: ../../../modules/L10n.php:150
+msgid "minutes"
+msgstr "Minuten"
+
+#: ../../../modules/L10n.php:155
+msgid "seconds"
+msgstr "Sekunden"
+
+#: ../../../pages/Forums.php:121
+#: ../../../pages/Forums.php:122
+#: ../../../pages/Forums.php:263
+#: ../../../pages/Forums.php:264
+msgid "by"
+msgstr "von"
+
+#: ../../../pages/Forums.php:165
+msgid "Forum"
+msgstr "Forum"
+
+#: ../../../pages/Forums.php:168
+msgid "Topics"
+msgstr "Themen"
+
+#: ../../../pages/Forums.php:171
+msgid "Posts"
+msgstr "Beiträge"
+
+#: ../../../pages/Forums.php:174
+msgid "Last post"
+msgstr "Letzter Beitrag"
+
+#: ../../../pages/Forums.php:180
+msgid "Who is online?"
+msgstr "Wer ist noch hier?"
+
+#: ../../../pages/Forums.php:194
+msgid "Index"
+msgstr "Übersicht"
+
+#: ../../../pages/Forums.php:274
+msgid "Private topics"
+msgstr "Private Themen"
+
+#: ../../../pages/Forums.php:275
+msgid "Discuss with other members in a private area."
+msgstr "Unterhalte Dich mit anderen Mitgliedern in einem privaten Bereich."
+
+#: ../../../pages/Threads.php:37
+msgid "No forum specified."
+msgstr "Kein Forum angegeben."
+
+#: ../../../pages/Threads.php:204
+msgid "Topic"
+msgstr "Thema"
+
+#: ../../../pages/Threads.php:205
+msgid "First post"
+msgstr "Erster Beitrag"
+
+#: ../../../pages/Threads.php:206
+msgid "Replies"
+msgstr "Antworten"
+
+#: ../../../pages/Threads.php:221
+#: ../../../pages/Threads.php:228
+msgid "Post new topic"
+msgstr "Neues Thema eröffnen"
+
+#: ../../../pages/Threads.php:278
+#: ../../../pages/Postings.php:225
+msgid "new"
+msgstr "neu"
+
+#: ../../../pages/Postings.php:35
+msgid "No topic specified."
+msgstr "Kein Thema angegeben."
+
+#: ../../../pages/Postings.php:84
+#: ../../../pages/Postings.php:148
+msgid "Topic not found."
+msgstr "Thema nicht gefunden."
+
+#: ../../../pages/Postings.php:236
+msgid "edited at"
+msgstr "bearbeitet am"
+
+#: ../../../pages/Postings.php:240
+msgid "Last edited by"
+msgstr "Zuletzt bearbeitet von"
+
+#: ../../../pages/Postings.php:255
+msgid "Edit topic"
+msgstr "Thema bearbeiten"
+
+#: ../../../pages/Postings.php:255
+msgid "Edit tag"
+msgstr "Tag ändern"
+
+#: ../../../pages/Postings.php:258
+#: ../../../pages/Postings.php:371
+msgid "Delete topic"
+msgstr "Thema löschen"
+
+#: ../../../pages/Postings.php:268
+msgid "Edit post"
+msgstr "Beitrag bearbeiten"
+
+#: ../../../pages/Postings.php:271
+msgid "Delete post"
+msgstr "Beitrag löschen"
+
+#: ../../../pages/Postings.php:274
+msgid "Split topic"
+msgstr "Thema aufspalten"
+
+#: ../../../pages/Postings.php:277
+msgid "Move post"
+msgstr "Beitrag verschieben"
+
+#: ../../../pages/Postings.php:288
+msgid "Quote post"
+msgstr "Beitrag zitieren"
+
+#: ../../../pages/Postings.php:307
+msgid "Recover post"
+msgstr "Beitrag wiederherstellen"
+
+#: ../../../pages/Postings.php:372
+msgid "Move topic"
+msgstr "Thema verschieben"
+
+#: ../../../pages/Postings.php:373
+msgid "Open topic"
+msgstr "Thema öffnen"
+
+#: ../../../pages/Postings.php:373
+msgid "Close topic"
+msgstr "Thema schließen"
+
+#: ../../../pages/Postings.php:374
+msgid "Stick topic"
+msgstr "Thema festsetzen"
+
+#: ../../../pages/Postings.php:376
+msgid "Post reply"
+msgstr "Antwort schreiben"
+
