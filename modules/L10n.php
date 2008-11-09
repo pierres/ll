@@ -25,9 +25,7 @@ private $locale = '';
 
 public function __construct()
 	{
-
-			$this->locale = 'de_DE.utf8';
-// 	$this->locale = $this->getAcceptLanguage();
+	$this->locale = $this->getAcceptLanguage();
 	$this->initLocale();
 	}
 
