@@ -130,14 +130,10 @@ public static function loadPage($name)
 
 public function __construct()
 	{
-	self::__set('DB', new DB(
+	$this->DB->connect(
 		$this->Settings->getValue('sql_user'),
 		$this->Settings->getValue('sql_password'),
-		$this->Settings->getValue('sql_database')
-		));
-
-	self::__set('Board', new Board());
-	self::__set('User', new User());
+		$this->Settings->getValue('sql_database'));
 
 	$this->variables['body']	 = '';
 	$this->variables['title']	 = '';

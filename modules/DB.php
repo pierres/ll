@@ -17,11 +17,12 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-class DB extends Modul{
+class DB extends Modul {
 
 private $link = null;
 
-function __construct($user, $password, $database)
+
+public function connect($user, $password, $database)
 	{
 	$this->link = mysqli_connect(null, $user, $password, $database);
 
@@ -31,7 +32,7 @@ function __construct($user, $password, $database)
 		}
 	}
 
-function __destruct()
+public function __destruct()
 	{
 	if (isset($this->link))
 		{

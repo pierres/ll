@@ -42,11 +42,11 @@ protected function getParams()
 
 protected function initDB()
 	{
-	self::__set('DB', new DB(
+	$this->DB->connect(
 		$this->Settings->getValue('sql_user'),
 		$this->Settings->getValue('sql_password'),
 		$this->Settings->getValue('sql_database')
-		));
+		);
 	}
 
 public function showWarning($text)
