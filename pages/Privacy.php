@@ -35,16 +35,14 @@ public function prepare()
 					<b>Speicherung und Verarbeitung von Daten</b>
 					<div class="">
 						Alle Zugriffe auf diese Seiten werden protokolliert. Hierbei werden folgende Daten erfasst:
-						<blockquote>
-							<ul>
-								<li><em>Datum und Uhrzeit</em> des Zugriffs</li>
-								<li><em>Anfrage</em> des Clients</li>
-								<li><em>Rückgabecode</em> des Servers</li>
-								<li><em>Größe</em> der übertragenen Daten</li>
-								<li>vom Client gesendeter <em>Referer</em></li>
-								<li>vom Client gesendete <em>Kennung</em></li>
-							</ul>
-						</blockquote>
+						<ul>
+							<li><em>Datum und Uhrzeit</em> des Zugriffs</li>
+							<li><em>Anfrage</em> des Clients</li>
+							<li><em>Rückgabecode</em> des Servers</li>
+							<li><em>Größe</em> der übertragenen Daten</li>
+							<li>vom Client gesendeter <em>Referer</em></li>
+							<li>vom Client gesendete <em>Kennung</em></li>
+						</ul>
 						Diese Daten werden für statistische Zwecke oder zur Erkennung von Angriffen verwendet. Diese Daten werden eine Woche lang archiviert. Hier ein beispielhafter Log-Eintrag:
 						<div style="margin:5px;margin-left:30px;color:black;background-color:white;border:1px black solid;padding:2px;font-family:monospace;width:600px">127.0.0.1 - - [31/Jan/2007:09:49:14 +0100] "GET /images/bg.png<br />
 						HTTP/1.1" 200 154 "'.$this->Input->getURL().'" "Mozilla/5.0<br />

@@ -10,7 +10,7 @@ html, body, /* Remove this line if integrating */
 .brd pre, .brd code, .brd samp,
 .brd abbr, .brd acronym, .brd address, .brd small, .brd cite,
 .brd span, .brd em, .brd img, .brd strong,
-.brd dl, .brd dt, .brd dd, .brd ol, .brd ul, .brd li,
+.brd dl, .brd dt, .brd dd,
 .brd form, .brd fieldset, .brd label, .brd legend,
 .brd table, .brd caption, .brd tbody, .brd tfoot, .brd thead,
 .brd tr, .brd th, .brd td {
