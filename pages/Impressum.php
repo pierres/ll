@@ -43,38 +43,28 @@ public function prepare()
 	$stm->close();
 
 	$body = '
-		<table class="frame" style="width:50%;">
-			<tr>
-				<td class="title">
+		<div id="brd-main" class="main">
+			<div class="main-head">
 					Impressum
-				</td>
-			</tr>
-			<tr>
-				<td class="main">
-					<table style="margin:10px;padding:20px;width:80%;">
-						<tr>
-							<td colspan="2" style="padding-bottom:10px;padding-right:20px;font-weight:bold;"><a href="'.$this->Output->createUrl('ShowUser', array('user' => $this->Board->getAdmin())).'" class="link">'.$board['admin_name'].'</a></td>
-						</tr>
-						<tr>
-							<td style="padding-right:20px;vertical-align:top;font-weight:bold;">Adresse</td>
-							<td>'.$board['admin_address'].'</td>
-						</tr>
-						<tr>
-							<td style="padding-right:20px;font-weight:bold;">E-Mail</td>
-							<td>'.$board['admin_email'].'</td>
-						</tr>
-						<tr>
-							<td style="padding-right:20px;font-weight:bold;">Telefon</td>
-							<td>'.$board['admin_tel'].'</td>
-						</tr>
-
-						<tr>
-							<td colspan="2" style="padding:10px">'.$board['description'].'</td>
-						</tr>
-					</table>
-				</td>
-			</tr>
-		</table>
+			</div>
+			<div class="main-content frm paged-head">
+				<div class="paging">
+					<a href="'.$this->Output->createUrl('ShowUser', array('user' => $this->Board->getAdmin())).'" class="">'.$board['admin_name'].'</a><br />
+					<br />
+					<b>Adresse</b><br />
+					'.$board['admin_address'].'<br />
+					<br />
+					<b>E-Mail</b><br />
+					'.$board['admin_email'].'<br />
+					<br />
+					<b>Telefon</b><br />
+					'.$board['admin_tel'].'<br />
+					<br />
+					<br />
+					'.$board['description'].'
+				</div>
+			</div>		
+		</div>
 		';
 
 	$this->setBody($body);
