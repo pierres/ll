@@ -6,8 +6,7 @@ LL 4 TODO
 * use L10n-Methods for all Strings
 * apply new Layout too al pages
 	* missing: Impressum, Privacy, Admin*
-* Display name of thread on Postings page
-	* maybe reimplement simple generic crumb menu support
+* maybe reimplement simple generic crumb menu support
 
 
 == Optional ==

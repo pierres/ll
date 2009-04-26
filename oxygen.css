@@ -1800,6 +1800,13 @@ em.req-text, #req-msg p em, .brd li.warn, .brd .warn strong, .brd .frm-group .wa
 .brd #admin-alerts .legend span {
 	color: #b42000;
 	}
+	
+.brd div.thread-title {
+	font-size: 125%;
+	padding-left: 1.5em;
+	line-height: 180%;
+	font-weight: bold;
+	}
 
 /*************************************************************
 C - LINKS
