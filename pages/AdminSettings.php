@@ -17,7 +17,8 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-class AdminSettings extends AdminForm{
+
+class AdminSettings extends AdminForm {
 
 
 private $admin = 0;
@@ -26,18 +27,18 @@ private $mods = array();
 
 protected function setForm()
 	{
-	$this->setValue('title', 'Einstellungen');
+	$this->setTitle('Einstellungen');
 
-	$this->addSubmit('Speichern');
+	$this->add(new SubmitButtonElement('Speichern'));
 
-	$this->addText('name', 'Name', $this->Board->getName());
-	$this->requires('name');
-	$this->setLength('name', 3, 100);
+	$nameInput = new TextInputElement('name', $this->Board->getName(), 'Name');
+	$nameInput->setMinLength(3);
+	$nameInput->setMaxLength(100);
+	$this->add($nameInput);
 
 	if($this->User->isLevel(User::ADMIN))
 		{
-		$this->addText('admin', 'Administrator', AdminFunctions::getUserName($this->Board->getAdmin()));
-		$this->requires('admin');
+		$this->add(new TextInputElement('admin', AdminFunctions::getUserName($this->Board->getAdmin()), 'Administrator'));
 		}
 
 	$mods = '';
@@ -66,7 +67,7 @@ protected function setForm()
 		{
 		$stm->close();
 		}
-	$this->addTextArea('mods', 'Moderatoren', $mods, 80, 5);
+	$this->add(new TextareaInputElement('mods', $mods, 'Moderatoren'));
 
 	if($this->User->isUser($this->Board->getAdmin()) || $this->User->isLevel(User::ADMIN))
 		{
@@ -96,11 +97,12 @@ protected function setForm()
 			{
 			$stm->close();
 			}
-		$this->addTextArea('admins', 'Administratoren', $admins, 80, 5);
+		$this->add(new TextareaInputElement('admins', $admins, 'Administratoren'));
 
-
-		$this->addText('host', 'Host/Domain', $this->Board->getHost());
-		$this->setLength('host', 6, 100);
+		$hostInput = new TextInputElement('host', $this->Board->getHost(), 'Host/Domain');
+		$hostInput->setMinLength(6);
+		$hostInput->setMaxLength(100);
+		$this->add($hostInput);
 
 		$stm = $this->DB->prepare
 			('
@@ -117,16 +119,10 @@ protected function setForm()
 		$stm->bindInteger($this->Board->getId());
 		$address = $stm->getRow();
 
-		$this->addOutput('<fieldset><legend>Impressum</legend>');
-		$this->addText('admin_name', 'Name', $address['admin_name']);
-		$this->requires('admin_name');
-		$this->addText('admin_email', 'E-Mail', $address['admin_email']);
-		$this->requires('admin_email');
-		$this->addText('admin_tel', 'Telefon', $address['admin_tel']);
-		$this->requires('admin_tel');
-		$this->addTextArea('admin_address', 'Adresse', br2nl($address['admin_address']));
-		$this->requires('admin_address');
-		$this->addOutput('</fieldset>');
+		$this->add(new TextInputElement('admin_name', $address['admin_name'], 'Name'));
+		$this->add(new TextInputElement('admin_email', $address['admin_email'], 'E-Mail'));
+		$this->add(new TextInputElement('admin_tel', $address['admin_tel'], 'Telefon'));
+		$this->add(new TextareaInputElement('admin_address', br2nl($address['admin_address']), 'Adresse'));
 		}
 
 
@@ -150,7 +146,7 @@ protected function setForm()
 		}
 	$stm->close();
 
-	$this->addTextArea('description', 'Beschreibung', $this->UnMarkup->fromHtml($description));
+	$this->add(new TextareaInputElement('description', $this->UnMarkup->fromHtml($description), 'Beschreibung'));
 	}
 
 protected function checkForm()
@@ -159,7 +155,7 @@ protected function checkForm()
 		{
 		try
 			{
-			$this->admin = AdminFunctions::getUserId($this->Input->Request->getString('admin'));
+			$this->admin = AdminFunctions::getUserId($this->Input->Post->getString('admin'));
 			}
 		catch (DBNoDataException $e)
 			{
@@ -167,9 +163,9 @@ protected function checkForm()
 			}
 		}
 
-	if(!$this->Input->Request->isEmpty('admins') && ($this->User->isUser($this->Board->getAdmin()) || $this->User->isLevel(User::ADMIN)))
+	if(!$this->Input->Post->isEmptyString('admins') && ($this->User->isUser($this->Board->getAdmin()) || $this->User->isLevel(User::ADMIN)))
 		{
-		$admins = array_map('trim', explode("\n", $this->Input->Request->getString('admins')));
+		$admins = array_map('trim', explode("\n", $this->Input->Post->getString('admins')));
 
 		foreach ($admins as $admin)
 			{
@@ -183,33 +179,33 @@ protected function checkForm()
 				}
 			}
 		}
-	if(!$this->Input->Request->isEmpty('host') && ($this->User->isUser($this->Board->getAdmin()) || $this->User->isLevel(User::ADMIN)))
+	if(!$this->Input->Post->isEmptyString('host') && ($this->User->isUser($this->Board->getAdmin()) || $this->User->isLevel(User::ADMIN)))
 		{
 		try
 			{
-			$fp = fsockopen($this->Input->Request->getString('host'), 80, $errno, $errstr, 5);
+			$fp = fsockopen($this->Input->Post->getString('host'), 80, $errno, $errstr, 5);
 			if (!$fp)
 				{
-				$this->showWarning('Fehler beim Verbinden mit Host <em>'.$this->Input->Request->getString('host').'</em>: <strong>'.$errstr.'</strong>.');
+				$this->showWarning('Fehler beim Verbinden mit Host <em>'.$this->Input->Post->getString('host').'</em>: <strong>'.$errstr.'</strong>.');
 				}
 			else
 				{
 				fclose($fp);
 				}
-			if (gethostbyname($this->Input->Request->getString('host')) != getenv('SERVER_ADDR'))
+			if (gethostbyname($this->Input->Post->getString('host')) != getenv('SERVER_ADDR'))
 				{
-				$this->showWarning('Der Host <em>'.$this->Input->Request->getString('host').'</em> zeigt nicht auf die IP <em>'.getenv('SERVER_ADDR').'</em>.');
+				$this->showWarning('Der Host <em>'.$this->Input->Post->getString('host').'</em> zeigt nicht auf die IP <em>'.getenv('SERVER_ADDR').'</em>.');
 				}
 			}
 		catch (InternalRuntimeException $e)
 			{
-			$this->showWarning('Fehler beim Verbinden mit Host <em>'.$this->Input->Request->getString('host').'</em>:<div style="color:darkred;margin-left:50px;">'.$e->getMessage().'</div>');
+			$this->showWarning('Fehler beim Verbinden mit Host <em>'.$this->Input->Post->getString('host').'</em>:<div style="color:darkred;margin-left:50px;">'.$e->getMessage().'</div>');
 			}
 		}
 
-	if(!$this->Input->Request->isEmpty('mods'))
+	if(!$this->Input->Post->isEmptyString('mods'))
 		{
-		$mods = array_map('trim', explode("\n", $this->Input->Request->getString('mods')));
+		$mods = array_map('trim', explode("\n", $this->Input->Post->getString('mods')));
 
 		foreach ($mods as $mod)
 			{
@@ -226,7 +222,7 @@ protected function checkForm()
 
 	if($this->User->isUser($this->Board->getAdmin()) || $this->User->isLevel(User::ADMIN))
 		{
-		if (!$this->Mail->validateMail($this->Input->Request->getHtml('admin_email')))
+		if (!$this->Mail->validateMail($this->Input->Post->getHtml('admin_email')))
 			{
 			$this->showWarning('Keine gültige E-Mail-Adresse angegeben!');
 			}
@@ -235,7 +231,7 @@ protected function checkForm()
 
 protected function sendForm()
 	{
-	$description = $this->Markup->toHtml($this->Input->Request->getString('description'));
+	$description = $this->Markup->toHtml($this->Input->Post->getString('description'));
 	// BugFix for Bug#1
 	if ($length = strlen($description) > 65536)
 		{
@@ -261,7 +257,7 @@ protected function sendForm()
 		$stm->close();
 		}
 
-	if(!$this->Input->Request->isEmpty('host') && ($this->User->isUser($this->Board->getAdmin()) || $this->User->isLevel(User::ADMIN)))
+	if(!$this->Input->Post->isEmptyString('host') && ($this->User->isUser($this->Board->getAdmin()) || $this->User->isLevel(User::ADMIN)))
 		{
 		$stm = $this->DB->prepare
 			('
@@ -272,7 +268,7 @@ protected function sendForm()
 			WHERE
 				id = ?'
 			);
-		$stm->bindString($this->Input->Request->getString('host'));
+		$stm->bindString($this->Input->Post->getString('host'));
 		$stm->bindInteger($this->Board->getId());
 		$stm->execute();
 		$stm->close();
@@ -292,10 +288,10 @@ protected function sendForm()
 			WHERE
 				id = ?'
 			);
-		$stm->bindString($this->Input->Request->getHtml('admin_name'));
-		$stm->bindString(nl2br($this->Input->Request->getHtml('admin_address')));
-		$stm->bindString($this->Input->Request->getHtml('admin_email'));
-		$stm->bindString($this->Input->Request->getHtml('admin_tel'));
+		$stm->bindString($this->Input->Post->getHtml('admin_name'));
+		$stm->bindString(nl2br($this->Input->Post->getHtml('admin_address')));
+		$stm->bindString($this->Input->Post->getHtml('admin_email'));
+		$stm->bindString($this->Input->Post->getHtml('admin_tel'));
 		$stm->bindInteger($this->Board->getId());
 		$stm->execute();
 		$stm->close();
@@ -312,7 +308,7 @@ protected function sendForm()
 		WHERE
 			id = ?'
 		);
-	$stm->bindString($this->Input->Request->getHtml('name'));
+	$stm->bindString($this->Input->Post->getHtml('name'));
 	$stm->bindString($description);
 	$stm->bindInteger($this->Board->getId());
 	$stm->execute();

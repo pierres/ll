@@ -17,10 +17,6 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-if (!defined('IN_LL'))
-	{
-	die('403');
-	}
 
 $this->config['locale']			= 'de_DE.utf8';
 $this->config['timezone']		= 'Europe/Berlin';

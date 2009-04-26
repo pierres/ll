@@ -23,16 +23,7 @@ class NotFound extends Page{
 
 public function prepare()
 	{
-	try
-		{
-		$search = urlencode(trim(preg_replace('/\W/', ' ',  str_replace('.php', '', $this->Input->Server->getString('REQUEST_URI')))));
-		}
-	catch (RequestException $e)
-		{
-		$search = '';
-		}
-
-	$this->Output->redirect('Search', 'search='.$search);
+	$this->Output->redirect('Search', array('search' => urlencode(trim(preg_replace('/\W/', ' ',  str_replace('.php', '', $this->Input->Server->getString('REQUEST_URI', '')))))));
 	}
 
 }

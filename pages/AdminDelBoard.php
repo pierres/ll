@@ -17,17 +17,21 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-class AdminDelBoard extends AdminForm{
+
+class AdminDelBoard extends AdminForm {
+
 
 protected function setForm()
 	{
-	$this->setValue('title', 'Board löschen');
-	$this->addSubmit('Löschen');
+	$this->setTitle('Board löschen');
+	$this->add(new SubmitButtonElement('Löschen'));
 
 	if (!$this->User->isLevel(User::ROOT))
 		{
 		$this->showFailure('kein Zugriff!');
 		}
+
+	$boardInput = new RadioInputElement('board', 'Welches Board soll gelöscht werden?');
 
 	try
 		{
@@ -45,21 +49,20 @@ protected function setForm()
 			');
 		$stm->bindInteger($this->Board->getId());
 
-		$radioArray = array();
 		foreach ($stm->getRowSet() as $board)
 			{
-			$radioArray[$board['name']] = $board['id'];
+			$boardInput->addOption($board['name'], $board['id']);
 			}
 		$stm->close();
-		
-		$this->addRadio('board', 'Welches Board soll gelöscht werden?', $radioArray);
-		$this->requires('board');
-		$this->addCheckBox('sure', 'Mir ist klar, dass dadurch alle Daten verloren gehen.');
-		$this->requires('sure');
+
 		}
 	catch (DBNoDataException $e)
 		{
+		$stm->close();
 		}
+
+	$this->add($boardInput);
+	$this->add(new CheckboxInputElement('sure', 'Mir ist klar, dass dadurch alle Daten verloren gehen.'));
 	}
 
 protected function sendForm()
@@ -80,18 +83,11 @@ protected function sendForm()
 				thread_user WRITE,
 				threads WRITE,
 				threads_log WRITE,
-				user_group WRITE,
-				tags WRITE
+				user_group WRITE
 			');
-	AdminFunctions::delBoard($this->Input->Request->getInt('board'));
+	AdminFunctions::delBoard($this->Input->Post->getInt('board'));
 	$this->DB->execute('UNLOCK TABLES');
 
-	$this->redirect();
-	}
-
-
-protected function redirect()
-	{
 	$this->Output->redirect('AdminDelBoard');
 	}
 

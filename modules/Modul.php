@@ -28,7 +28,6 @@ private static $availableModules = array
 	'Form' => 'pages/abstract/Form.php',
 	'GetFile' => 'pages/abstract/GetFile.php',
 	'Page' => 'pages/abstract/Page.php',
-	'Poll' => 'modules/Poll.php',
 	'AdminFunctions' => 'modules/AdminFunctions.php',
 	'Board' => 'modules/Board.php',
 	'DB' => 'modules/DB.php',
@@ -45,7 +44,7 @@ private static $availableModules = array
 	'PersistentCache' => 'modules/PersistentCache.php',
 	'Settings' => 'modules/Settings.php',
 	'Stack' => 'modules/Stack.php',
-	'ThreadList' => 'modules/ThreadList.php',
+	'ThreadList' => 'pages/abstract/ThreadList.php',
 	'UnMarkup' => 'modules/UnMarkup.php',
 	'User' => 'modules/User.php'
 	);

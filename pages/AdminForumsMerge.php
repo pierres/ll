@@ -17,7 +17,8 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-class AdminForumsMerge extends AdminForm{
+
+class AdminForumsMerge extends AdminForm {
 
 private $source = 0;
 private $target = 0;
@@ -29,8 +30,8 @@ protected function setForm()
 		$this->showFailure('kein Zugriff!');
 		}
 
-	$this->setValue('title', 'Foren zusammenlegen');
-	$this->addSubmit('Zusammenlegen');
+	$this->setTitle('Foren zusammenlegen');
+	$this->add(new SubmitButtonElement('Zusammenlegen'));
 
 	try
 		{
@@ -46,16 +47,15 @@ protected function setForm()
 				board ASC
 			');
 
-		$radioArray = array();
+		$inputRadioSource = new RadioInputElement('source', 'Quelle');
+		$inputRadioTarget = new RadioInputElement('target', 'Ziel');
 		foreach ($forums as $forum)
 			{
-			$radioArray['<strong>'.$forum['board'].'</strong> '.$forum['name']] = $forum['id'];
+			$inputRadioSource->addOption('<strong>'.$forum['board'].'</strong> '.$forum['name'], $forum['id']);
+			$inputRadioTarget->addOption('<strong>'.$forum['board'].'</strong> '.$forum['name'], $forum['id']);
 			}
-
-		$this->addRadio('source', 'zu verschiebendes Forum', $radioArray);
-		$this->requires('source');
-		$this->addRadio('target', 'Ziel-Forum', $radioArray);
-		$this->requires('target');
+		$this->add($inputRadioSource);
+		$this->add($inputRadioTarget);
 		}
 	catch (DBNoDataException $e)
 		{
@@ -65,8 +65,8 @@ protected function setForm()
 
 protected function checkForm()
 	{
-	$this->source = $this->Input->Request->getInt('source');
-	$this->target = $this->Input->Request->getInt('target');
+	$this->source = $this->Input->Post->getInt('source');
+	$this->target = $this->Input->Post->getInt('target');
 	if ($this->source == $this->target)
 		{
 		$this->showWarning('Quell- und Ziel-Forum sind identisch!');
@@ -110,8 +110,6 @@ protected function redirect()
 	$this->Output->redirect('AdminGlobalSettings');
 	}
 
-
 }
-
 
 ?>

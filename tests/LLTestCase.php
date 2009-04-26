@@ -17,26 +17,30 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-require_once 'PHPUnit/Framework/TestCase.php';
+
+require_once 'PHPUnit2/Framework/TestCase.php';
 
 ini_set('include_path', ini_get('include_path').':../');
 
+// require ('modules/Modul.php');
 require ('modules/Settings.php');
 require ('modules/Exceptions.php');
 require ('modules/Functions.php');
 require ('modules/Input.php');
 require ('modules/Output.php');
+require ('modules/L10n.php');
 
 Modul::__set('Settings', new Settings());
-Modul::__set('Input', new Input());
-Modul::__set('Output', new Output());
+$Input = Modul::__set('Input', new Input());
+Modul::__set('L10n', new L10n());
+$Output = Modul::__set('Output', new Output());
 
 function __autoload($class)
 	{
 	Modul::loadModul($class);
 	}
 
-abstract class Modul extends PHPUnit_Framework_TestCase{
+abstract class Modul extends PHPUnit2_Framework_TestCase {
 
 private static $loadedModules = array();
 
@@ -47,13 +51,13 @@ private static $availableModules = array
 	'Form' => 'pages/abstract/Form.php',
 	'GetFile' => 'pages/abstract/GetFile.php',
 	'Page' => 'pages/abstract/Page.php',
-	'Poll' => 'modules/Poll.php',
 	'AdminFunctions' => 'modules/AdminFunctions.php',
 	'Board' => 'modules/Board.php',
 	'DB' => 'modules/DB.php',
 	'Exceptions' => 'modules/Exceptions.php',
 	'Functions' => 'modules/Functions.php',
 	'Input' => 'modules/Input.php',
+	'L10n' => 'modules/L10n.php',
 	'Log' => 'modules/Log.php',
 	'Mail' => 'modules/Mail.php',
 	'Markup' => 'modules/Markup.php',
@@ -63,7 +67,7 @@ private static $availableModules = array
 	'PersistentCache' => 'modules/PersistentCache.php',
 	'Settings' => 'modules/Settings.php',
 	'Stack' => 'modules/Stack.php',
-	'ThreadList' => 'modules/ThreadList.php',
+	'ThreadList' => 'pages/abstract/ThreadList.php',
 	'UnMarkup' => 'modules/UnMarkup.php',
 	'User' => 'modules/User.php'
 	);
@@ -110,7 +114,7 @@ public static function __set($name, $object)
 
 }
 
-abstract class LLTestCase extends Modul{
+abstract class LLTestCase extends Modul {
 
 
 public function setUp()

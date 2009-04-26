@@ -27,7 +27,7 @@ public function prepare()
 		{
 		try
 			{
-			$forum = $this->Input->Request->getInt('forum');
+			$forum = $this->Input->Get->getInt('forum');
 			}
 		catch (RequestException $e)
 			{
@@ -49,7 +49,7 @@ public function prepare()
 					AND lastdate > ?'
 				);
 			$stm->bindInteger($forum);
-			$stm->bindInteger(time() - $this->Settings->getValue('log_timeout'));
+			$stm->bindInteger($this->Input->getTime() - $this->Settings->getValue('log_timeout'));
 
 			foreach ($stm->getRowSet() as $thread)
 				{

@@ -26,7 +26,7 @@ public function prepare()
 
 public function show()
 	{
-	if (!($css = $this->ObjectCache->getObject('LL:GetCss:Css:'.$this->Input->Request->getInt('id'))))
+	if (!($css = $this->ObjectCache->getObject('LL:GetCss:Css:'.$this->Input->Get->getInt('id'))))
 		{
 		$this->initDB();
 		try
@@ -53,7 +53,7 @@ public function show()
 			}
 		}
 
-	$this->Output->setContentType('Content-Type: text/css; charset=UTF-8');
+	$this->Output->setContentType('text/css; charset=UTF-8');
 	$this->Output->writeOutput($css);
 	}
 

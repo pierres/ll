@@ -17,7 +17,8 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-class ChangeEmail extends Form{
+
+class ChangeEmail extends Form {
 
 private $email;
 
@@ -28,31 +29,34 @@ protected function setForm()
 		$this->showFailure('Nur für Mitglieder!');
 		}
 
-	$this->setValue('title', 'E-Mail-Adresse ändern');
+	$this->setTitle('E-Mail-Adresse ändern');
 
-	$this->addSubmit('Ändern');
+	$this->add(new SubmitButtonElement('Ändern'));
 
-	$this->addText('email', 'Deine E-Mail-Adresse', '', 25);
-	$this->requires('email');
-	$this->setLength('email', 6, 50);
+	$emailInput = new TextInputElement('email', '', 'Deine E-Mail-Adresse');
+	$emailInput->setMinLength(6);
+	$emailInput->setMaxLength(50);
+	$emailInput->setSize(25);
+	$emailInput->setHelp('Achte auf die Gültigkeit dieser Adresse,<br /> da die Zugangsdaten dorthin verschickt werden.');
+	$this->add($emailInput);
 
-	$this->addText('confirm', 'Bestätige Deine E-Mail-Adresse', '', 25);
-	$this->requires('confirm');
-	$this->setLength('confirm', 6, 50);
-
-	$this->addElement('hint', 'Achte auf die Gültigkeit dieser Adresse,<br /> da die Zugangsdaten dorthin verschickt werden.');
+	$confirmInput = new TextInputElement('confirm', '', 'Bestätige Deine E-Mail-Adresse');
+	$confirmInput->setMinLength(6);
+	$confirmInput->setMaxLength(50);
+	$confirmInput->setSize(25);
+	$this->add($confirmInput);
 	}
 
 protected function checkForm()
 	{
-	$this->email = $this->Input->Request->getString('email');
+	$this->email = $this->Input->Post->getString('email');
 
 	if (!$this->Mail->validateMail($this->email))
 		{
 		$this->showWarning('Keine gültige E-Mail-Adresse angegeben!');
 		}
 
-	if ($this->email != $this->Input->Request->getString('confirm'))
+	if ($this->email != $this->Input->Post->getString('confirm'))
 		{
 		$this->showWarning('Du hast Dich vertippt!');
 		}
@@ -123,7 +127,7 @@ protected function sendForm()
 		);
 	$stm->bindInteger($this->User->getId());
 	$stm->bindString($key);
-	$stm->bindInteger(time());
+	$stm->bindInteger($this->Input->getTime());
 	$stm->execute();
 	$stm->close();
 
@@ -134,7 +138,7 @@ protected function sendForm()
 'Hallo '.$this->User->getName().'!
 
 Du kannst Dein Passwort ändern, wenn Du folgende Seite besuchst:
-'.$this->Input->getURL().'?id='.$this->Board->getId().';page=ChangePasswordKey;userid='.$this->User->getId().';key='.$key.'
+'.$this->Output->createUrl('ChangePasswordKey').'
 
 Sollte obiger Link bei Deinem Mail-Programm nicht funktionieren,
 so wähle im Anmelde-Dialog die Option "Passwort setzen" und gebe folgende Daten an:
@@ -146,31 +150,9 @@ Schlüssel:	'.$key.'
 
 	$this->User->logout();
 
-	$body =
-		'
-		<table class="frame">
-			<tr>
-				<td class="title">
-					Neues Passwort erstellt
-				</td>
-			</tr>
-			<tr>
-				<td class="main">
-					Hallo!
-					<p>
-					Es wurde ein Aktivierungsschlüssel an <em>'.htmlspecialchars($this->email).'</em> geschickt. Mit diesem kannst Du Dein Passwort einrichten.
-					</p>
-				</td>
-			</tr>
-		</table>
-		';
-
-	$this->setValue('title', 'Neues Passwort erstellt');
-	$this->setValue('body', $body);
+	$this->Output->redirect('Forums');
 	}
 
-
 }
-
 
 ?>

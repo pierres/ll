@@ -19,7 +19,7 @@
 */
 require('NewThread.php');
 
-class EditThread extends NewThread{
+class EditThread extends NewThread {
 
 protected $post 		= 0;
 protected $thread		= 0;
@@ -34,8 +34,8 @@ protected function checkInput()
 	{
 	try
 		{
-		$this->thread = $this->Input->Request->getInt('thread');
-		$this->addHidden('thread', $this->thread);
+		$this->thread = $this->Input->Get->getInt('thread');
+		$this->setParam('thread', $this->thread);
 		}
 	catch (RequestException $e)
 		{
@@ -51,8 +51,7 @@ protected function checkInput()
 				posts.text,
 				posts.smilies,
 				threads.forumid,
-				threads.name,
-				threads.tag
+				threads.name
 			FROM
 				posts JOIN threads ON threads.id = posts.threadid
 			WHERE
@@ -60,15 +59,10 @@ protected function checkInput()
 				AND threads.deleted = 0
 				AND threads.closed = 0
 				AND threads.id = ?
-				AND (
-					threads.tag = 0
-					OR threads.tag IN (SELECT tags.id FROM tags WHERE boardid = ?)
-				)
 			ORDER BY
 				posts.dat ASC
 			');
 		$stm->bindInteger($this->thread);
-		$stm->bindInteger($this->Board->GetId());
 		$data = $stm->getRow();
 		$stm->close();
 		}
@@ -123,7 +117,6 @@ protected function checkInput()
 	$this->forum = $data['forumid'];
 	$this->topic = unhtmlspecialchars($data['name']);
 	$this->smilies = ($data['smilies'] == 0 ? false : true);
-	$this->tag = $data['tag'];
 
 	$this->db_poll_question = $this->poll_question;
 	$this->db_poll_options = $this->poll_options;
@@ -171,19 +164,17 @@ protected function sendForm()
 			threads
 		SET
 			name = ?,
-			summary = ?,
-			tag = ?
+			summary = ?
 		WHERE
 			id = ?'
 		);
 	$stm->bindString(htmlspecialchars($this->topic));
 	$stm->bindString(getTextFromHtml($this->text));
-	$stm->bindInteger($this->tag);
 	$stm->bindInteger($this->thread);
 	$stm->execute();
 	$stm->close();
 
-	if ($this->Input->Request->isValid('poll_question') && $this->Input->Request->isValid('poll_options'))
+	if ($this->Input->Post->isString('poll_question') && $this->Input->Post->isString('poll_options'))
 		{
 		if ($this->poll_options != $this->db_poll_options || $this->poll_question != $this->db_poll_question)
 			{
@@ -237,7 +228,7 @@ protected function sendForm()
 			id = ?'
 		);
 	$stm->bindString($this->text);
-	$stm->bindInteger($this->time);
+	$stm->bindInteger($this->Input->getTime());
 	$stm->bindInteger($this->User->getId());
 	$stm->bindInteger($this->smilies ? 1 : 0);
 	$stm->bindInteger($this->post);
@@ -251,7 +242,7 @@ protected function sendForm()
 
 protected function sendFile($postid)
 	{
-	if($this->User->isOnline() && $this->Input->Request->isValid('addfile'))
+	if($this->User->isOnline() && $this->Input->Post->isString('addfile'))
 		{
 		$stm = $this->DB->prepare
 			('

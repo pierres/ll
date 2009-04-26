@@ -17,7 +17,6 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-define('IN_LL', null);
 
 require ('modules/Modul.php');
 require ('modules/Settings.php');
@@ -37,27 +36,20 @@ function __autoload($class)
 	Modul::loadModul($class);
 	}
 
+$page = $Input->Get->getString('page', 'Forums');
+
 try
 	{
-	$page = $Input->Request->getString('page');
+	Page::loadPage($page);
 	}
-catch(RequestException $e)
+catch (RuntimeException $e)
 	{
-	$page = 'Forums';
+	$page = 'NotFound';
+	Page::loadPage($page);
 	}
 
-	try
-		{
-		Page::loadPage($page);
-		}
-	catch (RuntimeException $e)
-		{
-		$page = 'NotFound';
-		Page::loadPage($page);
-		}
-
-	$class = new $page();
-	$class->prepare();
-	$class->show();
+$class = new $page();
+$class->prepare();
+$class->show();
 
 ?>

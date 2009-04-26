@@ -17,7 +17,8 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-class GetAvatar extends GetFile{
+
+class GetAvatar extends GetFile {
 
 private $user = 0;
 
@@ -25,7 +26,7 @@ protected function getParams()
 	{
 	try
 		{
-		$this->user = $this->Input->Request->getInt('user');
+		$this->user = $this->Input->Get->getInt('user');
 		}
 	catch (RequestException $e)
 		{
@@ -43,8 +44,7 @@ public function show()
 			SELECT
 				type,
 				name,
-				content,
-				size
+				content
 			FROM
 				avatars
 			WHERE
@@ -61,7 +61,7 @@ public function show()
 		$this->showWarning('Datei nicht gefunden');
 		}
 
-	$this->sendInlineFile($data['type'], $data['name'], $data['size'], $data['content']);
+	$this->sendInlineFile($data['type'], $data['name'], $data['content']);
 	}
 }
 

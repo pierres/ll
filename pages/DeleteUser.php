@@ -17,15 +17,18 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-class DeleteUser extends Form{
+
+class DeleteUser extends Form {
 
 private $user = 0;
 
 protected function setForm()
 	{
+	$this->setTitle('Benutzerkonto löschen');
+
 	try
 		{
-		$this->user = $this->Input->Request->getInt('user');
+		$this->user = $this->Input->Get->getInt('user');
 		}
 	catch (RequestException $e)
 		{
@@ -41,10 +44,6 @@ protected function setForm()
 		{
 		$this->showFailure('Keine Berechtigung!');
 		}
-
-	$this->setValue('title', 'Benutzerkonto löschen');
-
-	$this->addSubmit('Bestätigen');
 
 	try
 		{
@@ -67,14 +66,12 @@ protected function setForm()
 		$this->showFailure('Kein Benutzer gefunden');
 		}
 
-	$this->addHidden('user', $this->user);
+	$this->add(new SubmitButtonElement('Bestätigen'));
+	$this->setParam('user', $this->user);
 
-	$this->addElement('hint', 'Soll das Benutzerkonto von <strong><a href="?page=ShowUser;id='.$this->Board->getId().';user='.$this->user.'">'.$username.'</a></strong> wirklich gelöscht werden? <br />Alle Beiträge und angehängten Dateien bleiben erhalten.');
-
-	$this->addRadio('confirm', 'Bestätige Deine Entscheidung',
-	array('Ja, ich möchte dieses Benutzerkonto endgültig löschen.' => 1, 'Nein, lieber doch nichts löschen.' => 2), 2);
-	$this->requires('confirm');
-	$this->setLength('confirm', 1, 1);
+	$inputRadio = new CheckboxInputElement('confirm', 'Bestätigung');
+	$inputRadio->setHelp('Benutzerkonto von <strong><a href="'.$this->Output->createUrl('ShowUser', array('user' => $this->user)).'">'.$username.'</a></strong> löschen.');
+	$this->add($inputRadio);
 	}
 
 protected function checkForm()
@@ -83,14 +80,11 @@ protected function checkForm()
 
 protected function sendForm()
 	{
-	if ($this->Input->Request->getInt('confirm') == 1)
-		{
-		AdminFunctions::delUser($this->user);
+	AdminFunctions::delUser($this->user);
 
-		if ($this->user == $this->User->getId())
-			{
-			$this->User->logout();
-			}
+	if ($this->user == $this->User->getId())
+		{
+		$this->User->logout();
 		}
 
 	$this->Output->redirect('Forums');

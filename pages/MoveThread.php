@@ -17,9 +17,10 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
+
 require('EditThread.php');
 
-class MoveThread extends EditThread{
+class MoveThread extends EditThread {
 
 private $moveto 	= 0;
 protected $title 	= 'Thema verschieben';
@@ -27,7 +28,7 @@ protected $title 	= 'Thema verschieben';
 
 protected function setForm()
 	{
-	$this->setValue('title', $this->title);
+	$this->setTitle($this->title);
 
 	$this->checkInput();
 	$this->checkAccess($this->forum);
@@ -39,7 +40,7 @@ protected function checkForm()
 	{
 	try
 		{
-		$this->moveto = $this->Input->Request->getInt('moveto');
+		$this->moveto = $this->Input->Post->getInt('moveto');
 		$this->checkAccess($this->moveto);
 		}
 	catch (RequestException $e)
@@ -60,20 +61,15 @@ protected function checkAccess($forum = 0)
 
 protected function buildList()
 	{
-	$this->addSubmit('Verschieben');
+	$this->add(new SubmitButtonElement('Verschieben'));
 
 	try
 		{
 		$stm = $this->DB->prepare
 			('
 			SELECT
-				cats.id AS catid,
-				cats.name AS catname,
 				forums.id,
-				forums.boardid,
-				forums.name,
-				forums.description,
-				forums.mods
+				forums.name
 			FROM
 				cats,
 				forums,
@@ -90,23 +86,12 @@ protected function buildList()
 		$stm->bindInteger($this->Board->getId());
 		$stm->bindInteger($this->forum);
 
-		$cat = 0;
-		$catheader = '';
-		$forums = '';
-
+		$radioInput = new RadioInputElement('moveto', 'Ziel');
 		foreach ($stm->getRowSet() as $data)
 			{
-			if ($cat != $data['catid'])
-				{
-				$this->addElement('cat'.$cat,
-					'<strong>&#171; '.$data['catname'].' &#187;</strong>');
-				}
-
-			$this->addElement('forum'.$data['id'],
-				'<input class="radio" type="radio" name="moveto" value="'.$data['id'].'" />&nbsp;'.$data['name']);
-
-			$cat = $data['catid'];
+			$radioInput->addOption($data['name'], $data['id']);
 			}
+		$this->add($radioInput);
 
 		$stm->close();
 		}
@@ -144,7 +129,7 @@ protected function sendForm()
 
 protected function redirect()
 	{
-	$this->Output->redirect('Threads', 'forum='.$this->moveto);
+	$this->Output->redirect('Threads', array('forum' => $this->moveto));
 	}
 
 }

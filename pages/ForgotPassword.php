@@ -17,7 +17,8 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-class ForgotPassword extends Form{
+
+class ForgotPassword extends Form {
 
 private $name 	= '';
 private $email 	= '';
@@ -25,23 +26,27 @@ private $id 	= 0;
 
 protected function setForm()
 	{
-	$this->setValue('title', 'Passwort vergessen?');
+	$this->setTitle('Passwort vergessen?');
 
-	$this->addSubmit('Erinnern');
+	$this->add(new SubmitButtonElement('Erinnern'));
 
-	$this->addText('name', 'Dein Name', '', 25);
-	$this->requires('name');
-	$this->setLength('name', 3, 25);
+	$inputName = new TextInputElement('name', '', 'Dein Name');
+	$inputName->setSize(25);
+	$inputName->setMinLength(3);
+	$inputName->setMaxLength(25);
+	$this->add($inputName);
 
-	$this->addText('email', 'Deine E-Mail-Adresse', '',  25);
-	$this->requires('email');
-	$this->setLength('email', 5, 50);
+	$inputEmail = new TextInputElement('email', '', 'Deine E-Mail-Adresse');
+	$inputEmail->setSize(25);
+	$inputEmail->setMinLength(5);
+	$inputEmail->setMaxLength(50);
+	$this->add($inputEmail);
 	}
 
 protected function checkForm()
 	{
-	$this->name = $this->Input->Request->getHtml('name');
-	$this->email = $this->Input->Request->getString('email');
+	$this->name = $this->Input->Post->getHtml('name');
+	$this->email = $this->Input->Post->getString('email');
 
 	try
 		{
@@ -93,7 +98,7 @@ protected function sendForm()
 		);
 	$stm->bindInteger($this->id);
 	$stm->bindString($key);
-	$stm->bindInteger(time());
+	$stm->bindInteger($this->Input->getTime());
 	$stm->execute();
 	$stm->close();
 
@@ -104,7 +109,7 @@ protected function sendForm()
 'Hallo '.$this->name.'!
 
 Du kannst Dein Passwort ändern, wenn Du folgende Seite besuchst:
-'.$this->Input->getURL().'?id='.$this->Board->getId().';page=ChangePasswordKey;userid='.$this->id.';key='.$key.'
+'.$this->Output->createUrl('ChangePasswordKey').'
 
 Sollte obiger Link bei Deinem Mail-Programm nicht funktionieren,
 so wähle im Anmelde-Dialog die Option "Passwort setzen" und gebe folgende Daten an:

@@ -17,21 +17,22 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-class UserRecent extends Page{
+
+class UserRecent extends ThreadList {
 
 
 public function prepare()
 	{
-	$this->setValue('title', 'Aktuelle Beiträge');
+	$this->setTitle('Aktuelle Beiträge');
 	$this->setValue('meta.robots', 'noindex,nofollow');
 
 	try
 		{
-		$user = $this->Input->Request->getInt('user');
+		$user = $this->Input->Get->getInt('user');
 		}
 	catch (RequestException $e)
 		{
-		$this->Output->redirect('Recent');
+		$this->showWarning('Kein Benutzer angegeben!');
 		}
 
 	try
@@ -43,23 +44,15 @@ public function prepare()
 				threads.name,
 				threads.lastdate,
 				threads.posts,
-				threads.lastuserid,
 				threads.lastusername,
 				threads.firstdate,
-				threads.firstuserid,
 				threads.firstusername,
 				threads.closed,
 				threads.sticky,
-				threads.poll,
 				threads.posts,
-				forums.id AS forumid,
-				forums.name AS forumname,
-				threads.summary,
-				tags.name AS tag
+				threads.summary
 			FROM
-				threads
-					LEFT JOIN tags
-					ON threads.tag = tags.id,
+				threads,
 				forums,
 				posts,
 				forum_cat,
@@ -82,45 +75,21 @@ public function prepare()
 
 		$stm->bindInteger($user);
 		$stm->bindInteger($this->Board->getId());
-		$result = $stm->getRowSet();
+		$this->resultSet = $stm->getRowSet();
 		}
 	catch (DBNoDataException $e)
 		{
-		$result = array();
+		$this->resultSet = array();
 		}
 
-	$threads = $this->ThreadList->getList($result);
+	$this->totalThreads = $this->Settings->getValue('max_threads');
+	$body = $this->getBody();
 	if (isset($stm))
 		{
 		$stm->close();
 		}
 
-	$body =
-		'<script type="text/javascript">
-			/* <![CDATA[ */
-			function writeText(text)
-				{
-				var pos;
-				pos = document;
-				while ( pos.lastChild && pos.lastChild.nodeType == 1 )
-					pos = pos.lastChild;
-				pos.parentNode.appendChild( document.createTextNode(text));
-				}
-			/* ]]> */
-		</script>
-		<table class="frame" style="width:100%">
-			<tr>
-				<td class="title" colspan="2">Thema</td>
-				<td class="title">Erster Beitrag</td>
-				<td class="title">Beiträge</td>
-				<td class="title">Letzter Beitrag</td>
-				<td class="title">Forum</td>
-			</tr>
-			'.$threads.'
-		</table>
-		';
-
-	$this->setValue('body', $body);
+	$this->setBody($body);
 	}
 
 }

@@ -17,11 +17,12 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-class Stack{
 
+class Stack {
 
 private $array = array();
 private $count = 0;
+
 
 public function pop()
 	{

@@ -17,7 +17,8 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-class ShowUser extends Page{
+
+class ShowUser extends Page {
 
 private $id = 0;
 
@@ -26,7 +27,7 @@ public function prepare()
 	{
 	try
 		{
-		$this->id = $this->Input->Request->getInt('user');
+		$this->id = $this->Input->Get->getInt('user');
 		}
 	catch (RequestException $e)
 		{
@@ -41,15 +42,10 @@ public function prepare()
 				id,
 				name,
 				realname,
-				birthday,
 				posts,
 				regdate,
-				gender,
 				lastpost,
 				avatar,
-				location,
-				plz,
-				text,
 				email
 			FROM
 				users
@@ -67,126 +63,51 @@ public function prepare()
 		$this->showWarning('Kein Benutzer gefunden!');
 		}
 
-	$age = (!empty($data['birthday']) ? $this->calcAge($data['birthday']) : '');
-
-	$now = time();
-	$regdays = ($now - $data['regdate']) / 86400;
-
-	$gender = (!empty($data['gender']) ? ($data['gender'] == 1 ? 'männlich' : 'weiblich') : '');
-
-	$regdays = floor($regdays);
-	$postsperday = round($data['posts'] / (($now - $data['regdate']) / 86400));
-	$lastpostdays = ($data['lastpost'] > 0 ? floor(($now - $data['lastpost']) / 86400) : 0);
-
 	$data['regdate'] = $this->L10n->getDateTime($data['regdate']);
 	$data['lastpost'] = $this->L10n->getDateTime($data['lastpost']);
 
-	$avatar = (empty($data['avatar']) ? '' : '<img src="?page=GetAvatar;user='.$data['id'].'" class="avatar" alt="" />');
+	$avatar = (empty($data['avatar']) ? '' : '<img src="'.$this->Output->createUrl('GetAvatar', array('user' => $data['id'])).'" alt="" />');
+
+	$this->setTitle('Profil von '.$data['name']);
 
 	$body =
 		'
-		<table class="frame" style="width:50%">
-			<tr>
-				<td class="title" colspan="3">
-					Profil von '.$data['name'].'
-				</td>
-			</tr>
-			<tr>
-				<td class="main" style="width:150px;">
-					Name:
-				</td>
-				<td class="main">
-					'.$data['realname'].'
-					'.($this->User->isLevel(User::ROOT) ? '(<a href="mailto:'.$data['email'].'">'.$data['email'].'</a>)' : '').'
-				</td>
-				<td class="main" rowspan="9">
-					<div style="height:100px;width:150px;overflow:hidden;">'.$avatar.'</div>
-				</td>
-			</tr>
-			<tr>
-				<td class="main" style="vertical-align:top;width:150px;">
-					Wohnort:
-				</td>
-				<td class="main">
-					'.(!empty($data['plz']) ? $data['plz'] : '').'<br />'.$data['location'].'
-				</td>
-			</tr>
-			<tr>
-				<td class="main" style="width:150px;">
-					Alter:
-				</td>
-				<td class="main">
-					'.$age.'
-				</td>
-			</tr>
-			<tr>
-				<td class="main" style="width:150px;">
-					Geschlecht:
-				</td>
-				<td class="main">
-					'.$gender.'
-				</td>
-			</tr>
-			<tr>
-				<td class="main" style="vertical-align:top;width:150px;">
-					Dabei seit:
-				</td>
-				<td class="main">
-					'.$data['regdate'].'<br />
-					das sind '.$regdays.' Tage
-				</td>
-			</tr>
-			<tr>
-				<td class="main" style="vertical-align:top;width:150px;">
-					Letzter Beitrag:
-				</td>
-				<td class="main">
-					'.$data['lastpost'].'<br />
-					das war vor '.$lastpostdays.' Tagen
-				</td>
-			</tr>
-			<tr>
-				<td class="main" style="vertical-align:top;width:150px;">
-					Beitr&auml;ge:
-				</td>
-				<td class="main">
-					'.$data['posts'].'<br />
-					das sind '.$postsperday.' pro Tag
-				</td>
-			</tr>
-			<tr>
-				<td class="main" style="vertical-align:top;width:150px;">
-					Freier Text
-				</td>
-				<td class="main">
-					'.$data['text'].'
-				</td>
-			</tr>
-			<tr>
-				<td class="main" colspan="2">
-					<a href="?page=UserRecent;id='.$this->Board->getId().';user='.$this->id.'" rel="nofollow"><span class="button">aktuelle Beiträge</span></a>
-					'.($this->User->isOnline() ? '<a href="?page=NewPrivateThread;id='.$this->Board->getId().';recipients='.$data['name'].'"><span class="button">Neues privates Thema</span></a>' : '').'
-					'.($this->User->isLevel(User::ROOT) ? '<a href="?page=DeleteUser;id='.$this->Board->getId().';user='.$this->id.'"><span class="button">Benutzerkonto löschen</span></a>' : '')
-					.'
-				</td>
-			</tr>
-		</table>
+<div id="brd-main" class="main">
+
+	<h1><span>'.$this->getTitle().'</span></h1>
+
+	<div class="main-head">
+		<h2><span>'.$this->getTitle().'</span></h2>
+	</div>
+
+	<div class="main-content frm">
+		<div class="profile vcard">
+			<h3>User information</h3>
+			<div class="user">
+				<h4 class="user-ident">'.$avatar.' <strong class="username fn nickname">'.$data['name'].'</strong></h4>
+				<ul class="user-info">
+						<li><span><strong>Registered:</strong> '.$data['regdate'].'</span></li>
+						<li><span><strong>Posts:</strong> '.$data['posts'].'</span></li>
+				</ul>
+			</div>
+			<ul class="user-data">
+				<li><span><strong>Real name:</strong> '.$data['realname'].'</span></li>
+						<li><span><strong>Last post:</strong> '.$data['lastpost'].'</span></li>
+						<li><strong>E-mail:</strong> <span>'.($this->User->isLevel(User::ROOT) ? '<a href="mailto:'.$data['email'].'">'.$data['email'].'</a>' : '(Private)').'</span></li>
+			</ul>
+			<h3>User actions</h3>
+			<ul class="user-actions">
+				<li><a href="'.$this->Output->createUrl('UserRecent', array('user' => $this->id)).'">Show all posts</a></li>
+				'.($this->User->isOnline() ? '<li><a href="'.$this->Output->createUrl('NewPrivateThread', array('recipients' => $data['name'])).'">Neues privates Thema</a></li>' :'').'
+				'.($this->User->isLevel(User::ROOT) ? '<li><a href="'.$this->Output->createUrl('DeleteUser', array('user' => $this->id)).'">Benutzerkonto löschen</a></li>' :'').'
+			</ul>
+		</div>
+	</div>
+
+</div>
 		';
 
-	$this->setValue('title', 'Profil von '.$data['name']);
-	$this->setValue('body', $body);
-	}
-
-private function calcAge($data)
-	{
-	if ($data == 0)
-		{
-		return 0;
-		}
-
-	$age = time() - $data;
-
-	return floor($age/60/60/24/365);
+	$this->setBody($body);
 	}
 
 }

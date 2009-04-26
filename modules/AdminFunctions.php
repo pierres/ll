@@ -365,17 +365,6 @@ public static function delBoard($board)
 	$stm->bindInteger($board);
 	$stm->execute();
 	$stm->close();
-
-	$stm = self::__get('DB')->prepare
-		('
-		DELETE FROM
-			tags
-		WHERE
-			boardid = ?'
-		);
-	$stm->bindInteger($board);
-	$stm->execute();
-	$stm->close();
 	}
 
 /** TODO: Summary erstellen; Änderungen optimieren (nur falls nötig) */
@@ -624,18 +613,6 @@ public static function updateThreadCounter($forum)
 	$stm->close();
 
  	self::__get('DB')->execute('UNLOCK TABLES');
-	}
-
-public static function buildPositionMenu($name, $values, $marked)
-	{
-	$menu = '<select name="'.$name.'">';
-
-	for ($i = 1; $i <= $values; $i++)
-		{
-		$menu .= '<option value="'.$i.'"'.($i == $marked ? ' selected="selected"' : '').'>'.$i.'</option>';
-		}
-
-	return $menu.'</select>';
 	}
 
 public static function getUserId($name)

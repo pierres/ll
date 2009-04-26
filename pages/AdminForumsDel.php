@@ -17,7 +17,8 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-class AdminForumsDel extends AdminForm{
+
+class AdminForumsDel extends AdminForm {
 
 private $forum = 0;
 private $cat = 0;
@@ -26,7 +27,7 @@ protected function setForm()
 	{
 	try
 		{
-		$this->forum = $this->Input->Request->getInt('forum');
+		$this->forum = $this->Input->Get->getInt('forum');
 		}
 	catch(RequestException $e)
 		{
@@ -62,30 +63,19 @@ protected function setForm()
 		$this->Output->redirect('AdminCats');
 		}
 
-	$this->setValue('title', 'Forum löschen');
+	$this->setTitle('Forum löschen');
 
-	$this->addHidden('forum', $this->forum);
-	$this->requires('forum');
+	$this->setParam('forum', $this->forum);
 
-	$this->addOutput('Hierdurch werden allen enthaltenen Beiträge unwiederruflich gelöscht!');
+// 	$this->addOutput('Hierdurch werden allen enthaltenen Beiträge unwiederruflich gelöscht!');
 
-	$this->addSubmit('Forum löschen');
-	}
-
-protected function checkForm()
-	{
+	$this->add(new SubmitButtonElement('Forum löschen'));
 	}
 
 protected function sendForm()
 	{
 	AdminFunctions::delForum($this->forum);
-	$this->redirect();
-	}
-
-
-protected function redirect()
-	{
-	$this->Output->redirect('AdminForums', 'cat='.$this->cat);
+	$this->Output->redirect('AdminForums', array('cat' => $this->cat));
 	}
 
 }

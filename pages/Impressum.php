@@ -23,7 +23,7 @@ class Impressum extends Page{
 
 public function prepare()
 	{
-	$this->setValue('title', 'Impressum');
+	$this->setTitle('Impressum');
 
 	$stm = $this->DB->prepare
 		('
@@ -53,7 +53,7 @@ public function prepare()
 				<td class="main">
 					<table style="margin:10px;padding:20px;width:80%;">
 						<tr>
-							<td colspan="2" style="padding-bottom:10px;padding-right:20px;font-weight:bold;"><a href="?page=ShowUser;id='.$this->Board->getId().';user='.$this->Board->getAdmin().'" class="link">'.$board['admin_name'].'</a></td>
+							<td colspan="2" style="padding-bottom:10px;padding-right:20px;font-weight:bold;"><a href="'.$this->Output->createUrl('ShowUser', array('user' => $this->Board->getAdmin())).'" class="link">'.$board['admin_name'].'</a></td>
 						</tr>
 						<tr>
 							<td style="padding-right:20px;vertical-align:top;font-weight:bold;">Adresse</td>
@@ -77,7 +77,7 @@ public function prepare()
 		</table>
 		';
 
-	$this->setValue('body', $body);
+	$this->setBody($body);
 	}
 }
 

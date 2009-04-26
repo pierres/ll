@@ -17,38 +17,40 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-class AdminHtml extends AdminForm{
+
+class AdminHtml extends AdminForm {
 
 
 protected function setForm()
 	{
-	$this->setValue('title', 'HTML-Vorlage');
+	$this->setTitle('HTML-Vorlage');
 
-	$this->addSubmit('Speichern');
+	$this->add(new SubmitButtonElement('Speichern'));
 
-	$this->addTextArea('html', 'HTML', $this->Board->getHtml());
-	$this->requires('html');
-	$this->setLength('html', 100, 50000);
+	$inputTextarea = new TextareaInputElement('html', $this->Board->getHtml(), 'HTML');
+	$inputTextarea->setMinLength(100);
+	$inputTextarea->setMaxLength(50000);
+	$this->add($inputTextarea);
 	}
 
 protected function checkForm()
 	{
-	if (!preg_match('<!-- body -->', $this->Input->Request->getString('html')))
+	if (!preg_match('<!-- body -->', $this->Input->Post->getString('html')))
 		{
 		$this->showWarning('Der body-Tag fehlt!');
 		}
 
-	if (!preg_match('<!-- title -->', $this->Input->Request->getString('html')))
+	if (!preg_match('<!-- title -->', $this->Input->Post->getString('html')))
 		{
 		$this->showWarning('Der title-Tag fehlt!');
 		}
 
-	if (!preg_match('<!-- menu -->', $this->Input->Request->getString('html')))
+	if (!preg_match('<!-- menu -->', $this->Input->Post->getString('html')))
 		{
 		$this->showWarning('Der menu-Tag fehlt!');
 		}
 
-	if (!preg_match('<!-- user -->', $this->Input->Request->getString('html')))
+	if (!preg_match('<!-- user -->', $this->Input->Post->getString('html')))
 		{
 		$this->showWarning('Der user-Tag fehlt!');
 		}
@@ -65,16 +67,11 @@ protected function sendForm()
 		WHERE
 			id = ?'
 		);
-	$stm->bindString($this->Input->Request->getString('html'));
+	$stm->bindString($this->Input->Post->getString('html'));
 	$stm->bindInteger($this->Board->getId());
 	$stm->execute();
 	$stm->close();
 
-	$this->redirect();
-	}
-
-protected function redirect()
-	{
 	$this->Output->redirect('AdminHtml');
 	}
 

@@ -17,7 +17,8 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-class AdminRenameUser extends AdminForm{
+
+class AdminRenameUser extends AdminForm {
 
 private $userid = 0;
 private $currentname = '';
@@ -25,27 +26,31 @@ private $newname = '';
 
 protected function setForm()
 	{
-	$this->setValue('title', 'Benutzer umbenennen');
-	$this->addSubmit('Abschicken');
+	$this->setTitle('Benutzer umbenennen');
+	$this->add(new SubmitButtonElement('Abschicken'));
 
 	if (!$this->User->isLevel(User::ROOT))
 		{
 		$this->showFailure('kein Zugriff!');
 		}
 
-	$this->addText('currentname', 'Aktueller Name', '', 25);	
-	$this->requires('currentname');
-	$this->setLength('currentname', 3, 25);
+	$currentnameInput = new TextInputElement('currentname', '', 'Aktueller Name');
+	$currentnameInput->setMinLength(3);
+	$currentnameInput->setMaxLength(25);
+	$currentnameInput->setSize(25);
+	$this->add($currentnameInput);
 
-	$this->addText('newname', 'Neuer Name', '', 25);
-	$this->requires('newname');
-	$this->setLength('newname', 3, 25);
+	$newnameInput = new TextInputElement('newname', '', 'Neuer Name');
+	$newnameInput->setMinLength(3);
+	$newnameInput->setMaxLength(25);
+	$newnameInput->setSize(25);
+	$this->add($newnameInput);
 	}
 
 protected function checkForm()
 	{
-	$this->currentname = $this->Input->Request->getString('currentname');
-	$this->newname = $this->Input->Request->getString('newname');
+	$this->currentname = $this->Input->Post->getString('currentname');
+	$this->newname = $this->Input->Post->getString('newname');
 
 	try
 		{
@@ -163,26 +168,7 @@ protected function sendForm()
 	$stm->execute();
 	$stm->close();
 
-
-	$body =
-		'
-		<table class="frame">
-			<tr>
-				<td class="title">
-					Umbenennung erfolgreich
-				</td>
-			</tr>
-			<tr>
-				<td class="main">
-					<strong>'.htmlspecialchars($this->currentname).'</strong> heißt jetzt
-					<strong>'.htmlspecialchars($this->newname).'</strong>, sonst ändert sich nichts!
-				</td>
-			</tr>
-		</table>
-		';
-
-	$this->setValue('title', 'Umbenennung erfolgreich');
-	$this->setValue('body', $body);
+	$this->Output->redirect('AdminSettings');
 	}
 
 }

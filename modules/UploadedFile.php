@@ -41,6 +41,11 @@ public function __construct($name)
 			{
 			throw new FileException('Dateien des Typs <strong>'.htmlspecialchars($this->file['type']).'</strong> dürfen nicht hochgeladen werden! Folgende Typen sind erlaubt:<ul><li>'.implode('</li><li>', $this->Settings->getValue('allowed_mime_types')).'</li></ul>');
 			}
+
+		if ($this->getFileSize() >= $this->Settings->getValue('file_size'))
+			{
+			throw new FileException('Datei ist zu groß!');
+			}
 		}
 	elseif (isset($_FILES[$name]) && !empty($_FILES[$name]['error']))// && !empty($_FILES[$name]['name']))
 		{
@@ -73,7 +78,10 @@ public function __construct($name)
 
 public function __destruct()
 	{
-	unlink($this->file['tmp_name']);
+	if (isset($this->file['tmp_name']) && file_exists($this->file['tmp_name']))
+		{
+		unlink($this->file['tmp_name']);
+		}
 	}
 
 public function getFileName()

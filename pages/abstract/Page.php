@@ -17,13 +17,14 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
+
 require ('modules/DB.php');
 require ('modules/User.php');
 require ('modules/Board.php');
 require ('modules/IOutput.php');
 require ('modules/ICache.php');
 
-abstract class Page extends Modul implements IOutput{
+abstract class Page extends Modul implements IOutput {
 
 protected $variables = array();
 
@@ -47,11 +48,8 @@ private static $availablePages = array
 	'AdminGlobalSettings' => 'pages/AdminGlobalSettings.php',
 	'AdminGlobalForumsMove' => 'pages/AdminGlobalForumsMove.php',
 	'AdminHtml' => 'pages/AdminHtml.php',
-	'AdminIndex' => 'pages/AdminIndex.php',
 	'AdminRenameUser' => 'pages/AdminRenameUser.php',
 	'AdminSettings' => 'pages/AdminSettings.php',
-	'AdminTags' => 'pages/AdminTags.php',
-	'AdminTagsDel' => 'pages/AdminTagsDel.php',
 	'ChangeEmail' => 'pages/ChangeEmail.php',
 	'ChangePassword' => 'pages/ChangePassword.php',
 	'ChangePasswordKey' => 'pages/ChangePasswordKey.php',
@@ -64,7 +62,6 @@ private static $availablePages = array
 	'EditPost' => 'pages/EditPost.php',
 	'EditPrivatePost' => 'pages/EditPrivatePost.php',
 	'EditPrivateThread' => 'pages/EditPrivateThread.php',
-	'EditTag' => 'pages/EditTag.php',
 	'EditThread' => 'pages/EditThread.php',
 	'ForgotPassword' => 'pages/ForgotPassword.php',
 	'Forums' => 'pages/Forums.php',
@@ -82,7 +79,6 @@ private static $availablePages = array
 	'InviteToPrivateThread' => 'pages/InviteToPrivateThread.php',
 	'Login' => 'pages/Login.php',
 	'Logout' => 'pages/Logout.php',
-	'Map' => 'pages/Map.php',
 	'MarkAllAsRead' => 'pages/MarkAllAsRead.php',
 	'MarkAsRead' => 'pages/MarkAsRead.php',
 	'MarkupTest' => 'pages/MarkupTest.php',
@@ -96,7 +92,7 @@ private static $availablePages = array
 	'NewPrivateThread' => 'pages/NewPrivateThread.php',
 	'NewThread' => 'pages/NewThread.php',
 	'NotFound' => 'pages/NotFound.php',
-	'Portal' => 'pages/Portal.php',
+	'Poll' => 'pages/Poll.php',
 	'Postings' => 'pages/Postings.php',
 	'Privacy' => 'pages/Privacy.php',
 	'PrivatePostings' => 'pages/PrivatePostings.php',
@@ -106,13 +102,11 @@ private static $availablePages = array
 	'Recent' => 'pages/Recent.php',
 	'Register' => 'pages/Register.php',
 	'Search' => 'pages/Search.php',
+	'SearchResults' => 'pages/SearchResults.php',
 	'ShowUser' => 'pages/ShowUser.php',
-	'SiteMap' => 'pages/SiteMap.php',
 	'SplitThread' => 'pages/SplitThread.php',
 	'StickThread' => 'pages/StickThread.php',
-	'SubmitPoll' => 'pages/SubmitPoll.php',
 	'Threads' => 'pages/Threads.php',
-	'UserList' => 'pages/UserList.php',
 	'UserRecent' => 'pages/UserRecent.php'
 	);
 
@@ -140,29 +134,38 @@ public function __construct()
 	$this->variables['meta.robots']	 = 'index,follow';
 	}
 
-protected function makeMenu()
+protected function getMenu()
 	{
-	$menu =	'<a href="?page=Forums;id='.$this->Board->getId().'"><span class="button" id="start">Übersicht</span></a> <a href="?page=Search;id='.$this->Board->getId().'"><span class="button" id="search">Suche</span></a> <a href="?page=Recent;id='.$this->Board->getId().'"><span class="button" id="recent">Aktuelles</span></a> <a href="?page=UserList;id='.$this->Board->getId().'"><span class="button" id="userlist">Benutzerliste</span></a>';
+	$menu =	'<div id="brd-navlinks"><ul>';
+	
+	$menu .= '
+		<li id="navindex"><a href="'.$this->Output->createUrl('Forums').'"><span>Index</span></a></li>
+
+		<li id="navsearch"><a href="'.$this->Output->createUrl('Search').'"><span>Search</span></a></li>';
+
 
 	if ($this->User->isOnline())
 		{
 		$menu .=
-			' <a href="?page=MyProfile;id='.$this->Board->getId().'"><span class="button" id="myprofile">Mein Profil</span></a> <a href="?page=Logout;id='.$this->Board->getId().'"><span class="button" id="logout">Abmelden</span></a>';
+			'<li id="navprofile"><a href="'.$this->Output->createUrl('MyProfile').'"><span>My profile</span></a></li>';
 
 		if ($this->User->isAdmin())
 			{
 			$menu .=
-			' <a href="?page=AdminIndex;id='.$this->Board->getId().'"><span class="button" id="admin">Administration</span></a>';
+			'<li id="navadmin"><a href="'.$this->Output->createUrl('AdminSettings').'"><span>Administration</span></a></li>';
 			}
 
+		$menu .= '<li id="navlogout"><a href="'.$this->Output->createUrl('Logout').'"><span>Logout</span></a></li>';
 		}
 	else
 		{
 		$menu .=
-			' <a href="?page=Register;id='.$this->Board->getId().'"><span class="button" id="register">Registrieren</span></a> <a href="?page=Login;id='.$this->Board->getId().'"><span class="button" id="login">Anmelden</span></a>';
+			'<li id="navregister"><a href="'.$this->Output->createUrl('Register').'"><span>Register</span></a></li>
+
+			<li id="navlogin"><a href="'.$this->Output->createUrl('Login').'"><span>Login</span></a></li>';
 		}
 
-	return $menu;
+	return $menu.'</ul></div>';
 	}
 
 public function setValue($key, $value)
@@ -175,62 +178,122 @@ public function getValue($key)
 	return $this->variables[$key];
 	}
 
+public function setTitle($value)
+	{
+	$this->setValue('title', $value);
+	}
+
+public function getTitle()
+	{
+	return $this->getValue('title');
+	}
+
+public function setBody($value)
+	{
+	$this->setValue('body', $value);
+	}
+
 protected function showWarning($text)
 	{
 	$this->setValue('meta.robots', 'noindex,nofollow');
-	$this->setValue('title', 'Warnung');
-	$this->setValue('body', '<div class="warning">'.$text.'</div>');
+	$this->setTitle('Warnung');
+	$this->setBody('<div class="warn">'.$text.'</div>');
 	$this->sendOutput();
 	}
 
 protected function showFailure($text)
 	{
 	$this->setValue('meta.robots', 'noindex,nofollow');
-	$this->setValue('title', 'Fehler');
-	$this->setValue('body', '<div class="warning">'.$text.'</div>');
+	$this->setTitle('Fehler');
+	$this->setBody('<div class="warn">'.$text.'</div>');
 	$this->sendOutput();
 	}
 
 public function prepare()
 	{
-	$this->setValue('title', 'Warnung');
-	$this->setValue('body', 'kein Text');
+	$this->setTitle('Warnung');
+	$this->setBody('kein Text');
+	}
+
+private function getHead()
+	{
+	return '<meta name="robots" content="'.$this->getValue('meta.robots').'" />
+		<title>'.$this->getTitle().'</title>
+		<!-- <link rel="stylesheet" media="screen" href="'.$this->Output->createUrl('GetCss').'" /> -->
+		<link rel="stylesheet" media="screen" href="oxygen.css" />
+		<link rel="alternate" type="application/atom+xml" title="Aktuelle Themen im Forum" href="'.$this->Output->createUrl('GetRecent').'" />
+		<link rel="search" type="application/opensearchdescription+xml" href="'.$this->Output->createUrl('GetOpenSearch').'" title="'.$this->Board->getName().'" />';
+	}
+
+private function getVisit()
+	{
+	$menu = '<div id="brd-visit">
+			<ul>
+				<li id="vs-searchnew"><a href="'.$this->Output->createUrl('Recent').'" title="Lists topics that have new posts since your last visit">New posts</a></li>';
+	
+	if ($this->User->isOnline())
+		{
+		$menu .= '
+			<li id="vs-markread"><a href="'.$this->Output->createUrl('MarkAllAsRead').'">Mark all topics as read</a></li>
+			</ul><p>
+				<span id="vs-logged">Logged in as <strong>'.$this->User->getName().'</strong>.</span>
+				<span id="vs-message">Last visit: <strong>'.$this->L10n->getDateTime($this->User->getLastUpdate()).'</strong></span>
+			</p>';
+		}
+	else
+		{
+		$menu .= '</ul><p></p>';
+		}
+	
+	return $menu.'</div>';
 	}
 
 private function sendOutput()
 	{
-	$file = $this->Board->getHtml();
+// 	$file = $this->Board->getHtml();
+	$file = file_get_contents('oxygen.html');
 
+	$this->variables['content-type'] = $this->Output->getContentType();
 	$this->variables['id'] = $this->Board->getId();
 	$this->variables['name'] = $this->Board->getName();
-	$this->variables['menu'] = $this->makeMenu();
+	$this->variables['description'] = $this->Board->getDescription();
+	$this->variables['menu'] = $this->getMenu();
+	$this->variables['head'] = $this->getHead();
+	$this->variables['page'] = $this->getName();
+	$this->variables['visit'] = $this->getVisit();
 
-	if ($this->User->isOnline())
-		{
-		$this->variables['user'] = $this->User->getName();
-		}
+// 	if ($this->User->isOnline())
+// 		{
+// 		$this->variables['user'] = $this->User->getName();
+// 		}
 
-	$this->setValue('body', $this->getValue('body').
-		'
-		<div style="text-align:right;font-size:10px;margin-top:5px;">
-			<a href="?page=Privacy;id='.$this->Board->getId().'">Datenschutz</a> ::
-			<a href="?page=Impressum;id='.$this->Board->getId().'">Impressum</a>
-		</div>
-		<div style="text-align:right;font-size:10px;margin-top:30px;">
-			Powered by <a href="http://www.laber-land.de">LL 3.2</a><br />
-			&copy; Copyright 2002&ndash;2008 Pierre Schmitz
-		</div>
-		');
+// 	$this->setBody($this->getValue('body').
+// 		'
+// 		<div style="text-align:right;font-size:10px;margin-top:5px;">
+// 			<a href="'.$this->Output->createUrl('Privacy').'">Datenschutz</a> ::
+// 			<a href="'.$this->Output->createUrl('Impressum').'">Impressum</a>
+// 		</div>
+// 		<div style="text-align:right;font-size:10px;margin-top:30px;">
+// 			Powered by <a href="http://www.laber-land.de">LL 4.0</a><br />
+// 			&copy; Copyright 2002&ndash;2009 Pierre Schmitz
+// 		</div>
+// 		');
 
-	if ($this->Settings->getValue('debug') && function_exists('xdebug_time_index'))
-		{
-		$this->setValue('body', $this->getValue('body').
-			'<div style="text-align:left;font-size:10px;font-family:monospace;margin-top:3px;">
-			Ausführungszeit:&nbsp;&nbsp;&nbsp;'.xdebug_time_index().' s<br />
-			Speicherverbrauch:&nbsp;'.(xdebug_peak_memory_usage()/1024).' KByte
-			</div>'
-			);
-		}
+	$this->setValue('about',
+	'<div id="brd-about">
+		<p id="copyright">Powered by <strong><a href="http://www.laber-land.de/">LL 4.0</a></strong></p>
+	</div>');
+
+
+// 	if ($this->Settings->getValue('debug') && function_exists('xdebug_time_index'))
+// 		{
+// 		$this->setValue('debug',
+// 			'<div style="text-align:left;font-size:10px;font-family:monospace;margin-top:3px;">
+// 			Ausführungszeit:&nbsp;&nbsp;&nbsp;'.xdebug_time_index().' s<br />
+// 			Speicherverbrauch:&nbsp;'.(xdebug_peak_memory_usage()/1024).' KByte
+// 			</div>'
+// 			);
+// 		}
 
 	foreach ($this->variables as $key => $value)
 		{

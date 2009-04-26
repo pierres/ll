@@ -17,7 +17,8 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-abstract class AdminForm extends Form{
+
+abstract class AdminForm extends Form {
 
 
 public function __construct()
@@ -25,14 +26,15 @@ public function __construct()
 	AdminPage::__construct();
 	}
 
-protected function makeMenu()
+protected function getMenu()
 	{
-	$menu =	'<a href="?page=Forums;id='.$this->Board->getId().'"><span class="button" id="start">Übersicht</span></a>
-	<a href="?page=AdminSettings;id='.$this->Board->getId().'"><span class="button" id="settings">Einstellungen</span></a>'.($this->User->isLevel(User::ROOT) ? ' <a href="?page=AdminGlobalSettings;id='.$this->Board->getId().'"><span class="button">Globale Einstellungen</span></a>' : '').'
-	<a href="?page=AdminCats;id='.$this->Board->getId().'"><span class="button">Kategorien &amp; Foren</span></a>
-	<a href="?page=AdminDesign;id='.$this->Board->getId().'"><span class="button">Layout &amp; Design</span></a>
-	<a href="?page=AdminTags;id='.$this->Board->getId().'"><span class="button">Tags</span></a>
-	<a href="?page=Logout;id='.$this->Board->getId().'"><span class="button" id="logout">Abmelden</span></a>';
+	$menu =	'<div id="brd-navlinks"><ul>
+	<li id="navindex"><a href="'.$this->Output->createUrl('Forums').'"><span>Übersicht</span></a></li>
+	<li><a href="'.$this->Output->createUrl('AdminSettings').'"><span>Einstellungen</span></a>'.($this->User->isLevel(User::ROOT) ? ' <a href="'.$this->Output->createUrl('AdminGlobalSettings').'"><span>Globale Einstellungen</span></a>' : '').'</li>
+	<li><a href="'.$this->Output->createUrl('AdminCats').'"><span>Kategorien &amp; Foren</span></a></li>
+	<li><a href="'.$this->Output->createUrl('AdminDesign').'"><span>Layout &amp; Design</span></a></li>
+	<li><a href="'.$this->Output->createUrl('Logout').'"><span id="logout">Abmelden</span></a></li>
+	</ul></div>';
 
 	return $menu;
 	}

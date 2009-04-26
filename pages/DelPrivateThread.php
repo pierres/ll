@@ -17,7 +17,8 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-class DelPrivateThread extends Form{
+
+class DelPrivateThread extends Form {
 
 protected $thread		= 0;
 private $deleted 		= false;
@@ -26,7 +27,7 @@ protected function setForm()
 	{
 	try
 		{
-		$this->thread = $this->Input->Request->getInt('thread');
+		$this->thread = $this->Input->Get->getInt('thread');
 		}
 	catch (RequestException $e)
 		{
@@ -62,14 +63,12 @@ protected function setForm()
 		$this->showFailure('Privates Thema nicht gefunden!');
 		}
 
-	$this->setValue('title', 'Privates Thema '.($this->deleted ? 'wiederherstellen' : 'löschen'));
+	$this->setTitle('Privates Thema '.($this->deleted ? 'wiederherstellen' : 'löschen'));
 
-	$this->addHidden('thread', $this->thread);
-	$this->requires('thread');
+	$this->setParam('thread', $this->thread);
 
-	$this->addOutput('Soll das Private Thema wirklich '.($this->deleted ? 'wiederhergestellt' : 'gelöscht').' werden?');
-
-	$this->addSubmit('Privates Thema '.($this->deleted ? 'wiederherstellen' : 'löschen'));
+	$this->add(new CheckboxInputElement('confirm', 'Bestätigung'));
+	$this->add(new SubmitButtonElement($this->getTitle()));
 	}
 
 protected function checkForm()
@@ -96,7 +95,7 @@ protected function sendForm()
 
 protected function redirect()
 	{
-	$this->Output->redirect('PrivatePostings', 'thread='.$this->thread);
+	$this->Output->redirect('PrivatePostings', array('thread' => $this->thread));
 	}
 
 }

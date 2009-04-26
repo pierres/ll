@@ -17,12 +17,13 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-class Privacy extends Page{
+
+class Privacy extends Page {
 
 
 public function prepare()
 	{
-	$this->setValue('title', 'Datenschutzerklärung');
+	$this->setTitle('Datenschutzerklärung');
 
 	$body = '
 		<table class="frame">
@@ -47,7 +48,7 @@ public function prepare()
 						</ul>
 						Diese Daten werden für statistische Zwecke oder zur Erkennung von Angriffen verwendet. Diese Daten werden eine Woche lang archiviert. Hier ein beispielhafter Log-Eintrag:
 						<div style="margin:5px;margin-left:30px;color:black;background-color:white;border:1px black solid;padding:2px;font-family:monospace;width:600px">127.0.0.1 - - [31/Jan/2007:09:49:14 +0100] "GET /images/bg.png<br />
-						HTTP/1.1" 200 154 "'.$this->Input->getURL().'/?page=Privacy;id=20" "Mozilla/5.0<br />
+						HTTP/1.1" 200 154 "'.$this->Input->getURL().'" "Mozilla/5.0<br />
 						(compatible; Konqueror/3.5) KHTML/3.5.6 (like Gecko)"</div>
 						</p>
 						</li>
@@ -57,7 +58,7 @@ public function prepare()
 						</li>
 						<li>
 						<strong>Beendigung der Mitgliedschaft</strong>
-						<p>Jeder registrierte Nutzer kann seine Mitgliedschaft jederzeit über sein Profil beenden. Hierbei werden alle im Profil befindlichen Daten gelöscht. Alle vom Nutzer verfassten Beiträge im Forum bleiben jedoch bestehen. Der Benutzername selbst wird weiterhin als Verfasser der Beiträge angezeigt. Auf besonderne Wunsch hin kann der Benutzername allerdings geändert werden. Diese Anfrage sollte jedoch unbedingt vor dem Löschen des Benutzerkontos erfolgen. (Kontakt-Adresse: siehe <a class="link" href="?page=Impressum;id='.$this->Board->getId().'">Impressum</a>)</p>
+						<p>Jeder registrierte Nutzer kann seine Mitgliedschaft jederzeit über sein Profil beenden. Hierbei werden alle im Profil befindlichen Daten gelöscht. Alle vom Nutzer verfassten Beiträge im Forum bleiben jedoch bestehen. Der Benutzername selbst wird weiterhin als Verfasser der Beiträge angezeigt. Auf besonderne Wunsch hin kann der Benutzername allerdings geändert werden. Diese Anfrage sollte jedoch unbedingt vor dem Löschen des Benutzerkontos erfolgen. (Kontakt-Adresse: siehe <a class="link" href="'.$this->Output->createUrl('Impressum').'">Impressum</a>)</p>
 						</li>
 						<li>
 						<strong>Cookies</strong>
@@ -73,7 +74,7 @@ public function prepare()
 		</table>
 		';
 
-	$this->setValue('body', $body);
+	$this->setBody($body);
 	}
 }
 

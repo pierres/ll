@@ -26,7 +26,7 @@ protected function getParams()
 	{
 	try
 		{
-		$this->file = $this->Input->Request->getInt('file');
+		$this->file = $this->Input->Get->getInt('file');
 		}
 	catch (RequestException $e)
 		{
@@ -101,8 +101,7 @@ public function show()
 			SELECT
 				name,
 				type,
-				content,
-				size
+				content
 			FROM
 				attachments
 			WHERE
@@ -121,11 +120,11 @@ public function show()
 
 	if (strpos($data['type'], 'image/') === 0)
 		{
- 		$this->sendInlineFile($data['type'], $data['name'], $data['size'], $data['content']);
+ 		$this->sendInlineFile($data['type'], $data['name'], $data['content']);
 		}
 	else
 		{
-		$this->sendFile($data['type'], $data['name'], $data['size'], $data['content']);
+		$this->sendFile($data['type'], $data['name'], $data['content']);
 		}
 	}
 

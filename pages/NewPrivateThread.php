@@ -17,9 +17,10 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
+
 require('NewPrivatePost.php');
 
-class NewPrivateThread extends NewPrivatePost{
+class NewPrivateThread extends NewPrivatePost {
 
 protected $topic 		= '';
 protected $recipients 		= '';
@@ -34,65 +35,46 @@ protected function setForm()
 	{
 	$this->checkInput();	// doing this here to ensure we initialize the topic if it allready exists
 
-	try
-		{
-		$this->topic = $this->Input->Request->getString('topic');
-		}
-	catch (RequestException $e)
-		{
-		}
-	$this->addText('topic', 'Thema', $this->topic);
-
 	$this->addRecipients();
+
+	$this->topic = $this->Input->Post->getString('topic', '');
+	$topicInput = new TextInputElement('topic', $this->topic, 'Thema');
+	$this->add($topicInput);
+
 	parent::setForm();
 
-	try
-		{
-		$this->topic = $this->Input->Request->getString('topic');
-		}
-	catch (RequestException $e)
-		{
-		}
-	$this->requires('topic');
-	$this->setLength('topic', 3, 100);
+	$this->topic = $this->Input->Post->getString('topic', '');
+
+	$topicInput->setMinLength(3);
+	$topicInput->setMaxLength(100);
 
 	$this->setPoll();
 	}
 
 protected function addRecipients()
 	{
-	try
-		{
-		$this->recipients = $this->Input->Request->getString('recipients');
-		}
-	catch (RequestException $e)
-		{
-		}
-	$this->addText('recipients', 'Empfänger');
-	$this->requires('recipients');
+	$this->recipients = $this->Input->Post->getString('recipients', $this->Input->Get->getString('recipients', ''));
+	$this->add(new TextInputElement('recipients', $this->recipients, 'Empfänger'));
 	}
 
 protected function setPoll()
 	{
-	if (($this->Input->Request->isValid('poll')) && !$this->Input->Request->isValid('nopoll'))
+	if (($this->Input->Post->isString('poll')) && !$this->Input->Post->isString('nopoll'))
 		{
-		$this->addButton('nopoll', 'keine Umfrage');
+		$this->add(new ButtonElement('nopoll', 'keine Umfrage'));
+
+		$this->poll_question = $this->Input->Post->getString('poll_question', '');
+
+		$this->add(new DividerElement());
+
+		$questionInput = new TextInputElement('poll_question', $this->poll_question, 'Frage');
+		$questionInput->setMinLength(3);
+		$questionInput->setMaxLength(200);
+		$this->add($questionInput);
 
 		try
 			{
-			$this->poll_question = $this->Input->Request->getString('poll_question');
-			}
-		catch (RequestException $e)
-			{
-			}
-
-		$this->addText('poll_question', 'Frage', $this->poll_question);
-		$this->requires('poll_question');
-		$this->setLength('poll_question', 3, 200);
-
-		try
-			{
-			$this->poll_options = $this->Input->Request->getString('poll_options');
+			$this->poll_options = $this->Input->Post->getString('poll_options');
 			$poll_options = explode("\n", $this->poll_options);
 			$i = 1;
 			foreach($poll_options as $poll_option)
@@ -123,13 +105,15 @@ protected function setPoll()
 			{
 			}
 
-		$this->addTextarea('poll_options', 'Antworten', $this->poll_options, 80, 5);
-		$this->addHidden('poll', 1);
-
+		$pollInput = new TextareaInputElement('poll_options', $this->poll_options, 'Antworten');
+		$pollInput->setRows(5);
+		$pollInput->setHelp('Pro Zeile eine Option');
+		$this->add($pollInput);
+		$this->add(new HiddenElement('poll', 1));
 		}
 	else
 		{
-		$this->addButton('poll', 'Umfrage');
+		$this->add(new ButtonElement('poll', 'Umfrage'));
 		}
 	}
 
@@ -174,7 +158,7 @@ protected function checkRecipients()
 
 protected function sendPoll()
 	{
-	if ($this->Input->Request->isValid('poll'))
+	if ($this->Input->Post->isString('poll'))
 		{
 		$poll_options = explode("\n",$this->poll_options);
 		$stm = $this->DB->prepare
@@ -281,11 +265,11 @@ protected function updateThread($userid, $username)
 		WHERE
 			id = ?'
 		);
-	$stm->bindInteger($this->time);
+	$stm->bindInteger($this->Input->getTime());
 	$stm->bindInteger($userid);
 	$stm->bindString($username);
 
-	$stm->bindInteger($this->time);
+	$stm->bindInteger($this->Input->getTime());
 	$stm->bindInteger($userid);
 	$stm->bindString($username);
 
@@ -308,7 +292,7 @@ protected function updateBoard()
 		WHERE
 			id = ?'
 		);
-	$stm->bindInteger($this->time);
+	$stm->bindInteger($this->Input->getTime());
 	$stm->bindInteger($this->Board->getId());
 	$stm->execute();
 	$stm->close();

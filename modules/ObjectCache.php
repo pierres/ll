@@ -48,6 +48,11 @@ public function getObject($key)
 	return $this->cache->getObject($key);
 	}
 
+public function isObject($key)
+	{
+	return $this->cache->isObject($key);
+	}
+
 }
 
 class NOOPObjectCache implements ICache{
@@ -58,6 +63,11 @@ public function addObject($key, $object, $ttl = 0)
 	}
 
 public function getObject($key)
+	{
+	return false;
+	}
+
+public function isObject($key)
 	{
 	return false;
 	}
@@ -74,6 +84,12 @@ public function getObject($key)
 	{
 	return apc_fetch($key);
 	}
+
+public function isObject($key)
+	{
+	apc_fetch($key, $success);
+	return $success;
+	}
 }
 
 class XCacheObjectCache implements ICache{
@@ -86,6 +102,11 @@ public function addObject($key, $object, $ttl = 0)
 public function getObject($key)
 	{
 	return xcache_get($key);
+	}
+
+public function isObject($key)
+	{
+	return xcache_isset($key);
 	}
 }
 

@@ -17,15 +17,19 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-class Board extends Modul{
+
+class Board extends Modul {
 
 private $id 		= 1;
 private $name 		= '';
+private $description	= '';
 private $host 		= '';
 private $html 		= '';
 private $mods		= 0;
 private $admin 		= 0;
 private $admins 	= 0;
+private $posts 		= 0;
+private $threads 	= 0;
 
 
 public function __construct()
@@ -38,7 +42,7 @@ public function __construct()
 		{
 		try
 			{
-			$this->id = $this->Input->Request->getInt('id');
+			$this->id = $this->Input->Get->getInt('id');
 			$board = $this->getBoard($this->id);
 			}
 		catch (Exception $e)
@@ -54,13 +58,16 @@ public function __construct()
 			}
 		}
 
-	$this->name 	= $board['name'];
-	$this->id	= $board['id'];
-	$this->admin 	= $board['admin'];
-	$this->admins 	= $board['admins'];
-	$this->mods 	= $board['mods'];
-	$this->host 	= $board['host'];
-	$this->html 	= $board['html'];
+	$this->name 		= $board['name'];
+	$this->description 	= $board['description'];
+	$this->id		= $board['id'];
+	$this->admin 		= $board['admin'];
+	$this->admins 		= $board['admins'];
+	$this->mods 		= $board['mods'];
+	$this->host 		= $board['host'];
+	$this->html 		= $board['html'];
+	$this->posts 		= $board['posts'];
+	$this->threads	 	= $board['threads'];
 	}
 
 private function getBoard($id)
@@ -70,11 +77,14 @@ private function getBoard($id)
 		SELECT
 			id,
 			name,
+			description,
 			admin,
 			admins,
 			mods,
 			host,
-			html
+			html,
+			posts,
+			threads
 		FROM
 			boards
 		WHERE
@@ -94,11 +104,14 @@ private function getBoardByHost()
 		SELECT
 			id,
 			name,
+			description,
 			admin,
 			admins,
 			mods,
 			host,
-			html
+			html,
+			posts,
+			threads
 		FROM
 			boards
 		WHERE
@@ -119,6 +132,11 @@ public function getId()
 public function getName()
 	{
 	return $this->name;
+	}
+
+public function getDescription()
+	{
+	return $this->description;
 	}
 
 public function getAdmin()
@@ -144,6 +162,16 @@ public function getHost()
 public function getHtml()
 	{
 	return $this->html;
+	}
+
+public function getPosts()
+	{
+	return $this->posts;
+	}
+
+public function getThreads()
+	{
+	return $this->threads;
 	}
 
 }

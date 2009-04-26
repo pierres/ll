@@ -43,31 +43,28 @@ function unhtmlspecialchars($string)
 	return htmlspecialchars_decode($string, ENT_COMPAT);
 	}
 
-if (!function_exists('is_unicode'))
+// see http://w3.org/International/questions/qa-forms-utf-8.html
+function is_unicode($input)
 	{
-	// see http://w3.org/International/questions/qa-forms-utf-8.html
-	function is_unicode($input)
+	# long values will make pcre segfaulting...
+	foreach (str_split($input, 1000) as $value)
 		{
-		# long values will make pcre segfaulting...
-		foreach (str_split($input, 1000) as $value)
+		if (!preg_match('%^(?:
+			[\x09\x0A\x0D\x20-\x7E]			# ASCII
+			| [\xC2-\xDF][\x80-\xBF]		# non-overlong 2-byte
+			|  \xE0[\xA0-\xBF][\x80-\xBF]		# excluding overlongs
+			| [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}	# straight 3-byte
+			|  \xED[\x80-\x9F][\x80-\xBF]		# excluding surrogates
+			|  \xF0[\x90-\xBF][\x80-\xBF]{2}	# planes 1-3
+			| [\xF1-\xF3][\x80-\xBF]{3}		# planes 4-15
+			|  \xF4[\x80-\x8F][\x80-\xBF]{2}	# plane 16
+			)*$%xs', $value))
 			{
-			if (!preg_match('%^(?:
-				[\x09\x0A\x0D\x20-\x7E]			# ASCII
-				| [\xC2-\xDF][\x80-\xBF]		# non-overlong 2-byte
-				|  \xE0[\xA0-\xBF][\x80-\xBF]		# excluding overlongs
-				| [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}	# straight 3-byte
-				|  \xED[\x80-\x9F][\x80-\xBF]		# excluding surrogates
-				|  \xF0[\x90-\xBF][\x80-\xBF]{2}	# planes 1-3
-				| [\xF1-\xF3][\x80-\xBF]{3}		# planes 4-15
-				|  \xF4[\x80-\x8F][\x80-\xBF]{2}	# plane 16
-				)*$%xs', $value))
-				{
-				return false;
-				}
+			return false;
 			}
-
-		return true;
 		}
+
+	return true;
 	}
 
 function cutString($string, $length)
@@ -144,12 +141,21 @@ function resizeImage($image, $type, $size)
 
 	ob_start();
 
-	switch ($type)
+	if (strpos($type, 'image/jpeg') === 0)
 		{
-		case 'image/jpeg' 	: imagejpeg($img, '', 80); 	break;
-		case 'image/png' 	: imagepng($img); 		break;
-		case 'image/gif' 	: imagegif($img); 		break;
-		default 		: throw new Exception('unknown image-type');
+		imagejpeg($img, '', 80);
+		}
+	elseif (strpos($type, 'image/png') === 0)
+		{
+		imagepng($img);
+		}
+	elseif (strpos($type, 'image/gif') === 0)
+		{
+		imagegif($img);
+		}
+	else
+		{
+		throw new Exception('unknown image-type');
 		}
 
 	$thumb = ob_get_contents();

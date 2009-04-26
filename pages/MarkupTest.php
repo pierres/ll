@@ -17,50 +17,43 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-class MarkupTest extends Form{
+
+class MarkupTest extends Form {
 
 protected $text 	= '';
-protected $smilies 	= true;
 protected $title 	= 'Markup-Test';
 
 
 protected function setForm()
 	{
-	$this->setValue('title', $this->title);
+	$this->setTitle($this->title);
 
-	$this->addSubmit('Abschicken');
+	$this->add(new SubmitButtonElement('Abschicken'));
 
-	if (!$this->Input->Request->isEmpty('text'))
+	if (!$this->Input->Post->isEmptyString('text'))
 		{
-		$this->text = $this->Input->Request->getString('text');
-		$this->Markup->enableSmilies($this->Input->Request->isValid('smilies'));
-
+		$this->text = $this->Input->Post->getString('text');
 		$html = $this->Markup->toHtml($this->text);
 
-		$this->addElement('previewwindow',
-		'<div class="preview">'.$html.'</div>');
+		$this->add(new LabeledElement('previewwindow',
+		'<div class="preview">'.$html.'</div>'));
 
-		$this->addElement('html',
-		'<pre class="preview">'.htmlspecialchars($html).'</pre>');
+		$this->add(new LabeledElement('html',
+		'<pre class="preview">'.htmlspecialchars($html).'</pre>'));
 
-		$this->addElement('summary',
-		'<pre class="preview">'.getTextFromHtml($html).'</pre>');
+		$this->add(new LabeledElement('summary',
+		'<pre class="preview">'.getTextFromHtml($html).'</pre>'));
 
-		$this->addElement('unmarkup',
-		'<pre class="preview">'.htmlspecialchars($this->text = $this->UnMarkup->fromHtml($html)).'</pre>');
+		$this->add(new LabeledElement('unmarkup',
+		'<pre class="preview">'.htmlspecialchars($this->text = $this->UnMarkup->fromHtml($html)).'</pre>'));
 		}
 
-	$this->addTextarea('text', 'Deine Nachricht', $this->text);
-	$this->requires('text');
-	$this->setLength('text', 3, 65536);
-
-	$this->addCheckbox('smilies', 'grafische Smilies', $this->smilies);
+	$this->add(new TextareaInputElement('text', $this->text, 'Deine Nachricht'));
 	}
 
 protected function checkForm()
 	{
-	$this->smilies = $this->Input->Request->isValid('smilies');
- 	$this->text = $this->Input->Request->getString('text');
+ 	$this->text = $this->Input->Post->getString('text');
 	}
 
 protected function sendForm()

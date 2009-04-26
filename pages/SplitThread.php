@@ -17,7 +17,8 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-class SplitThread extends Form{
+
+class SplitThread extends Form {
 
 private $post 		= 0;
 private $oldthread 	= 0;
@@ -29,11 +30,11 @@ protected $title 	= 'Beiträge abzweigen';
 
 protected function setForm()
 	{
-	$this->setValue('title', $this->title);
+	$this->setTitle($this->title);
 
 	try
 		{
-		$this->post = $this->Input->Request->getInt('post');
+		$this->post = $this->Input->Get->getInt('post');
 		}
 	catch (RequestException $e)
 		{
@@ -44,19 +45,20 @@ protected function setForm()
 
 	try
 		{
-		$this->newtopic = $this->Input->Request->getString('newtopic');
+		$this->newtopic = $this->Input->Post->getString('newtopic');
 		}
 	catch (RequestException $e)
 		{
 		}
 
-	$this->addSubmit('Thema erstellen');
+	$this->add(new SubmitButtonElement('Thema erstellen'));
 
-	$this->addText('newtopic', 'Neues Thema', $this->newtopic);
-	$this->requires('newtopic');
-	$this->setLength('newtopic', 3, 100);
+	$textInput = new TextInputElement('newtopic', $this->newtopic, 'Neues Thema');
+	$textInput->setMinLength(3);
+	$textInput->setMaxLength(100);
+	$this->add($textInput);
 
-	$this->addHidden('post', $this->post);
+	$this->setParam('post', $this->post);
 	}
 
 protected function checkForm()
@@ -193,7 +195,7 @@ protected function sendThreadSummary()
 
 protected function redirect()
 	{
-	$this->Output->redirect('Threads', 'forum='.$this->forum);
+	$this->Output->redirect('Threads', array('forum' => $this->forum));
 	}
 
 }

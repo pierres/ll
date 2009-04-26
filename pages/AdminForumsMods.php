@@ -17,8 +17,8 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-class AdminForumsMods extends AdminForm{
 
+class AdminForumsMods extends AdminForm {
 
 
 private $forum = 0;
@@ -27,13 +27,13 @@ private $group;
 
 protected function setForm()
 	{
-	$this->setValue('title', 'Moderatoren');
+	$this->setTitle('Moderatoren');
 
-	$this->addSubmit('Speichern');
+	$this->add(new SubmitButtonElement('Speichern'));
 
 	try
 		{
-		$this->forum = $this->Input->Request->getInt('forum');
+		$this->forum = $this->Input->Get->getInt('forum');
 
 		$stm = $this->DB->prepare
 			('
@@ -56,7 +56,7 @@ protected function setForm()
 		$this->Output->redirect('AdminCats');
 		}
 
-	$this->addHidden('forum', $this->forum);
+	$this->setParam('forum', $this->forum);
 
 	$mods = array();
 	try
@@ -85,14 +85,14 @@ protected function setForm()
 		$stm->close();
 		}
 
-	$this->addTextArea('mods', 'Moderatoren', implode("\n", $mods), 80, 5);
+	$this->add(new TextareaInputElement('mods', implode("\n", $mods), 'Moderatoren'));
 	}
 
 protected function checkForm()
 	{
-	if(!$this->Input->Request->isEmpty('mods'))
+	if(!$this->Input->Post->isEmptyString('mods'))
 		{
-		$mods = array_map('trim', explode("\n", $this->Input->Request->getString('mods')));
+		$mods = array_map('trim', explode("\n", $this->Input->Post->getString('mods')));
 
 		foreach ($mods as $mod)
 			{
@@ -117,7 +117,7 @@ protected function sendForm()
 
 protected function redirect()
 	{
-	$this->Output->redirect('AdminForumsMods', 'forum='.$this->forum);
+	$this->Output->redirect('AdminForumsMods', array('forum' => $this->forum));
 	}
 
 private function updateMods()

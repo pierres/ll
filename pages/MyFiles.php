@@ -17,9 +17,10 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-class MyFiles extends Form{
 
-private $file = array();
+class MyFiles extends Form {
+
+private $file = null;
 
 protected function setForm()
 	{
@@ -28,7 +29,7 @@ protected function setForm()
 		$this->showFailure('Nur für Mitglieder!');
 		}
 
-	$this->setValue('title', 'Meine Dateien');
+	$this->setTitle('Meine Dateien');
 
 	try
 		{
@@ -55,58 +56,24 @@ protected function setForm()
 		$files = array();
 		}
 
-	$this->addOutput('<script type="text/javascript">
-			/* <![CDATA[ */
-			function writeElement(text)
-				{
-				var div = document.createElementNS("http://www.w3.org/1999/xhtml","div");
-				div.innerHTML = text;
-				var pos;
-				pos = document;
-				while(pos.lastChild && pos.lastChild.nodeType==1)
-					pos = pos.lastChild;
-				var nodes = div.childNodes;
-				while(nodes.length)
-					pos.parentNode.appendChild(nodes[0]);
-				}
-			/* ]]> */
-		</script>');
-
 	$list =
-		'<table style="margin:10px;width:600px;">
+		'<table>
 		<tr>
-		<td style="padding-bottom:5px;"><strong>Datei</strong></td>
-		<td style="text-align:right;padding-bottom:5px;"><strong>Größe</strong>&nbsp;(KByte)</td>
-		<td style="text-align:right;padding-bottom:5px;"><strong>Datum</strong></td>
-		<td></td>
+		<th>Datei</th>
+		<th style="width:120px;">Größe&nbsp;(KByte)</th>
+		<th style="width:200px;">Typ</th>
+		<th>Datum</th>
+		<th style="width:80px;"></th>
 		</tr>';
 
 	foreach ($files as $file)
 		{
-		if (strpos($file['type'], 'image/jpeg') === 0 ||
-			strpos($file['type'], 'image/pjpeg') === 0 ||
-			strpos($file['type'], 'image/png') === 0 ||
-			strpos($file['type'], 'image/gif') === 0)
-			{
-			$hover = '  onmouseover="javascript:document.getElementById(\'thumb'.$file['id'].'\').style.visibility=\'visible\'"
-			onmouseout="javascript:document.getElementById(\'thumb'.$file['id'].'\').style.visibility=\'hidden\'" ';
-			$preview = '<script type="text/javascript">
-						/* <![CDATA[ */
-						writeElement("<img style=\"visibility:hidden;width:auto;height:auto;position:absolute;z-index:10;\" id=\"thumb'.$file['id'].'\" src=\"?page=GetAttachmentThumb;file='.$file['id'].'\"  alt=\"'.$file['name'].'\" class=\"image\" />");
-						/* ]]> */
-					</script>';
-			}
-		else
-			{
-			$hover ='';
-			$preview ='';
-			}
-
 		$list .= '<tr>
-		<td'.$hover.'><a  onclick="return !window.open(this.href);" class="link" href="?page=GetAttachment;file='.$file['id'].'">'.$file['name'].'</a></td>
-		<td style="text-align:right;">'.$preview.round($file['size'] / 1024, 2).'</td>
+		<td><a href="'.$this->Output->createUrl('GetAttachment', array('file' => $file['id'])).'">'.$file['name'].'</a></td>
+		<td style="text-align:right;">'.round($file['size'] / 1024, 2).'</td>
+		<td style="text-align:right;">'.$file['type'].'</td>
 		<td style="text-align:right;">'.$this->L10n->getDateTime($file['uploaded']).'</td>
-		<td style="text-align:right;"><a href="?page=DelFile;id='.$this->Board->getId().';file='.$file['id'].'"><span class="button" style="background-color:#CC0000">X</span></a></td>
+		<td style="text-align:right;"><a href="'.$this->Output->createUrl('DelFile', array('file' => $file['id'])).'">löschen</a></td>
 		</tr>';
 		}
 	$stm->close();
@@ -134,17 +101,18 @@ protected function setForm()
 		}
 
 	$list .= '<tr>
-		<td style="padding-top:10px;"><strong>Noch '.($this->Settings->getValue('files') - $data['files']).' Dateien übrig</strong></td>
-		<td style="text-align:right;padding-top:10px;"><strong>Noch '.round(($this->Settings->getValue('quota') - $data['quota']) / 1024, 2).'</strong></td>
-		<td></td>
-		<td></td>
+		<th style="padding-top:10px;">Noch '.($this->Settings->getValue('files') - $data['files']).' Dateien übrig</th>
+		<th style="text-align:right;padding-top:10px;">Noch '.round(($this->Settings->getValue('quota') - $data['quota']) / 1024, 2).'</th>
+		<th></th>
+		<th></th>
+		<th></th>
 		</tr></table>';
 
-	$this->addOutput($list);
-
-	$this->addSubmit('Hochladen');
-
-	$this->addFile('file', 'Datei hinzufügen');
+	$this->add(new PassiveFormElement($list));
+	$this->add(new DividerElement());
+	$this->add(new SubmitButtonElement('Hochladen'));
+	$this->add(new FileInputElement('file', '', 'Datei hinzufügen'));
+	$this->setEncoding('enctype="multipart/form-data"');
 	}
 
 protected function checkForm()
@@ -152,12 +120,6 @@ protected function checkForm()
 	try
 		{
 		$this->file = $this->Input->getUploadedFile('file');
-
-		if ($this->file->getFileSize() >= $this->Settings->getValue('file_size'))
-			{
-			$this->showWarning('Datei ist zu groß!');
-			return;
-			}
 		}
 	catch (FileException $e)
 		{
@@ -218,7 +180,7 @@ protected function sendForm()
 	$stm->bindString($this->file->getFileContent());
 	$stm->bindInteger($this->file->getFileSize());
 	$stm->bindInteger($this->User->getId());
-	$stm->bindInteger(time());
+	$stm->bindInteger($this->Input->getTime());
 	$stm->execute();
 	$stm->close();
 

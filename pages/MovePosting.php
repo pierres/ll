@@ -17,7 +17,8 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-class MovePosting extends Form{
+
+class MovePosting extends Form {
 
 private $moveto 	= 0;
 private $post 		= 0;
@@ -27,12 +28,12 @@ private $oldthread 	= 0;
 
 protected function setForm()
 	{
-	$this->setValue('title', 'Beitrag verschieben');
+	$this->setTitle('Beitrag verschieben');
 
 	try
 		{
-		$this->post = $this->Input->Request->getInt('post');
-		$this->addHidden('post', $this->post);
+		$this->post = $this->Input->Get->getInt('post');
+		$this->setParam('post', $this->post);
 		}
 	catch (RequestException $e)
 		{
@@ -48,7 +49,7 @@ protected function checkForm()
 	{
 	try
 		{
-		$this->moveto = $this->Input->Request->getInt('moveto');
+		$this->moveto = $this->Input->Post->getInt('moveto');
  		$this->checkAccessMoveto();
 		}
 	catch (RequestException $e)
@@ -133,7 +134,7 @@ protected function checkAccess()
 
 protected function buildList()
 	{
-	$this->addSubmit('Verschieben');
+	$this->add(new SubmitButtonElement('Verschieben'));
 
 	try
 		{
@@ -156,11 +157,13 @@ protected function buildList()
 		$stm->bindInteger($this->oldthread);
 		$stm->bindInteger($this->oldthread);
 
+		$radioInput = new RadioInputElement('moveto', 'Ziel');
 		foreach ($stm->getRowSet() as $data)
 			{
-			$this->addElement('thread'.$data['id'],
-				'<input class="radio" type="radio" name="moveto" value="'.$data['id'].'" />&nbsp;'.$data['name']);
+			$radioInput->addOption($data['name'], $data['id']);
 			}
+		$this->add($radioInput);
+
 		$stm->close();
 		}
 	catch (DBNoDataException $e)
@@ -194,7 +197,7 @@ protected function sendForm()
 
 protected function redirect()
 	{
-	$this->Output->redirect('Threads', 'forum='.$this->forum);
+	$this->Output->redirect('Threads', array('forum' => $this->forum));
 	}
 
 }

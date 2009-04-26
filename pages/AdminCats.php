@@ -17,15 +17,16 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-class AdminCats extends AdminForm{
+
+class AdminCats extends AdminForm {
 
 private $cats = array();
 
 protected function setForm()
 	{
-	$this->setValue('title', 'Kategorien');
+	$this->setTitle('Kategorien');
 
-	$this->addSubmit('Speichern');
+	$this->add(new SubmitButtonElement('Speichern'));
 
 	try
 		{
@@ -43,42 +44,55 @@ protected function setForm()
 				position
 			');
 		$stm->bindInteger($this->Board->getId());
+		$cats = $stm->getRowSet();
+		$catnum = $stm->getNumRows();
 
-		foreach ($stm->getRowSet() as $cat)
+		foreach ($cats as $cat)
 			{
-			$cats = $stm->getNumRows();
-			$this->addOutput
-				(
-				AdminFunctions::buildPositionMenu('category['.$cat['id'].'][position]', $cats, $cat['position']).'
-				<input type="text" name="category['.$cat['id'].'][name]" size="74" value="'.$cat['name'].'" />
-				<a href="?page=AdminForums;id='.$this->Board->getId().';cat='.$cat['id'].'"><span class="button">Foren</span></a>
-				<a href="?page=AdminCatsDel;id='.$this->Board->getId().';cat='.$cat['id'].'"><span class="button" style="background-color:#CC0000">löschen</span></a>
-				<br /><br />
-				');
+			$this->add(new TextInputElement('category['.$cat['id'].'][name]', $cat['name'], 'Name'));
+
+			$positionMenu = new SelectInputElement('category['.$cat['id'].'][position]', 'Position');
+			for ($i = 1; $i <= $catnum; $i++)
+				{
+				$positionMenu->addOption($i, $i);
+				}
+			$positionMenu->setSelected($cat['position']);
+			$positionMenu->setSize(1);
+			$this->add($positionMenu);
+
+			$this->add(new LabeledElement
+				('', '<a href="'.$this->Output->createUrl('AdminForums', array('cat' => $cat['id'])).'"><span class="button">Foren</span></a>
+				<a href="'.$this->Output->createUrl('AdminCatsDel', array('cat' => $cat['id'])).'"><span class="button" style="background-color:#CC0000">löschen</span></a>'));
+
+			$this->add(new DividerElement());
 			}
 		$stm->close();
 		}
 	catch (DBNoDataException $e)
 		{
-		$cats = 0;
+		$catnum = 0;
 		}
 
-	$this->addOutput
-		(
-		AdminFunctions::buildPositionMenu('newposition', $cats+1, $cats+1).'
-		<input type="text" name="newname" size="74" value="" />
-		');
+	$this->add(new TextInputElement('newname', '', 'Neue Kategorie'));
+	$positionMenu = new SelectInputElement('newposition', 'Position');
+	for ($i = 1; $i <= $catnum+1; $i++)
+		{
+		$positionMenu->addOption($i, $i);
+		}
+	$positionMenu->setSelected($catnum+1);
+	$positionMenu->setSize(1);
+	$this->add($positionMenu);
 	}
 
 protected function checkForm()
 	{
 	try
 		{
-		$this->cats = $this->Input->Request->getArray('category');
+		$this->cats = $this->Input->Post->getArray('category');
 		}
 	catch (RequestException $e)
 		{
-		if ($this->Input->Request->isEmpty('newname'))
+		if ($this->Input->Post->isEmptyString('newname'))
 			{
 			$this->showWarning('Keine Kategorien angegeben.');
 			}
@@ -137,7 +151,7 @@ protected function sendForm()
 		$stm->close();
 		}
 
-	if (!$this->Input->Request->isEmptyString('newname'))
+	if (!$this->Input->Post->isEmptyString('newname'))
 		{
 		$stm = $this->DB->prepare
 			('
@@ -149,18 +163,13 @@ protected function sendForm()
 				boardid = ?'
 			);
 
-		$stm->bindInteger($this->Input->Request->isEmpty('newposition') ? 0 : $this->Input->Request->getInt('newposition'));
-		$stm->bindString($this->Input->Request->getHtml('newname'));
+		$stm->bindInteger($this->Input->Post->isEmptyString('newposition') ? 0 : $this->Input->Post->getInt('newposition'));
+		$stm->bindString($this->Input->Post->getHtml('newname'));
 		$stm->bindInteger($this->Board->getId());
 		$stm->execute();
 		$stm->close();
 		}
 
-	$this->redirect();
-	}
-
-protected function redirect()
-	{
 	$this->Output->redirect('AdminCats');
 	}
 

@@ -17,16 +17,15 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-class Log extends Modul{
+
+class Log extends Modul {
 
 private $timeout 	= 0;
 private $log 		= array();
-private $now		= 0;
 
 
 public function __construct()
 	{
-	$this->now = time();
 	$this->timeout = $this->Settings->getValue('log_timeout');
 
 	if (!$this->User->isOnline())
@@ -73,7 +72,7 @@ public function insert($threadid, $threadtime)
 		return false;
 		}
 
-	if (($this->now  - $threadtime) >= $this->timeout)
+	if (($this->Input->getTime()  - $threadtime) >= $this->timeout)
 		{
 		return false;
 		}
@@ -123,7 +122,7 @@ public function isNew($threadid, $threadtime)
 		return false;
 		}
 
-	if (($this->now - $threadtime) >= $this->timeout)
+	if (($this->Input->getTime() - $threadtime) >= $this->timeout)
 		{
 		return false;
 		}
@@ -142,7 +141,7 @@ public function getTime($threadid)
 	{
 	if (empty($this->log[$threadid]))
 		{
-		return ($this->now - $this->timeout);
+		return ($this->Input->getTime() - $this->timeout);
 		}
 
 	return $this->log[$threadid];
@@ -171,7 +170,7 @@ public function collectGarbage()
 		WHERE
 			dat <= ?'
 		);
-	$stm->bindInteger($this->now - $this->timeout);
+	$stm->bindInteger($this->Input->getTime() - $this->timeout);
 	$stm->execute();
 	$stm->close();
 	}

@@ -17,18 +17,23 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-class Forums extends Page{
+
+class Forums extends Page {
 
 
-public function prepare(){
+public function prepare() {
 
 
 if ($this->User->isOnline())
 	{
 	$forums = $this->getPrivateThreads();
+	$catcount = 2;
+	$forumcount = 2;
 	}
 else
 	{
+	$catcount = 1;
+	$forumcount = 1;
 	$forums = '';
 	}
 
@@ -47,7 +52,6 @@ try
 			forums.threads,
 			forums.posts,
 			threads.lastusername,
-			threads.lastuserid,
 			threads.lastdate,
 			threads.name AS threadname
 		FROM
@@ -78,123 +82,114 @@ $catheader 	= '';
 
 foreach ($result as $data)
 	{
+	$catheader = '';
+
 	if ($cat != $data['catid'])
 		{
-		$catheader =
+		if ($catcount > 1)
+			{
+			$catheader .= '</tbody></table></div>';
+			}
+
+		$catheader .=
 			'
-			<tr>
-				<td class="cat" colspan="5">
-					<a class="catname" id="cat'.$data['catid'].'">&#171; '.$data['catname'].' &#187;</a>
-				</td>
-			</tr>
+			<div class="main-head">
+				<h2><span>'.$data['catname'].'</span></h2>
+			</div>
+			<div id="category'.$catcount.'" class="main-content category">
+				<table cellspacing="0">
+					<thead>
+						<tr>
+							<th class="tcl" scope="col">'.$this->L10n->getText('Forum').'</th>
+							<th class="tc2" scope="col">'.$this->L10n->getText('Topics').'</th>
+							<th class="tc3" scope="col">'.$this->L10n->getText('Posts').'</th>
+							<th class="tcr" scope="col">'.$this->L10n->getText('Last post').'</th>
+						</tr>
+					</thead>
+					<tbody class="statused">
 			';
+
+		$catcount++;
+		}
+
+	if ($this->User->isOnline() && $this->Log->isNew($data['lastthread'], $data['lastdate']))
+		{
+		$status = 'new';
+		$icon = '<a href="'.$this->Output->createUrl('MarkAsRead', array('forum' => $data['id'])).'"><span class="status '.$status.'" title="Forum containing new posts."><img src="images/status.png" alt="Forum" /></span></a>';
 		}
 	else
 		{
-		$catheader = '';
+		$status = 'normal';
+		$icon = '<span class="status '.$status.'" title="Forum"><img src="images/status.png" alt="Forum" /></span>';
 		}
 
-	if ($data['boardid'] == $this->Board->getId())
-		{
-		$new = '<span class="new"></span>';
-		$old = '<span class="old"></span>';
-		}
-	else
-		{
-		$new = '<span class="newex"></span>';
-		$old = '<span class="oldex"></span>';
-		}
-
-if ($this->User->isOnline())
-	{
-	$icon = ($this->Log->isNew($data['lastthread'], $data['lastdate']) ? '<a href="?page=MarkAsRead;id='.$this->Board->getId().';forum='.$data['id'].'">'.$new.'</a>' : $old);
-	}
-else
-	{
-	$icon = $old;
-	}
+	$position = ($forumcount % 2 == 0 ? 'even' : 'odd');
 
 	$data['lastdate'] = $this->L10n->getDateTime($data['lastdate']);
 
-	$lastposter =
-		(empty($data['lastuserid'])
-		? (empty($data['lastusername']) ? '' : $this->L10n->getText('by').' '.$data['lastusername'])
-		: $this->L10n->getText('by').' <a href="?page=ShowUser;id='.$this->Board->getId().';user='.$data['lastuserid'].'">'.$data['lastusername'].'</a>'
-		);
+	$lastposter = empty($data['lastusername']) ? '' : $this->L10n->getText('by').' '.$data['lastusername'];
 
 	$forums .= $catheader.
-			'
-			<tr>
-				<td class="iconcol">
-					'.$icon.'
-				</td>
-				<td class="forumcol">
-					<div class="forumtitle"><a href="?page=Threads;id='.$this->Board->getId().';forum='.$data['id'].'">'.$data['name'].'</a></div>
-					<div class="forumdescr">'.$data['description'].'</div>
-				</td>
-				<td class="countcol">
-					'.$this->L10n->getNumber($data['threads']).'
-				</td>
-				<td class="countcol">
-					'.$this->L10n->getNumber($data['posts']).'
-				</td>
-				<td class="lastpost">
-					<div><a href="?page=Postings;id='.$this->Board->getId().';thread='.$data['lastthread'].';post=-1">'.cutString($data['threadname'], 20).'</a></div>
-					<div>'.$lastposter.'</div>
-					<div>'.$data['lastdate'].'</div>
-				</td>
-			</tr>
+		'
+		<tr id="forum'.$forumcount.'" class="'.$position.' '.$status.'">
+			<td class="tcl">'.$icon.' <h3><a href="'.$this->Output->createUrl('Threads', array('forum' => $data['id'])).'"><span>'.$data['name'].'</span></a></h3>'.$data['description'].'</td>
+
+			<td class="tc2">'.$this->L10n->getNumber($data['threads']).'</td>
+			<td class="tc3">'.$this->L10n->getNumber($data['posts']).'</td>
+			<td class="tcr"><a href="'.$this->Output->createUrl('Postings', array('thread' => $data['lastthread'], 'post' => '-1')).'"><span>'.$data['lastdate'].'</span></a> <span class="byuser">'.$lastposter.'</span></td>
+		</tr>
 		';
+
+	$forumcount++;
 
 	$cat = $data['catid'];
 	}
 $stm->close();
 
-$online = array();
-foreach($this->User->getOnline() as $user)
-	{
-	$online[] = '<a href="?page=ShowUser;id='.$this->Board->getId().';user='.$user['id'].'">'.$user['name'].'</a>';
-	}
-$online = implode(', ', $online);
 
-$body =
-	'
-	<table class="frame" style="width:100%">
-		<tr>
-			<td colspan="2" class="title">
-				'.$this->L10n->getText('Forum').'
-			</td>
-			<td class="title">
-				'.$this->L10n->getText('Topics').'
-			</td>
-			<td class="title">
-				'.$this->L10n->getText('Posts').'
-			</td>
-			<td class="title">
-				'.$this->L10n->getText('Last post').'
-			</td>
-		</tr>
-		'.$forums.'
-		<tr>
-			<td colspan="5" class="cat">
-				'.$this->L10n->getText('Who is online?').'
-			</td>
-		</tr>
-		<tr>
-			<td class="iconcol">
-				&nbsp;
-			</td>
-			<td colspan="4" class="forumcol">
-				<div class="forumdescr">'.$online.'</div>
-			</td>
-		</tr>
-	</table>
-	';
 
-$this->setValue('title', $this->L10n->getText('Index'));
-$this->setValue('body', $body);
+$body =	'<div id="brd-main" class="main">
+	<h1><span>'.$this->Board->getName().'</span></h1>
+	'.$forums.'</tbody></table></div>
+	</div>';
+
+$this->setTitle($this->L10n->getText('Index'));
+$this->setBody($body);
+
+$this->setValue('stats', $this->getBoardStatistics());
 }
 
+private function getBoardStatistics()
+	{
+	$online = array();
+	foreach($this->User->getOnline() as $user)
+		{
+		$online[] = '<a href="'.$this->Output->createUrl('ShowUser', array('user' => $user['id'])).'">'.$user['name'].'</a>';
+		}
+	$online = implode(', ', $online);
+
+	$stats =
+	'<div id="brd-info" class="main">
+		<div class="main-head">
+			<h2><span>Forum information</span></h2>
+		</div>
+		<div class="main-content">
+			<div id="stats">
+				<h3>Forum statistics</h3>
+				<ul>
+					<li class="st-activity"><span>Total number of topics:</span> <strong>'.$this->L10n->getNumber($this->Board->getThreads()).'</strong></li>
+					<li class="st-activity"><span>Total number of posts:</span> <strong>'.$this->L10n->getNumber($this->Board->getPosts()).'</strong></li>
+				</ul>
+			</div>
+			<div id="onlinelist">
+				<h3><strong>Online</strong> ( <strong>'.$this->L10n->getNumber($this->User->getOnlineCount()).'</strong> )</h3>
+				<p>'.$online.'</p>
+			</div>
+		</div>
+	</div>';
+
+	return $stats;
+	}
 
 private function getPrivateThreads()
 	{
@@ -205,7 +200,6 @@ private function getPrivateThreads()
 			SELECT
 				threads.id AS lastthread,
 				threads.lastusername,
-				threads.lastuserid,
 				threads.lastdate,
 				threads.name AS threadname
 			FROM
@@ -247,45 +241,50 @@ private function getPrivateThreads()
 		$stm->close();
 		$data['lastthread'] = '';
 		$data['lastusername'] = '';
-		$data['lastuserid'] = 0;
 		$data['posts'] = 0;
 		$data['lastdate'] = 0;
 		$data['threads'] = 0;
 		$data['threadname'] = '';
 		}
 
-	$icon = ($this->Log->isNew($data['lastthread'], $data['lastdate']) ? '<span class="new"></span>' : '<span class="old"></span>');
+	if ($this->Log->isNew($data['lastthread'], $data['lastdate']))
+		{
+		$status = 'new';
+		$icon = '<span class="status '.$status.'" title="Forum containing new posts."><img src="images/status.png" alt="Forum" /></span>';
+		}
+	else
+		{
+		$status = 'normal';
+		$icon = '<span class="status '.$status.'" title="Forum"><img src="images/status.png" alt="Forum" /></span>';
+		}
 
 	$data['lastdate'] = $this->L10n->getDateTime($data['lastdate']);
 
-	$lastposter =
-		(empty($data['lastuserid'])
-		? (empty($data['lastusername']) ? '' : $this->L10n->getText('by').' '.$data['lastusername'])
-		: $this->L10n->getText('by').' <a href="?page=ShowUser;id='.$this->Board->getId().';user='.$data['lastuserid'].'">'.$data['lastusername'].'</a>'
-		);
+	$lastposter = empty($data['lastusername']) ? '' : $this->L10n->getText('by').' '.$data['lastusername'];
 
 	return
 		'
-		<tr>
-			<td class="iconcol">
-				'.$icon.'
-			</td>
-			<td class="forumcol">
-				<div class="forumtitle"><a href="?page=PrivateThreads;id='.$this->Board->getId().'">'.$this->L10n->getText('Private topics').'</a></div>
-				<div class="forumdescr">'.$this->L10n->getText('Discuss with other members in a private area.').'</div>
-			</td>
-			<td class="countcol">
-				'.$this->L10n->getNumber($data['threads']).'
-			</td>
-			<td class="countcol">
-				'.$this->L10n->getNumber($data['posts']).'
-			</td>
-			<td class="lastpost">
-				<div><a href="?page=PrivatePostings;id='.$this->Board->getId().';thread='.$data['lastthread'].';post=-1">'.cutString($data['threadname'], 20).'</a></div>
-				<div>'.$lastposter.'</div>
-				<div>'.$data['lastdate'].'</div>
-			</td>
-		</tr>
+		<div class="main-head">
+			<h2><span>'.$this->L10n->getText('Private topics').'</span></h2>
+		</div>
+		<div id="category1" class="main-content category">
+			<table cellspacing="0">
+				<thead>
+					<tr>
+						<th class="tcl" scope="col">'.$this->L10n->getText('Forum').'</th>
+						<th class="tc2" scope="col">'.$this->L10n->getText('Topics').'</th>
+						<th class="tc3" scope="col">'.$this->L10n->getText('Posts').'</th>
+						<th class="tcr" scope="col">'.$this->L10n->getText('Last post').'</th>
+					</tr>
+				</thead>
+				<tbody class="statused">
+				<tr id="forum1" class="even '.$status.'">
+					<td class="tcl">'.$icon.' <h3><a href="'.$this->Output->createUrl('PrivateThreads').'"><span>'.$this->L10n->getText('Private topics').'</span></a></h3>'.$this->L10n->getText('Discuss with other members in a private area.').'</td>
+
+					<td class="tc2">'.$this->L10n->getNumber($data['threads']).'</td>
+					<td class="tc3">'.$this->L10n->getNumber($data['posts']).'</td>
+					<td class="tcr"><a href="'.$this->Output->createUrl('PrivatePostings', array('thread' => $data['lastthread'], 'post' => '-1')).'"><span>'.$data['lastdate'].'</span></a> <span class="byuser">'.$lastposter.'</span></td>
+				</tr>
 		';
 	}
 

@@ -17,7 +17,8 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-class InviteToPrivateThread extends Form{
+
+class InviteToPrivateThread extends Form {
 
 private $thread = 0;
 private $newto	= array();
@@ -25,7 +26,7 @@ private $oldto	= array();
 
 protected function setForm()
 	{
-	$this->setValue('title', 'Mitglieder einladen');
+	$this->setTitle('Mitglieder einladen');
 
 	if (!$this->User->isOnline())
 		{
@@ -34,7 +35,7 @@ protected function setForm()
 
 	try
 		{
-		$this->thread = $this->Input->Request->getInt('thread');
+		$this->thread = $this->Input->Get->getInt('thread');
 		$stm = $this->DB->prepare
 			('
 			SELECT
@@ -77,24 +78,23 @@ protected function setForm()
 
 		if ($recipient['id'] != $this->User->getId())
 			{
-			$users[] = '<a href="?page=ShowUser;id='.$this->Board->getId().';user='.$recipient['id'].'">'.$recipient['name'].'</a>';
+			$users[] = '<a href="'.$this->Output->createUrl('ShowUser', array('user' => $recipient['id'])).'">'.$recipient['name'].'</a>';
 			}
 		}
 	$stm->close();
 
-	$this->addOutput('Schon dabei: '.implode(', ', $users).'<br /><br />');
+	$this->add(new PassiveFormElement('Schon dabei: '.implode(', ', $users).'<br /><br />'));
 
-	$this->addSubmit('Hinzufügen');
-	$this->addHidden('thread', $this->thread);
-	$this->addText('recipients', 'Neue Empfänger');
-	$this->requires('recipients');
+	$this->add(new SubmitButtonElement('Hinzufügen'));
+	$this->setParam('thread', $this->thread);
+	$this->add(new TextInputElement('recipients', '', 'Neue Empfänger'));
 	}
 
 protected function checkForm()
 	{
-	if ($this->Input->Request->isValid('recipients'))
+	if ($this->Input->Post->isString('recipients'))
 		{
-		$recipients = array_map('trim', explode(',', $this->Input->Request->getString('recipients')));
+		$recipients = array_map('trim', explode(',', $this->Input->Post->getString('recipients')));
 
 		try
 			{
@@ -137,7 +137,7 @@ protected function sendForm()
 		}
 	$stm->close();
 
-	$this->Output->redirect('PrivatePostings', 'thread='.$this->thread);
+	$this->Output->redirect('PrivatePostings', array('thread' => $this->thread));
 	}
 
 }

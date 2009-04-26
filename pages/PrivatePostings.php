@@ -19,33 +19,27 @@
 */
 require('Postings.php');
 
-class PrivatePostings extends Postings{
+class PrivatePostings extends Postings {
 
 
 public function prepare(){
 
-	if (!$this->User->isOnline())
-		{
-		$this->showWarning('Nur für Mitglieder');
-		}
+if (!$this->User->isOnline())
+	{
+	$this->showWarning('Nur für Mitglieder');
+	}
 
 try
 	{
-	$this->thread = $this->Input->Request->getInt('thread');
+	$this->thread = $this->Input->Get->getInt('thread');
 	}
 catch (RequestException $e)
 	{
 	$this->showWarning('Kein Thema angegeben');
 	}
 
-try
-	{
-	$this->post = $this->Input->Request->getInt('post');
-	}
-catch (RequestException $e)
-	{
-	$this->post = 0;
-	}
+
+$this->post = $this->Input->Get->getInt('post', 0);
 
 try
 	{
@@ -165,7 +159,7 @@ try
 	$users = array();
 	foreach ($stm->getRowSet() as $recipient)
 		{
-		$users[] = '<a href="?page=ShowUser;id='.$this->Board->getId().';user='.$recipient['id'].'">'.$recipient['name'].'</a>';
+		$users[] = '<a href="'.$this->Output->createUrl('ShowUser', array('user' => $recipient['id'])).'">'.$recipient['name'].'</a>';
 		}
 	$stm->close();
 
@@ -217,35 +211,31 @@ catch (DBNoDataException $e)
 
 
 $postings 	= '';
-$i 		= 2;
+
 $first 		= true;
+$postcount	= 1;
+$posttype 	= array('post');
 
 
 foreach ($result as $data)
 	{
-	$i = abs($i-1);
-	$style = 'class="post'.$i.'"';
 
 	$postid = $data['id'];
 
 	if ($data['dat'] > $lastVisit)
 		{
-		$data['dat'] = '<span class="newthread">neu</span>'.$this->L10n->getDateTime($data['dat']);
-		}
-	else
-		{
-		$data['dat'] = $this->L10n->getDateTime($data['dat']);
+		$posttype[] = 'newpost';
 		}
 
 	if ($data['editdate'] > 0)
 		{
 		if (empty($data['editorname']))
 			{
-			$edited = '<div class="postedit">am '.$this->L10n->getDateTime($data['editdate']).' geändert</div>';
+			$edited = '<p class="lastedit"><em>Last edited ('.$this->L10n->getDateTime($data['editdate']).')</em></p>';
 			}
 		else
 			{
-			$edited = '<div class="postedit">von <a href="?page=ShowUser;id='.$this->Board->getId().';user='.$data['editby'].'">'.$data['editorname'].'</a> am '.$this->L10n->getDateTime($data['editdate']).' geändert</div>';
+			$edited = '<p class="lastedit"><em>Last edited by <a href="'.$this->Output->createUrl('ShowUser', array('user' => $data['editby'])).'">'.$data['editorname'].'</a> ('.$this->L10n->getDateTime($data['editdate']).')</em></p>';
 			}
 		}
 	else
@@ -256,21 +246,21 @@ foreach ($result as $data)
 	if ($first && $this->post == 0)
 		{
 		$edit_button = (($this->User->isUser($data['userid'])) ?
-					' <a href="?page=EditPrivateThread;id='.$this->Board->getId().';thread='.$this->thread.'"><span class="button">Thema ändern</span></a>' : '');
+					' <a href="'.$this->Output->createUrl('EditPrivateThread', array('thread' => $this->thread)).'"><span>'.$this->L10n->getText('Edit topic').'</span></a>' : '');
 		$first = false;
 		}
 	else
 		{
 		$edit_button = (($this->User->isUser($data['userid'])) ?
-					' <a href="?page=EditPrivatePost;id='.$this->Board->getId().';post='.$data['id'].'"><span class="button">ändern</span></a>' : '');
+					' <a href="'.$this->Output->createUrl('EditPrivatePost', array('post' => $data['id'])).'"><span>'.$this->L10n->getText('Edit post').'</span></a>' : '');
 		}
 
-	$quote_button = '<a href="?page=QuotePrivatePost;id='.$this->Board->getId().';post='.$postid.'"><span class="button">zitieren</span></a>';
+	$quote_button = '<a href="'.$this->Output->createUrl('QuotePrivatePost', array('post' => $postid)).'"><span>'.$this->L10n->getText('Quote post').'</span></a>';
 
 
-	$poster = (!empty($data['userid']) ? '<a href="?page=ShowUser;id='.$this->Board->getId().';user='.$data['userid'].'">'.$data['name'].'</a>' : $data['username']);
+	$poster = (!empty($data['userid']) ? '<a href="'.$this->Output->createUrl('ShowUser', array('user' => $data['userid'])).'">'.$data['name'].'</a>' : $data['username']);
 
-	$avatar = (empty($data['avatar']) ? '' : '<img src="?page=GetAvatar;user='.$data['userid'].'" class="avatar" />');
+	$avatar = (empty($data['avatar']) ? '' : '<img src="'.$this->Output->createUrl('GetAvatar', array('user' => $data['userid'])).'" alt="" />');
 
 	if ($data['file'] == 1)
 		{
@@ -281,35 +271,40 @@ foreach ($result as $data)
 		$files = '';
 		}
 
+	$posttype[] = ($postcount % 2 == 0 ? 'even' : 'odd');
+	$posttype[] = ($postcount == 1 ? 'firstpost' : '');
+	$posttype[] = ($postcount == 1 && $this->post == 0 ? 'topicpost' : 'replypost');
+
 	$postings .=
 		'
-		<tr>
-			<td '.$style.' rowspan="2" style="vertical-align:top;width:150px;">
-				<div class="postname">'.$poster.'</div>
-			</td>
-			<td '.$style.' style="vertical-align:top;">
-				<div class="postdate">'.$data['dat'].'</div>
-			</td>
-			<td '.$style.'>
-				<div class="postbuttons">'.$quote_button.$edit_button.'</div>
-			</td>
-		</tr>
-		<tr>
-			<td '.$style.' rowspan="2" colspan="2">
-				'.$data['text'].$files.'
-			</td>
-		</tr>
-		<tr>
-			<td  '.$style.' rowspan="2" style="vertical-align:top;text-align:center;">
-				'.$avatar.'
-			</td>
-		</tr>
-		<tr>
-			<td '.$style.' colspan="2">
-				'.$edited.'
-			</td>
-		</tr>
+		<div class="'.implode(' ', $posttype).'">
+			<div class="postmain">
+				<div id="p3" class="posthead">
+					<h3><a class="permalink" rel="bookmark" title="Permanent link to this post" href="'.$this->Output->createUrl('PrivatePostings', array('thread' => $thread['id'], 'post' => ($this->post + $postcount - 1))).'"><strong>'.($this->post + $postcount).'</strong></a> <span>'.$this->L10n->getDateTime($data['dat']).'</span></h3>
+				</div>
+				<div class="postbody">
+					<div class="user">
+						<h4 class="user-ident">'.$avatar.'<strong class="username">'.$poster.'</strong></h4>
+					</div>
+					<div class="post-entry">
+						<div class="entry-content">
+							<p>'.$data['text'].'</p>
+							'.$edited.'
+							'.$files.'
+						</div>
+					</div>
+				</div>
+				<div class="postfoot">
+					<div class="post-options">
+						'.$edit_button.$quote_button.'
+					</div>
+				</div>
+			</div>
+		</div>
 		';
+
+		$postcount++;
+		$posttype = array('post');
 		}
 $stm->close();
 
@@ -325,62 +320,49 @@ else
 	}
 
 
-$reply_button = '<a href="?page=InviteToPrivateThread;id='.$this->Board->getId().';thread='.$thread['id'].'"><span class="button">einladen</span></a>
-<a href="?page=NewPrivatePost;id='.$this->Board->getId().';thread='.$thread['id'].'"><span class="button">antworten</span></a>';
-
+$reply_button = '<a href="'.$this->Output->createUrl('InviteToPrivateThread', array('thread' => $thread['id'])).'"><span>einladen</span></a>
+<a class="newpost" href="'.$this->Output->createUrl('NewPrivatePost', array('thread' => $thread['id'])).'"><span>'.$this->L10n->getText('Post reply').'</span></a>';
 
 $thread_buttons = ($thread['firstuserid'] == $this->User->getId() ?
-	'<tr><td class="pages" colspan="3"><a href="?page=DelPrivateThread;id='.$this->Board->getId().';thread='.$thread['id'].'"><span class="button">Privates Thema löschen</span></a></td></tr>' : '');
+	'<a class="mod-option" href="'.$this->Output->createUrl('DelPrivateThread', array('thread' => $thread['id'])).'">'.$this->L10n->getText('Delete topic').'</a>' : '');
+
 
 $body =
 	'
-	<table class="frame" style="width:100%">
-		'.$poll.'
-		<tr>
-			<td class="title" colspan="3">
-				'.$thread['name'].'
-			</td>
-		</tr>
-		<tr>
-			<td class="path" colspan="3">
-				<a class="pathlink" href="?page=Forums;id='.$this->Board->getId().'">'.$this->Board->getName().'</a>
-				&#187;
-				<a class="pathlink" href="?page=PrivateThreads;id='.$this->Board->getId().'">Private Themen</a>
-			</td>
-		</tr>
-		<tr>
-			<td class="pages">
-				'.$pages.'&nbsp;
-			</td>
-			<td class="pages">
-			Schon dabei: '.$recipients.'
-			</td>
-			<td class="pages" style="text-align:right">
-				'.$reply_button.'
-			</td>
-		</tr>
-			'.$postings.'
-		<tr>
-			<td class="pages">
-				'.$pages.'&nbsp;
-			</td>
-			<td class="pages" colspan="2" style="text-align:right">
-				'.$reply_button.'
-				<a id="last"></a>
-			</td>
-		</tr>
-		<tr>
-			<td class="path" colspan="3">
-				<a class="pathlink" href="?page=Forums;id='.$this->Board->getId().'">'.$this->Board->getName().'</a>
-				&#187;
-				<a class="pathlink" href="?page=PrivateThreads;id='.$this->Board->getId().'">Private Themen</a>
-			</td>
-		</tr>
-		'.$thread_buttons.'
-	</table>
+	<div id="brd-main" class="main paged">
+
+	<h1><span><a class="permalink" href="'.$this->Output->createUrl('PrivatePostings', array('thread' => $thread['id'])).'" rel="bookmark" title="Permanent link to this topic">'.$thread['name'].'</a></span></h1>
+'.$poll.'
+	<div class="paged-head">
+		<p class="paging"><span class="pages">Pages:</span> '.$pages.'</p>
+		<p class="posting">'.$reply_button.'</p>
+	</div>
+
+	<div class="main-head">
+		<h2><span>Posts [ '.$this->posts.' ]</span></h2>
+	</div>
+
+	<div id="forum1" class="main-content topic">
+		'.$postings.'
+	</div>
+
+	<div class="main-foot">
+		<p class="h2"><strong>Posts [ '.$this->posts.' ]</strong></p>
+		<p class="main-options">
+			'.$thread_buttons.'
+		</p>
+
+	</div>
+
+	<div class="paged-foot">
+		<p class="posting">'.$reply_button.'</p>
+		<p class="paging"><span class="pages">Pages:</span> '.$pages.'</p>
+	</div>
+
+</div>
 	';
-$this->setValue('title', $thread['name']);
-$this->setValue('body', $body);
+$this->setTitle($thread['name']);
+$this->setBody($body);
 }
 
 

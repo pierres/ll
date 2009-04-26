@@ -1,4 +1,3 @@
 DirectoryIndex index.php
 ErrorDocument 404 /?page=NotFound
-php_value arg_separator.input ";"
 php_flag magic_quotes_gpc Off

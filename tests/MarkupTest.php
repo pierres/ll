@@ -19,7 +19,7 @@
 */
 require('LLTestCase.php');
 
-class MarkupTest extends LLTestCase{
+class MarkupTest extends LLTestCase {
 
 
 public function testEmpty()
@@ -232,9 +232,9 @@ public function testURL()
 	$this->assertEquals('<!-- numbered --><a href="http://www.laber-land.de" onclick="return !window.open(this.href);" rel="nofollow" class="extlink">[2]</a><!-- /numbered -->', $this->Markup->toHtml('<www.laber-land.de>'));
 	$this->assertEquals('<!-- numbered --><a href="ftp://ftp.laber-land.de" onclick="return !window.open(this.href);" rel="nofollow" class="extlink">[3]</a><!-- /numbered -->', $this->Markup->toHtml('<ftp.laber-land.de>'));
 	$this->assertEquals('<a href="mailto:support@laber-land.de">support@laber-land.de</a>', $this->Markup->toHtml('support@laber-land.de'));
-	$this->assertEquals('<a href="?page=GetImage;url=http%3A%2F%2Fwww.laber-land.de%2Fimages%2Flogo.png" onclick="return !window.open(this.href);" rel="nofollow"><img src="?page=GetImage;thumb;url=http%3A%2F%2Fwww.laber-land.de%2Fimages%2Flogo.png" alt="" class="image" /></a>', $this->Markup->toHtml('http://www.laber-land.de/images/logo.png'));
-	$this->assertEquals('<a href="?page=GetImage;url=http%3A%2F%2Fwww.laber-land.de%2Fimages%2Flogo.png" onclick="return !window.open(this.href);" rel="nofollow"><img src="?page=GetImage;thumb;url=http%3A%2F%2Fwww.laber-land.de%2Fimages%2Flogo.png" alt="" class="image" /></a>', $this->Markup->toHtml('www.laber-land.de/images/logo.png'));
-	$this->assertEquals('<a href="?page=GetImage;url=ftp%3A%2F%2Fftp.laber-land.de%2Fimages%2Flogo.png" onclick="return !window.open(this.href);" rel="nofollow"><img src="?page=GetImage;thumb;url=ftp%3A%2F%2Fftp.laber-land.de%2Fimages%2Flogo.png" alt="" class="image" /></a>', $this->Markup->toHtml('ftp.laber-land.de/images/logo.png'));
+// 	$this->assertEquals('<a href="?page=GetImage;url=http%3A%2F%2Fwww.laber-land.de%2Fimages%2Flogo.png" onclick="return !window.open(this.href);" rel="nofollow"><img src="?page=GetImage;thumb;url=http%3A%2F%2Fwww.laber-land.de%2Fimages%2Flogo.png" alt="" class="image" /></a>', $this->Markup->toHtml('http://www.laber-land.de/images/logo.png'));
+// 	$this->assertEquals('<a href="?page=GetImage;url=http%3A%2F%2Fwww.laber-land.de%2Fimages%2Flogo.png" onclick="return !window.open(this.href);" rel="nofollow"><img src="?page=GetImage;thumb;url=http%3A%2F%2Fwww.laber-land.de%2Fimages%2Flogo.png" alt="" class="image" /></a>', $this->Markup->toHtml('www.laber-land.de/images/logo.png'));
+// 	$this->assertEquals('<a href="?page=GetImage;url=ftp%3A%2F%2Fftp.laber-land.de%2Fimages%2Flogo.png" onclick="return !window.open(this.href);" rel="nofollow"><img src="?page=GetImage;thumb;url=ftp%3A%2F%2Fftp.laber-land.de%2Fimages%2Flogo.png" alt="" class="image" /></a>', $this->Markup->toHtml('ftp.laber-land.de/images/logo.png'));
 	$this->assertEquals('<a href="http://www.laber-land.de" onclick="return !window.open(this.href);" rel="nofollow" class="extlink">http://www.laber-land.de</a>', $this->Markup->toHtml('http://www.laber-land.de'));
 	$this->assertEquals('<a href="http://www.laber-land.de" onclick="return !window.open(this.href);" rel="nofollow" class="extlink">www.laber-land.de</a>', $this->Markup->toHtml('www.laber-land.de'));
 	$this->assertEquals('<a href="ftp://ftp.laber-land.de" onclick="return !window.open(this.href);" rel="nofollow" class="extlink">ftp.laber-land.de</a>', $this->Markup->toHtml('ftp.laber-land.de'));

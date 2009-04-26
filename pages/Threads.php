@@ -17,385 +17,154 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-class Threads extends Page{
+
+class Threads extends ThreadList {
+
+protected $ismod = false;
+protected $forum = 0;
 
 
-protected $ismod 		= false;
-protected $forum 		= 0;
-protected $thread 		= 0;
-protected $threads 		= 0;
-protected $result 		= array();
-
-public function prepare(){
-
-try
+public function prepare()
 	{
-	$this->forum = $this->Input->Request->getInt('forum');
-	}
-catch (RequestException $e)
-	{
-	$this->showWarning($this->L10n->getText('No forum specified.'));
-	}
+	try
+		{
+		$this->forum = $this->Input->Get->getInt('forum');
+		}
+	catch (RequestException $e)
+		{
+		$this->showFailure($this->L10n->getText('No forum specified.'));
+		}
 
-try
-	{
-	$this->thread = nat($this->Input->Request->getInt('thread'));
-	}
-catch (RequestException $e)
-	{
-	$this->thread = 0;
-	}
+	$this->currentThread = $this->Input->Get->getInt('thread', 0);
 
-
-try
-	{
-	$stm = $this->DB->prepare
-		('
-		SELECT
-			forums.name,
-			cats.name AS catname,
-			cats.id AS catid,
-			forums.mods
-		FROM
-			forums,
-			forum_cat,
-			cats
-		WHERE
-			forums.id = ?
-			AND forum_cat.forumid = forums.id
-			AND forum_cat.catid = cats.id
-			AND cats.boardid = ?'
-		);
-	$stm->bindInteger($this->forum);
-	$stm->bindInteger($this->Board->getId());
-	$forum = $stm->getRow();
-	$stm->close();
-	}
-catch (DBException $e)
-	{
-	$stm->close();
-	$this->Output->setStatus(Output::NOT_FOUND);
-	$this->showWarning('Forum not found.');
-	}
-
-$this->ismod = $this->User->isGroup($forum['mods']) || $this->User->isMod();
-
-try
-	{
-	$stm = $this->DB->prepare
-		('
-		SELECT
-			COUNT(*)
-		FROM
-			threads
-		WHERE
-			forumid = ?
-		');
-	$stm->bindInteger($this->forum);
-	$this->threads = $stm->getColumn();
-	$stm->close();
-	}
-catch (DBException $e)
-	{
-	$stm->close();
-	$this->threads = 0;
-	}
-
-try
-	{
-	$stm = $this->DB->prepare
-		('
-		(
+	try
+		{
+		$stm = $this->DB->prepare
+			('
 			SELECT
-				threads.id,
-				threads.poll,
-				threads.name,
-				threads.lastdate,
-				threads.lastuserid,
-				threads.lastusername,
-				threads.firstdate,
-				threads.firstuserid,
-				threads.firstusername,
-				threads.closed,
-				threads.sticky,
-				threads.deleted,
-				threads.posts,
-				threads.forumid,
-				threads.movedfrom,
-				threads.summary,
-				tags.name AS tag
+				forums.name,
+				cats.name AS catname,
+				cats.id AS catid,
+				forums.mods
+			FROM
+				forums,
+				forum_cat,
+				cats
+			WHERE
+				forums.id = ?
+				AND forum_cat.forumid = forums.id
+				AND forum_cat.catid = cats.id
+				AND cats.boardid = ?'
+			);
+		$stm->bindInteger($this->forum);
+		$stm->bindInteger($this->Board->getId());
+		$forum = $stm->getRow();
+		$stm->close();
+		}
+	catch (DBException $e)
+		{
+		$stm->close();
+		$this->Output->setStatus(Output::NOT_FOUND);
+		$this->showFailure('Forum not found.');
+		}
+
+	$this->ismod = $this->User->isGroup($forum['mods']) || $this->User->isMod();
+
+	try
+		{
+		$stm = $this->DB->prepare
+			('
+			SELECT
+				COUNT(*)
 			FROM
 				threads
-					LEFT JOIN tags
-					ON threads.tag = tags.id
 			WHERE
-				threads.forumid = ?
-				'.($this->ismod ? '' : 'AND threads.deleted =  0').'
-				AND threads.sticky = 1
-		)
-		UNION
-		(
-			SELECT
-				threads.id,
-				threads.poll,
-				threads.name,
-				threads.lastdate,
-				threads.lastuserid,
-				threads.lastusername,
-				threads.firstdate,
-				threads.firstuserid,
-				threads.firstusername,
-				threads.closed,
-				threads.sticky,
-				threads.deleted,
-				threads.posts,
-				threads.forumid,
-				threads.movedfrom,
-				threads.summary,
-				tags.name AS tag
-			FROM
-				threads
-					LEFT JOIN tags
-					ON threads.tag = tags.id
-			WHERE
-				threads.forumid = ?
-				'.($this->ismod ? '' : 'AND threads.deleted =  0').'
-				AND threads.counter BETWEEN ? AND ?
-				AND threads.sticky = 0
-		)
-		ORDER BY
-			sticky DESC,
-			lastdate DESC
-		');
-	$stm->bindInteger($this->forum);
-	$stm->bindInteger($this->forum);
-
-	$stm->bindInteger($this->threads-$this->Settings->getValue('max_threads')-$this->thread);
-	$stm->bindInteger($this->threads-$this->thread-1);
-
-	$this->result = $stm->getRowSet();
-	}
-catch (DBNoDataException $e)
-	{
-	$this->result = array();
-	}
-
-
-$pages = $this->getPages();
-
-$threads = $this->listThreads();
-$stm->close();
-
-$body =
-	'<script type="text/javascript">
-		/* <![CDATA[ */
-		function writeText(text)
-			{
-			var pos;
-			pos = document;
-			while ( pos.lastChild && pos.lastChild.nodeType == 1 )
-				pos = pos.lastChild;
-			pos.parentNode.appendChild( document.createTextNode(text));
-			}
-		/* ]]> */
-	</script>
-	<table class="frame" style="width:100%">
-		<tr>
-			<td class="title" colspan="2">'.$this->L10n->getText('Topic').'</td>
-			<td class="title">'.$this->L10n->getText('First post').'</td>
-			<td class="title">'.$this->L10n->getText('Replies').'</td>
-			<td class="title">'.$this->L10n->getText('Last post').'</td>
-		</tr>
-		<tr>
-			<td class="path" colspan="5">
-				<a class="pathlink" href="?page=Forums;id='.$this->Board->getId().'">'.$this->Board->getName().'</a>
-				&#187;
-				<a class="pathlink" href="?page=Forums;id='.$this->Board->getId().'#cat'.$forum['catid'].'">'.$forum['catname'].'</a>
-				&#187;
-				<strong>'.$forum['name'].'</strong>
-			</td>
-		</tr>
-		<tr>
-			<td class="pages" colspan="4">'.$pages.'</td>
-			<td class="pages">
-			<a href="?page=NewThread;id='.$this->Board->getId().';forum='.$this->forum.'"><span class="button">'.$this->L10n->getText('Post new topic').'</span></a>
-			</td>
-		</tr>
-		'.$threads.'
-		<tr>
-			<td class="pages" colspan="4">'.$pages.'</td>
-			<td class="pages">
-			<a href="?page=NewThread;id='.$this->Board->getId().';forum='.$this->forum.'"><span class="button">'.$this->L10n->getText('Post new topic').'</span></a>
-			</td>
-		</tr>
-		<tr>
-			<td class="path" colspan="5">
-				<a class="pathlink" href="?page=Forums;id='.$this->Board->getId().'">'.$this->Board->getName().'</a>
-				&#187;
-				<a class="pathlink" href="?page=Forums;id='.$this->Board->getId().'#cat'.$forum['catid'].'">'.$forum['catname'].'</a>
-				&#187;
-				<strong>'.$forum['name'].'</strong>
-			</td>
-		</tr>
-	</table>
-	';
-
-$this->setValue('title', $forum['name']);
-$this->setValue('body', $body);
-}
-
-protected function listThreads()
-	{
-	$threads = '';
-
-	foreach ($this->result as $data)
+				forumid = ?
+			');
+		$stm->bindInteger($this->forum);
+		$this->totalThreads = $stm->getColumn();
+		$stm->close();
+		}
+	catch (DBException $e)
 		{
-		$thread_pages = '';
-		for ($i = 0; $i < ($data['posts'] / $this->Settings->getValue('max_posts')) && ($data['posts'] / $this->Settings->getValue('max_posts')) > 1; $i++)
-			{
-			if ($i >= 6 && $i <= ($data['posts'] / $this->Settings->getValue('max_posts')) - 6)
-				{
-				$thread_pages .= ' ... ';
-				$i = nat($data['posts'] / $this->Settings->getValue('max_posts')) - 6;
-				continue;
-				}
-
-			$thread_pages .= ' <a href="?page=Postings;id='.$this->Board->getId().';thread='.$data['id'].';post='.($this->Settings->getValue('max_posts') * $i).'">'.($i+1).'</a>';
-			}
-
-		$thread_pages = (!empty($thread_pages) ? '<span class="threadpages">&#171;'.$thread_pages.' &#187;</span>' : '');
-
-
-		$data['name'] = cutString($data['name'], 80);
-
-		if(!empty($data['tag']))
-			{
-			$data['name'] = '<span class="tag">['.$data['tag'].']</span> '.$data['name'];
-			}
-
-		if ($this->User->isOnline() && $this->Log->isNew($data['id'], $data['lastdate']))
-			{
-			$data['name'] = '<span class="newthread">'.$this->L10n->getText('new').'</span>'.$data['name'];
-			}
-
-		if($data['deleted'] == 1)
-			{
-			$data['name'] = '<span class="deletedthread">'.$data['name'].'</span>';
-			}
-
-		/** FIXME: Schlecht, wenn Thread in anderes Board verschoben wurde */
-		if ($data['forumid'] != $this->forum)
-			{
-			$data['name'] = '<span class="movedthread">'.$data['name'].'</span>';
-			}
-
-
-		$status = (!empty($data['poll'])    ? '<span class="poll"></span>' : '');
-		$status .= (!empty($data['closed']) ? '<span class="closed"></span>' : '');
-		$status .= (!empty($data['sticky']) ? '<span class="sticky"></span>' : '');
-
-
-		$lastposter = (empty($data['lastuserid'])
-			? $data['lastusername']
-			: '<a href="?page=ShowUser;id='.$this->Board->getId().';user='.$data['lastuserid'].'">'.$data['lastusername'].'</a>');
-
-		$firstposter = (empty($data['firstuserid'])
-			? $data['firstusername']
-			: '<a href="?page=ShowUser;id='.$this->Board->getId().';user='.$data['firstuserid'].'">'.$data['firstusername'].'</a>');
-
-		$data['lastdate'] = $this->L10n->getDateTime($data['lastdate']);
-		$data['firstdate'] = $this->L10n->getDateTime($data['firstdate']);
-
-		$threads .=
-			'
-			<tr>
-				<td class="threadiconcol">
-					'.$status.'
-				</td>
-				<td class="forumcol"
-					 onmouseover="javascript:document.getElementById(\'summary'.$data['id'].'\').style.visibility=\'visible\'"
-					 onmouseout="javascript:document.getElementById(\'summary'.$data['id'].'\').style.visibility=\'hidden\'">
-					<div class="thread">
-					<a href="?page=Postings;id='.$this->Board->getId().';thread='.$data['id'].'">'.$data['name'].'</a>
-					</div>
-					<div class="threadpages">
-					'.$thread_pages.'
-					</div>
-				</td>
-				<td class="lastpost">
-					<div class="summary" style="visibility:hidden;" id="summary'.$data['id'].'">
-						<script type="text/javascript">
-							/* <![CDATA[ */
-							writeText("'.$data['summary'].'");
-							/* ]]> */
-						</script>
-					</div>
-					<div>von '.$firstposter.'</div>
-					<div>'.$data['firstdate'].'</div>
-				</td>
-				<td class="countcol">
-					'.$this->L10n->getNumber($data['posts']).'
-				</td>
-				<td class="lastpost">
-					<div>'.$this->L10n->getText('by').' '.$lastposter.'</div>
-					<div><a href="?page=Postings;id='.$this->Board->getId().';thread='.$data['id'].';post=-1">'.$data['lastdate'].'</a></div>
-				</td>
-			</tr>
-			';
-			}
-
-	return $threads;
-	}
-
-protected function getPages()
-	{
-	$pages = '';
-
-	if ($this->thread > ($this->Settings->getValue('max_threads')))
-		{
-		$pages .= '<a href="?page='.$this->getName().';id='.$this->Board->getId().';forum='.$this->forum.'">&laquo;</a>';
+		$stm->close();
+		$this->totalThreads = 0;
 		}
 
-	if ($this->thread > 0)
+	try
 		{
-		$pages .= ' <a href="?page='.$this->getName().';id='.$this->Board->getId().';forum='.$this->forum.';thread='.nat($this->thread-$this->Settings->getValue('max_threads')).'">&lsaquo;</a>';
+		$stm = $this->DB->prepare
+			('
+			(
+				SELECT
+					threads.id,
+					threads.name,
+					threads.lastdate,
+					threads.lastusername,
+					threads.firstdate,
+					threads.firstusername,
+					threads.closed,
+					threads.sticky,
+					threads.deleted,
+					threads.posts,
+					threads.summary
+				FROM
+					threads
+				WHERE
+					threads.forumid = ?
+					'.($this->ismod ? '' : 'AND threads.deleted =  0').'
+					AND threads.sticky = 1
+			)
+			UNION
+			(
+				SELECT
+					threads.id,
+					threads.name,
+					threads.lastdate,
+					threads.lastusername,
+					threads.firstdate,
+					threads.firstusername,
+					threads.closed,
+					threads.sticky,
+					threads.deleted,
+					threads.posts,
+					threads.summary
+				FROM
+					threads
+				WHERE
+					threads.forumid = ?
+					'.($this->ismod ? '' : 'AND threads.deleted =  0').'
+					AND threads.counter BETWEEN ? AND ?
+					AND threads.sticky = 0
+			)
+			ORDER BY
+				sticky DESC,
+				lastdate DESC
+			');
+		$stm->bindInteger($this->forum);
+		$stm->bindInteger($this->forum);
+
+		$stm->bindInteger($this->totalThreads-$this->Settings->getValue('max_threads')-$this->currentThread);
+		$stm->bindInteger($this->totalThreads-$this->currentThread-1);
+
+		$this->resultSet = $stm->getRowSet();
+		}
+	catch (DBNoDataException $e)
+		{
+		$this->resultSet = array();
 		}
 
-	for ($i = 0; $i < ($this->threads / $this->Settings->getValue('max_threads')) && ($this->threads / $this->Settings->getValue('max_threads')) > 1; $i++)
-		{
-		if ($this->thread < $this->Settings->getValue('max_threads') * ($i-4))
-			{
-			$i = $this->Settings->getValue('max_threads') * ($i-4);
-			continue;
-			}
-		elseif($this->thread > $this->Settings->getValue('max_threads') * ($i+4))
-			{
-			continue;
-			}
+	$this->pageHead = '<p class="posting"><a class="newpost" href="'.$this->Output->createUrl('NewThread', array('forum' => $this->forum)).'"><span>'.$this->L10n->getText('Post new topic').'</span></a></p>';
+	$this->pageFoot = $this->pageHead;
+	$this->mainFoot = '<p class="main-options"><a class="user-option" href="'.$this->Output->createUrl('MarkAsRead', array('forum' => $this->forum)).'"><span>Mark forum as read</span></a></p>';
 
-		if ($this->thread == ($this->Settings->getValue('max_threads') * $i))
-			{
-			$pages .= ' <strong>'.($i+1).'</strong>';
-			}
-		else
-			{
-			$pages .= ' <a href="?page='.$this->getName().';id='.$this->Board->getId().';forum='.$this->forum.';thread='.($this->Settings->getValue('max_threads') * $i).'">'.($i+1).'</a>';
-			}
-		}
+	$this->setTitle($forum['name']);
 
-	if ($this->threads > $this->Settings->getValue('max_threads')+$this->thread)
-		{
-		$pages .= ' <a href="?page='.$this->getName().';id='.$this->Board->getId().';forum='.$this->forum.';thread='.($this->Settings->getValue('max_posts')+$this->thread).'">&rsaquo;</a>';
-		}
+	$this->pageOptions = array('forum' => $this->forum); 
+	$body = $this->getBody();
+	$stm->close();
 
-	$lastpage = $this->Settings->getValue('max_threads') *nat($this->threads / $this->Settings->getValue('max_threads'));
-
-	if ($this->thread < $lastpage-$this->Settings->getValue('max_threads'))
-		{
-		$pages .= ' <a href="?page='.$this->getName().';id='.$this->Board->getId().';forum='.$this->forum.';thread='.$lastpage.'">&raquo;</a>';
-		}
-
-	return $pages;
+	$this->setBody($body);
 	}
 
 }

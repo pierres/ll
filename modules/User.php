@@ -17,8 +17,8 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-class User extends Modul{
 
+class User extends Modul {
 
 const ROOT		= 3;
 const ADMIN		= 2;
@@ -28,8 +28,10 @@ private $sessionid	= '';
 private $securityToken	= '';
 private $id 		= 0;
 private $level		= 0;
+private $lastupdate	= 0;
 private $name		= '';
 private $groups		= array();
+
 
 function __construct()
 	{
@@ -75,8 +77,9 @@ function __construct()
 	$this->level 		= $data['level'];
 	$this->name 		= $data['name'];
 	$this->groups 		= explode(',', $data['groups']);
+	$this->lastupdate	= $data['lastupdate'];
 
-	if (time() - $data['lastupdate'] > $this->Settings->getValue('session_refresh'))
+	if ($this->Input->getTime() - $this->lastupdate > $this->Settings->getValue('session_refresh'))
 		{
 		$this->updateSession();
 		}
@@ -95,11 +98,13 @@ private function updateSession()
 		WHERE
 			sessionid = ?'
 		);
-	$stm->bindInteger(time());
+	$stm->bindInteger($this->Input->getTime());
 	$stm->bindString($this->securityToken);
 	$stm->bindString($this->sessionid);
 	$stm->execute();
 	$stm->close();
+
+	$this->lastupdate = $this->Input->getTime();
 	}
 
 private function getRandomHash()
@@ -131,6 +136,11 @@ public function getName()
 public function getLevel()
 	{
 	return $this->id;
+	}
+
+public function getLastUpdate()
+	{
+	return $this->lastupdate;
 	}
 
 public function logout()
@@ -271,7 +281,7 @@ private function start($id, $name ,$level, $groups, $hidden)
 	$stm->bindString($this->name);
 	$stm->bindInteger($this->level);
 	$stm->bindString(implode(',', $this->groups));
-	$stm->bindInteger(time());
+	$stm->bindInteger($this->Input->getTime());
 	$stm->bindString($this->securityToken);
 	$stm->bindInteger($this->Board->getId());
 	$stm->bindInteger($hidden);
@@ -289,7 +299,7 @@ private function start($id, $name ,$level, $groups, $hidden)
 		WHERE
 			id = ?
 		');
-	$stm->bindInteger(time());
+	$stm->bindInteger($this->Input->getTime());
 	$stm->bindInteger($this->id);
 	$stm->execute();
 	$stm->close();
@@ -304,7 +314,7 @@ private function collectGarbage()
 		WHERE
 			lastupdate <= ?'
 		);
-	$stm->bindInteger(time() - $this->Settings->getValue('session_timeout'));
+	$stm->bindInteger($this->Input->getTime() - $this->Settings->getValue('session_timeout'));
 	$stm->execute();
 	$stm->close();
 	}
@@ -364,6 +374,26 @@ public function getOnline()
 		}
 
 	return $userArray;
+	}
+
+public function getOnlineCount()
+	{
+	try
+		{
+		$count = $this->DB->getColumn
+			('
+			SELECT
+				COUNT(*)
+			FROM
+				session
+			');
+		}
+	catch (DBNoDataException $e)
+		{
+		$count = 0;
+		}
+
+	return $count;
 	}
 
 public function isGroup($id)

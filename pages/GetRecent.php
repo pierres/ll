@@ -17,7 +17,8 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-class GetRecent extends GetFile{
+
+class GetRecent extends GetFile {
 
 private $init = false;
 
@@ -29,7 +30,7 @@ public function show()
 	{
 	try
 		{
-		$id = $this->Input->Request->getInt('id');
+		$id = $this->Input->Get->getInt('id');
 		}
 	catch (RequestException $e)
 		{
@@ -84,14 +85,14 @@ public function show()
 				$entries .=
 				'
 				<entry>
-					<id>'.$this->Input->getURL().'?page=Postings;id='.$this->Board->getId().';thread='.$thread['id'].'</id>
+					<id>'.$this->Output->createUrl('Postings', array('thread' => $thread['id'])).'</id>
 					<title>'.$thread['name'].'</title>
-					<link rel="alternate" type="text/html" href="'.$this->Input->getURL().'?page=Postings;id='.$this->Board->getId().';thread='.$thread['id'].';post=-1" />
+					<link rel="alternate" type="text/html" href="'.$this->Output->createUrl('page=Postings', array('thread' => $thread['id'], 'post' => '-1')).'" />
 					<updated>'.date('c', $thread['firstdate']).'</updated>
 					<summary>'.$thread['summary'].'</summary>
 					<author>
 						<name>'.$thread['firstusername'].'</name>
-						<uri>'.$this->Input->getURL().'?page=ShowUser;id='.$this->Board->getId().';user='.$thread['firstuserid'].'</uri>
+						<uri>'.$this->Output->createUrl('ShowUser', array('user' => $thread['firstuserid'])).'</uri>
 					</author>
 				</entry>
 				';
@@ -109,10 +110,10 @@ public function show()
 		$content =
 '<?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="de">
-	<id>'.$this->Input->getURL().'?page=GetRecent;id='.$this->Board->getId().'</id>
+	<id>'.$this->Output->createUrl('GetRecent').'</id>
 	<title>'.$this->Board->getName().'</title>
-	<link rel="self" type="application/atom+xml" href="'.$this->Input->getURL().'?page=GetRecent;id='.$this->Board->getId().'" />
-	<link rel="alternate" type="text/html" href="'.$this->Input->getURL().'?page=Forums;id='.$this->Board->getId().'" />
+	<link rel="self" type="application/atom+xml" href="'.$this->Output->createUrl('GetRecent').'" />
+	<link rel="alternate" type="text/html" href="'.$this->Output->createUrl('Forums').'" />
 	<updated>'.date('c', $lastdate).'</updated>
 	'.$entries.'
 </feed>';

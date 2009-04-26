@@ -17,7 +17,8 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-class CloseThread extends Form{
+
+class CloseThread extends Form {
 
 protected $forum 		= 0;
 protected $closed 		= false;
@@ -27,7 +28,7 @@ protected function setForm()
 	{
 	try
 		{
-		$this->thread = $this->Input->Request->getInt('thread');
+		$this->thread = $this->Input->Get->getInt('thread');
 		}
 	catch (RequestException $e)
 		{
@@ -59,14 +60,12 @@ protected function setForm()
 		$this->showFailure('Thema nicht gefunden!');
 		}
 
-	$this->setValue('title', 'Thema '.($this->closed ? 'öffnen' : 'schließen'));
+	$this->setTitle('Thema '.($this->closed ? 'öffnen' : 'schließen'));
 
-	$this->addHidden('thread', $this->thread);
-	$this->requires('thread');
+	$this->setParam('thread', $this->thread);
 
-	$this->addOutput('Soll das Thema wirklich ge'.($this->closed ? 'öffnet' : 'schlossen').' werden?');
-
-	$this->addSubmit('Thema '.($this->closed ? 'öffnen' : 'schließen'));
+	$this->add(new CheckboxInputElement('confirm', 'Bestätigung'));
+	$this->add(new SubmitButtonElement($this->getTitle()));
 	}
 
 protected function checkForm()
@@ -98,7 +97,7 @@ protected function sendForm()
 
 protected function redirect()
 	{
-	$this->Output->redirect('Postings', 'thread='.$this->thread);
+	$this->Output->redirect('Postings', array('thread' => $this->thread));
 	}
 
 }

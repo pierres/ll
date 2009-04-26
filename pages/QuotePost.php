@@ -19,7 +19,7 @@
 */
 require('NewPost.php');
 
-class QuotePost extends NewPost{
+class QuotePost extends NewPost {
 
 
 protected $title = 'Beitrag zitieren';
@@ -50,7 +50,7 @@ protected function checkInput()
 				AND posts.threadid = threads.id
 				AND posts.id = ?'
 			);
-		$stm->bindInteger($this->Input->Request->getInt('post'));
+		$stm->bindInteger($this->Input->Get->getInt('post'));
 		$data = $stm->getRow();
 		$stm->close();
 		}
@@ -71,14 +71,14 @@ protected function checkInput()
 	$this->forum = $data['forumid'];
 	$this->counter = $data['counter'];
 
-	$this->addHidden('post', $data['post']);
+	$this->setParam('post', $data['post']);
 	}
 
 protected function checkForm()
 	{
 	if (!$this->User->isOnline())
 		{
-		$text = preg_replace('/\s*<quote .+?>.+<\/quote>\s*/s', '', $this->Input->Request->getString('text'));
+		$text = preg_replace('/\s*<quote .+?>.+<\/quote>\s*/s', '', $this->Input->Post->getString('text'));
 		if (empty($text))
 			{
 			$this->showWarning('Du mußt auch selbst etwas dazu schreiben!');

@@ -22,10 +22,8 @@ class FunnyDot extends Modul implements IOutput{
 
 public function prepare()
 	{
-	$time = time();
-
-	$this->Output->setCookie('AntiSpamTime', $time);
-	$this->Output->setCookie('AntiSpamHash', sha1($time.$this->Settings->getValue('antispam_hash')));
+	$this->Output->setCookie('AntiSpamTime', $this->Input->getTime());
+	$this->Output->setCookie('AntiSpamHash', substr(sha1($this->Input->getTime().$this->Settings->getValue('antispam_hash')), 0, 4));
 	}
 
 public function show()
@@ -33,10 +31,10 @@ public function show()
 	header('HTTP/1.1 200 OK');
 	header("Cache-Control: no-cache, must-revalidate");
 	header('Content-Type: image/png');
-	header('Content-Length: 69');
+	header('Content-Length: 135');
 
 	/** transparent png (1px*1px) */
-	echo base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVQImWNgYGAAAAAEAAGjChXjAAAAAElFTkSuQmCC');
+	echo base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAAXNSR0IArs4c6QAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9gLFxMRGNZyzLoAAAACYktHRAD/h4/MvwAAAAtJREFUCB1j+M8AAAIBAQDFXxteAAAAAElFTkSuQmCC');
 
 	exit;
 	}

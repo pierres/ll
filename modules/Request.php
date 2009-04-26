@@ -28,35 +28,45 @@ public function __construct(&$request)
 	$this->request = &$request;
 	}
 
-public function isValid($name)
+public function isString($name)
 	{
 	return isset($this->request[$name]) && is_unicode($this->request[$name]);
 	}
 
-public function isEmpty($name)
-	{
-	return !$this->isValid($name) || (strlen($this->request[$name]) == 0);
-	}
-
 public function isEmptyString($name)
 	{
-	if(!$this->isEmpty($name))
-		{
-		$request = trim($this->request[$name]);
-		return empty($request);
-		}
-	else
-		{
-		return true;
-		}
+	return !$this->isString($name) || !$this->isRegex($name, '/\S+/');
 	}
 
-public function getString($name)
+public function isHex($name)
 	{
-	if ($this->isValid($name))
+	return $this->isRegex($name, '/^[a-f0-9]+$/i');
+	}
+
+public function isInt($name)
+	{
+	return $this->isRegex($name, '/^-?[0-9]+$/');
+	}
+
+public function isRegex($name, $regex)
+	{
+	return isset($this->request[$name]) && preg_match($regex, $this->request[$name]);
+	}
+
+public function getLength($name)
+	{
+	return $this->isEmptyString($name) ? 0 : strlen($this->request[$name]);
+	}
+
+public function getString($name, $default = false)
+	{
+	if (!$this->isEmptyString($name))
 		{
-		$this->request[$name] = trim($this->request[$name]);
 		return $this->request[$name];
+		}
+	elseif ($default !== false)
+		{
+		return $default;
 		}
 	else
 		{
@@ -64,32 +74,52 @@ public function getString($name)
 		}
 	}
 
-public function getInt($name)
+public function getInt($name, $default = false)
 	{
-	return intval($this->getString($name));
+	if ($this->isInt($name))
+		{
+		return $this->request[$name];
+		}
+	elseif ($default !== false)
+		{
+		return $default;
+		}
+	else
+		{
+		throw new RequestException($name);
+		}
 	}
 
-public function getHex($name)
+public function getHex($name, $default = false)
 	{
-	return hexVal($this->getString($name));
+	if ($this->isHex($name))
+		{
+		return $this->request[$name];
+		}
+	elseif ($default !== false)
+		{
+		return $default;
+		}
+	else
+		{
+		throw new RequestException($name);
+		}
 	}
 
-public function getHtml($name)
+public function getHtml($name, $default = false)
 	{
-	return htmlspecialchars($this->getString($name), ENT_COMPAT);
+	return htmlspecialchars($this->getString($name, $default), ENT_COMPAT);
 	}
 
 private function checkArray(&$value, $key)
 	{
-	if (!is_unicode($value))
+	if (!is_unicode($value) || !preg_match('/\S+/', $value))
 		{
 		throw new RequestException($key);
 		}
-
-	$value = trim($value);
 	}
 
-public function getArray($name)
+public function getArray($name, $default = false)
 	{
 	if(isset($this->request[$name]) && is_array($this->request[$name]))
 		{
@@ -97,15 +127,14 @@ public function getArray($name)
 
 		return $this->request[$name];
 		}
+	elseif ($default !== false)
+		{
+		return $default;
+		}
 	else
 		{
 		throw new RequestException($name);
 		}
-	}
-
-public function getLength($name)
-	{
-	return $this->isEmpty($name) ? 0 : strlen($this->getString($name));
 	}
 }
 
@@ -113,7 +142,7 @@ class RequestException extends RuntimeException {
 
 function __construct($message)
 	{
-	parent::__construct('Der Parameter "'.$message.'" wurde nicht übergeben.', 0);
+	parent::__construct('Der Parameter "'.$message.'" konnte nicht gelesen werden.', 0);
 	}
 
 }

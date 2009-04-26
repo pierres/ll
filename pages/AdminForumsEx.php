@@ -17,8 +17,8 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-class AdminForumsEx extends AdminForm{
 
+class AdminForumsEx extends AdminForm {
 
 private $cat = 0;
 
@@ -27,15 +27,15 @@ protected function setForm()
 	{
 	try
 		{
-		$this->cat = $this->Input->Request->getInt('cat');
+		$this->cat = $this->Input->Get->getInt('cat');
 		}
 	catch (RequestException $e)
 		{
 		$this->Output->redirect('AdminCats');
 		}
 
-	$this->setValue('title', 'Externe Foren hinzufügen');
-	$this->addSubmit('Hinzufügen');
+	$this->setTitle('Externe Foren hinzufügen');
+	$this->add(new SubmitButtonElement('Hinzufügen'));
 
 	try
 		{
@@ -75,14 +75,14 @@ protected function setForm()
 			{
 			if ($board != $forum['boardid'])
 				{
-				$this->addOutput('<div style="margin:8px"><strong>&#171; '.$forum['boardname'].' &#187;</strong></div>');
+				$this->add(new PassiveFormElement('<div style="margin:8px"><strong>&#171; '.$forum['boardname'].' &#187;</strong></div>'));
 				}
 			$board = $forum['boardid'];
 
-			$this->addOutput
+			$this->add(new PassiveFormElement
 				('
 				<input type="checkbox" name="forums[]" value="'.$forum['id'].'" />'.$forum['name'].'<br />
-				');
+				'));
 			}
 		$stm->close();
 		}
@@ -91,7 +91,7 @@ protected function setForm()
 		$stm->close();
 		}
 
-	$this->addHidden('cat', $this->cat);
+	$this->setParam('cat', $this->cat);
 	}
 
 protected function checkForm()
@@ -124,7 +124,7 @@ protected function sendForm()
 	{
 	try
 		{
-		$forums = $this->Input->Request->getArray('forums');
+		$forums = $this->Input->Post->getArray('forums');
 		}
 	catch (RequestException $e)
 		{
@@ -176,7 +176,7 @@ protected function sendForm()
 
 protected function redirect()
 	{
-	$this->Output->redirect('AdminForums', 'cat='.$this->cat);
+	$this->Output->redirect('AdminForums', array('cat' => $this->cat));
 	}
 
 

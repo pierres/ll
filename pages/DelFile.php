@@ -17,6 +17,7 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
+
 class DelFile extends Form {
 
 private $file = 0;
@@ -30,21 +31,19 @@ protected function setForm()
 
 	try
 		{
-		$this->file = $this->Input->Request->getInt('file');
+		$this->file = $this->Input->Get->getInt('file');
 		}
 	catch (RequestException $e)
 		{
 		$this->showFailure('Keine Datei angegeben!');
 		}
 
-	$this->setValue('title', 'Datei löschen');
+	$this->setTitle('Datei löschen');
 
-	$this->addHidden('file', $this->file);
-	$this->requires('file');
+	$this->setParam('file', $this->file);
 
-	$this->addOutput('Soll die Datei wirklich gelöscht werden?');
-
-	$this->addSubmit('Datei löschen');
+	$this->add(new CheckboxInputElement('confirm', 'Bestätigung'));
+	$this->add(new SubmitButtonElement($this->getTitle()));
 	}
 
 protected function checkForm()

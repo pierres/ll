@@ -17,7 +17,8 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-class Register extends Form{
+
+class Register extends Form {
 
 private $email = '';
 private $name = '';
@@ -25,29 +26,35 @@ private $name = '';
 
 protected function setForm()
 	{
-	$this->setValue('title', 'Registrieren');
+	$this->setTitle('Registrieren');
 
-	$this->addSubmit('Registrieren');
+	$this->add(new SubmitButtonElement('Registrieren'));
 
-	$this->addText('name', 'Dein Name', '', 50);
-	$this->requires('name');
-	$this->setLength('name', 3, 25);
-	$this->addElement('namehint', '<span style="font-size:10px;color:red;">Dieser Name wird öffentlich angezeigt.</span>');
+	$nameInput = new TextInputElement('name', '', 'Dein Name');
+	$nameInput->setMinLength(3);
+	$nameInput->setMaxLength(50);
+	$nameInput->setSize(50);
+	$nameInput->setHelp('Dieser Name wird öffentlich angezeigt.');
+	$this->add($nameInput);
 
-	$this->addText('email', 'Deine E-Mail-Adresse', '', 50);
-	$this->requires('email');
-	$this->setLength('email', 6, 50);
+	$emailInput = new TextInputElement('email', '', 'Deine E-Mail-Adresse');
+	$emailInput->setMinLength(6);
+	$emailInput->setMaxLength(50);
+	$emailInput->setSize(50);
+	$emailInput->setHelp('Achte auf die Gültigkeit dieser Adresse, da die Zugangsdaten dorthin verschickt werden.');
+	$this->add($emailInput);
 
-	$this->addElement('emailhint', '<span style="font-size:10px;color:red;">Achte auf die Gültigkeit dieser Adresse,<br /> da die Zugangsdaten dorthin verschickt werden.</span><br /><br />');
+	$this->add(new DividerElement());
 
-	$this->addCheckBox('confirmPrivacy', 'Ich bestätige die <a class="link" href="?page=Privacy;id='.$this->Board->getId().'">Datenschutzerklärung</a>');
-	$this->requires('confirmPrivacy');
+	$privacyInput = new CheckboxInputElement('confirmPrivacy', 'Datenschutz');
+	$privacyInput->setHelp('Bitte bestätige die <a href="'.$this->Output->createUrl('Privacy').'">Datenschutzerklärung</a>.');
+	$this->add($privacyInput);
 	}
 
 protected function checkForm()
 	{
-	$this->name = $this->Input->Request->getString('name');
-	$this->email = $this->Input->Request->getString('email');
+	$this->name = $this->Input->Post->getString('name');
+	$this->email = $this->Input->Post->getString('email');
 
 	if (!$this->Mail->validateMail($this->email))
 		{
@@ -94,7 +101,7 @@ protected function sendForm()
 	$stm->bindString(htmlspecialchars($this->name));
 	$stm->bindString($this->email);
 	$stm->bindString(sha1(generatePassword()));
-	$stm->bindInteger(time());
+	$stm->bindInteger($this->Input->getTime());
 	$stm->execute();
 	$stm->close();
 
@@ -123,7 +130,7 @@ protected function sendForm()
 		);
 	$stm->bindInteger($userid);
 	$stm->bindString($key);
-	$stm->bindInteger(time());
+	$stm->bindInteger($this->Input->getTime());
 	$stm->execute();
 	$stm->close();
 
@@ -135,7 +142,7 @@ protected function sendForm()
 
 Deine Registrierung bei "'.$this->Board->getName().'" war erfolgreich.
 Du kannst Dein Passwort ändern, wenn Du folgende Seite besuchst:
-'.$this->Input->getURL().'?id='.$this->Board->getId().';page=ChangePasswordKey;userid='.$userid.';key='.$key.'
+'.$this->Output->createUrl('ChangePasswordKey').'
 
 Sollte obiger Link bei Deinem Mail-Programm nicht funktionieren,
 so wähle im Anmelde-Dialog die Option "Passwort setzen" und gebe folgende Daten an:
@@ -147,30 +154,8 @@ Schlüssel:	'.$key.'
 ');
 	$this->Mail->send();
 
-
-	$body =
-		'
-		<table class="frame">
-			<tr>
-				<td class="title">
-					Registrierung erfolgreich
-				</td>
-			</tr>
-			<tr>
-				<td class="main">
-					Willkommen bei <strong>'.$this->Board->getName().'</strong>, '.htmlspecialchars($this->name).'!
-					<p>
-					Es wurde ein Aktivierungsschlüssel an <em>'.htmlspecialchars($this->email).'</em> geschickt. Mit diesem kannst Du Dein Passwort einrichten.
-					</p>
-				</td>
-			</tr>
-		</table>
-		';
-
-	$this->setValue('title', 'Registrierung erfolgreich');
-	$this->setValue('body', $body);
+ 	$this->Output->redirect('Login');
 	}
-
 
 }
 

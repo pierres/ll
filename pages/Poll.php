@@ -17,29 +17,28 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-/** FIXME: Nicht geschützt via Form */
-class SubmitPoll extends Page{
 
-private $id 		= 0;
-private $target 	= '';
+class Poll extends Form {
+
+private $thread = 0;
+private $target = 'Postings';
 
 
-public function prepare()
+protected function setForm()
 	{
-	$this->target = ($this->Input->Request->isValid('target') ? $this->Input->Request->getString('target') : 'Postings');
-
 	try
 		{
-		$this->id = $this->Input->Request->getInt('thread');
+		$this->thread = $this->Input->Get->getInt('thread');
+		$this->target = $this->Input->Get->getString('target') == 'PrivatePostings' ? 'PrivatePostings' : 'Postings';
 		}
 	catch (RequestException $e)
 		{
-		$this->showWarning('Kein Thema angegeben.');
+		$this->showFailure($this->L10n->getText('No topic specified.'));
 		}
-	
-	if ($this->Input->Request->isValid('result'))
+
+	if (!$this->User->isOnline())
 		{
-		$this->reload();
+		$this->showFailure('Nur für Mitglieder');
 		}
 
 	try
@@ -53,7 +52,7 @@ public function prepare()
 			WHERE
 				id = ?'
 			);
-		$stm->bindInteger($this->id);
+		$stm->bindInteger($this->thread);
 		$forum = $stm->getColumn();
 		$stm->close();
 
@@ -70,7 +69,7 @@ public function prepare()
 					AND threadid = ?'
 				);
 			$stm->bindInteger($this->User->getId());
-			$stm->bindInteger($this->id);
+			$stm->bindInteger($this->thread);
 			$stm->getColumn();
 			$stm->close();
 			}
@@ -78,45 +77,81 @@ public function prepare()
 		$stm = $this->DB->prepare
 			('
 			SELECT
-				id
+				question
 			FROM
 				polls
 			WHERE
 				id = ?'
 			);
-		$stm->bindInteger($this->id);
-		$stm->getColumn();
+		$stm->bindInteger($this->thread);
+		$question = $stm->getColumn();
+		$stm->close();
+
+		$stm = $this->DB->prepare
+			('
+			SELECT
+				value,
+				id
+			FROM
+				poll_values
+			WHERE
+				pollid = ?
+			ORDER BY
+				id ASC
+			');
+		$stm->bindInteger($this->thread);
+
+		$inputRadio = new RadioInputElement('option', 'Optionen');
+		foreach ($stm->getRowSet() as $option)
+			{
+			$inputRadio->addOption($option['value'], $option['id']);
+			}
+		$this->add($inputRadio);
 		$stm->close();
 		}
 	catch (DBNoDataException $e)
 		{
+		$stm->close();
 		$this->Output->setStatus(Output::NOT_FOUND);
 		$this->setValue('meta.robots', 'noindex,nofollow');
 		$this->showWarning('Keine Umfrage gefunden.');
 		}
+
+	$this->setTitle($question);
+	$this->add(new SubmitButtonElement('Abstimmen'));
+
+	$this->setParam('thread', $this->thread);
+	$this->setParam('target', $this->target);
 	}
 
-protected function reload()
+protected function checkForm()
 	{
-	$this->Output->redirect($this->target, 'thread='.$this->id.($this->Input->Request->isValid('result') ? ';result' : ''));
-	}
-
-public function show()
-	{
-	if ($this->hasVoted())
-		{
-		$this->reload();
-		}
-
 	try
 		{
-		$valueid = $this->Input->Request->getInt('valueid');
+		$stm = $this->DB->prepare
+			('
+			SELECT
+				userid
+			FROM
+				poll_voters
+			WHERE
+				pollid = ?
+				AND userid = ?'
+			);
+		$stm->bindInteger($this->thread);
+		$stm->bindInteger($this->User->getId());
+		$stm->getColumn();
+		$stm->close();
+		$this->showWarning('Du hast bereits abgestimmt!');
 		}
-	catch (RequestException $e)
+	catch (DBNoDataException $e)
 		{
-		$this->reload();
+		$stm->close();
 		}
+	}
 
+protected function sendForm()
+	{
 	$stm = $this->DB->prepare
 		('
 		INSERT INTO
@@ -125,7 +160,7 @@ public function show()
 			pollid = ?,
 			userid = ?'
 		);
-	$stm->bindInteger($this->id);
+	$stm->bindInteger($this->thread);
 	$stm->bindInteger($this->User->getId());
 	$stm->execute();
 	$stm->close();
@@ -140,44 +175,17 @@ public function show()
 			id = ?
 			AND pollid = ?'
 		);
-	$stm->bindInteger($valueid);
-	$stm->bindInteger($this->id);
+	$stm->bindInteger($this->Input->Post->getInt('option'));
+	$stm->bindInteger($this->thread);
 	$stm->execute();
 	$stm->close();
 
-	$this->reload();
+	$this->redirect();
 	}
 
-private function hasVoted()
+protected function redirect()
 	{
-	if (!$this->User->isOnline())
-		{
-		return true;
-		}
-
-	try
-		{
-		$stm = $this->DB->prepare
-			('
-			SELECT
-				userid
-			FROM
-				poll_voters
-			WHERE
-				pollid = ?
-				AND userid = ?'
-			);
-		$stm->bindInteger($this->id);
-		$stm->bindInteger($this->User->getId());
-		$stm->getColumn();
-		$stm->close();
-		return true;
-		}
-	catch (DBNoDataException $e)
-		{
-		$stm->close();
-		return false;
-		}
+	$this->Output->redirect($this->target, array('thread' => $this->thread));
 	}
 
 }

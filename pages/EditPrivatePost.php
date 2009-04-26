@@ -19,7 +19,7 @@
 */
 require('NewPrivatePost.php');
 
-class EditPrivatePost extends NewPrivatePost{
+class EditPrivatePost extends NewPrivatePost {
 
 protected $post 	= 0;
 protected $title 	= 'Beitrag bearbeiten';
@@ -29,8 +29,8 @@ protected function checkInput()
 	{
 	try
 		{
-		$this->post = $this->Input->Request->getInt('post');
-		$this->addHidden('post', $this->post);
+		$this->post = $this->Input->Get->getInt('post');
+		$this->setParam('post', $this->post);
 		}
 	catch (RequestException $e)
 		{
@@ -108,7 +108,7 @@ protected function sendForm()
 			id = ?'
 		);
 	$stm->bindString($this->text);
-	$stm->bindInteger($this->time);
+	$stm->bindInteger($this->Input->getTime());
 	$stm->bindInteger($this->User->getId());
 	$stm->bindInteger($this->smilies ? 1 : 0);
 	$stm->bindInteger($this->post);
@@ -122,7 +122,7 @@ protected function sendForm()
 
 protected function sendFile($postid)
 	{
-	if($this->User->isOnline() && $this->Input->Request->isValid('addfile'))
+	if($this->User->isOnline() && $this->Input->Post->isString('addfile'))
 		{
 		$stm = $this->DB->prepare
 			('

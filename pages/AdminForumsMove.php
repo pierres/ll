@@ -17,7 +17,8 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-class AdminForumsMove extends AdminForm{
+
+class AdminForumsMove extends AdminForm {
 
 private $cat = 0;
 private $forum = 0;
@@ -26,7 +27,7 @@ protected function setForm()
 	{
 	try
 		{
-		$this->forum = $this->Input->Request->getInt('forum');
+		$this->forum = $this->Input->Get->getInt('forum');
 		}
 	catch (RequestException $e)
 		{
@@ -58,9 +59,9 @@ protected function setForm()
 		$this->Output->redirect('AdminCats');
 		}
 
-	$this->setValue('title', 'Forum verschieben');
+	$this->setTitle('Forum verschieben');
 
-	$this->addSubmit('Verschieben');
+	$this->add(new SubmitButtonElement('Verschieben'));
 
 	try
 		{
@@ -78,14 +79,13 @@ protected function setForm()
 		$stm->bindInteger($this->cat);
 		$stm->bindInteger($this->Board->getId());
 
+		$inputRadio = new RadioInputElement('newcat', 'Ziel');
 		foreach ($stm->getRowSet() as $cat)
 			{
-			$this->addOutput
-				('
-				<input type="radio" name="newcat" value="'.$cat['id'].'" />'.$cat['name'].'
-				<br />
-				');
+			$inputRadio->addOption('<strong>'.$cat['board'].'</strong> '.$cat['name'], $cat['id']);
 			}
+		$this->add($inputRadio);
+
 		$stm->close();
 		}
 	catch (DBNoDataException $e)
@@ -93,7 +93,7 @@ protected function setForm()
 		$stm->close();
 		}
 
-	$this->addHidden('forum', $this->forum);
+	$this->setParam('forum', $this->forum);
 	}
 
 protected function checkForm()
@@ -110,7 +110,7 @@ protected function checkForm()
 				id = ?
 				AND boardid = ?'
 			);
-		$stm->bindInteger($this->Input->Request->getInt('newcat'));
+		$stm->bindInteger($this->Input->Post->getInt('newcat'));
 		$stm->bindInteger($this->Board->getId());
 		$stm->getColumn();
 		$stm->close();
@@ -139,7 +139,7 @@ protected function sendForm()
 			catid = ?
 			AND forumid = ?'
 		);
-	$stm->bindInteger($this->Input->Request->getInt('newcat'));
+	$stm->bindInteger($this->Input->Post->getInt('newcat'));
 	$stm->bindInteger($this->cat);
 	$stm->bindInteger($this->forum);
 	$stm->execute();
@@ -150,7 +150,7 @@ protected function sendForm()
 
 protected function redirect()
 	{
-	$this->Output->redirect('AdminForums', 'cat='.$this->Input->Request->getInt('newcat'));
+	$this->Output->redirect('AdminForums', array('cat' => $this->Input->Post->getInt('newcat')));
 	}
 
 

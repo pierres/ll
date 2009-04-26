@@ -17,7 +17,8 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-class ChangePassword extends Form{
+
+class ChangePassword extends Form {
 
 private $newpassword	= '';
 private $password 	= '';
@@ -31,26 +32,32 @@ protected function setForm()
 		$this->showFailure('Nur für Mitglieder!');
 		}
 
-	$this->setValue('title', 'Passwort ändern');
+	$this->setTitle('Passwort ändern');
 
-	$this->addSubmit('Ändern');
+	$this->add(new SubmitButtonElement('Ändern'));
 
-	$this->addPassword('password', 'Dein Passwort', '', 25);
-	$this->requires('password');
-	$this->setLength('password', 6, 25);
+	$passwordInput = new PasswordInputElement('password', 'Dein Passwort');
+	$passwordInput->setMinLength(6);
+	$passwordInput->setMaxLength(25);
+	$passwordInput->setSize(25);
+	$this->add($passwordInput);
 
-	$this->addPassword('newpassword', 'Dein neues Passwort', '', 25);
-	$this->requires('newpassword');
-	$this->setLength('newpassword', 6, 25);
+	$newpasswordInput = new PasswordInputElement('newpassword', 'Dein neues Passwort');
+	$newpasswordInput->setMinLength(6);
+	$newpasswordInput->setMaxLength(25);
+	$newpasswordInput->setSize(25);
+	$this->add($newpasswordInput);
 
-	$this->addPassword('confirm', 'Nocheinmal Dein neues Passwort', '', 25);
-	$this->requires('confirm');
-	$this->setLength('confirm', 6, 25);
+	$confirmInput = new PasswordInputElement('confirm', 'Passwort bestätigen');
+	$confirmInput->setMinLength(6);
+	$confirmInput->setMaxLength(25);
+	$confirmInput->setSize(25);
+	$this->add($confirmInput);
 	}
 
 protected function checkForm()
 	{
-	$this->password = sha1($this->Input->Request->getString('password'));
+	$this->password = sha1($this->Input->Post->getString('password'));
 
 	try
 		{
@@ -75,9 +82,9 @@ protected function checkForm()
 		$this->showWarning('Passwort ist falsch');
 		}
 
-	$this->newpassword = sha1($this->Input->Request->getString('newpassword'));
+	$this->newpassword = sha1($this->Input->Post->getString('newpassword'));
 
-	if ($this->newpassword != sha1($this->Input->Request->getString('confirm')))
+	if ($this->newpassword != sha1($this->Input->Post->getString('confirm')))
 		{
 		$this->showWarning('Du hast Dich vertippt!');
 		}
@@ -99,7 +106,7 @@ protected function sendForm()
 	$stm->execute();
 	$stm->close();
 
-	if($this->Input->Request->isValid('cookiepw') && $this->Input->Request->getHex('cookiepw') == $this->password)
+	if($this->Input->Cookie->isString('cookiepw') && $this->Input->Cookie->getHex('cookiepw') == $this->password)
 		{
 		$this->Output->setCookie('cookiepw', sha1($this->Settings->getValue('cookie_hash').$this->newpassword));
 		}

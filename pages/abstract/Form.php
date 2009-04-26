@@ -17,27 +17,25 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-abstract class Form extends Page{
 
+require ('pages/abstract/FormElements.php');
 
-protected $elements 	= array();
-protected $descriptions = array();
-protected $buttons 	= array();
-protected $hidden 	= array();
+abstract class Form extends Page {
 
-protected $warning	= array();
-protected $required 	= array();
+protected $hiddenElements	= array();
+protected $inputElements	= array();
+protected $buttonElements 	= array();
 
-protected $focus	= '';
+protected $warning		= array();
 
-private $encoding 	= '';
-private $request	= '';
-private $method		= 'post';
+protected $focus		= '';
 
-private $tail		= '';
+private $encoding 		= '';
+private $method			= 'post';
+private $params			= array();
 
-private $isCheckSecurityToken = true;
-private $isCheckAntiSpamHash = true;
+private $isCheckSecurityToken 	= true;
+private $isCheckAntiSpamHash 	= true;
 
 
 public function prepare()
@@ -45,33 +43,55 @@ public function prepare()
 	$this->setValue('meta.robots', 'noindex,nofollow');
 	$this->setForm();
 
-	if ($this->Input->Request->isValid('submit') && count($this->warning) == 0)
+	if ($this->isCheckAntiSpamHash && !$this->User->isOnline())
 		{
-		$this->checkAntiSpamHash();
-		$this->checkSecurityToken();
-		$this->checkForm();
+		$this->add(new AntiSpamElement());
+		}
 
-		if (count($this->warning) == 0)
-			{
-			$this->sendForm();
-			}
-		else
-			{
-			$this->showForm();
-			}
-		}
-	else
+	if ($this->isCheckSecurityToken && $this->User->isOnline())
 		{
-		$this->showForm();
+		$this->add(new SecurityTokenElement($this->getName()));
 		}
+
+	if ($this->Input->Post->isString('submit') && count($this->warning) == 0)
+		{
+		$this->validateForm();
+		if(count($this->warning) == 0)
+			{
+			$this->checkForm();
+			if(count($this->warning) == 0)
+				{
+				$this->sendForm();
+				}
+			}
+		}
+
+	$this->showForm();
 	}
 
-protected function setForm()
+abstract protected function setForm();
+
+private function validateForm()
 	{
-	if (empty($this->buttons['submit']))
+	$valid = true;
+
+	foreach (array_merge($this->hiddenElements, $this->inputElements) as $element)
 		{
-		$this->addSubmit('Abschicken');
+		if ($element instanceof ActiveFormElement)
+			{
+			try
+				{
+				$element->validate();
+				}
+			catch (FormElementException $e)
+				{
+				$this->showWarning($e->getMessage());
+				$valid = false;
+				}
+			}
 		}
+
+	return $valid;
 	}
 
 public function setMethod($method)
@@ -79,132 +99,14 @@ public function setMethod($method)
 	$this->method = $method;
 	}
 
-private function addSecurityToken()
+public function setEncoding($encoding)
 	{
-	if ($this->isCheckSecurityToken && $this->User->isOnline())
-		{
-		$this->addHidden('SecurityToken', sha1($this->getName().$this->User->getNextSecurityToken()));
-		}
+	$this->encoding = $encoding;
 	}
 
 protected function isCheckSecurityToken($bool = true)
 	{
 	$this->isCheckSecurityToken = $bool;
-	}
-
-private function checkSecurityToken()
-	{
-	if ($this->isCheckSecurityToken && $this->User->isOnline())
-		{
-		try
-			{
-			$token = $this->Input->Request->getHex('SecurityToken');
-			}
-		catch (RequestException $e)
-			{
-			$this->showFailure('Sicherheitsverletzung: Aktion nicht erlaubt!');
-			}
-
-		if (sha1($this->getName().$this->User->getSecurityToken()) != $token)
-			{
-			$this->showWarning('Sicherheitswarnung: Ungültiger Schlüssel!');
-			}
-		else
-			{
-			// dies verwirft das aktuelle Token
-			$this->User->getNextSecurityToken();
-			}
-		}
-	}
-
-private function checkAntiSpamHash()
-	{
-	if ($this->isCheckAntiSpamHash && !$this->User->isOnline())
-		{
-		$now = time();
-
-		try
-			{
-			$time = $this->Input->Cookie->getInt('AntiSpamTime');
-			$hash = $this->Input->Cookie->getHex('AntiSpamHash');
-			}
-		catch (RequestException $e)
-			{
-			try
-				{
-				$time = $this->Input->Cookie->getInt('AlternateAntiSpamTime');
-
-				if ($this->Input->Request->isEmpty('AlternateAntiSpamHashHead'))
-					{
-					return $this->showWarning('Bitte den Sicherheitscode bestätigen!');
-					}
-
-				$hash = $this->Input->Cookie->getHex('AlternateAntiSpamHashHead').$this->Input->Request->getHex('AlternateAntiSpamHashTail');
-				}
-			catch (RequestException $e)
-				{
-				sleep($this->Settings->getValue('antispam_wait'));
-				$this->showFailure('Ungültige Formulardaten empfangen. Stelle sicher, daß Cookies für diese Domain angenommen werden.');
-				}
-			}
-
-		if ($hash != sha1($time.$this->Settings->getValue('antispam_hash')))
-			{
-			sleep($this->Settings->getValue('antispam_wait'));
-			$this->showFailure('Fehlerhafte Formulardaten empfangen. Überprüfe den Sicherheitscode!');
-			}
-
-		if ($now - $time > $this->Settings->getValue('antispam_timeout'))
-			{
-			$this->showWarning('Deine Zeit ist abgelaufen. Schicke das Formular bitte erneut ab, und zwar innherlab der nächsten '.$this->Settings->getValue('antispam_timeout').' Sekunden.');
-			}
-		elseif ($now - $time < $this->Settings->getValue('antispam_wait'))
-			{
-			sleep($this->Settings->getValue('antispam_wait'));
-			$this->showWarning('Du warst zu schnell. Schicke das Formular bitte erneut ab. Laße Dir diesmal mindestens '.$this->Settings->getValue('antispam_wait').' Sekunden Zeit.');
-			}
-		}
-	}
-
-private function addAntiSpamHash()
-	{
-	if ($this->isCheckAntiSpamHash && !$this->User->isOnline())
-		{
-		$this->addAlternateAntiSpamHash();
-
-		$this->appendOutput('<div style="background-image:url(?page=FunnyDot);background-repeat:no-repeat;visibility:hidden;width:1px;height:1px;">&nbsp;</div>');
-		}
-	}
-
-private function addAlternateAntiSpamHash()
-	{
-	try
-		{
-		$hashHead = $this->Input->Cookie->getHex('AlternateAntiSpamHashHead');
-
-		if ($this->Input->Cookie->isEmptyString('AlternateAntiSpamHashHead'))
-			{
-			throw new RequestException('AlternateAntiSpamHashHead');
-			}
-
-		$time = $this->Input->Cookie->getInt('AlternateAntiSpamTime');
-		}
-	catch (RequestException $e)
-		{
-		$hashHead = '';
-		$time = time();
-		}
-
-	$hash = sha1($time.$this->Settings->getValue('antispam_hash'));
-	$this->Output->setCookie('AlternateAntiSpamTime', $time);
-	$this->Output->setCookie('AlternateAntiSpamHashTail', substr($hash, 4));
-
-
-	$name = 'AlternateAntiSpamHashHead';
-	$description = 'Sicherheitscode bestätigen: <strong>'.substr($hash, 0, 4).'</strong>';
-
-	$this->addElement($name, '<div style="display:none;"><label for="'.$this->getNextElementId().'">'.$description.'</label><br /><input id="'.$this->getNextElementId().'" type="text" name="'.$name.'" size="4" value="'.$hashHead.'" /></div>');
-	$this->descriptions[$name] = $description;
 	}
 
 protected function isCheckAntiSpamHash($bool = true)
@@ -218,252 +120,95 @@ protected function checkForm()
 
 protected function showForm()
 	{
-	$this->addAntiSpamHash();
-	$this->addSecurityToken();
+	$body = '
+	<div id="brd-main" class="main">
 
-	$body =
-		$this->getWarning().'
-		<form '.$this->encoding.' method="'.$this->method.'" action="?page='.$this->getName().';id='.$this->Board->getId().$this->request.'">
-			<table class="frame">
-				<tr>
-					<td class="title">
-						'.$this->getValue('title').'
-					</td>
-				</tr>
-				<tr>
-					<td class="main">
-						'.implode('', $this->elements).'
-					</td>
-				</tr>
-				<tr>
-					<td class="main">
-						'.implode('', $this->hidden)
-						.implode(' ', $this->buttons).'
-						&nbsp;&nbsp;
-						<input accesskey="r" class="button" type="reset" name="reset" value="Zurücksetzen" />
-					</td>
-				</tr>
-			</table>
+		<h1><span>'.$this->getTitle().'</span></h1>
+
+		<div class="main-head">
+			<h2><span>'.$this->getTitle().'</span></h2>
+		</div>
+
+		<div class="main-content frm">
+		'.$this->getWarning().'
+		<form '.$this->encoding.' method="'.$this->method.'" action="'.$this->Output->createUrl($this->getName(), $this->params).'" class="frm-form">
+			<div class="hidden">
+				'.implode(' ', $this->hiddenElements).'
+			</div>
+			<fieldset class="frm-set set1">
+				'.implode(' ', $this->inputElements).'
+			</fieldset>
+			<div class="frm-buttons">
+				'.implode(' ', $this->buttonElements).'
+			</div>
 		</form>
 		<script type="text/javascript">
 			/* <![CDATA[ */
 			document.getElementById("'.$this->focus.'").focus();
 			/* ]]> */
 		</script>
-		'.$this->tail;
+		</div>
+	</div>';
 
-	$this->setValue('body', $body);
+	$this->setBody($body);
 	}
 
-protected function appendOutput($text)
+protected function add(FormElement $element)
 	{
-	$this->tail .= $text;
-	}
-
-protected function sendForm()
-	{
-	}
-
-protected function redirect()
-	{
-	}
-
-protected function addOutput($value)
-	{
-	$this->elements[] = $value;
-	}
-
-protected function addElement($name,  $value)
-	{
-	$this->elements[$name] = '<div>'.$value.'</div>';
-	}
-
-private function getNextElementId()
-	{
-	return 'id-'.count($this->elements);
-	}
-
-protected function addButton($name, $value)
-	{
-	$this->buttons[$name] = '<input class="button" type="submit" name="'.$name.'" value="'.$value.'" />';
-	return $name;
-	}
-
-protected function addSubmit($value)
-	{
-	$this->buttons['submit'] = '<input accesskey="s" class="button" type="submit" name="submit" value="'.$value.'" />';
-
-	return 'submit';
-	}
-
-protected function isSubmit()
-	{
-	foreach ($this->buttons as $name => $value)
+	if ($element instanceof HiddenElement)
 		{
-		if ($this->Input->Request->isValid($name))
-			{
-			return true;
-			}
+		$this->hiddenElements[] = $element;
 		}
-
-	return false;
-	}
-
-protected function addFile($name, $description, $cols = 50)
-	{
-	$this->addHidden('MAX_FILE_SIZE', $this->Settings->getValue('file_size'));
-	/** Workaround for PHP-"Bug". See http://de3.php.net/manual/en/ini.core.php#ini.post-max-size */
-	$this->request .= ';fileUploadCheck'.$name.'=1';
-
-	if ($this->Input->Request->isValid('fileUploadCheck'.$name) && empty($_POST) && empty($_FILES))
+	elseif ($element instanceof ButtonElement)
 		{
-		$this->showWarning('Die Datei ist größer als '.ini_get('upload_max_filesize').'Byte.');
+		$this->buttonElements[] = $element;
 		}
-
-	$this->setFocus();
-	$this->addElement($name, '<label for="'.$this->getNextElementId().'">'.$description.'</label><br /><input id="'.$this->getNextElementId().'" type="file" name="'.$name.'" size="'.$cols.'" />');
-	$this->descriptions[$name] = $description;
-
-	$this->encoding = 'enctype="multipart/form-data"';
-
-	return $name;
-	}
-
-protected function addCheckbox($name, $description, $checked = false)
-	{
-	if ($this->isSubmit())
+	else
 		{
-		$checked = $this->Input->Request->isValid($name);
-		}
-
-	$this->addElement($name, '<input type="checkbox" id="'.$this->getNextElementId().'" name="'.$name.'"'.($checked ? ' checked="checked"' : '').' /><label for="'.$this->getNextElementId().'">'.$description.'</label>');
-	$this->descriptions[$name] = $description;
-
-	return $name;
-	}
-
-protected function addRadio($name, $description, $array, $default = '')
-	{
-	$elements = '';
-
-	foreach ($array as $key => $value)
-		{
-		if ($this->isSubmit() && $this->Input->Request->isValid($name))
-			{
-			$checked = ($this->Input->Request->getString($name) == $value);
-			}
-		else
-			{
-			$checked = ($default == $value);
-			}
-
-		$elements .= '<input type="radio" name="'.$name.'"'.($checked ? ' checked="checked"' : '').' value="'.$value.'" />'.$key.'<br />';
-		}
-
-	$this->addElement($name, '<fieldset><legend>'.$description.'</legend>'.$elements.'</fieldset>');
-	$this->descriptions[$name] = $description;
-
-	return $name;
-	}
-
-protected function addHidden($name, $value)
-	{
-	$this->hidden[$name] = '<input type="hidden" name="'.$name.'" value="'.$value.'" />';
-	return $name;
-	}
-
-protected function addTextarea($name, $description = '', $text = '', $cols = 80, $rows = 20)
-	{
-	try
-		{
-		$text = $this->Input->Request->getString($name);
-		}
-	catch (RequestException $e)
-		{
-		}
-
-	$this->setFocus();
-	$this->addElement($name, '<label for="'.$this->getNextElementId().'">'.$description.'</label><br /><textarea id="'.$this->getNextElementId().'" name="'.$name.'" cols="'.$cols.'" rows="'.$rows.'">'.htmlspecialchars($text).'</textarea>');
-	$this->descriptions[$name] = $description;
-
-	return $name;
-	}
-
-protected function addText($name, $description = '', $text = '', $cols = 80)
-	{
-	try
-		{
-		$text = $this->Input->Request->getString($name);
-		}
-	catch (RequestException $e)
-		{
-		}
-
-	$this->setFocus();
-	$this->addElement($name, '<label for="'.$this->getNextElementId().'">'.$description.'</label><br /><input id="'.$this->getNextElementId().'" type="text" name="'.$name.'" size="'.$cols.'" value="'.htmlspecialchars($text).'" />');
-	$this->descriptions[$name] = $description;
-
-	return $name;
-	}
-
-protected function addPassword($name, $description = '', $text = '', $cols = 80)
-	{
-	try
-		{
-		$text = $this->Input->Request->getString($name);
-		}
-	catch (RequestException $e)
-		{
-		}
-
-	$this->setFocus();
-	$this->addElement($name,  '<label for="'.$this->getNextElementId().'">'.$description.'</label><br /><input id="'.$this->getNextElementId().'" type="password" name="'.$name.'" size="'.$cols.'" value="'.htmlspecialchars($text).'" />');
-	$this->descriptions[$name] = $description;
-
-	return $name;
-	}
-
-protected function requires($name)
-	{
-	if ($this->isSubmit() && $this->Input->Request->isEmpty($name))
-		{
-		if (isset($this->elements[$name]))
-			{
-			$this->showWarning('Das Feld "'.$this->descriptions[$name].'" muß noch ausgefüllt werden!');
-			// ich war das nicht ;-)
-			$this->elements[$name] = preg_replace('/<\w+? /', '$0style="border-color:red" ', $this->elements[$name]);
-			}
-		else
-			{
-			$this->showWarning('Ich weiß, daß ich nichts weiß.');
-			}
+		$this->inputElements[] = $element;
 		}
 	}
 
-protected function setLength($name, $min, $max)
+protected function setParam($key, $value)
 	{
-	if ($this->isSubmit() && !$this->Input->Request->isEmptyString($name))
-		{
-		$length = strlen($this->Input->Request->getHTML($name));
-
-		if ($length > 0 && $length < $min)
-			{
-			$this->showWarning('Im Feld "'.$this->descriptions[$name].'" fehlen noch '.($min-$length).' Zeichen.');
-			$this->elements[$name] = preg_replace('/<\w+? /', '$0style="border-color:yellow" ', $this->elements[$name]);
-			}
-		// Workaround for Bug #1 (will not Work for Markup!)
-		elseif ($length > $max)
-		//elseif ($this->Input->Request->getLength($name) > $max)
-			{
-			$this->showWarning('Im Feld "'.$this->descriptions[$name].'" sind '.($length-$max).' Zeichen zuviel.');
-			$this->elements[$name] = preg_replace('/<\w+? /', '$0style="border-color:orange" ', $this->elements[$name]);
-			}
-		}
+	$this->params[$key] = $value;
 	}
+
+abstract protected function sendForm();
+
+// protected function isSubmit()
+// 	{
+// 	foreach ($this->buttonElements as $name => $value)
+// 		{
+// 		if ($this->Input->Post->isString($name))
+// 			{
+// 			return true;
+// 			}
+// 		}
+// 
+// 	return false;
+// 	}
 
 protected function getWarning()
 	{
-	return (empty($this->warning) ? '' : '<div class="warning">'.implode('<br />', $this->warning).'</div>');
+	if (!empty($this->warning))
+		{
+		$warning =
+			'
+			<div id="req-msg" class="frm-error">
+				<h3 class="warn">Warnung</h3>
+				<ul>
+					<li>'.implode('</li><li>', $this->warning).'</li>
+				</ul>
+			</div>
+			';
+		}
+	else
+		{
+		$warning = '';
+		}
+
+	return $warning;
 	}
 
 protected function showWarning($text)
@@ -471,13 +216,13 @@ protected function showWarning($text)
 	$this->warning[] = $text;
 	}
 
-private function setFocus()
-	{
-	if(empty($this->focus))
-		{
-		$this->focus = $this->getNextElementId();
-		}
-	}
+// private function setFocus()
+// 	{
+// 	if(empty($this->focus))
+// 		{
+// 		$this->focus = FormElement::getNextElementId();
+// 		}
+// 	}
 
 }
 

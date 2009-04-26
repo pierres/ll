@@ -20,21 +20,26 @@
 
 class Output extends Modul {
 
-private $contentType 	= 'Content-Type: text/html; charset=UTF-8';
-private $status		= 'HTTP/1.1 200 OK';
+private $contentType = 'text/html; charset=UTF-8';
+private $status = 'HTTP/1.1 200 OK';
+private $outputSeparator = '&';
+private $outputSeparatorHtml = '&amp;';
 
-const NOT_FOUND		= 'HTTP/1.1 404 Not Found';
-const OK		= 'HTTP/1.1 200 OK';
-const FOUND		= 'HTTP/1.1 302 Found';
+const NOT_FOUND	= 'HTTP/1.1 404 Not Found';
+const OK = 'HTTP/1.1 200 OK';
+const FOUND = 'HTTP/1.1 302 Found';
 
 
 function __construct()
 	{
+	$this->outputSeparator = ini_get('arg_separator.output');
+	$this->outputSeparatorHtml = htmlspecialchars($this->outputSeparator);
+
 	try
 		{
 		if (strpos($this->Input->Server->getString('HTTP_ACCEPT'), 'application/xhtml+xml') !== false)
 			{
-			$this->contentType = 'Content-Type: application/xhtml+xml; charset=UTF-8';
+			$this->contentType = 'application/xhtml+xml; charset=UTF-8';
 			}
 		}
 	catch (RequestException $e)
@@ -50,6 +55,11 @@ public function setStatus($code)
 public function setContentType($type)
 	{
 	$this->contentType = $type;
+	}
+
+public function getContentType()
+	{
+	return $this->contentType;
 	}
 
 public function setOutputHandler($handler)
@@ -68,13 +78,13 @@ private function writeHeader($string)
 
 public function setCookie($key, $value, $expire = 0)
 	{
-	setcookie($key, $value, $expire, '', '', $this->Input->Server->isValid('HTTPS'), true);
+	setcookie($key, $value, $expire, '', '', $this->Input->Server->isString('HTTPS'), true);
 	}
 
 public function writeOutput(&$text)
 	{
 	$this->writeHeader ($this->status);
-	$this->writeHeader ($this->contentType);
+	$this->writeHeader ('Content-Type: '.$this->contentType);
 
 	try
 		{
@@ -95,12 +105,9 @@ public function writeOutput(&$text)
 	exit();
 	}
 
-public function redirect($class, $param = '', $id = 0)
+public function redirect($page, $options = array())
 	{
-	$param = (!empty($param) ? ';'.$param : '');
-
-	$this->writeHeader (Output::FOUND);
-	$this->redirectToUrl($this->Input->getURL().'?id='.($id == 0 ? $this->Board->getId() : $id).';page='.$class.$param);
+	$this->redirectToUrl($this->createUrl($page, $options, false));
 	}
 
 /** FIXME: XSS->alle Zeilenumbrüche entfernen */
@@ -109,6 +116,18 @@ public function redirectToUrl($url)
 	$this->writeHeader (Output::FOUND);
 	$this->writeHeader('Location: '.$url);
 	exit();
+	}
+
+public function createUrl($page, $options = array(), $html = true)
+	{
+	$separator = ($html ? $this->outputSeparatorHtml : $this->outputSeparator);
+	$params = '';
+	foreach (array_merge(array('page' => $page), $options) as $key => $value)
+		{
+		$params .= $separator.$key.'='.urlencode($value);
+		}
+
+	return $this->Input->getURL().'/?id='.$this->Board->getId().$params;
 	}
 
 }

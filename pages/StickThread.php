@@ -18,10 +18,10 @@
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
 /** FIXME: Nicht geschützt via Form */
-class StickThread extends Page{
+class StickThread extends Page {
 
-protected $forum 		= 0;
-protected $thread		= 0;
+protected $forum = 0;
+protected $thread = 0;
 
 public function prepare()
 	{
@@ -48,7 +48,7 @@ protected function checkInput()
 	{
 	try
 		{
-		$this->thread = $this->Input->Request->getInt('thread');
+		$this->thread = $this->Input->Get->getInt('thread');
 		}
 	catch (RequestException $e)
 		{
@@ -95,7 +95,7 @@ protected function updateForum()
 
 public function show()
 	{
-	$this->Output->redirect('Postings', 'thread='.$this->thread);
+	$this->Output->redirect('Postings', array('thread' => $this->thread));
 	}
 
 }

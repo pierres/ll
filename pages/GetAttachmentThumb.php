@@ -19,7 +19,7 @@
 */
 require('GetAttachment.php');
 
-class GetAttachmentThumb extends GetAttachment{
+class GetAttachmentThumb extends GetAttachment {
 
 public function show()
 	{
@@ -32,8 +32,7 @@ public function show()
 				SELECT
 					attachments.name,
 					attachments.type,
-					attachment_thumbnails.content,
-					attachment_thumbnails.size
+					attachment_thumbnails.content
 				FROM
 					attachments,
 					attachment_thumbnails
@@ -46,8 +45,7 @@ public function show()
 				SELECT
 					attachments.name,
 					attachments.type,
-					attachments.content,
-					attachments.size
+					attachments.content
 				FROM
 					attachments,
 					attachment_thumbnails
@@ -68,7 +66,7 @@ public function show()
 		$this->showWarning('Datei nicht gefunden');
 		}
 
-	$this->sendInlineFile($data['type'], $data['name'], $data['size'], $data['content']);
+	$this->sendInlineFile($data['type'], $data['name'], $data['content']);
 	}
 
 public function showWarning($text)
@@ -88,14 +86,9 @@ public function showWarning($text)
 	ob_start();
 	imagepng($image);
 	$content = ob_get_clean();
-
 	imagedestroy($image);
 
-	$data['type'] = 'image/png';
-	$data['size'] = strlen($content);
-	$data['content'] = $content;
-
-	$this->sendInlineFile($data['type'], 'Warning.png', $data['size'], $data['content']);
+	$this->sendInlineFile('image/png', 'Warning.png', $content);
 	}
 
 }

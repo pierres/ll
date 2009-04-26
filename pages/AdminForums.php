@@ -17,7 +17,8 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-class AdminForums extends AdminForm{
+
+class AdminForums extends AdminForm {
 
 private $cat = 0;
 
@@ -25,16 +26,16 @@ protected function setForm()
 	{
 	try
 		{
-		$this->cat = $this->Input->Request->getInt('cat');
+		$this->cat = $this->Input->Get->getInt('cat');
 		}
 	catch (RequestException $e)
 		{
 		$this->showFailure('Keine Kategorie angegeben');
 		}
 
-	$this->setValue('title', 'Foren');
+	$this->setTitle('Foren');
 
-	$this->addSubmit('Speichern');
+	$this->add(new SubmitButtonElement('Speichern'));
 
 	try
 		{
@@ -74,70 +75,78 @@ protected function setForm()
 		{
 		if ($forum['boardid'] == $this->Board->getId())
 			{
-			$this->addOutput
-				(
-				'<table><tr><td>'.
-				AdminFunctions::buildPositionMenu('forums['.$forum['id'].'][position]', $totalForums, $forum['position']).'
-				<input type="text" name="forums['.$forum['id'].'][name]" size="74" value="'.$forum['name'].'" />
-				<br />
-				<textarea name="forums['.$forum['id'].'][description]" cols="80" rows="4">'.$forum['description'].'</textarea>
-				<br />
-				<a href="?page=AdminForumsMove;id='.$this->Board->getId().';forum='.$forum['id'].'"><span class="button">verschieben</span></a>
-				<a href="?page=AdminForumsDel;id='.$this->Board->getId().';forum='.$forum['id'].'"><span class="button" style="background-color:#CC0000">löschen</span></a>');
+			$this->add(new TextInputElement('forums['.$forum['id'].'][name]', $forum['name'], 'Name'));
+			$this->add(new TextareaInputElement('forums['.$forum['id'].'][description]', $forum['description'], 'Beschreibung'));
+
+			$positionMenu = new SelectInputElement('forums['.$forum['id'].'][position]', 'Position');
+			for ($i = 1; $i <= $totalForums; $i++)
+				{
+				$positionMenu->addOption($i, $i);
+				}
+			$positionMenu->setSelected($forum['position']);
+			$positionMenu->setSize(1);
+			$this->add($positionMenu);
+
+			$this->add(new LabeledElement
+				('', '<a href="'.$this->Output->createUrl('AdminForumsMove', array('forum' => $forum['id'])).'"><span class="button">verschieben</span></a>
+				<a href="'.$this->Output->createUrl('AdminForumsDel', array('forum' => $forum['id'])).'"><span class="button" style="background-color:#CC0000">löschen</span></a>'));
 
 			if ($this->User->isLevel(User::ROOT))
 				{
-				$this->addOutput(' <a href="?page=AdminGlobalForumsMove;id='.$this->Board->getId().';forum='.$forum['id'].'"><span class="button" style="background-color:#CC6600">global verschieben</span></a>');
+				$this->add(new LabeledElement
+				('', '<a href="'.$this->Output->createUrl('AdminGlobalForumsMove', array('forum' => $forum['id'])).'"><span class="button" style="background-color:#CC6600">global verschieben</span></a>'));
 				}
 
-			$this->addOutput('</td>
-					<td style="vertical-align:bottom">
-					'.$this->getMods($forum['mods']).'
+			$this->add(new LabeledElement
+				('', '	'.$this->getMods($forum['mods']).'
 					<br />
-					<a href="?page=AdminForumsMods;id='.$this->Board->getId().';forum='.$forum['id'].'"><span class="button">Moderatoren</span></a>
-					</td>
-				</tr>
-				</table>
-				<br /><br />');
+					<a href="'.$this->Output->createUrl('AdminForumsMods', array('forum' => $forum['id'])).'"><span class="button">Moderatoren</span></a>'));
+	
+			$this->add(new DividerElement());
 			}
 		else
 			{
-			$this->addOutput
-				(
-				'<table style="width:100%"><tr><td>'.
-				AdminFunctions::buildPositionMenu('forums['.$forum['id'].'][position]', $totalForums, $forum['position']).'
-				<input disabled="disabled" type="text" name="forums['.$forum['id'].'][name]" size="74" value="'.$forum['name'].'" />
-				<br />
-				<textarea disabled="disabled" name="forums['.$forum['id'].'][description]" cols="80" rows="4">'.$forum['description'].'</textarea>
-				<br />
-				<a href="?page=AdminForumsMove;id='.$this->Board->getId().';forum='.$forum['id'].'"><span class="button">verschieben</span></a>
-				<a href="?page=AdminForumsDelEx;id='.$this->Board->getId().';forum='.$forum['id'].'"><span class="button" style="background-color:#CC6600">löschen</span></a>
-				</td>
-					<td style="vertical-align:bottom">
-					'.$this->getMods($forum['mods']).'
-					</td>
-				</tr>
-				</table>
-				<br /><br />
-				');
+			$this->add(new LabeledElement('Name', $forum['name']));
+			$this->add(new LabeledElement('Beschreibung', $forum['description']));
+
+			$positionMenu = new SelectInputElement('forums['.$forum['id'].'][position]', 'Position');
+			for ($i = 1; $i <= $totalForums; $i++)
+				{
+				$positionMenu->addOption($i, $i);
+				}
+			$positionMenu->setSelected($forum['position']);
+			$positionMenu->setSize(1);
+			$this->add($positionMenu);
+
+			$this->add(new LabeledElement
+				('', '<a href="'.$this->Output->createUrl('AdminForumsMove', array('forum' => $forum['id'])).'"><span class="button">verschieben</span></a>
+				<a href="'.$this->Output->createUrl('AdminForumsDelEx', array('forum' => $forum['id'])).'"><span class="button" style="background-color:#CC6600">löschen</span></a>'));
+
+
+			$this->add(new LabeledElement
+				('', '	'.$this->getMods($forum['mods']).' '));
+
+			$this->add(new DividerElement());
 			}
 		}
 	$stm->close();
 
-	$this->addOutput
-		(
-		'<table style="width:100%"><tr><td>'.
-		AdminFunctions::buildPositionMenu('newposition', $totalForums+1, $totalForums+1).'
-		<input type="text" name="newname" size="74" value="" />
-		<br />
-		<textarea name="newdescription" cols="80" rows="4"></textarea>
-		<br />
-		<a href="?page=AdminForumsEx;id='.$this->Board->getId().';cat='.$this->cat.'"><span class="button">externe Foren hinzufügen</span></a>
-		</td>
-		</tr>
-		</table>
-		<input type="hidden" name="cat" value="'.$this->cat.'" />
-		');
+	$this->add(new TextInputElement('newname', '', 'Name'));
+	$this->add(new TextareaInputElement('newdescription', '', 'Beschreibung'));
+
+	$positionMenu = new SelectInputElement('newposition', 'Position');
+	for ($i = 1; $i <= $totalForums+1; $i++)
+		{
+		$positionMenu->addOption($i, $i);
+		}
+	$positionMenu->setSelected($totalForums+1);
+	$positionMenu->setSize(1);
+	$this->add($positionMenu);
+
+	$this->add(new LabeledElement
+		('', '<a href="'.$this->Output->createUrl('AdminForumsEx', array('cat' => $this->cat)).'"><span class="button">externe Foren hinzufügen</span></a>'));
+
+	$this->setParam('cat', $this->cat);
 	}
 
 private function getMods($group)
@@ -204,11 +213,11 @@ protected function sendForm()
 	{
 	try
 		{
-		$forums = $this->Input->Request->getArray('forums');
+		$forums = $this->Input->Post->getArray('forums');
 		}
 	catch (RequestException $e)
 		{
-		if ($this->Input->Request->isEmpty('newname'))
+		if ($this->Input->Post->isEmptyString('newname'))
 			{
 			$this->redirect();
 			}
@@ -258,7 +267,7 @@ protected function sendForm()
 		$stm2->close();
 		}
 
-	if (!$this->Input->Request->isEmpty('newname'))
+	if (!$this->Input->Post->isEmptyString('newname'))
 		{
 		$stm = $this->DB->prepare
 			('
@@ -269,8 +278,8 @@ protected function sendForm()
 				description = ?,
 				boardid = ?'
 			);
-		$stm->bindString($this->Input->Request->getHtml('newname'));
-		$stm->bindString($this->Input->Request->getHtml('newdescription'));
+		$stm->bindString($this->Input->Post->getHtml('newname'));
+		$stm->bindString($this->Input->Post->getHtml('newdescription'));
 		$stm->bindInteger($this->Board->getId());
 		$stm->execute();
 		$stm->close();
@@ -284,7 +293,7 @@ protected function sendForm()
 				position = ?,
 				catid = ?'
 			);
-		$stm->bindInteger($this->Input->Request->getInt('newposition'));
+		$stm->bindInteger($this->Input->Post->getInt('newposition'));
 		$stm->bindInteger($this->cat);
 		$stm->execute();
 		$stm->close();
@@ -295,7 +304,7 @@ protected function sendForm()
 
 protected function redirect()
 	{
-	$this->Output->redirect('AdminForums', 'cat='.$this->cat);
+	$this->Output->redirect('AdminForums', array('cat' => $this->cat));
 	}
 
 

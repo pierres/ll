@@ -17,12 +17,13 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-class AdminDeletedPosts extends AdminForm{
+
+class AdminDeletedPosts extends AdminForm {
 
 protected function setForm()
 	{
-	$this->setValue('title', 'Gelöschte Beiträge');
-	$this->addSubmit('Löschen');
+	$this->setTitle('Gelöschte Beiträge');
+	$this->add(new SubmitButtonElement('Löschen'));
 
 	if (!$this->User->isLevel(User::ROOT))
 		{
@@ -46,7 +47,7 @@ protected function setForm()
 				posts.dat DESC
 			');
 
-		$this->addOutput('<script type="text/javascript">
+		$this->add(new PassiveFormElement('<script type="text/javascript">
 					/* <![CDATA[ */
 					function writeText(text)
 						{
@@ -57,18 +58,18 @@ protected function setForm()
 						pos.parentNode.appendChild( document.createTextNode(text));
 						}
 					/* ]]> */
-				</script>');
+				</script>'));
 
 		foreach ($posts as $post)
 			{
-			$this->addOutput('<input type="checkbox" id="id'.$post['id'].'" name="post[]" value="'.$post['id'].'" /><label for="id'.$post['id'].'"><a onmouseover="javascript:document.getElementById(\'post'.$post['id'].'\').style.visibility=\'visible\'"
-			onmouseout="javascript:document.getElementById(\'post'.$post['id'].'\').style.visibility=\'hidden\'"  href="?page=Postings;id='.$this->Board->getId().';thread='.$post['threadid'].'">'.$post['name'].'</a></label><br /><div class="summary" style="visibility:hidden;" id="post'.$post['id'].'">
+			$this->add(new PassiveFormElement('<input type="checkbox" id="id'.$post['id'].'" name="post[]" value="'.$post['id'].'" /><label for="id'.$post['id'].'"><a onmouseover="javascript:document.getElementById(\'post'.$post['id'].'\').style.visibility=\'visible\'"
+			onmouseout="javascript:document.getElementById(\'post'.$post['id'].'\').style.visibility=\'hidden\'"  href="'.$this->Output->createUrl('Postings', array('thread' => $post['threadid'])).'">'.$post['name'].'</a></label><br /><div class="summary" style="visibility:hidden;" id="post'.$post['id'].'">
 				<script type="text/javascript">
 						/* <![CDATA[ */
 						writeText("'.cutString(strip_tags($post['text']), 300).'");
 						/* ]]> */
 				</script>
-			</div>');
+			</div>'));
 			}
 		}
 	catch (DBNoDataException $e)
@@ -80,7 +81,7 @@ protected function sendForm()
 	{
 	try
 		{
-		foreach($this->Input->Request->getArray('post') as $post)
+		foreach($this->Input->Post->getArray('post') as $post)
 			{
 			AdminFunctions::delPost($post);
 			}
@@ -88,12 +89,7 @@ protected function sendForm()
 	catch (RequestException $e)
 		{
 		}
-	$this->redirect();
-	}
 
-
-protected function redirect()
-	{
 	$this->Output->redirect('AdminDeletedPosts');
 	}
 

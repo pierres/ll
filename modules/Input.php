@@ -29,20 +29,25 @@ class Input extends Modul {
 public $Get 	= null;
 public $Post 	= null;
 public $Cookie 	= null;
-public $Request	= null;
 public $Env 	= null;
 public $Server 	= null;
 
+private $time	= 0;
+
 public function __construct()
 	{
-	$_REQUEST = array_merge($_GET, $_POST);
+	$this->time = time();
 
 	$this->Get 	= new Request($_GET);
 	$this->Post 	= new Request($_POST);
 	$this->Cookie 	= new Request($_COOKIE);
-	$this->Request 	= new Request($_REQUEST);
 	$this->Env 	= new Request($_ENV);
 	$this->Server 	= new Request($_SERVER);
+	}
+
+public function getTime()
+	{
+	return $this->time;
 	}
 
 public function getHost()
@@ -52,7 +57,7 @@ public function getHost()
 
 public function getURL()
 	{
-	return 'http'.(!$this->Server->isValid('HTTPS') ? '' : 's').'://'
+	return 'http'.(!$this->Server->isString('HTTPS') ? '' : 's').'://'
 			.$this->getHost()
 			.dirname($this->Server->getString('SCRIPT_NAME'));
 	}

@@ -18,13 +18,11 @@
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-class PersistentCache extends Modul implements ICache{
+class PersistentCache extends Modul implements ICache {
 
-private $time = 0;
 
 public function __construct()
 	{
-	$this->time = time();
 	}
 
 public function addObject($key, $object, $ttl = 0)
@@ -64,7 +62,7 @@ public function addObject($key, $object, $ttl = 0)
 				');
 			$stm->bindString($key);
 			$stm->bindString(serialize($object));
-			$stm->bindInteger(($this->time + $ttl));
+			$stm->bindInteger(($this->Input->getTime() + $ttl));
 			$stm->execute();
 			}
 		catch (DBException $e)
@@ -103,6 +101,35 @@ public function getObject($key)
 	return $value;
 	}
 
+public function isObject($key)
+	{
+	$this->collectGarbage();
+
+	$value = false;
+
+	try
+		{
+		$stm = $this->DB->prepare
+			('
+			SELECT
+				`key`
+			FROM
+				cache
+			WHERE
+				`key` = ?
+			');
+		$stm->bindString($key);
+		$stm->getColumn();
+		$value = true;
+		}
+	catch (DBNoDataException $e)
+		{
+		}
+	$stm->close();
+
+	return $value;
+	}
+
 private function collectGarbage()
 	{
 	/* Ignore 49% of requests */
@@ -117,7 +144,7 @@ private function collectGarbage()
 				WHERE
 					expires < ?
 				');
-			$stm->bindInteger($this->time);
+			$stm->bindInteger($this->Input->getTime());
 			$stm->execute();
 			}
 		catch (DBException $e)

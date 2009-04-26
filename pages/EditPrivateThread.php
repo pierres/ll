@@ -19,7 +19,7 @@
 */
 require('NewPrivateThread.php');
 
-class EditPrivateThread extends NewPrivateThread{
+class EditPrivateThread extends NewPrivateThread {
 
 protected $post 		= 0;
 
@@ -33,8 +33,8 @@ protected function checkInput()
 	{
 	try
 		{
-		$this->thread = $this->Input->Request->getInt('thread');
-		$this->addHidden('thread', $this->thread);
+		$this->thread = $this->Input->Get->getInt('thread');
+		$this->setParam('thread', $this->thread);
 		}
 	catch (RequestException $e)
 		{
@@ -176,7 +176,7 @@ protected function sendForm()
 	$stm->execute();
 	$stm->close();
 
-	if ($this->Input->Request->isValid('poll_question') && $this->Input->Request->isValid('poll_options'))
+	if ($this->Input->Post->isString('poll_question') && $this->Input->Post->isString('poll_options'))
 		{
 		if ($this->poll_options != $this->db_poll_options || $this->poll_question != $this->db_poll_question)
 			{
@@ -230,7 +230,7 @@ protected function sendForm()
 			id = ?'
 		);
 	$stm->bindString($this->text);
-	$stm->bindInteger($this->time);
+	$stm->bindInteger($this->Input->getTime());
 	$stm->bindInteger($this->User->getId());
 	$stm->bindInteger($this->smilies ? 1 : 0);
 	$stm->bindInteger($this->post);
@@ -244,7 +244,7 @@ protected function sendForm()
 
 protected function sendFile($postid)
 	{
-	if($this->User->isOnline() && $this->Input->Request->isValid('addfile'))
+	if($this->User->isOnline() && $this->Input->Post->isString('addfile'))
 		{
 		$stm = $this->DB->prepare
 			('

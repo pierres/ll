@@ -19,7 +19,7 @@
 */
 require('NewPrivatePost.php');
 
-class QuotePrivatePost extends NewPrivatePost{
+class QuotePrivatePost extends NewPrivatePost {
 
 
 protected $title = 'Beitrag zitieren';
@@ -49,7 +49,7 @@ protected function checkInput()
 				AND posts.id = ?'
 			);
 		$stm->bindInteger($this->User->getId());
-		$stm->bindInteger($this->Input->Request->getInt('post'));
+		$stm->bindInteger($this->Input->Get->getInt('post'));
 		$data = $stm->getRow();
 		$stm->close();
 		}
@@ -68,7 +68,7 @@ protected function checkInput()
 
 	$this->thread = $data['thread'];
 
-	$this->addHidden('post', $data['post']);
+	$this->setParam('post', $data['post']);
 	}
 
 }

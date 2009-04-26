@@ -17,7 +17,8 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-abstract class GetFile extends Modul implements IOutput{
+
+abstract class GetFile extends Modul implements IOutput {
 
 public function prepare()
 	{
@@ -28,8 +29,8 @@ public function prepare()
 
 protected function exitIfCached()
 	{
-	if ($this->Input->Server->isValid('HTTP_IF_MODIFIED_SINCE')
-	&& strtotime($this->Input->Server->getString('HTTP_IF_MODIFIED_SINCE')) <= time() - $this->Settings->getValue('file_refresh'))
+	if ($this->Input->Server->isString('HTTP_IF_MODIFIED_SINCE')
+	&& strtotime($this->Input->Server->getString('HTTP_IF_MODIFIED_SINCE')) <= $this->Input->getTime() - $this->Settings->getValue('file_refresh'))
 		{
 		header('HTTP/1.1 304 Not Modified');
 		exit;
@@ -54,20 +55,20 @@ public function showWarning($text)
 	die($text);
 	}
 
-protected function sendFile($type, $name, $size, $content, $disposition = 'attachment')
+protected function sendFile($type, $name, $content, $disposition = 'attachment')
 	{
 	header('HTTP/1.1 200 OK');
 	header('Content-Type: '.$type);
-	header('Content-Length: '.$size);
+	header('Content-Length: '.strlen($content));
 	header('Content-Disposition: '.$disposition.'; filename="'.urlencode($name).'"');
 	header('Last-Modified: '.date('r'));
 	echo $content;
 	exit;
 	}
 
-protected function sendInlineFile($type, $name, $size, $content)
+protected function sendInlineFile($type, $name, $content)
 	{
-	$this->sendFile($type, $name, $size, $content, 'inline');
+	$this->sendFile($type, $name, $content, 'inline');
 	}
 
 }

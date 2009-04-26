@@ -17,14 +17,15 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-class AdminCss extends AdminForm{
+
+class AdminCss extends AdminForm {
 
 
 protected function setForm()
 	{
-	$this->setValue('title', 'CSS-Vorlage');
+	$this->setTitle('CSS-Vorlage');
 
-	$this->addSubmit('Speichern');
+	$this->add(new SubmitButtonElement('Speichern'));
 
 	$stm = $this->DB->prepare
 		('
@@ -39,13 +40,10 @@ protected function setForm()
 	$css = $stm->getColumn();
 	$stm->close();
 
-	$this->addTextArea('css', 'CSS', $css);
-	$this->requires('css');
-	$this->setLength('css', 100, 50000);
-	}
-
-protected function checkForm()
-	{
+	$cssInput = new TextareaInputElement('css', $css, 'CSS');
+	$cssInput->setMinLength(100);
+	$cssInput->setMaxLength(50000);
+	$this->add($cssInput);
 	}
 
 protected function sendForm()
@@ -59,7 +57,7 @@ protected function sendForm()
 		WHERE
 			id = ?'
 		);
-	$stm->bindString($this->Input->Request->getString('css'));
+	$stm->bindString($this->Input->Post->getString('css'));
 	$stm->bindInteger($this->Board->getId());
 	$stm->execute();
 	$stm->close();

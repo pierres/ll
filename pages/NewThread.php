@@ -17,15 +17,15 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-require('NewPost.php');
 
-class NewThread extends NewPost{
+require('pages/NewPost.php');
+
+class NewThread extends NewPost {
 
 protected $topic 		= '';
 protected $poll_question 	= '';
 protected $poll_options 	= '';
 protected $forum 		= 0;
-protected $tag			= 0;
 
 protected $title 		= 'Neues Thema erstellen';
 
@@ -33,53 +33,37 @@ protected $title 		= 'Neues Thema erstellen';
 protected function setForm()
 	{
 	$this->checkInput();	// doing this here to ensure we initialize the topic if it allready exists
-	try
-		{
-		$this->topic = $this->Input->Request->getString('topic');
-		}
-	catch (RequestException $e)
-		{
-		}
-	$this->addText('topic', 'Thema', $this->topic);
+	$this->topic = $this->Input->Post->getString('topic', $this->topic);
+	$topicInput = new TextInputElement('topic', $this->topic, 'Thema');
+	$this->add($topicInput);
 	parent::setForm();
-	try
-		{
-		$this->topic = $this->Input->Request->getString('topic');
-		}
-	catch (RequestException $e)
-		{
-		}
-	$this->requires('topic');
-	$this->setLength('topic', 3, 100);
+	$this->topic = $this->Input->Post->getString('topic', $this->topic);
+	$topicInput->setMinLength(3);
+	$topicInput->setMaxLength(100);
 
 	$this->setPoll();
-
-	$this->setTag();
 	}
 
 protected function setPoll()
 	{
 	if ($this->User->isOnline())
 		{
-		if (($this->Input->Request->isValid('poll')) && !$this->Input->Request->isValid('nopoll'))
+		if (($this->Input->Post->isString('poll')) && !$this->Input->Post->isString('nopoll'))
 			{
-			$this->addButton('nopoll', 'keine Umfrage');
+			$this->add(new ButtonElement('nopoll', 'keine Umfrage'));
+
+			$this->poll_question = $this->Input->Post->getString('poll_question', '');
+
+			$this->add(new DividerElement());
+
+			$questionInput = new TextInputElement('poll_question', $this->poll_question, 'Frage');
+			$questionInput->setMinLength(3);
+			$questionInput->setMaxLength(200);
+			$this->add($questionInput);
 
 			try
 				{
-				$this->poll_question = $this->Input->Request->getString('poll_question');
-				}
-			catch (RequestException $e)
-				{
-				}
-
-			$this->addText('poll_question', 'Frage', $this->poll_question);
-			$this->requires('poll_question');
-			$this->setLength('poll_question', 3, 200);
-
-			try
-				{
-				$this->poll_options = $this->Input->Request->getString('poll_options');
+				$this->poll_options = $this->Input->Post->getString('poll_options');
 				$poll_options = explode("\n", $this->poll_options);
 				$i = 1;
 				foreach($poll_options as $poll_option)
@@ -110,79 +94,16 @@ protected function setPoll()
 				{
 				}
 
-			$this->addTextarea('poll_options', 'Antworten', $this->poll_options, 80, 5);
-			$this->addHidden('poll', 1);
-
+			$pollInput = new TextareaInputElement('poll_options', $this->poll_options, 'Antworten');
+			$pollInput->setRows(5);
+			$pollInput->setHelp('Pro Zeile eine Option');
+			$this->add($pollInput);
+			$this->add(new HiddenElement('poll', 1));
 			}
 		else
 			{
-			$this->addButton('poll', 'Umfrage');
+			$this->add(new ButtonElement('poll', 'Umfrage'));
 			}
-		}
-	}
-
-protected function setTag()
-	{
-	$tags = array(' ' => '0');
-
-	try
-		{
-		$stm = $this->DB->prepare
-			('
-			SELECT
-				id,
-				name
-			FROM
-				tags
-			WHERE
-				boardid = ?
-			');
-		$stm->bindInteger($this->Board->getId());
-
-		foreach ($stm->getRowSet() as $tag)
-			{
-			$tags[$tag['name']] = $tag['id'];
-			}
-		$stm->close();
-		$this->addRadio('tag', 'Status', $tags, $this->tag);
-		}
-	catch (DBNoDataException $e)
-		{
-		$stm->close();
-		$this->addHidden('tag', '0');
-		}
-	
-	$this->requires('tag');
-	}
-
-protected function checkForm()
-	{
-	parent::checkForm();
-
-	$this->tag = $this->Input->Request->getInt('tag');
-
-	try
-		{
-		$stm = $this->DB->prepare
-			('
-			SELECT
-				id
-			FROM
-				tags
-			WHERE
-				boardid = ?
-				AND id = ?
-			');
-		$stm->bindInteger($this->Board->getId());
-		$stm->bindInteger($this->tag);
-
-		$stm->getColumn();
-		$stm->close();
-		}
-	catch (DBNoDataException $e)
-		{
-		$stm->close();
-		$this->tag != 0 && $this->showFailure('Ungültiger Status angegeben');
 		}
 	}
 
@@ -192,7 +113,7 @@ protected function checkInput()
 		{
 		try
 			{
-			$this->forum = $this->Input->Request->getInt('forum');
+			$this->forum = $this->Input->Get->getInt('forum');
 			}
 		catch (RequestException $e)
 			{
@@ -200,12 +121,12 @@ protected function checkInput()
 			}
 		}
 
-	$this->addHidden('forum', $this->forum);
+	$this->setParam('forum', $this->forum);
 	}
 
 protected function sendPoll()
 	{
-	if ($this->Input->Request->isValid('poll') && $this->User->isOnline())
+	if ($this->Input->Post->isString('poll') && $this->User->isOnline())
 		{
 		$poll_options = explode("\n",$this->poll_options);
 		$stm = $this->DB->prepare
@@ -282,14 +203,12 @@ protected function sendForm()
 			name = ?,
 			forumid = ?,
 			counter = ?,
-			summary = ?,
-			tag = ?'
+			summary = ?'
 		);
 	$stm->bindString(htmlspecialchars($this->topic));
 	$stm->bindInteger($this->forum);
 	$stm->bindInteger($counter);
 	$stm->bindString(getTextFromHtml($this->text));
-	$stm->bindInteger($this->tag);
 
 	$stm->execute();
 	$stm->close();
@@ -320,11 +239,11 @@ protected function updateThread($userid, $username)
 		WHERE
 			id = ?'
 		);
-	$stm->bindInteger($this->time);
+	$stm->bindInteger($this->Input->getTime());
 	$stm->bindInteger($userid);
 	$stm->bindString($username);
 
-	$stm->bindInteger($this->time);
+	$stm->bindInteger($this->Input->getTime());
 	$stm->bindInteger($userid);
 	$stm->bindString($username);
 
@@ -350,7 +269,7 @@ protected function updateForum($userid)
 			id = ?'
 		);
 	$stm->bindInteger($this->thread);
-	$stm->bindInteger($this->time);
+	$stm->bindInteger($this->Input->getTime());
 	$stm->bindInteger($userid);
 	$stm->bindInteger($this->forum);
 	$stm->execute();
@@ -370,7 +289,7 @@ protected function updateBoard()
 		WHERE
 			id = ?'
 		);
-	$stm->bindInteger($this->time);
+	$stm->bindInteger($this->Input->getTime());
 	$stm->bindInteger($this->Board->getId());
 	$stm->execute();
 	$stm->close();

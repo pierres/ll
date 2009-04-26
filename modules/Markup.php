@@ -35,14 +35,6 @@ private $smilies 		= array();
 
 private $HighLight 		= null;
 
-private $smiliesenabled		= true;
-
-
-public function enableSmilies($value = true)
-	{
-	$this->smiliesenabled = ($value ? true : false);
-	}
-
 
 function __construct()
 	{
@@ -152,10 +144,7 @@ private function complieSecondPass($text)
 
 	$text = preg_replace_callback('/\+\+(.+?)\+\+/', array($this, 'makeIns'), $text);
 
-	if ($this->smiliesenabled)
-		{
-		$text = $this->compileSmilies($text);
-		}
+	$text = $this->compileSmilies($text);
 
 	/** Listen */
 	$text = preg_replace_callback('/(?:^\*+ [^\n]+$\n?)+/m',array($this, 'makeList'), $text);
@@ -563,9 +552,7 @@ private function makeNamedFTPLink($matches, $cutName = false)
 
 private function makeImage($matches)
 	{
-	$url = urlencode($matches[0]);
-
-	return $this->createStackLink('<a href="?page=GetImage;url='.$url.'" onclick="return !window.open(this.href);" rel="nofollow"><img src="?page=GetImage;thumb;url='.$url.'" alt="" class="image" /></a>');
+	return $this->createStackLink('<a href="'.$this->Output->createUrl('GetImage', array('url' => $matches[0])).'" onclick="return !window.open(this.href);" rel="nofollow"><img src="'.$this->Output->createUrl('GetImage', array('thumb' => 1, 'url' => $matches[0])).'" alt="" class="image" /></a>');
 	}
 
 private function makeWWWImage($matches)

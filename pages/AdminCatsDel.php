@@ -17,7 +17,8 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-class AdminCatsDel extends AdminForm{
+
+class AdminCatsDel extends AdminForm {
 
 private $cat = 0;
 
@@ -25,20 +26,19 @@ protected function setForm()
 	{
 	try
 		{
-		$this->cat = $this->Input->Request->getInt('cat');
+		$this->cat = $this->Input->Get->getInt('cat');
 		}
 	catch(RequestException $e)
 		{
-		$this->redirect();
+		$this->showWarning('Keine Kategorien angegeben.');
 		}
 
-	$this->setValue('title', 'Kategorien löschen');
-	$this->addHidden('cat', $this->cat);
-	$this->requires('cat');
+	$this->setTitle('Kategorien löschen');
+	$this->setParam('cat', $this->cat);
 
-	$this->addOutput('Hierdurch werden allen enthaltenen Foren und Beiträge unwiederruflich gelöscht!');
+// 	$this->addOutput('Hierdurch werden allen enthaltenen Foren und Beiträge unwiederruflich gelöscht!');
 
-	$this->addSubmit('Kategorie löschen');
+	$this->add(new SubmitButtonElement('Kategorie löschen'));
 	}
 
 protected function checkForm()
@@ -62,20 +62,14 @@ protected function checkForm()
 		}
 	catch (DBNoDataException $e)
 		{
-		$this->redirect();
 		$stm->close();
+		$this->showWarning('Kategorie nicht gefunden.');
 		}
 	}
 
 protected function sendForm()
 	{
 	AdminFunctions::delCat($this->cat);
-	$this->redirect();
-	}
-
-
-protected function redirect()
-	{
 	$this->Output->redirect('AdminCats');
 	}
 

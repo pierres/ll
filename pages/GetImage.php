@@ -25,18 +25,18 @@ private $thumb		= false;
 
 protected function getParams()
 	{
-	$this->thumb = $this->Input->Request->isValid('thumb');
+	$this->thumb = $this->Input->Get->isString('thumb');
 
 	try
 		{
-		$url = $this->Input->Request->getString('url');
+		$url = $this->Input->Get->getString('url');
 		}
 	catch (RequestException $e)
 		{
 		$this->showWarning('keine Datei angegeben');
 		}
 
-	if ($this->Input->Request->isEmpty('url'))
+	if ($this->Input->Get->isEmptyString('url'))
 		{
 		$this->showWarning('keine Datei angegeben');
 		}
@@ -109,17 +109,17 @@ private function loadImage()
 	$stm->bindString($this->file->getFileContent());
 	$stm->bindString($thumbcontent);
 	$stm->bindInteger($thumbsize);
-	$stm->bindInteger(time());
+	$stm->bindInteger($this->Input->getTime());
 	$stm->execute();
 	$stm->close();
 
 	if ($this->thumb && $thumbsize > 0)
 		{
-		return array('type' => $this->file->getFileType(), 'content' => $thumbcontent, 'size' => $thumbsize, 'name' => $this->file->getFileName());
+		return array('type' => $this->file->getFileType(), 'content' => $thumbcontent, 'name' => $this->file->getFileName());
 		}
 	else
 		{
-		return array('type' => $this->file->getFileType(), 'content' => $this->file->getFileContent(), 'size' => $this->file->getFileSize(), 'name' => $this->file->getFileName());
+		return array('type' => $this->file->getFileType(), 'content' => $this->file->getFileContent(), 'name' => $this->file->getFileName());
 		}
 	}
 
@@ -140,14 +140,9 @@ public function showWarning($text)
 	ob_start();
 	imagepng($image);
 	$content = ob_get_clean();
-
 	imagedestroy($image);
 
-	$data['type'] = 'image/png';
-	$data['size'] = strlen($content);
-	$data['content'] = $content;
-
-	$this->sendInlineFile($data['type'], 'Warning.png', $data['size'], $data['content']);
+	$this->sendInlineFile('image/png', 'Warning.png', $content);
 	}
 
 public function show()
@@ -162,7 +157,6 @@ public function show()
 				SELECT
 					type,
 					thumbcontent AS content,
-					thumbsize AS size,
 					lastupdate
 				FROM
 					images
@@ -175,7 +169,6 @@ public function show()
 				SELECT
 					type,
 					content,
-					size,
 					lastupdate
 				FROM
 					images
@@ -196,7 +189,6 @@ public function show()
 				SELECT
 					type,
 					content,
-					size,
 					lastupdate
 				FROM
 					images
@@ -208,7 +200,7 @@ public function show()
 			$stm->close();
 			}
 
-		$refreshTime = time() - $this->Settings->getValue('image_refresh');
+		$refreshTime = $this->Input->getTime() - $this->Settings->getValue('image_refresh');
 
 		if ($data['lastupdate'] < $refreshTime)
 			{
@@ -231,7 +223,7 @@ public function show()
 		$data = $this->loadImage();
 		}
 
-	$this->sendInlineFile($data['type'], $this->file->getFileName(), $data['size'], $data['content']);
+	$this->sendInlineFile($data['type'], $this->file->getFileName(), $data['content']);
 	}
 
 }

@@ -17,19 +17,20 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
+
 require('LLTestCase.php');
 
-class InputTest extends LLTestCase{
+class InputTest extends LLTestCase {
 
 public function testBug165()
 	{
 	// this might be ugly...
-	$_REQUEST['test_bad'] = 'ab'.chr(27);
-	$_REQUEST['test_good'] = 'abc';
+	$_POST['test_bad'] = 'ab'.chr(27);
+	$_POST['test_good'] = 'abc';
 
 	try
 		{
-		$this->Input->Request->getString('test_bad');
+		$this->Input->Post->getString('test_bad');
 		$this->fail('test_bad should not be accepted!');
 		}
 	catch (RequestException $e)
@@ -38,8 +39,8 @@ public function testBug165()
 
 	try
 		{
-		$test_good = $this->Input->Request->getString('test_good');
-		$this->assertEquals($test_good, $_REQUEST['test_good']);
+		$test_good = $this->Input->Post->getString('test_good');
+		$this->assertEquals($test_good, $_POST['test_good']);
 		}
 	catch (RequestException $e)
 		{
@@ -49,8 +50,8 @@ public function testBug165()
 
 public function testPcreSegfault()
 	{
-	$_REQUEST['text'] = str_repeat('#', 6000);
-	$text = $this->Input->Request->getString('text');
+	$_POST['text'] = str_repeat('#', 6000);
+	$text = $this->Input->Post->getString('text');
 	$this->assertEquals(strlen($text), 6000);
 	}
 }

@@ -17,7 +17,8 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-class ChangePasswordKey extends Form{
+
+class ChangePasswordKey extends Form {
 
 private $newpassword	= '';
 private $password 	= '';
@@ -27,43 +28,39 @@ private $key 		= '';
 
 protected function setForm()
 	{
-	if ($this->User->isOnline())
-		{
-		$this->Output->redirect('ChangePassword');
-		}
+	$this->id = $this->Input->Post->getInt('userid', '');
+	$this->key = $this->Input->Post->getString('key', '');
 
-	$this->setValue('title', 'Passwort ändern');
-	$this->addSubmit('Ändern');
+	$this->setTitle('Passwort ändern');
+	$this->add(new SubmitButtonElement('Ändern'));
 
-	$this->addText('userid', 'Benutzer-ID', '', 25);
-	$this->requires('userid');
-	$this->setLength('userid', 1, 8);
+	$useridInput = new TextInputElement('userid', $this->id, 'Benutzer-ID');
+	$useridInput->setMinLength(1);
+	$useridInput->setMaxLength(8);
+	$useridInput->setSize(25);
+	$this->add($useridInput);
 
-	$this->addText('key', 'Schlüssel', '', 25);
-	$this->requires('key');
-	$this->setLength('key', 8, 40);
+	$keyInput = new TextInputElement('key', $this->key, 'Schlüssel');
+	$keyInput->setMinLength(8);
+	$keyInput->setMaxLength(40);
+	$keyInput->setSize(25);
+	$this->add($keyInput);
 
-	$this->addPassword('newpassword', 'Dein neues Passwort', '', 25);
-	$this->requires('newpassword');
-	$this->setLength('newpassword', 6, 25);
+	$newpasswordInput = new PasswordInputElement('newpassword', 'Dein neues Passwort');
+	$newpasswordInput->setMinLength(6);
+	$newpasswordInput->setMaxLength(25);
+	$newpasswordInput->setSize(25);
+	$this->add($newpasswordInput);
 
-	$this->addPassword('confirm', 'Nocheinmal Dein neues Passwort', '', 25);
-	$this->requires('confirm');
-	$this->setLength('confirm', 6, 25);
+	$confirmInput = new PasswordInputElement('confirm', 'Passwort bestätigen');
+	$confirmInput->setMinLength(6);
+	$confirmInput->setMaxLength(25);
+	$confirmInput->setSize(25);
+	$this->add($confirmInput);
 	}
 
 protected function checkForm()
 	{
-	try
-		{
-		$this->id = $this->Input->Request->getInt('userid');
-		$this->key = $this->Input->Request->getString('key');
-		}
-	catch (RequestException $e)
-		{
-		$this->showFailure('Kein Schlüssel übergeben!');
-		}
-
 	$this->collectGarbage();
 
 	try
@@ -86,12 +83,12 @@ protected function checkForm()
 	catch (DBNoDataException $e)
 		{
 		$stm->close();
-		$this->showWarning('Falscher Schlüssel! Möglicherweise ist Dein Schlüssel abgelaufen, da zuviel Zeit zwischen Registrierung und Aktivierung verstrichen ist.<br />Lasse Dir bitte <a class="link" href="?page=ForgotPassword;id='.$this->Board->getId().'">erneut einen Schlüssel zusenden</a> und aktiviere Dein Konto umgehend.');
+		$this->showWarning('Falscher Schlüssel! Möglicherweise ist Dein Schlüssel abgelaufen, da zuviel Zeit zwischen Registrierung und Aktivierung verstrichen ist.<br />Lasse Dir bitte <a class="link" href="'.$this->Output->createUrl('ForgotPassword').'">erneut einen Schlüssel zusenden</a> und aktiviere Dein Konto umgehend.');
 		}
 
-	$this->newpassword = sha1($this->Input->Request->getString('newpassword'));
+	$this->newpassword = sha1($this->Input->Post->getString('newpassword'));
 
-	if ($this->newpassword != sha1($this->Input->Request->getString('confirm')))
+	if ($this->newpassword != sha1($this->Input->Post->getString('confirm')))
 		{
 		$this->showWarning('Du hast Dich vertippt!');
 		}
@@ -106,7 +103,7 @@ private function collectGarbage()
 		WHERE
 			request_time < ?'
 		);
-	$stm->bindInteger(time() - $this->Settings->getValue('password_key_lifetime'));
+	$stm->bindInteger($this->Input->getTime() - $this->Settings->getValue('password_key_lifetime'));
 	$stm->execute();
 	$stm->close();
 	}
@@ -144,8 +141,6 @@ protected function sendForm()
 		}
 	catch (LoginException $e)
 		{
-		// Ich kann warten...
-		sleep(5);
 		$this->showFailure('Falsches Passwort.');
 		}
 

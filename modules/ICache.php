@@ -23,6 +23,8 @@ public function addObject($key, $object, $ttl = 0);
 
 public function getObject($key);
 
+public function isObject($key);
+
 }
 
 ?>

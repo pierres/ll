@@ -17,7 +17,8 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-class AdminGlobalSettings extends AdminPage{
+
+class AdminGlobalSettings extends AdminPage {
 
 
 public function prepare()
@@ -27,46 +28,42 @@ public function prepare()
 		$this->showFailure('kein Zugriff!');
 		}
 
+	$this->setTitle('Globale Einstellungen');
+
 	$body=
-	'
-	<table class="frame" style="width:80%">
-	<tr>
-		<td class="title" colspan="2">
-			Globale Einstellungen
-		</td>
-	</tr>
-	<tr>
-		<td class="main">
-			<img src="images/dev.png" />
-		</td>
-		<td class="main">
+		'<div id="brd-main" class="main">
+
+		<h1><span>'.$this->getTitle().'</span></h1>
+
+		<div class="main-head">
+			<h2><span>'.$this->getTitle().'</span></h2>
+		</div>
+
+		<div class="main-content">
 			<ul>
-				<li style="margin:20px;">
-				<a href="?page=AdminDeletedThreads;id='.$this->Board->getId().'"><span class="button">Gelöschte Themen</span></a>
+				<li>
+				<a href="'.$this->Output->createUrl('AdminDeletedThreads').'"><span>Gelöschte Themen</span></a>
 				</li>
-				<li style="margin:20px;">
-				<a href="?page=AdminDeletedPosts;id='.$this->Board->getId().'"><span class="button">Gelöschte Beiträge</span></a>
+				<li>
+				<a href="'.$this->Output->createUrl('AdminDeletedPosts').'"><span>Gelöschte Beiträge</span></a>
 				</li>
-				<li style="margin:20px;">
-				<a href="?page=AdminRenameUser;id='.$this->Board->getId().'"><span class="button">Benutzer umbenennen</span></a>
+				<li>
+				<a href="'.$this->Output->createUrl('AdminRenameUser').'"><span>Benutzer umbenennen</span></a>
 				</li>
-				<li style="margin:20px;">
-				<a href="?page=AdminCreateBoard;id='.$this->Board->getId().'"><span class="button">Board erstellen</span></a>
+				<li>
+				<a href="'.$this->Output->createUrl('AdminCreateBoard').'"><span>Board erstellen</span></a>
 				</li>
-				<li style="margin:20px;">
-				<a href="?page=AdminDelBoard;id='.$this->Board->getId().'"><span class="button">Board löschen</span></a>
+				<li>
+				<a href="'.$this->Output->createUrl('AdminDelBoard').'"><span>Board löschen</span></a>
 				</li>
-				<li style="margin:20px;">
-				<a href="?page=AdminForumsMerge;id='.$this->Board->getId().'"><span class="button">Foren zusammenlegen</span></a>
+				<li>
+				<a href="'.$this->Output->createUrl('AdminForumsMerge').'"><span>Foren zusammenlegen</span></a>
 				</li>
 			</ul>
-		</td>
-	</tr>
-	</table>
-	';
+		</div>
+		';
 
-	$this->setValue('title', 'Globale Einstellungen');
-	$this->setValue('body', $body);
+	$this->setBody($body);
 	}
 
 

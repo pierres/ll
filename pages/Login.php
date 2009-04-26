@@ -17,67 +17,55 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-class Login extends Form{
+
+class Login extends Form {
 
 
 protected function setForm()
 	{
-	$this->setValue('title', 'Login');
+	$this->setTitle('Login');
 
-	$this->addSubmit('Einloggen');
+	$this->add(new SubmitButtonElement('Einloggen'));
 
-	$this->addText('name', 'Dein Name', !$this->Input->Request->isEmpty('name') ? $this->Input->Request->getHtml('name') : '', 25);
-	$this->requires('name');
-	$this->setLength('name', 3, 25);
+	$nameInput = new TextInputElement('name', '', 'Dein Name');
+	$nameInput->setMinLength(3);
+	$nameInput->setMaxLength(25);
+	$nameInput->setSize(30);
+	$this->add($nameInput);
 
-	$this->addPassword('password', 'Dein Passwort', '', 25);
-	$this->requires('password');
-	$this->setLength('password', 6, 25);
+	$passwordInput = new PasswordInputElement('password', 'Dein Passwort');
+	$passwordInput->setMinLength(6);
+	$passwordInput->setMaxLength(25);
+	$passwordInput->setSize(30);
+	$passwordInput->setHelp('<a href="'.$this->Output->createUrl('ForgotPassword').'">Passwort vergessen?</a>');
+	$this->add($passwordInput);
 
-	$this->addCheckbox('cookie', 'Keks benutzen');
+	$this->add(new DividerElement());
 
-// 	$this->addCheckBox('confirmPrivacy', 'Ich bestätige die <a class="link" href="?page=Privacy;id='.$this->Board->getId().'">Datenschutzerklärung</a>');
-// 	$this->requires('confirmPrivacy');
-
-	$this->addElement('passwordoptions', '<br /><br /><a href="?page=ForgotPassword;id='.$this->Board->getId().'"><span class="button">Passwort vergessen?</span></a> <a href="?page=ChangePasswordKey;id='.$this->Board->getId().'"><span class="button">Passwort setzen</span></a>');
-
-	if(!$this->Input->Server->isValid('HTTPS'))
-		{
-		$tls = '<br /><a href="https://'.$this->Input->Server->getString('HTTP_HOST').'/?page=Login;id='.$this->Board->getId().'"><span class="button">TLS-Verschlüsselung</span></a> ';
-		}
-	else
-		{
-		$tls = '';
-		}
-
-	$this->addElement('tls', $tls.'<br />');
+	$cookieInput = new CheckboxInputElement('cookie', 'Keks benutzen');
+	$cookieInput->setRequired(false);
+	$this->add($cookieInput);
 	}
 
 protected function checkForm()
 	{
-	$name = $this->Input->Request->getHtml('name');
-	$password = $this->Input->Request->getString('password');
-
 	try
 		{
-		$this->User->login($name, $password);
+		$this->User->login($this->Input->Post->getHtml('name'), $this->Input->Post->getString('password'));
 		}
 	catch (LoginException $e)
 		{
-		// Ich kann warten...
-		/** TODO: Man muß dann aber auch den jeweiligen Benutzer temporär sperren */
-		sleep(5);
 		$this->showWarning('Falsches Passwort.');
 		}
 	}
 
 protected function sendForm()
 	{
-	if ($this->Input->Request->isValid('cookie'))
+	if ($this->Input->Post->isString('cookie'))
 		{
 		/** @Todo: Das gehört eher nach User **/
-		$this->Output->setCookie('cookieid', $this->User->getId(), (time() + $this->Settings->getValue('max_age')));
-		$this->Output->setCookie('cookiepw', sha1($this->Settings->getValue('cookie_hash').sha1($this->Input->Request->getString('password'))), (time() + $this->Settings->getValue('max_age')));
+		$this->Output->setCookie('cookieid', $this->User->getId(), ($this->Input->getTime() + $this->Settings->getValue('max_age')));
+		$this->Output->setCookie('cookiepw', sha1($this->Settings->getValue('cookie_hash').sha1($this->Input->Post->getString('password'))), ($this->Input->getTime() + $this->Settings->getValue('max_age')));
 		}
 
 	$this->Output->redirect('Forums');

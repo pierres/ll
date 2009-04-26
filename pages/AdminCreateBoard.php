@@ -18,40 +18,37 @@
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-class AdminCreateBoard extends Form{
+class AdminCreateBoard extends Form {
 
 private $name = '';
 private $host = '';
 
 protected function setForm()
 	{
-	if(!$this->User->isOnline())
-		{
-		$this->Output->redirect('Login');
-		}
-
-	$this->setValue('title', 'Neues Board erstellen');
+	$this->setTitle('Neues Board erstellen');
 
 	if (!$this->User->isLevel(User::ROOT))
 		{
 		$this->showFailure('nur root darf das!');
 		}
 
-	$this->addSubmit('Erstellen');
+	$this->add(new SubmitButtonElement('Erstellen'));
 
-	$this->addText('name', 'Der Name des Boards', '', 50);
-	$this->requires('name');
-	$this->setLength('name', 3, 100);
+	$nameInput = new TextInputElement('name', '', 'Der Name des Boards');
+	$nameInput->setMinLength(3);
+	$nameInput->setMaxLength(100);
+	$this->add($nameInput);
 
-	$this->addText('host', 'Host/Domain', '', 50);
-	$this->requires('host');
-	$this->setLength('host', 6, 100);
+	$hostInput = new TextInputElement('host', '', 'Host/Domain');
+	$hostInput->setMinLength(6);
+	$hostInput->setMaxLength(100);
+	$this->add($hostInput);
 	}
 
 protected function checkForm()
 	{
-	$this->name = $this->Input->Request->getString('name');
-	$this->host = $this->Input->Request->getString('host');
+	$this->name = $this->Input->Post->getString('name');
+	$this->host = $this->Input->Post->getString('host');
 
 	try
 		{
@@ -611,8 +608,6 @@ h3{font-size:16px;}
 h4{font-size:14px;}
 h5{font-size:12px;}
 h6{font-size:10px;}
-
-.tag {color:#FFCC00;}
 eot;
 
 	$stm = $this->DB->prepare
@@ -641,30 +636,7 @@ eot;
 	$stm->execute();
 	$stm->close();
 
-	$id = $this->DB->getInsertId();
-
-	$body =
-		'
-		<table class="frame">
-			<tr>
-				<td class="title">
-					Board eingerichtet
-				</td>
-			</tr>
-			<tr>
-				<td class="main">
-					Dein Board wurde eingerichtet und ist unter folgender Adresse erreichbar:
-					<ul>
-					<li><strong>Forum:</strong> <a href="?page=Forums;id='.$id.'">?page=Forums;id='.$id.'</a></li>
-					<li><strong>Administration:</strong> <a href="?page=AdminIndex;id='.$id.'">?page=AdminIndex;id='.$id.'</a></li>
-					</ul>
-				</td>
-			</tr>
-		</table>
-		';
-
-	$this->setValue('title', 'Board erfolgreich eingerichtet');
-	$this->setValue('body', $body);
+	$this->Output->redirect('AdminIndex', array('id' => $this->DB->getInsertId()));
 	}
 
 }

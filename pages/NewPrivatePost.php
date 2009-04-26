@@ -17,6 +17,7 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
+
 require('NewPost.php');
 
 class NewPrivatePost extends NewPost {
@@ -30,7 +31,6 @@ public function __construct()
 		$this->showFailure('Nur für Mitglieder');
 		}
 	}
-
 
 protected function checkInput()
 	{
@@ -50,7 +50,7 @@ protected function checkInput()
 				AND threads.id = ?'
 			);
 		$stm->bindInteger($this->User->getId());
-		$stm->bindInteger($this->Input->Request->getInt('thread'));
+		$stm->bindInteger($this->Input->Get->getInt('thread'));
 		$this->thread = $stm->getColumn();
 		$stm->close();
 		}
@@ -65,7 +65,7 @@ protected function checkInput()
 		$this->showFailure('Thema nicht gefunden!');
 		}
 
-	$this->addHidden('thread', $this->thread);
+	$this->setParam('thread', $this->thread);
 	}
 
 protected function checkAccess()
@@ -85,7 +85,7 @@ protected function sendForm()
 		WHERE
 			id = ?'
 		);
-	$stm->bindInteger($this->time);
+	$stm->bindInteger($this->Input->getTime());
 	$stm->bindInteger($this->User->getId());
 	$stm->execute();
 	$stm->close();
@@ -115,16 +115,13 @@ protected function sendForm()
 			username = ?,
 			text = ?,
 			dat = ?,
-			smilies = ?,
 			counter = ?'
 		);
 	$stm->bindInteger($this->thread);
 	$stm->bindInteger($this->User->getId());
 	$stm->bindString($this->User->getName());
 	$stm->bindString($this->text);
-	$stm->bindInteger($this->time);
-	$stm->bindInteger($this->smilies ? 1 : 0);
-
+	$stm->bindInteger($this->Input->getTime());
 	$stm->bindInteger($counter);
 
 	$stm->execute();
@@ -138,9 +135,14 @@ protected function sendForm()
 	$this->updateThread($this->User->getId(), $this->User->getName());
 	$this->updateBoard();
 
-	$this->Log->insert($this->thread, $this->time);
+	$this->Log->insert($this->thread, $this->Input->getTime());
 
 	$this->redirect();
+	}
+
+protected function redirect()
+	{
+	$this->Output->redirect('PrivatePostings', array('thread' => $this->thread, 'post' => -1));	
 	}
 
 protected function updateThread($userid, $username)
@@ -157,7 +159,7 @@ protected function updateThread($userid, $username)
 		WHERE
 			id = ?
 		');
-	$stm->bindInteger($this->time);
+	$stm->bindInteger($this->Input->getTime());
 	$stm->bindInteger($userid);
 	$stm->bindString($username);
 	$stm->bindInteger($this->thread);
@@ -168,64 +170,6 @@ protected function updateThread($userid, $username)
 
 protected function updateForum($userid)
 	{
-	}
-
-protected function redirect()
-	{
-	try
-		{
-		$stm = $this->DB->prepare
-			('
-			SELECT
-				name
-			FROM
-				threads
-			WHERE
-				id = ?'
-			);
-		$stm->bindInteger($this->thread);
-		$threadName = $stm->getColumn();
-		$stm->close();
-		}
-	catch (DBNoDataException $e)
-		{
-		$stm->close();
-		$threadName = '';
-		}
-
-	$body =
-		'
-		<table class="frame">
-			<tr>
-				<td class="title">
-					Beitrag geschrieben
-				</td>
-			</tr>
-			<tr>
-				<td class="main">
-					Wohin darf es nun gehen?
-				</td>
-			</tr>
-			<tr>
-				<td class="main">
-					<a href="?page=PrivatePostings;id='.$this->Board->getId().';thread='.$this->thread.';post=-1#last">&#187; zurück zum Thema &quot;<em>'.$threadName.'</em>&quot;</a>
-				</td>
-			</tr>
-			<tr>
-				<td class="main">
-					<a href="?page=PrivateThreads;id='.$this->Board->getId().'">&#187; zurück zu den &quot;<em>Privaten Themen</em>&quot;</a>
-				</td>
-			</tr>
-			<tr>
-				<td class="main">
-					<a href="?page=Forums;id='.$this->Board->getId().'">&#187; zum Board &quot;<em>'.$this->Board->getName().'</em>&quot;</a>
-				</td>
-			</tr>
-		</table>
-		';
-
-	$this->setValue('title', 'Beitrag geschrieben');
-	$this->setValue('body', $body);
 	}
 
 }

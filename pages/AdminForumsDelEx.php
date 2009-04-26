@@ -17,7 +17,8 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-class AdminForumsDelEx extends AdminForm{
+
+class AdminForumsDelEx extends AdminForm {
 
 private $cat = 0;
 private $forum = 0;
@@ -27,7 +28,7 @@ public function setForm()
 	{
 	try
 		{
-		$this->forum = $this->Input->Request->getInt('forum');
+		$this->forum = $this->Input->Get->getInt('forum');
 		}
 	catch (RequestException $e)
 		{
@@ -63,18 +64,13 @@ public function setForm()
 		$this->Output->redirect('AdminCats');
 		}
 
-	$this->setValue('title', 'Externes Forum löschen');
+	$this->setTitle('Externes Forum löschen');
 
-	$this->addHidden('forum', $this->forum);
-	$this->requires('forum');
+	$this->setParam('forum', $this->forum);
 
-	$this->addOutput('Hierdurch wird der Verweis auf das externe Forum aus dem Board entfernt. Dabei werden keine Beiträge gelöscht.');
+// 	$this->addOutput('Hierdurch wird der Verweis auf das externe Forum aus dem Board entfernt. Dabei werden keine Beiträge gelöscht.');
 
-	$this->addSubmit('Externes Forum löschen');
-	}
-
-protected function checkForm()
-	{
+	$this->add(new SubmitButtonElement('Externes Forum löschen'));
 	}
 
 public function sendForm()
@@ -92,7 +88,7 @@ public function sendForm()
 	$stm->execute();
 	$stm->close();
 
-	$this->Output->redirect('AdminForums', 'cat='.$this->cat);
+	$this->Output->redirect('AdminForums', array('cat' => $this->cat));
 	}
 
 }

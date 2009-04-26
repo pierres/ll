@@ -17,7 +17,8 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-class DelPost extends Form{
+
+class DelPost extends Form {
 
 private $post = 0;
 private $thread = 0;
@@ -28,7 +29,7 @@ protected function setForm()
 	{
 	try
 		{
-		$this->post = $this->Input->Request->getInt('post');
+		$this->post = $this->Input->Get->getInt('post');
 		}
 	catch (RequestException $e)
 		{
@@ -65,14 +66,12 @@ protected function setForm()
 		$this->showFailure('Beitrag nicht gefunden oder Thema geschlossen!');
 		}
 
-	$this->setValue('title', 'Beitrag '.($this->deleted ? 'wiederherstellen' : 'löschen'));
+	$this->setTitle('Beitrag '.($this->deleted ? 'wiederherstellen' : 'löschen'));
 
-	$this->addHidden('post', $this->post);
-	$this->requires('post');
+	$this->setParam('post', $this->post);
 
-	$this->addOutput('Soll der Beitrag wirklich '.($this->deleted ? 'wiederhergetstellt' : 'gelöscht').' werden?');
-
-	$this->addSubmit('Beitrag '.($this->deleted ? 'wiederherstellen' : 'löschen'));
+	$this->add(new CheckboxInputElement('confirm', 'Bestätigung'));
+	$this->add(new SubmitButtonElement($this->getTitle()));
 	}
 
 protected function checkForm()
@@ -120,7 +119,7 @@ protected function updateForum()
 
 protected function redirect()
 	{
-	$this->Output->redirect('Postings', 'thread='.$this->thread);
+	$this->Output->redirect('Postings', array('thread' => $this->thread));
 	}
 
 }

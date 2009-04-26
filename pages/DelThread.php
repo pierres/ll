@@ -17,7 +17,8 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-class DelThread extends Form{
+
+class DelThread extends Form {
 
 protected $forum 		= 0;
 protected $thread		= 0;
@@ -27,7 +28,7 @@ protected function setForm()
 	{
 	try
 		{
-		$this->thread = $this->Input->Request->getInt('thread');
+		$this->thread = $this->Input->Get->getInt('thread');
 		}
 	catch (RequestException $e)
 		{
@@ -59,14 +60,12 @@ protected function setForm()
 		$this->showFailure('Thema nicht gefunden oder geschlossen!');
 		}
 
-	$this->setValue('title', 'Thema '.($this->deleted ? 'wiederherstellen' : 'löschen'));
+	$this->setTitle('Thema '.($this->deleted ? 'wiederherstellen' : 'löschen'));
 
-	$this->addHidden('thread', $this->thread);
-	$this->requires('thread');
+	$this->setParam('thread', $this->thread);
 
-	$this->addOutput('Soll das Thema wirklich '.($this->deleted ? 'wiederhergestellt' : 'gelöscht').' werden?');
-
-	$this->addSubmit('Thema '.($this->deleted ? 'wiederherstellen' : 'löschen'));
+	$this->add(new CheckboxInputElement('confirm', 'Bestätigung'));
+	$this->add(new SubmitButtonElement($this->getTitle()));
 	}
 
 protected function checkForm()
@@ -106,7 +105,7 @@ protected function updateForum()
 
 protected function redirect()
 	{
-	$this->Output->redirect('Postings', 'thread='.$this->thread);
+	$this->Output->redirect('Postings', array('thread' => $this->thread));
 	}
 
 }
