@@ -373,7 +373,7 @@ $body =
 	'
 	<div id="brd-main" class="main paged">
 
-	<div class="thread-title">'.$thread['name'].'</div>
+	
 	'.$poll.'
 	<div class="paged-head">
 		<p class="paging"><span class="pages">Pages:</span> '.$pages.'</p>
@@ -381,7 +381,7 @@ $body =
 	</div>
 
 	<div class="main-head">
-		<h2><span>Posts [ '.$this->posts.' ]</span></h2>
+		<div class="thread-title">'.$thread['name'].'</div>
 	</div>
 
 	<div id="forum1" class="main-content topic">
