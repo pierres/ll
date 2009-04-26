@@ -115,12 +115,12 @@ foreach ($result as $data)
 	if ($this->User->isOnline() && $this->Log->isNew($data['lastthread'], $data['lastdate']))
 		{
 		$status = 'new';
-		$icon = '<a href="'.$this->Output->createUrl('MarkAsRead', array('forum' => $data['id'])).'"><span class="status '.$status.'"><img src="images/status.png" alt="Forum" /></span></a>';
+		$icon = '<a href="'.$this->Output->createUrl('MarkAsRead', array('forum' => $data['id'])).'"><span class="status '.$status.'"><img /></span></a>';
 		}
 	else
 		{
 		$status = 'normal';
-		$icon = '<span class="status '.$status.'"><img src="images/status.png" alt="Forum" /></span>';
+		$icon = '<span class="status '.$status.'"><img /></span>';
 		}
 
 	$position = ($forumcount % 2 == 0 ? 'even' : 'odd');
@@ -253,12 +253,12 @@ private function getPrivateThreads()
 	if ($this->Log->isNew($data['lastthread'], $data['lastdate']))
 		{
 		$status = 'new';
-		$icon = '<span class="status '.$status.'"><img src="images/status.png" alt="Forum" /></span>';
+		$icon = '<span class="status '.$status.'"><img /></span>';
 		}
 	else
 		{
 		$status = 'normal';
-		$icon = '<span class="status '.$status.'"><img src="images/status.png" alt="Forum" /></span>';
+		$icon = '<span class="status '.$status.'"><img /></span>';
 		}
 
 	$data['lastdate'] = $this->L10n->getDateTime($data['lastdate']);

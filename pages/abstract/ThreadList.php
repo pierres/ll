@@ -134,12 +134,12 @@ private function listThreads()
 		if ($this->User->isOnline() && $this->Log->isNew($data['id'], $data['lastdate']))
 			{
 			$status = 'new';
-			$icon = '<span class="status '.$status.'"><img src="images/status.png" alt="Topic" /></span>';
+			$icon = '<span class="status '.$status.'"><img /></span>';
 			}
 		else
 			{
 			$status = 'normal';
-			$icon = '<span class="status '.$status.'"><img src="images/status.png" alt="Forum" /></span>';
+			$icon = '<span class="status '.$status.'"><img /></span>';
 			}
 
 		$data['lastdate'] = $this->L10n->getDateTime($data['lastdate']);
