@@ -7,7 +7,7 @@ A - SETUP
 
 html, body, /* Remove this line if integrating */
 .brd div, .brd p, .brd h1, .brd h2, .brd h3, .brd h4, .brd h5, .brd h6,
-.brd blockquote, .brd pre, .brd code, .brd samp,
+.brd pre, .brd code, .brd samp,
 .brd abbr, .brd acronym, .brd address, .brd small, .brd cite,
 .brd span, .brd em, .brd img, .brd strong,
 .brd dl, .brd dt, .brd dd, .brd ol, .brd ul, .brd li,
@@ -24,10 +24,6 @@ html, body, /* Remove this line if integrating */
 
 .brd fieldset, .brd img, .brd cite {
 	border: none;
-	}
-
-.brd ol, .brd ul {
-	list-style: none;
 	}
 
 .brd table {
@@ -498,17 +494,6 @@ D - MAIN CONTENT COMMON ELEMENTS
 	margin-left: 0.8em;
 	}
 
-
-.brd .paging, .brd .paging * {
-	white-space:nowrap;
-	}
-
-.brd .paging a, .brd .paging strong, .brd .paging span {
-	border-left-style:solid;
-	border-left-width: 1px;
-	text-decoration: none;
-	padding: 0 0.2em 0 0.6em;
-	}
 
 .brd .paging .item1, .brd .paging .pages {
 	border: 0;
@@ -1782,10 +1767,6 @@ B - TEXT
 
 .main .frm-head, .main .databox .legend, .brd .userbox .msg-head {
 	color: #113C5E;
-	}
-
-.main-content li {
-	color: #9AAFB4;
 	}
 
 .main-content .userbox li {

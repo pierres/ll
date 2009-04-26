@@ -5,7 +5,7 @@ LL 4 TODO
 
 * use L10n-Methods for all Strings
 * apply new Layout too al pages
-	* missing: Impressum, Privacy, Admin*
+	* missing: Impressum, Admin*
 * maybe reimplement simple generic crumb menu support
 
 
