@@ -1,0 +1,28 @@
+
+LL 4 TODO
+
+== Required for Release ==
+
+* use L10n-Methods for all Strings
+* apply new Layout too al pages
+	* missing: Impressum, Privacy, Admin*
+* Display name of thread on Postings page
+	* maybe reimplement simple generic crumb menu support
+
+
+== Optional ==
+
+* simplify LLCodes
+	* needs rebuild of all posts
+	* provide update script
+* readd tagging feature
+* add simple FormElement to ger user's confirmation
+	* means generic "Are you sure to..." dialog
+* set Focus on first TextInputElement
+* separate Threads and PrivateThreads in DB
+* extract common Methods to list Postigns in order to simplify Postings and PrivatePostings
+* remove image size from db or reimplement usage
+* FileElement should set the right form encoding itself
+* new versions of fileinfo seems to return charset defenitions of images
+	* e.g. image/png; charset=binary
+* Last page link on Recent is wrong
