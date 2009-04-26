@@ -381,7 +381,7 @@ $body =
 	</div>
 
 	<div class="main-head">
-		<h2><span>'.$this->L10n->getText('Posts').' [ '.$this->posts.' ]</span></h2>
+		<div class="thread-title">'.$thread['name'].'</div>
 	</div>
 
 	<div id="forum1" class="main-content topic">
