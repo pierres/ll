@@ -135,6 +135,10 @@ private function getTypeFromContent($content)
 		$finfo = finfo_open(FILEINFO_MIME);
 		$type = finfo_buffer($finfo, $content);
 		finfo_close($finfo);
+		/** @TODO: review with php 5.3 */
+		// new version produces strings like 'image/png; charset=binary'
+		// we only need the first part
+		$type = strtok($type, ';');
 		}
 	else
 		{

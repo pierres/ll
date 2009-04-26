@@ -260,7 +260,9 @@ private function getPrivateThreads()
 		$status = 'normal';
 		$icon = '<span class="status '.$status.'"><img /></span>';
 		}
-
+		
+	$lastposter = empty($data['lastusername']) ? '' : $this->L10n->getText('by').' '.$data['lastusername'];
+	
 	if ($data['lastdate'])
 		{
 		$data['lastdate'] = $this->L10n->getDateTime($data['lastdate']);
@@ -271,8 +273,6 @@ private function getPrivateThreads()
 		$data['lastdate'] = $this->L10n->getText('never');
 		$lastPostLink = '<span>'.$data['lastdate'].'</span>';
 		}
-
-	$lastposter = empty($data['lastusername']) ? '' : $this->L10n->getText('by').' '.$data['lastusername'];
 
 	return
 		'
