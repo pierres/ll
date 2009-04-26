@@ -44,7 +44,7 @@ protected function getBody()
 
 			<div class="main-head">
 				<h2><span>'.$this->getTitle().'</span></h2>
-				<p class="main-options">Thema '.($this->currentThread+1).' bis '.($this->currentThread+$this->Settings->getValue('max_threads')).' von '.$this->totalThreads.'</p>
+				<p class="main-options">'.sprintf($this->L10n->getText('Topic %d to %d of %d'), ($this->currentThread+1), ($this->currentThread+$this->Settings->getValue('max_threads')), $this->totalThreads).'</p>
 			</div>
 
 			<script type="text/javascript">
@@ -134,12 +134,12 @@ private function listThreads()
 		if ($this->User->isOnline() && $this->Log->isNew($data['id'], $data['lastdate']))
 			{
 			$status = 'new';
-			$icon = '<span class="status '.$status.'" title="Topic containing new posts since your last visit."><img src="images/status.png" alt="Topic" /></span>';
+			$icon = '<span class="status '.$status.'"><img src="images/status.png" alt="Topic" /></span>';
 			}
 		else
 			{
 			$status = 'normal';
-			$icon = '<span class="status '.$status.'" title="Forum"><img src="images/status.png" alt="Forum" /></span>';
+			$icon = '<span class="status '.$status.'"><img src="images/status.png" alt="Forum" /></span>';
 			}
 
 		$data['lastdate'] = $this->L10n->getDateTime($data['lastdate']);

@@ -65,7 +65,7 @@ public function prepare()
 		{
 		$stm->close();
 		$this->Output->setStatus(Output::NOT_FOUND);
-		$this->showFailure('Forum not found.');
+		$this->showFailure($this->L10n->getText('Forum not found.'));
 		}
 
 	$this->ismod = $this->User->isGroup($forum['mods']) || $this->User->isMod();
@@ -156,7 +156,7 @@ public function prepare()
 
 	$this->pageHead = '<p class="posting"><a class="newpost" href="'.$this->Output->createUrl('NewThread', array('forum' => $this->forum)).'"><span>'.$this->L10n->getText('Post new topic').'</span></a></p>';
 	$this->pageFoot = $this->pageHead;
-	$this->mainFoot = '<p class="main-options"><a class="user-option" href="'.$this->Output->createUrl('MarkAsRead', array('forum' => $this->forum)).'"><span>Mark forum as read</span></a></p>';
+	$this->mainFoot = '<p class="main-options"><a class="user-option" href="'.$this->Output->createUrl('MarkAsRead', array('forum' => $this->forum)).'"><span>'.$this->L10n->getText('Mark forum as read').'</span></a></p>';
 
 	$this->setTitle($forum['name']);
 

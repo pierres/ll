@@ -115,12 +115,12 @@ foreach ($result as $data)
 	if ($this->User->isOnline() && $this->Log->isNew($data['lastthread'], $data['lastdate']))
 		{
 		$status = 'new';
-		$icon = '<a href="'.$this->Output->createUrl('MarkAsRead', array('forum' => $data['id'])).'"><span class="status '.$status.'" title="Forum containing new posts."><img src="images/status.png" alt="Forum" /></span></a>';
+		$icon = '<a href="'.$this->Output->createUrl('MarkAsRead', array('forum' => $data['id'])).'"><span class="status '.$status.'"><img src="images/status.png" alt="Forum" /></span></a>';
 		}
 	else
 		{
 		$status = 'normal';
-		$icon = '<span class="status '.$status.'" title="Forum"><img src="images/status.png" alt="Forum" /></span>';
+		$icon = '<span class="status '.$status.'"><img src="images/status.png" alt="Forum" /></span>';
 		}
 
 	$position = ($forumcount % 2 == 0 ? 'even' : 'odd');
@@ -174,18 +174,18 @@ private function getBoardStatistics()
 	$stats =
 	'<div id="brd-info" class="main">
 		<div class="main-head">
-			<h2><span>Forum information</span></h2>
+			<h2><span>'.$this->L10n->getText('Forum information').'</span></h2>
 		</div>
 		<div class="main-content">
 			<div id="stats">
-				<h3>Forum statistics</h3>
+				<h3>'.$this->L10n->getText('Forum statistics').'</h3>
 				<ul>
-					<li class="st-activity"><span>Total number of topics:</span> <strong>'.$this->L10n->getNumber($this->Board->getThreads()).'</strong></li>
-					<li class="st-activity"><span>Total number of posts:</span> <strong>'.$this->L10n->getNumber($this->Board->getPosts()).'</strong></li>
+					<li class="st-activity"><span>'.$this->L10n->getText('Total number of topics').':</span> <strong>'.$this->L10n->getNumber($this->Board->getThreads()).'</strong></li>
+					<li class="st-activity"><span>'.$this->L10n->getText('Total number of posts').':</span> <strong>'.$this->L10n->getNumber($this->Board->getPosts()).'</strong></li>
 				</ul>
 			</div>
 			<div id="onlinelist">
-				<h3><strong>Online</strong> ( <strong>'.$this->L10n->getNumber($this->User->getOnlineCount()).'</strong> )</h3>
+				<h3><strong>'.$this->L10n->getText('Online').'</strong> ( <strong>'.$this->L10n->getNumber($this->User->getOnlineCount()).'</strong> )</h3>
 				<p>'.$online.'</p>
 			</div>
 		</div>
@@ -253,12 +253,12 @@ private function getPrivateThreads()
 	if ($this->Log->isNew($data['lastthread'], $data['lastdate']))
 		{
 		$status = 'new';
-		$icon = '<span class="status '.$status.'" title="Forum containing new posts."><img src="images/status.png" alt="Forum" /></span>';
+		$icon = '<span class="status '.$status.'"><img src="images/status.png" alt="Forum" /></span>';
 		}
 	else
 		{
 		$status = 'normal';
-		$icon = '<span class="status '.$status.'" title="Forum"><img src="images/status.png" alt="Forum" /></span>';
+		$icon = '<span class="status '.$status.'"><img src="images/status.png" alt="Forum" /></span>';
 		}
 
 	$data['lastdate'] = $this->L10n->getDateTime($data['lastdate']);

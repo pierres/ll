@@ -26,7 +26,7 @@ public function prepare(){
 
 if (!$this->User->isOnline())
 	{
-	$this->showWarning('Nur für Mitglieder');
+	$this->showWarning($this->L10n->getText('Access denied!'));
 	}
 
 try
@@ -35,7 +35,7 @@ try
 	}
 catch (RequestException $e)
 	{
-	$this->showWarning('Kein Thema angegeben');
+	$this->showWarning($this->L10n->getText('No topic specified.'));
 	}
 
 
@@ -73,7 +73,7 @@ catch (DBNoDataException $e)
 	{
 	$stm->close();
 	$this->Output->setStatus(Output::NOT_FOUND);
-	$this->showWarning('Thema nicht gefunden.');
+	$this->showWarning($this->L10n->getText('Topic not found.'));
 	}
 
 try
@@ -231,11 +231,11 @@ foreach ($result as $data)
 		{
 		if (empty($data['editorname']))
 			{
-			$edited = '<p class="lastedit"><em>Last edited ('.$this->L10n->getDateTime($data['editdate']).')</em></p>';
+			$edited = '<p class="lastedit"><em>'.$this->L10n->getText('Last edited').' ('.$this->L10n->getDateTime($data['editdate']).')</em></p>';
 			}
 		else
 			{
-			$edited = '<p class="lastedit"><em>Last edited by <a href="'.$this->Output->createUrl('ShowUser', array('user' => $data['editby'])).'">'.$data['editorname'].'</a> ('.$this->L10n->getDateTime($data['editdate']).')</em></p>';
+			$edited = '<p class="lastedit"><em>'.sprintf($this->L10n->getText('Last edited by %s'), '<a href="'.$this->Output->createUrl('ShowUser', array('user' => $data['editby'])).'">'.$data['editorname'].'</a> ('.$this->L10n->getDateTime($data['editdate'])).')</em></p>';
 			}
 		}
 	else
@@ -280,7 +280,7 @@ foreach ($result as $data)
 		<div class="'.implode(' ', $posttype).'">
 			<div class="postmain">
 				<div id="p3" class="posthead">
-					<h3><a class="permalink" rel="bookmark" title="Permanent link to this post" href="'.$this->Output->createUrl('PrivatePostings', array('thread' => $thread['id'], 'post' => ($this->post + $postcount - 1))).'"><strong>'.($this->post + $postcount).'</strong></a> <span>'.$this->L10n->getDateTime($data['dat']).'</span></h3>
+					<h3><a class="permalink" rel="bookmark" href="'.$this->Output->createUrl('PrivatePostings', array('thread' => $thread['id'], 'post' => ($this->post + $postcount - 1))).'"><strong>'.($this->post + $postcount).'</strong></a> <span>'.$this->L10n->getDateTime($data['dat']).'</span></h3>
 				</div>
 				<div class="postbody">
 					<div class="user">
@@ -320,7 +320,7 @@ else
 	}
 
 
-$reply_button = '<a href="'.$this->Output->createUrl('InviteToPrivateThread', array('thread' => $thread['id'])).'"><span>einladen</span></a>
+$reply_button = '<a href="'.$this->Output->createUrl('InviteToPrivateThread', array('thread' => $thread['id'])).'"><span>'.$this->L10n->getText('Invite to private thread').'</span></a>
 <a class="newpost" href="'.$this->Output->createUrl('NewPrivatePost', array('thread' => $thread['id'])).'"><span>'.$this->L10n->getText('Post reply').'</span></a>';
 
 $thread_buttons = ($thread['firstuserid'] == $this->User->getId() ?
@@ -331,15 +331,15 @@ $body =
 	'
 	<div id="brd-main" class="main paged">
 
-	<h1><span><a class="permalink" href="'.$this->Output->createUrl('PrivatePostings', array('thread' => $thread['id'])).'" rel="bookmark" title="Permanent link to this topic">'.$thread['name'].'</a></span></h1>
+	<h1><span><a class="permalink" href="'.$this->Output->createUrl('PrivatePostings', array('thread' => $thread['id'])).'" rel="bookmark">'.$thread['name'].'</a></span></h1>
 '.$poll.'
 	<div class="paged-head">
-		<p class="paging"><span class="pages">Pages:</span> '.$pages.'</p>
+		<p class="paging"><span class="pages">'.$this->L10n->getText('Pages').':</span> '.$pages.'</p>
 		<p class="posting">'.$reply_button.'</p>
 	</div>
 
 	<div class="main-head">
-		<h2><span>Posts [ '.$this->posts.' ]</span></h2>
+		<h2><span>'.$this->L10n->getText('Posts').' [ '.$this->posts.' ]</span></h2>
 	</div>
 
 	<div id="forum1" class="main-content topic">
@@ -347,7 +347,7 @@ $body =
 	</div>
 
 	<div class="main-foot">
-		<p class="h2"><strong>Posts [ '.$this->posts.' ]</strong></p>
+		<p class="h2"><strong>'.$this->L10n->getText('Posts').' [ '.$this->posts.' ]</strong></p>
 		<p class="main-options">
 			'.$thread_buttons.'
 		</p>
@@ -356,7 +356,7 @@ $body =
 
 	<div class="paged-foot">
 		<p class="posting">'.$reply_button.'</p>
-		<p class="paging"><span class="pages">Pages:</span> '.$pages.'</p>
+		<p class="paging"><span class="pages">'.$this->L10n->getText('Pages').':</span> '.$pages.'</p>
 	</div>
 
 </div>
