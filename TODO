@@ -4,8 +4,6 @@ LL 4 TODO
 == Required for Release ==
 
 * use L10n-Methods for all Strings
-* apply new Layout too al pages
-	* missing: Admin*
 * maybe reimplement simple generic crumb menu support
 
 
