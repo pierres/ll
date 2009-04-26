@@ -261,7 +261,16 @@ private function getPrivateThreads()
 		$icon = '<span class="status '.$status.'"><img /></span>';
 		}
 
-	$data['lastdate'] = $this->L10n->getDateTime($data['lastdate']);
+	if ($data['lastdate'])
+		{
+		$data['lastdate'] = $this->L10n->getDateTime($data['lastdate']);
+		$lastPostLink = '<a href="'.$this->Output->createUrl('PrivatePostings', array('thread' => $data['lastthread'], 'post' => '-1')).'"><span>'.$data['lastdate'].'</span></a> <span class="byuser">'.$lastposter.'</span>';
+		}
+	else
+		{
+		$data['lastdate'] = $this->L10n->getText('never');
+		$lastPostLink = '<span>'.$data['lastdate'].'</span>';
+		}
 
 	$lastposter = empty($data['lastusername']) ? '' : $this->L10n->getText('by').' '.$data['lastusername'];
 
@@ -286,7 +295,7 @@ private function getPrivateThreads()
 
 					<td class="tc2">'.$this->L10n->getNumber($data['threads']).'</td>
 					<td class="tc3">'.$this->L10n->getNumber($data['posts']).'</td>
-					<td class="tcr"><a href="'.$this->Output->createUrl('PrivatePostings', array('thread' => $data['lastthread'], 'post' => '-1')).'"><span>'.$data['lastdate'].'</span></a> <span class="byuser">'.$lastposter.'</span></td>
+					<td class="tcr">'.$lastPostLink.'</td>
 				</tr>
 		';
 	}
