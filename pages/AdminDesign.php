@@ -23,32 +23,23 @@ class AdminDesign extends AdminPage {
 
 public function prepare()
 	{
-	$body=
-	'
-	<table class="frame" style="width:80%">
-	<tr>
-		<td class="title" colspan="2">
+	$body='
+	<div id="brd-main" class="main">
+		<div class="main-head">
 			Layout &amp; Design
-		</td>
-	</tr>
-	<tr>
-		<td class="main">
-			<img src="images/dev.png" />
-		</td>
-		<td class="main">
-			<ul>
-				<li style="margin:20px;">
+		</div>
+		<div class="main-content frm paged-head">
+			<div class="paging">
+				<img src="images/dev.png" /><br />
+				<br />
 				<a href="'.$this->Output->createUrl('AdminHtml').'"><span class="button">HTML-Vorlage</span></a>
-				Hier kannst Du die HTML-Vorlage für das Forum bearbeiten. Achte auf XHTML 1.1-Kompatibilität!
-				</li>
-				<li style="margin:20px;">
+				Hier kannst Du die HTML-Vorlage für das Forum bearbeiten. Achte auf XHTML 1.1-Kompatibilität!<br />
+				<br />
 				<a href="'.$this->Output->createUrl('AdminCss').'"><span class="button">CSS-Vorlage</span></a>
 				Farben, Schriften, Bilder etc. werden mittels Stylesheet festgelegt.
-				</li>
-			</ul>
-		</td>
-	</tr>
-	</table>
+			</div>
+		</div>
+	</div>
 	';
 
 	$this->setTitle('Layout &amp; Design');
