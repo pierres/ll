@@ -373,7 +373,7 @@ $body =
 	'
 	<div id="brd-main" class="main paged">
 
-	<h1><span><a class="permalink" href="'.$this->Output->createUrl('Postings', array('thread' => $thread['id'])).'" rel="bookmark" title="Permanent link to this topic">'.$thread['name'].'</a></span></h1>
+	<div class="thread-title">'.$thread['name'].'</div>
 	'.$poll.'
 	<div class="paged-head">
 		<p class="paging"><span class="pages">Pages:</span> '.$pages.'</p>
