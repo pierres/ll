@@ -139,30 +139,30 @@ protected function getMenu()
 	$menu =	'<div id="brd-navlinks"><ul>';
 	
 	$menu .= '
-		<li id="navindex"><a href="'.$this->Output->createUrl('Forums').'"><span>Index</span></a></li>
+		<li id="navindex"><a href="'.$this->Output->createUrl('Forums').'"><span>'.$this->L10n->getText('Index').'</span></a></li>
 
-		<li id="navsearch"><a href="'.$this->Output->createUrl('Search').'"><span>Search</span></a></li>';
+		<li id="navsearch"><a href="'.$this->Output->createUrl('Search').'"><span>'.$this->L10n->getText('Search').'</span></a></li>';
 
 
 	if ($this->User->isOnline())
 		{
 		$menu .=
-			'<li id="navprofile"><a href="'.$this->Output->createUrl('MyProfile').'"><span>My profile</span></a></li>';
+			'<li id="navprofile"><a href="'.$this->Output->createUrl('MyProfile').'"><span>'.$this->L10n->getText('My profile').'</span></a></li>';
 
 		if ($this->User->isAdmin())
 			{
 			$menu .=
-			'<li id="navadmin"><a href="'.$this->Output->createUrl('AdminSettings').'"><span>Administration</span></a></li>';
+			'<li id="navadmin"><a href="'.$this->Output->createUrl('AdminSettings').'"><span>'.$this->L10n->getText('Administration').'</span></a></li>';
 			}
 
-		$menu .= '<li id="navlogout"><a href="'.$this->Output->createUrl('Logout').'"><span>Logout</span></a></li>';
+		$menu .= '<li id="navlogout"><a href="'.$this->Output->createUrl('Logout').'"><span>'.$this->L10n->getText('Logout').'</span></a></li>';
 		}
 	else
 		{
 		$menu .=
-			'<li id="navregister"><a href="'.$this->Output->createUrl('Register').'"><span>Register</span></a></li>
+			'<li id="navregister"><a href="'.$this->Output->createUrl('Register').'"><span>'.$this->L10n->getText('Register').'</span></a></li>
 
-			<li id="navlogin"><a href="'.$this->Output->createUrl('Login').'"><span>Login</span></a></li>';
+			<li id="navlogin"><a href="'.$this->Output->createUrl('Login').'"><span>'.$this->L10n->getText('Login').'</span></a></li>';
 		}
 
 	return $menu.'</ul></div>';
@@ -196,7 +196,7 @@ public function setBody($value)
 protected function showWarning($text)
 	{
 	$this->setValue('meta.robots', 'noindex,nofollow');
-	$this->setTitle('Warnung');
+	$this->setTitle($this->L10n->getText('Warning'));
 	$this->setBody('<div class="warn">'.$text.'</div>');
 	$this->sendOutput();
 	}
@@ -204,15 +204,15 @@ protected function showWarning($text)
 protected function showFailure($text)
 	{
 	$this->setValue('meta.robots', 'noindex,nofollow');
-	$this->setTitle('Fehler');
+	$this->setTitle($this->L10n->getText('Failure'));
 	$this->setBody('<div class="warn">'.$text.'</div>');
 	$this->sendOutput();
 	}
 
 public function prepare()
 	{
-	$this->setTitle('Warnung');
-	$this->setBody('kein Text');
+	$this->setTitle($this->L10n->getText('Warning'));
+	$this->setBody($this->L10n->getText('no text'));
 	}
 
 private function getHead()
@@ -221,7 +221,7 @@ private function getHead()
 		<title>'.$this->getTitle().'</title>
 		<!-- <link rel="stylesheet" media="screen" href="'.$this->Output->createUrl('GetCss').'" /> -->
 		<link rel="stylesheet" media="screen" href="oxygen.css" />
-		<link rel="alternate" type="application/atom+xml" title="Aktuelle Themen im Forum" href="'.$this->Output->createUrl('GetRecent').'" />
+		<link rel="alternate" type="application/atom+xml" title="'.$this->L10n->getText('Recent topics').'" href="'.$this->Output->createUrl('GetRecent').'" />
 		<link rel="search" type="application/opensearchdescription+xml" href="'.$this->Output->createUrl('GetOpenSearch').'" title="'.$this->Board->getName().'" />';
 	}
 
@@ -229,12 +229,12 @@ private function getVisit()
 	{
 	$menu = '<div id="brd-visit">
 			<ul>
-				<li id="vs-searchnew"><a href="'.$this->Output->createUrl('Recent').'" title="Lists topics that have new posts since your last visit">New posts</a></li>';
+				<li id="vs-searchnew"><a href="'.$this->Output->createUrl('Recent').'">'.$this->L10n->getText('New posts').'</a></li>';
 	
 	if ($this->User->isOnline())
 		{
 		$menu .= '
-			<li id="vs-markread"><a href="'.$this->Output->createUrl('MarkAllAsRead').'">Mark all topics as read</a></li>
+			<li id="vs-markread"><a href="'.$this->Output->createUrl('MarkAllAsRead').'">'.$this->L10n->getText('Mark all topics as read').'</a></li>
 			</ul><p>
 				<span id="vs-logged">Logged in as <strong>'.$this->User->getName().'</strong>.</span>
 				<span id="vs-message">Last visit: <strong>'.$this->L10n->getDateTime($this->User->getLastUpdate()).'</strong></span>

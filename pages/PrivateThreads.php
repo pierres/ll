@@ -25,7 +25,7 @@ public function prepare()
 	{
 	if (!$this->User->isOnline())
 		{
-		$this->showWarning('Nur für Mitglieder');
+		$this->showWarning($this->L10n->getText('Access denied!'));
 		}
 
 	$this->currentThread = nat($this->Input->Get->getInt('thread', 0));
@@ -98,7 +98,7 @@ public function prepare()
 	$this->pageHead = '<p class="posting"><a class="newpost" href="'.$this->Output->createUrl('NewPrivateThread').'"><span>'.$this->L10n->getText('Post new topic').'</span></a></p>';
 	$this->pageFoot = $this->pageHead;
 
-	$this->setTitle('Private Themen');
+	$this->setTitle($this->L10n->getText('Private topics'));
 	$this->target = 'PrivatePostings';
 
 	$body = $this->getBody();

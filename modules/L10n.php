@@ -94,17 +94,17 @@ public function getText($text)
 
 public function getDate($timestamp = null)
 	{
-	return strftime('%x', $timestamp);
+	return strftime($this->getText('%x'), $timestamp);
 	}
 
 public function getTime($timestamp = null)
 	{
-	return strftime('%X', $timestamp);
+	return strftime($this->getText('%X'), $timestamp);
 	}
 
 public function getDateTime($timestamp = null)
 	{
-	return strftime('%c', $timestamp);
+	return strftime($this->getText('%c'), $timestamp);
 	}
 
 // @TODO: add singular

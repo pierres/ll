@@ -221,11 +221,11 @@ foreach ($result as $data)
 		{
 		if (empty($data['editorname']))
 			{
-			$edited = '<p class="lastedit"><em>Last edited ('.$this->L10n->getDateTime($data['editdate']).')</em></p>';
+			$edited = '<p class="lastedit"><em>'.$this->L10n->getText('Last edited').' ('.$this->L10n->getDateTime($data['editdate']).')</em></p>';
 			}
 		else
 			{
-			$edited = '<p class="lastedit"><em>Last edited by <a href="'.$this->Output->createUrl('ShowUser', array('user' => $data['editby'])).'">'.$data['editorname'].'</a> ('.$this->L10n->getDateTime($data['editdate']).')</em></p>';
+			$edited = '<p class="lastedit"><em>'.sprintf($this->L10n->getText('Last edited by %s'), '<a href="'.$this->Output->createUrl('ShowUser', array('user' => $data['editby'])).'">'.$data['editorname'].'</a> ('.$this->L10n->getDateTime($data['editdate'])).')</em></p>';
 			}
 		}
 	else
@@ -323,7 +323,7 @@ foreach ($result as $data)
 		<div class="'.implode(' ', $posttype).'">
 			<div class="postmain">
 				<div id="p3" class="posthead">
-					<h3><a class="permalink" rel="bookmark" title="Permanent link to this post" href="'.$this->Output->createUrl('Postings', array('thread' => $thread['id'], 'post' => ($this->post + $postcount - 1))).'"><strong>'.($this->post + $postcount).'</strong></a> <span>'.$this->L10n->getDateTime($data['dat']).'</span></h3>
+					<h3><a class="permalink" rel="bookmark" href="'.$this->Output->createUrl('Postings', array('thread' => $thread['id'], 'post' => ($this->post + $postcount - 1))).'"><strong>'.($this->post + $postcount).'</strong></a> <span>'.$this->L10n->getDateTime($data['dat']).'</span></h3>
 				</div>
 				<div class="postbody">
 					<div class="user">
@@ -376,12 +376,12 @@ $body =
 	
 	'.$poll.'
 	<div class="paged-head">
-		<p class="paging"><span class="pages">Pages:</span> '.$pages.'</p>
+		<p class="paging"><span class="pages">'.$this->L10n->getText('Pages').':</span> '.$pages.'</p>
 		<p class="posting">'.$reply_button.'</p>
 	</div>
 
 	<div class="main-head">
-		<div class="thread-title">'.$thread['name'].'</div>
+		<h2><span>'.$this->L10n->getText('Posts').' [ '.$this->posts.' ]</span></h2>
 	</div>
 
 	<div id="forum1" class="main-content topic">
@@ -389,7 +389,7 @@ $body =
 	</div>
 
 	<div class="main-foot">
-		<p class="h2"><strong>Posts [ '.$this->posts.' ]</strong></p>
+		<p class="h2"><strong>'.$this->L10n->getText('Posts').' [ '.$this->posts.' ]</strong></p>
 		<p class="main-options">
 			'.$thread_buttons.'
 		</p>
@@ -397,7 +397,7 @@ $body =
 
 	<div class="paged-foot">
 		<p class="posting">'.$reply_button.'</p>
-		<p class="paging"><span class="pages">Pages:</span> '.$pages.'</p>
+		<p class="paging"><span class="pages">'.$this->L10n->getText('Pages').':</span> '.$pages.'</p>
 	</div>
 
 </div>
