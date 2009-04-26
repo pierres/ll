@@ -146,11 +146,14 @@ foreach ($result as $data)
 	}
 $stm->close();
 
-
+if ($forums) 
+	{
+		$forums .= '</tbody></table></div>';
+	}
 
 $body =	'<div id="brd-main" class="main">
 	<h1><span>'.$this->Board->getName().'</span></h1>
-	'.$forums.'</tbody></table></div>
+	'.$forums.'
 	</div>';
 
 $this->setTitle($this->L10n->getText('Index'));
