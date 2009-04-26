@@ -111,6 +111,9 @@ private function getTypeFromFile($file)
 		$finfo = finfo_open(FILEINFO_MIME);
 		$type = finfo_file($finfo, $file);
 		finfo_close($finfo);
+		// new version produces strings like 'image/png; charset=binary'
+		// we only need the first part
+		$type = strtok($type, ';');
 		}
 	else
 		{

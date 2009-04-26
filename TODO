@@ -22,6 +22,4 @@ LL 4 TODO
 * extract common Methods to list Postigns in order to simplify Postings and PrivatePostings
 * remove image size from db or reimplement usage
 * FileElement should set the right form encoding itself
-* new versions of fileinfo seems to return charset defenitions of images
-	* e.g. image/png; charset=binary
 * Last page link on Recent is wrong
