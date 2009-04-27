@@ -1,0 +1,9 @@
+LL 4 Installation Guide
+
+* copy LocalSettings.example.php to LocalSettings.php
+	* for debugging you can set $this->config['debug'] to true 
+	  (don't do that on production sites)
+* change the settings to your needs
+
+* import database_schema.sql and database_minimal.sql into your DB
+* login to the board using 'root' and 'password'
