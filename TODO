@@ -21,3 +21,8 @@ LL 4 TODO
 * remove image size from db or reimplement usage
 * FileElement should set the right form encoding itself
 * Last page link on Recent is wrong
+
+== Security ==
+
+* salt passwords
+	* provide way to convert old passwords
