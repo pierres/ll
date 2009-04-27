@@ -35,14 +35,14 @@ public function prepare()
 		$this->showFailure($e->getMessage());
 		}
 
-	$this->pageHead = '<p class="posting"><a class="newpost" href="'.$this->Output->createUrl('Search').'"><span>'.$this->L10n->getText('Neue Suche').'</span></a></p>';
+	$this->pageHead = '<p class="posting"><a class="newpost" href="'.$this->Output->createUrl('Search').'"><span>'.$this->L10n->getText('New search').'</span></a></p>';
 	$this->pageFoot = $this->pageHead;
 
-	$this->setTitle('Suche nach &quot;'.$this->search.'&quot;');
+	$this->setTitle(sprintf($this->L10n->getText('Search results for %s'), $this->search));
 
 	if (!($this->resultSet = $this->PersistentCache->getObject('LL:Search:'.$this->Board->getId().'::'.$this->search)))
 		{
-		$this->showFailure('Leider nichts gefunden');
+		$this->showFailure($this->L10n->getText('No search results.'));
 		}
 	$this->totalThreads = count($this->resultSet);
 	$this->resultSet = array_slice($this->resultSet, $this->currentThread, $this->Settings->getValue('max_threads'));

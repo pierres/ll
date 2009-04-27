@@ -142,7 +142,7 @@ class RequestException extends RuntimeException {
 
 function __construct($message)
 	{
-	parent::__construct('Der Parameter "'.$message.'" konnte nicht gelesen werden.', 0);
+	parent::__construct(sprintf('Parameter %s could not be read.', $message), 0);
 	}
 
 }

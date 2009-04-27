@@ -595,7 +595,7 @@ protected function getPoll()
 			</table>
 			<div class="main-foot">
 				<p class="main-options">
-				<a class="mod-option" href="'.$this->Output->createUrl('Poll', array('thread' => $this->thread, 'target' => $this->getName())).'">'.$this->L10n->getText('Abstimmen').'</a>
+				<a class="mod-option" href="'.$this->Output->createUrl('Poll', array('thread' => $this->thread, 'target' => $this->getName())).'">'.$this->L10n->getText('Submit').'</a>
 				</p>
 			</div>
 			';

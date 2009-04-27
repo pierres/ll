@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-26 19:32+0100\n"
+"POT-Creation-Date: 2009-04-27 19:47+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Pierre Schmitz <pierre@archlinux.de>\n"
 "Language-Team: Pierre Schmitz <pschmitz@laber-land.de>\n"
@@ -16,10 +16,24 @@ msgstr ""
 "X-Poedit-KeywordsList: getText\n"
 "X-Poedit-SearchPath-0: ../../..\n"
 
+#: ../../../modules/User.php:219
+msgid "Wrong password!"
+msgstr "Falsches Passwort!"
+
+#: ../../../modules/RemoteFile.php:36
+msgid "Only http and ftp are allowed."
+msgstr "Nur http und ftp sind erlaubt"
+
+#: ../../../modules/RemoteFile.php:107
+#: ../../../modules/UploadedFile.php:42
+#, php-format
+msgid "Uploading files of type %s is not allowed."
+msgstr "Das Hochladen von Dateien des Typs %s ist nicht erlaubt."
+
 #: ../../../modules/L10n.php:97
 #, php-format
 msgid "%x"
-msgstr "%m.%d%Y"
+msgstr "%m.%d.%Y"
 
 #: ../../../modules/L10n.php:102
 #, php-format
@@ -58,6 +72,112 @@ msgstr "Minuten"
 #: ../../../modules/L10n.php:153
 msgid "seconds"
 msgstr "Sekunden"
+
+#: ../../../modules/UploadedFile.php:47
+#: ../../../modules/UploadedFile.php:54
+#, php-format
+msgid "File is larger than %d Bytes!"
+msgstr "Datei ist größer als %d Bytes"
+
+#: ../../../modules/UploadedFile.php:55
+msgid "The uploaded file exceeds the directive that was specified in the form."
+msgstr "Die datei ist größer als der im Formular angegebene Wert."
+
+#: ../../../modules/UploadedFile.php:56
+msgid "The uploaded file was only partially uploaded."
+msgstr "Die Datei wurde nur teilweise hochgeladen."
+
+#: ../../../modules/UploadedFile.php:57
+#: ../../../modules/UploadedFile.php:70
+#: ../../../modules/UploadedFile.php:75
+msgid "No file was uploaded."
+msgstr "Datei wurde nicht hochgeladen."
+
+#: ../../../modules/UploadedFile.php:58
+msgid "Missing a temporary folder."
+msgstr "Kein temporärer Ordner vorhanden."
+
+#: ../../../modules/UploadedFile.php:59
+msgid "Failed to write file to disk."
+msgstr "Fehler beim schreiben der Datei."
+
+#: ../../../modules/UploadedFile.php:60
+msgid "File upload stopped by extension."
+msgstr "Datei wurde von Erweiterung blockiert."
+
+#: ../../../modules/UploadedFile.php:61
+msgid "Unknown error. Code: "
+msgstr "Unbekannter Fehler. Code: "
+
+#: ../../../pages/ShowUser.php:34
+msgid "No user specified."
+msgstr "Kein Benutzer angegeben."
+
+#: ../../../pages/ShowUser.php:63
+msgid "User not found."
+msgstr "Benutzer nicht gefunden."
+
+#: ../../../pages/ShowUser.php:71
+#, php-format
+msgid "Profile of %s"
+msgstr "Profil von %s"
+
+#: ../../../pages/ShowUser.php:85
+msgid "User information"
+msgstr "Benutzer Informationen"
+
+#: ../../../pages/ShowUser.php:89
+msgid "Registered"
+msgstr "Registriert"
+
+#: ../../../pages/ShowUser.php:90
+msgid "Posts"
+msgstr "Beiträge"
+
+#: ../../../pages/ShowUser.php:94
+msgid "Real name"
+msgstr "Realer Name"
+
+#: ../../../pages/ShowUser.php:95
+msgid "Last post"
+msgstr "Letzter Beitrag"
+
+#: ../../../pages/ShowUser.php:96
+msgid "E-mail"
+msgstr "E-Mail"
+
+#: ../../../pages/ShowUser.php:100
+msgid "Show all posts"
+msgstr "Zeige alle Beiträge"
+
+#: ../../../pages/ShowUser.php:101
+msgid "Post new topic"
+msgstr "Neues Thema eröffnen"
+
+#: ../../../pages/ShowUser.php:102
+msgid "Delete account"
+msgstr "Konto löschen"
+
+#: ../../../pages/Search.php:27
+#: ../../../pages/Search.php:31
+msgid "Search"
+msgstr "Suchen"
+
+#: ../../../pages/Search.php:29
+msgid "Submit"
+msgstr "Abschicken"
+
+#: ../../../pages/Search.php:125
+msgid "No search results."
+msgstr "Keine Such-Ergebnisse."
+
+#: ../../../pages/UserRecent.php:26
+msgid "Recent posts"
+msgstr "Aktuelle Beiträge"
+
+#: ../../../pages/UserRecent.php:35
+msgid "No user specified!"
+msgstr "Kein Benutzer angegeben!"
 
 #: ../../../pages/PrivatePostings.php:29
 msgid "Access denied!"
@@ -110,28 +230,18 @@ msgstr "Thema löschen"
 msgid "Pages"
 msgstr "Seiten"
 
-#: ../../../pages/PrivatePostings.php:342
-#: ../../../pages/PrivatePostings.php:350
-msgid "Posts"
-msgstr "Beiträge"
-
 #: ../../../pages/Forums.php:103
-#: ../../../pages/Forums.php:277
+#: ../../../pages/Forums.php:286
 msgid "Forum"
 msgstr "Forum"
 
 #: ../../../pages/Forums.php:104
-#: ../../../pages/Forums.php:278
+#: ../../../pages/Forums.php:287
 msgid "Topics"
 msgstr "Themen"
 
-#: ../../../pages/Forums.php:106
-#: ../../../pages/Forums.php:280
-msgid "Last post"
-msgstr "Letzter Beitrag"
-
 #: ../../../pages/Forums.php:130
-#: ../../../pages/Forums.php:266
+#: ../../../pages/Forums.php:264
 msgid "by"
 msgstr "von"
 
@@ -159,18 +269,27 @@ msgstr "Gesamtzahl der Beiträge"
 msgid "Online"
 msgstr "Online"
 
-#: ../../../pages/Forums.php:271
-#: ../../../pages/Forums.php:285
+#: ../../../pages/Forums.php:273
+msgid "never"
+msgstr "niemals"
+
+#: ../../../pages/Forums.php:280
+#: ../../../pages/Forums.php:294
 msgid "Private topics"
 msgstr "Private Themen"
 
-#: ../../../pages/Forums.php:285
+#: ../../../pages/Forums.php:294
 msgid "Discuss with other members in a private area."
 msgstr "Unterhalte Dich mit anderen Mitgliedern in einem privaten Bereich."
 
 #: ../../../pages/SearchResults.php:38
-msgid "Neue Suche"
-msgstr ""
+msgid "New search"
+msgstr "Neue Suche"
+
+#: ../../../pages/SearchResults.php:41
+#, php-format
+msgid "Search results for %s"
+msgstr "Such-Ergebnisse für %s"
 
 #: ../../../pages/Threads.php:35
 msgid "No forum specified."
@@ -179,10 +298,6 @@ msgstr "Kein Forum angegeben."
 #: ../../../pages/Threads.php:68
 msgid "Forum not found."
 msgstr "Forum nicht gefunden."
-
-#: ../../../pages/Threads.php:157
-msgid "Post new topic"
-msgstr "Neues Thema eröffnen"
 
 #: ../../../pages/Threads.php:159
 msgid "Mark forum as read"
@@ -220,13 +335,13 @@ msgstr "Thema öffnen"
 msgid "Close topic"
 msgstr "Thema schließen"
 
-#: ../../../pages/Postings.php:598
-msgid "Abstimmen"
-msgstr ""
+#: ../../../pages/SplitThread.php:40
+msgid "No post specified."
+msgstr "Kein Beitrag angegeben."
 
-#: ../../../pages/abstract/Page.php:144
-msgid "Search"
-msgstr "Suchen"
+#: ../../../pages/SplitThread.php:55
+msgid "New topic"
+msgstr "Neues Thema"
 
 #: ../../../pages/abstract/Page.php:150
 msgid "My profile"
@@ -234,7 +349,7 @@ msgstr "Mein Profil"
 
 #: ../../../pages/abstract/Page.php:155
 msgid "Administration"
-msgstr ""
+msgstr "Administration"
 
 #: ../../../pages/abstract/Page.php:158
 msgid "Logout"
@@ -273,6 +388,15 @@ msgstr "Neue Beiträge"
 msgid "Mark all topics as read"
 msgstr "Alle Themen als gelesen markieren"
 
+#: ../../../pages/abstract/Page.php:239
+#, php-format
+msgid "Logged in as %s."
+msgstr "Angemeldet als %s."
+
+#: ../../../pages/abstract/Page.php:240
+msgid "Last visit"
+msgstr "Letzter Besuch"
+
 #: ../../../pages/abstract/ThreadList.php:47
 #, php-format
 msgid "Topic %d to %d of %d"
@@ -286,14 +410,6 @@ msgstr "Thema"
 msgid "Replies"
 msgstr "Antworten"
 
-#~ msgid "Who is online?"
-#~ msgstr "Wer ist noch hier?"
-#~ msgid "First post"
-#~ msgstr "Erster Beitrag"
-#~ msgid "new"
-#~ msgstr "neu"
-#~ msgid "edited at"
-#~ msgstr "bearbeitet am"
-#~ msgid "Edit tag"
-#~ msgstr "Tag ändern"
+#~ msgid "Parameter %s could not be read."
+#~ msgstr "Parameter %s konnte nicht gelesen werden."
 

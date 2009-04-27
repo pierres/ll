@@ -39,26 +39,26 @@ public function __construct($name)
 
 		if (!$this->isAllowedType($this->file['type']))
 			{
-			throw new FileException('Dateien des Typs <strong>'.htmlspecialchars($this->file['type']).'</strong> dürfen nicht hochgeladen werden! Folgende Typen sind erlaubt:<ul><li>'.implode('</li><li>', $this->Settings->getValue('allowed_mime_types')).'</li></ul>');
+			throw new FileException(sprintf($this->L10n->getText('Uploading files of type %s is not allowed.', htmlspecialchars($this->file['type']))));
 			}
 
 		if ($this->getFileSize() >= $this->Settings->getValue('file_size'))
 			{
-			throw new FileException('Datei ist zu groß!');
+			throw new FileException(sprintf($this->L10n->getText('File is larger than %d Bytes!', $this->Settings->getValue('file_size'))));
 			}
 		}
 	elseif (isset($_FILES[$name]) && !empty($_FILES[$name]['error']))// && !empty($_FILES[$name]['name']))
 		{
 		switch ($_FILES[$name]['error'])
 			{
-			case 1 : $message = 'Die Datei ist größer als '.ini_get('upload_max_filesize').'Byte.'; break;
-			case 2 : $message = 'Die Datei ist größer als der im Formular angegebene Wert.'; break;
-			case 3 : $message = 'Die Datei wurde nur teilweise hochgeladen.'; break;
-			case 4 : $message = 'Keine Datei empfangen.'; break;
-			case 6 : $message = 'Kein temporäres Verzeichnis gefunden.'; break;
-			case 7 : $message = 'Konnte Datei nicht speichern.'; break;
-			case 8 : $message = 'Datei wurde von einer Erweiterung blockiert.'; break;
-			default : $message = 'Unbekannter Fehler. Code: '.$_FILES[$name]['error'];
+			case 1 : $message = sprintf($this->L10n->getText('File is larger than %d Bytes!'), ini_get('upload_max_filesize')); break;
+			case 2 : $message = $this->L10n->getText('The uploaded file exceeds the directive that was specified in the form.'); break;
+			case 3 : $message = $this->L10n->getText('The uploaded file was only partially uploaded.'); break;
+			case 4 : $message = $this->L10n->getText('No file was uploaded.'); break;
+			case 6 : $message = $this->L10n->getText('Missing a temporary folder.'); break;
+			case 7 : $message = $this->L10n->getText('Failed to write file to disk.'); break;
+			case 8 : $message = $this->L10n->getText('File upload stopped by extension.'); break;
+			default : $message = $this->L10n->getText('Unknown error. Code: ').$_FILES[$name]['error'];
 			}
 
 		if ($_FILES[$name]['error'] == 4)
@@ -67,12 +67,12 @@ public function __construct($name)
 			}
 		else
 			{
-			throw new FileException('Datei wurde nicht hochgeladen! '.$message);
+			throw new FileException($this->L10n->getText('No file was uploaded.').' - '.$message);
 			}
 		}
 	else
 		{
-		throw new FileNotUploadedException('Datei wurde nicht hochgeladen!');
+		throw new FileNotUploadedException($this->L10n->getText('No file was uploaded.'));
 		}
 	}
 

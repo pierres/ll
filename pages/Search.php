@@ -24,11 +24,11 @@ private $search 	= '';
 
 protected function setForm()
 	{
-	$this->setTitle('Suche');
+	$this->setTitle($this->L10n->getText('Search'));
 
-	$this->add(new SubmitButtonElement('Finden'));
+	$this->add(new SubmitButtonElement($this->L10n->getText('Submit')));
 
-	$searchInput = new TextInputElement('search', '', 'Suchbegriff');
+	$searchInput = new TextInputElement('search', '', $this->L10n->getText('Search'));
 	$searchInput->setMinLength(3);
 	$searchInput->setMaxLength(50);
 	$searchInput->setSize(50);
@@ -122,7 +122,7 @@ private function storeResult()
 		}
 	catch (DBNoDataException $e)
 		{
-		$this->showWarning('Leider nichts gefunden');
+		$this->showWarning($this->L10n->getText('No search results.'));
 		}
 	}
 

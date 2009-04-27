@@ -236,8 +236,8 @@ private function getVisit()
 		$menu .= '
 			<li id="vs-markread"><a href="'.$this->Output->createUrl('MarkAllAsRead').'">'.$this->L10n->getText('Mark all topics as read').'</a></li>
 			</ul><p>
-				<span id="vs-logged">Logged in as <strong>'.$this->User->getName().'</strong>.</span>
-				<span id="vs-message">Last visit: <strong>'.$this->L10n->getDateTime($this->User->getLastUpdate()).'</strong></span>
+				<span id="vs-logged">'.sprintf($this->L10n->getText('Logged in as %s.'), '<strong>'.$this->User->getName().'</strong>').'</span>
+				<span id="vs-message">'.$this->L10n->getText('Last visit').': <strong>'.$this->L10n->getDateTime($this->User->getLastUpdate()).'</strong></span>
 			</p>';
 		}
 	else

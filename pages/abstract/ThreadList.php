@@ -151,7 +151,7 @@ private function listThreads()
 
 					<td class="tcl"
 					 onmouseover="javascript:document.getElementById(\'summary'.$data['id'].'\').style.visibility=\'visible\'"
-					 onmouseout="javascript:document.getElementById(\'summary'.$data['id'].'\').style.visibility=\'hidden\'">'.$icon.' <a href="'.$this->Output->createUrl($this->target, array('thread' => $data['id'])).'">'.$data['name'].'</a> <span class="byuser">by&#160;'.$data['firstusername'].'</span></td>
+					 onmouseout="javascript:document.getElementById(\'summary'.$data['id'].'\').style.visibility=\'hidden\'">'.$icon.' <a href="'.$this->Output->createUrl($this->target, array('thread' => $data['id'])).'">'.$data['name'].'</a> <span class="byuser">'.$this->L10n->getText('by').' '.$data['firstusername'].'</span></td>
 					<td class="tc2">
 					<div class="summary" style="visibility:hidden;" id="summary'.$data['id'].'">
 						<script type="text/javascript">
