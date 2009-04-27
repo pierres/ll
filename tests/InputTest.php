@@ -30,7 +30,7 @@ public function testBug165()
 
 	try
 		{
-		$this->Input->Post->getString('test_bad');
+		$this->ll->Input->Post->getString('test_bad');
 		$this->fail('test_bad should not be accepted!');
 		}
 	catch (RequestException $e)
@@ -39,7 +39,7 @@ public function testBug165()
 
 	try
 		{
-		$test_good = $this->Input->Post->getString('test_good');
+		$test_good = $this->ll->Input->Post->getString('test_good');
 		$this->assertEquals($test_good, $_POST['test_good']);
 		}
 	catch (RequestException $e)
@@ -51,7 +51,7 @@ public function testBug165()
 public function testPcreSegfault()
 	{
 	$_POST['text'] = str_repeat('#', 6000);
-	$text = $this->Input->Post->getString('text');
+	$text = $this->ll->Input->Post->getString('text');
 	$this->assertEquals(strlen($text), 6000);
 	}
 }

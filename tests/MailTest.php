@@ -17,14 +17,15 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
+
 require('LLTestCase.php');
 
-class MailTest extends LLTestCase{
+class MailTest extends LLTestCase {
 
 public function testValidateMail()
 	{
-	$this->assertTrue($this->Mail->validateMail('support@laber-land.de'));
-	$this->assertFalse($this->Mail->validateMail('a support@laber-land.de'));
+	$this->assertTrue($this->ll->Mail->validateMail('support@laber-land.de'));
+	$this->assertFalse($this->ll->Mail->validateMail('a support@laber-land.de'));
 	}
 
 }
