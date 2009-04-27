@@ -52,7 +52,7 @@ protected function checkInput()
 		}
 	catch (RequestException $e)
 		{
-		$this->showFailure('Kein Thema angegeben!');
+		$this->showFailure($this->L10n->getText('No topic specified.'));
 		}
 
 	try
@@ -74,7 +74,7 @@ protected function checkInput()
 	catch (DBNoDataException $e)
 		{
 		$stm->close();
-		$this->showFailure('Thema nicht gefunden!');
+		$this->showFailure($this->L10n->getText('Topic not found.'));
 		}
 	}
 
@@ -83,7 +83,7 @@ protected function checkAccess()
 	if (!$this->User->isForumMod($this->forum))
 		{
 		// Tun wir so, als wüssten wir von nichts
-		$this->showFailure('Kein Thema gefunden.');
+		$this->showFailure($this->L10n->getText('Topic not found.'));
 		}
 	}
 

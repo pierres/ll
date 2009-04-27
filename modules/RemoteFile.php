@@ -33,7 +33,7 @@ public function __construct($url)
 	{
 	if (!preg_match('/^(https?|ftp):\/\//', $url))
 		{
- 		throw new FileException('Nur http und ftp-Protokolle erlaubt');
+ 		throw new FileException($this->L10n->getText('Only http and ftp are allowed.'));
 		}
 
 	$this->url = $url;
@@ -104,7 +104,7 @@ public function getFileContent()
 
 		if (!$this->isAllowedType($this->type))
 			{
-			throw new FileException('Dateien des Typs <strong>'.htmlspecialchars($this->type).'</strong> dürfen nicht hochgeladen werden! Folgende Typen sind erlaubt:<ul><li>'.implode('</li><li>', $this->Settings->getValue('allowed_mime_types')).'</li></ul>');
+			throw new FileException(sprintf($this->L10n->getText('Uploading files of type %s is not allowed.', htmlspecialchars($this->file['type']))));
 			}
 
 		$this->size = strlen($this->content);

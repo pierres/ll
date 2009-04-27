@@ -23,7 +23,7 @@ class UserRecent extends ThreadList {
 
 public function prepare()
 	{
-	$this->setTitle('Aktuelle Beiträge');
+	$this->setTitle($this->L10n->getText('Recent posts'));
 	$this->setValue('meta.robots', 'noindex,nofollow');
 
 	try
@@ -32,7 +32,7 @@ public function prepare()
 		}
 	catch (RequestException $e)
 		{
-		$this->showWarning('Kein Benutzer angegeben!');
+		$this->showWarning($this->L10n->getText('No user specified!'));
 		}
 
 	try

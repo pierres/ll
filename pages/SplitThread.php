@@ -25,12 +25,11 @@ private $oldthread 	= 0;
 private $newthread 	= 0;
 private $forum	 	= 0;
 private $newtopic 	= '';
-protected $title 	= 'Beiträge abzweigen';
 
 
 protected function setForm()
 	{
-	$this->setTitle($this->title);
+	$this->setTitle($this->L10n->getText('Split topic'));
 
 	try
 		{
@@ -38,7 +37,7 @@ protected function setForm()
 		}
 	catch (RequestException $e)
 		{
-		$this->showWarning('Welcher Beitrag?');
+		$this->showWarning($this->L10n->getText('No post specified.'))
 		}
 
 	$this->checkAccess();
@@ -51,9 +50,9 @@ protected function setForm()
 		{
 		}
 
-	$this->add(new SubmitButtonElement('Thema erstellen'));
+	$this->add(new SubmitButtonElement($this->L10n->getText('Submit')));
 
-	$textInput = new TextInputElement('newtopic', $this->newtopic, 'Neues Thema');
+	$textInput = new TextInputElement('newtopic', $this->newtopic, $this->L10n->getText('New topic'));
 	$textInput->setMinLength(3);
 	$textInput->setMaxLength(100);
 	$this->add($textInput);
@@ -98,12 +97,12 @@ protected function checkAccess()
 	catch (DBNoDataException $e)
 		{
 		$stm->close();
-		$this->showFailure('Thema nicht gefunden oder geschlossen!');
+		$this->showFailure($this->L10n->getText('Topic not found.'));
 		}
 
 	if (!$this->User->isMod() && !$this->User->isGroup($forum['mods']))
 		{
-		$this->showFailure('Kein Beitrag gefunden.');
+		$this->showFailure($this->L10n->getText('Topic not found.'));
 		}
 	}
 

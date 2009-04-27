@@ -216,7 +216,7 @@ public function login($name, $password, $cookie = false)
 	catch (DBNoDataException $e)
 		{
 		$stm->close();
-		throw new LoginException('Falsche Benutzername/Passwort-Kombination');
+		throw new LoginException($this->L10n->getText('Wrong password!'));
 		}
 
 	$gruopArray = array();
