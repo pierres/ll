@@ -3,15 +3,18 @@ LL 4 TODO
 
 == Required for Release ==
 
-* use L10n-Methods for all Strings
+* use L10n-Methods for all (english) Strings
 * maybe reimplement simple generic crumb menu support
 
 
 == Optional ==
 
+* use L10n-Methods for all Strings
+	* translate to German
 * simplify LLCodes
 	* needs rebuild of all posts
 	* provide update script
+	* don't open new window for external links (let the user decide)
 * readd tagging feature
 * add simple FormElement to ger user's confirmation
 	* means generic "Are you sure to..." dialog
@@ -21,3 +24,6 @@ LL 4 TODO
 * remove image size from db or reimplement usage
 * FileElement should set the right form encoding itself
 * Last page link on Recent is wrong
+* solve issue when date/time is undefined (1970 problem)
+* make fileinfo non optional (included in PHP 5.3 anyway)
+* create some kind of test scripts that checks server and php configuration
