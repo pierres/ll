@@ -33,7 +33,7 @@ msgstr "Das Hochladen von Dateien des Typs %s ist nicht erlaubt."
 #: ../../../modules/L10n.php:97
 #, php-format
 msgid "%x"
-msgstr "%m.%d.%Y"
+msgstr "%d.%m.%Y"
 
 #: ../../../modules/L10n.php:102
 #, php-format
@@ -43,7 +43,7 @@ msgstr "%X"
 #: ../../../modules/L10n.php:107
 #, php-format
 msgid "%c"
-msgstr "%m.%d.%Y um %X"
+msgstr "%d.%m.%Y um %X"
 
 #: ../../../modules/L10n.php:123
 msgid "years"
