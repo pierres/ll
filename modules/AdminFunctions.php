@@ -62,10 +62,14 @@ public static function delPost($post)
 				threads.forumid,
 				threads.id
 			FROM
-				posts,
+				posts
+			JOIN 
 				threads
-			WHERE
-				posts.id = ?'
+			ON
+				posts.id = ?
+			AND
+				posts.threadid = threads.id
+				'
 			);
 		$stm->bindInteger($post);
 		$data = $stm->getRow();
