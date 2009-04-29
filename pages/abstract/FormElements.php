@@ -21,16 +21,16 @@
 abstract class FormElement extends Modul {
 
 	private static $elementCounter = 0;
-	private $elementId = 0;
+	private $id = 0;
 
 	public function __construct()
 		{
-		$this->elementId = self::$elementCounter++;
+		$this->id = self::$elementCounter++;
 		}
 
-	protected function getNextElementId()
+	public function getId()
 		{
-		return 'id-'.$this->elementId;
+		return 'id-'.$this->id;
 		}
 
 	abstract public function __toString();
@@ -121,7 +121,7 @@ class LabeledElement extends PassiveFormElement {
 		{
 		return
 		'<div class="frm-fld">
-			<label for="'.$this->getNextElementId().'">
+			<label for="'.$this->getId().'">
 				<span class="fld-label">'.$this->label.'</span>
 				<span class="fld-input">'.$this->content.'</span>
 			</label>
@@ -234,6 +234,7 @@ class SecurityTokenElement extends HiddenElement {
 abstract class InputElement extends ActiveFormElement {
 
 	protected $help = '';
+	private static $focusElement = null;
 
 	public function __construct($name, $value, $label)
 		{
@@ -247,7 +248,7 @@ abstract class InputElement extends ActiveFormElement {
 		{
 		return
 		'<div class="frm-fld'.($this->required ? ' required' : '').'">
-			<label for="'.$this->getNextElementId().'">
+			<label for="'.$this->getId().'">
 				<span class="fld-label">'.$this->label.'</span>
 				<span class="fld-input">'.$input.'</span>
 				'.($this->required ? '<em class="req-text">'.$this->L10n->getText('Required').'()</em>' : '').'
@@ -259,6 +260,23 @@ abstract class InputElement extends ActiveFormElement {
 	public function setHelp($help)
 		{
 		$this->help = $help;
+		}
+
+	public static function getFocusElement()
+		{
+		return self::$focusElement;
+		}
+
+	public function setFocus()
+		{
+		if (empty(self::$focusElement))
+			{
+			self::$focusElement = $this;
+			}
+		else
+			{
+			throw new FormElementException($this->L10n->getText('Focus already set!'));
+			}
 		}
 }
 
@@ -273,7 +291,7 @@ class TextInputElement extends InputElement {
 
 	public function __toString()
 		{
-		return $this->formatOutput('<input id="'.$this->getNextElementId().'" type="text" name="'.$this->name.'" size="'.$this->size.'" value="'.$this->value.'" />');
+		return $this->formatOutput('<input id="'.$this->getId().'" type="text" name="'.$this->name.'" size="'.$this->size.'" value="'.$this->value.'" />');
 		}
 }
 
@@ -350,7 +368,7 @@ class PasswordInputElement extends TextInputElement {
 
 	public function __toString()
 		{
-		return $this->formatOutput('<input id="'.$this->getNextElementId().'" type="password" name="'.$this->name.'" size="'.$this->size.'" value="" />');
+		return $this->formatOutput('<input id="'.$this->getId().'" type="password" name="'.$this->name.'" size="'.$this->size.'" value="" />');
 		}
 }
 
@@ -371,7 +389,7 @@ class TextareaInputElement extends InputElement {
 
 	public function __toString()
 		{
-		return $this->formatOutput('<textarea id="'.$this->getNextElementId().'" name="'.$this->name.'" cols="'.$this->columns.'" rows="'.$this->rows.'">'.$this->value.'</textarea>');
+		return $this->formatOutput('<textarea id="'.$this->getId().'" name="'.$this->name.'" cols="'.$this->columns.'" rows="'.$this->rows.'">'.$this->value.'</textarea>');
 		}
 }
 
@@ -387,7 +405,7 @@ class FileInputElement extends InputElement {
 
 	public function __toString()
 		{
-		return $this->formatOutput('<input id="'.$this->getNextElementId().'" type="file" name="'.$this->name.'" size="'.$this->size.'" value="'.$this->value.'" />');
+		return $this->formatOutput('<input id="'.$this->getId().'" type="file" name="'.$this->name.'" size="'.$this->size.'" value="'.$this->value.'" />');
 		}
 
 	/** @TODO */
@@ -419,7 +437,7 @@ class CheckboxInputElement extends InputElement {
 
 	public function __toString()
 		{
-		return $this->formatOutput('<input type="checkbox" id="'.$this->getNextElementId().'" name="'.$this->name.'" value="'.$this->value.'" '.($this->checked ? ' checked="checked"' : '').' />');
+		return $this->formatOutput('<input type="checkbox" id="'.$this->getId().'" name="'.$this->name.'" value="'.$this->value.'" '.($this->checked ? ' checked="checked"' : '').' />');
 		}
 }
 
@@ -459,8 +477,8 @@ class RadioInputElement extends InputElement {
 			{
 			$output .=
 				'<div class="radbox">
-					<label for="'.$this->getNextElementId().'-'.$optionCount.'">
-						<input type="radio" name="'.$this->name.'"'.($value == $this->checked ? ' checked="checked"' : '').' value="'.$value.'" id="'.$this->getNextElementId().'-'.$optionCount.'" />
+					<label for="'.$this->getId().'-'.$optionCount.'">
+						<input type="radio" name="'.$this->name.'"'.($value == $this->checked ? ' checked="checked"' : '').' value="'.$value.'" id="'.$this->getId().'-'.$optionCount.'" />
 						'.$label.'
 					</label>
 				</div>';

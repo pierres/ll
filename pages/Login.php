@@ -31,6 +31,7 @@ protected function setForm()
 	$nameInput->setMinLength(3);
 	$nameInput->setMaxLength(25);
 	$nameInput->setSize(30);
+	$nameInput->setFocus();
 	$this->add($nameInput);
 
 	$passwordInput = new PasswordInputElement('password', 'Dein Passwort');

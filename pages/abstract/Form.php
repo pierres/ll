@@ -28,8 +28,6 @@ protected $buttonElements 	= array();
 
 protected $warning		= array();
 
-protected $focus		= '';
-
 private $encoding 		= '';
 private $method			= 'post';
 private $params			= array();
@@ -142,11 +140,12 @@ protected function showForm()
 				'.implode(' ', $this->buttonElements).'
 			</div>
 		</form>
-		<script type="text/javascript">
+		'.(!is_null(InputElement::getFocusElement()) ?
+		'<script type="text/javascript">
 			/* <![CDATA[ */
-			document.getElementById("'.$this->focus.'").focus();
+			document.getElementById("'.InputElement::getFocusElement()->getId().'").focus();
 			/* ]]> */
-		</script>
+		</script>' :'').'
 		</div>
 	</div>';
 
@@ -215,14 +214,6 @@ protected function showWarning($text)
 	{
 	$this->warning[] = $text;
 	}
-
-// private function setFocus()
-// 	{
-// 	if(empty($this->focus))
-// 		{
-// 		$this->focus = FormElement::getNextElementId();
-// 		}
-// 	}
 
 }
 

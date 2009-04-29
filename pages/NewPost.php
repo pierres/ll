@@ -50,6 +50,7 @@ protected function setForm()
 	$textInput = new TextareaInputElement('text', $this->text, 'Deine Nachricht');
 	$textInput->setMinLength(3);
 	$textInput->setMaxLength(65536);
+	$textInput->setFocus();
 	$this->add($textInput);
 
 	$this->setFile();

@@ -32,6 +32,7 @@ protected function setForm()
 	$searchInput->setMinLength(3);
 	$searchInput->setMaxLength(50);
 	$searchInput->setSize(50);
+	$searchInput->setFocus();
 	$this->add($searchInput);
 	}
 
