@@ -196,7 +196,7 @@ protected function getWarning()
 		$warning =
 			'
 			<div id="req-msg" class="frm-error">
-				<h3 class="warn">Warnung</h3>
+				<h3 class="warn">'.$this->L10n->getText('Warning').'</h3>
 				<ul>
 					<li>'.implode('</li><li>', $this->warning).'</li>
 				</ul>

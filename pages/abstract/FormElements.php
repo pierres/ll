@@ -18,7 +18,7 @@
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-abstract class FormElement {
+abstract class FormElement extends Modul {
 
 	private static $elementCounter = 0;
 	private $elementId = 0;
@@ -137,7 +137,6 @@ abstract class ActiveFormElement extends FormElement {
 	protected $required = true;
 	protected $minLength = 1;
 	protected $maxLength = 65535;
-	protected $Input = null;
 
 	public function __construct($name, $value)
 		{
@@ -145,7 +144,6 @@ abstract class ActiveFormElement extends FormElement {
 		$this->name = $name;
 		$this->label = $name;
 		$this->value = htmlspecialchars($value);
-		$this->Input = Modul::__get('Input');
 		}
 
 	public function setRequired($required)
@@ -196,12 +194,10 @@ class SecurityTokenElement extends HiddenElement {
 	protected $minLength = 40;
 	protected $maxLength = 40;
 	private $page = '';
-	private $User = null;
 
 	public function __construct($page)
 		{
 		$this->page = $page;
-		$this->User = Modul::__get('User');
 		parent::__construct('SecurityToken', '');
 		}
 
@@ -254,7 +250,7 @@ abstract class InputElement extends ActiveFormElement {
 			<label for="'.$this->getNextElementId().'">
 				<span class="fld-label">'.$this->label.'</span>
 				<span class="fld-input">'.$input.'</span>
-				'.($this->required ? '<em class="req-text">(Required)</em>' : '').'
+				'.($this->required ? '<em class="req-text">'.$this->L10n->getText('Required').'()</em>' : '').'
 				'.(!empty($this->help) ? '<span class="fld-help">'.$this->help.'</span>' : '').'
 			</label>
 		</div>';
@@ -283,8 +279,6 @@ class TextInputElement extends InputElement {
 
 class AntiSpamElement extends TextInputElement {
 
-	private $Settings = null;
-	private $Output = null;
 	protected $minLength = 4;
 	protected $maxLength = 4;
 	protected $size = 4;
@@ -292,8 +286,6 @@ class AntiSpamElement extends TextInputElement {
 	public function __construct()
 		{
 		parent::__construct('AntiSpamHash', '', 'CAPTCHA');
-		$this->Settings = Modul::__get('Settings');
-		$this->Output = Modul::__get('Output');
 
 		$this->Output->setCookie('AntiSpamTime',  $this->Input->getTime());
 		$wantedHash = substr(sha1($this->Input->getTime().$this->Settings->getValue('antispam_hash')), 0, 4);
