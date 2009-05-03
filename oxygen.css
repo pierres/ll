@@ -5,119 +5,85 @@ A - SETUP
 /* Start from scratch
 -------------------------------------------------------------*/
 
-html, body, /* Remove this line if integrating */
-.brd div, .brd p, .brd h1, .brd h2, .brd h3, .brd h4, .brd h5, .brd h6,
-.brd pre, .brd code, .brd samp,
-.brd abbr, .brd acronym, .brd address, .brd small, .brd cite,
-.brd span, .brd em, .brd img, .brd strong,
-.brd dl, .brd dt, .brd dd, #brd-visit ul, #brd-visit li, #brd-navlinks ul,
-#brd-navlinks li, #brd-desc ul, #brd-desc li,
-.brd form, .brd fieldset, .brd label, .brd legend,
-.brd table, .brd caption, .brd tbody, .brd tfoot, .brd thead,
-.brd tr, .brd th, .brd td {
-	margin: 0;
-	padding: 0;
-	font-size: 100%;
-	vertical-align: baseline;
-	font-weight: normal;
-	font-style: normal;
+html, body, /* remove this line if necessary for site integration */
+.brd div, .brd p, .brd dl,.brd dt,.brd dd, .brd ul, .brd ol, .brd li,
+.brd h1,.brd h2,.brd h3, .brd h4, .brd h5, .brd h6, .brd pre,
+.brd form, .brd fieldset, .brd legend, .brd blockquote,
+.brd table, .brd th, .brd td {
+	margin:0;
+	padding:0;
+	text-align: left;
 	}
 
 .brd fieldset, .brd img, .brd cite {
-	border: none;
+	border: 0;
+	}
+
+.brd br, .brd hr, .brd .hr, .brd .hidden {
+	display: none;
 	}
 
 .brd table {
 	width: 100%;
 	table-layout: fixed;
 	empty-cells: show;
-	border-spacing: 0;
 	}
 
-.brd td {
-	overflow: hidden;
-	vertical-align: middle;
-	}
-
-.brd span.submit input,
-.brd span.cancel input {
-	overflow: visible;
-	padding-left: 0.5em;
-	padding-right: 0.5em;
-	padding-bottom: 2px;
-	}
-
-.brd a {
-	cursor: pointer;
-	text-decoration: underline;
-	}
-
-.brd div.divider, .brd fieldset br {
-	display: none;
-	}
-
-
-/* Text Setup
+/* Text Setup (Equalise everything before styling)
 -------------------------------------------------------------*/
 
-.brd { /* Needs modifying if body has non default font-size */
-	font: 75%/130% sans-serif;
+body {
+	padding: 20px 30px;
+	font-size: 100%;
 	}
 
-.brd samp, .brd code, .brd pre, .brd option, .brd optgroup {
+.brd-page {
+	font: 75%/1.5em Verdana, Helvetica, Arial, sans-serif;
+	}
+
+.brd h1,.brd h2,.brd h3, .brd h4, .brd h5, .brd h6 {
 	font-size: 1em;
-	font-family: sans-serif;
+	font-weight: normal;
+	}
+
+.brd samp, .brd code, .brd pre, .brd option, .brd optgroup,
+.brd input, .brd select, .brd textarea, .brd td, .brd th {
+	font-family: Verdana,Helvetica,Arial,sans-serif;
+	font-size: 1em;
 	font-style: normal;
+	font-weight: normal;
 	}
 
-.brd input, .brd select, .brd textarea {
-	font-size: 1.1em;
-	font-family: sans-serif;
+.brd code, .codebox pre, #brd-debug table .tcl, #brd-debug table .tcr {
+	font-family: Consolas, courier, "lucida console", monospace;
 	}
 
-.brd code {
-	font-size: 1.1em;
-	line-height: 140%;
-	font-family: monospace
-	}
-
-.frm .frm-info li span strong,
-.brd .important strong,
-.brd .warn strong,
-.brd .post-entry .entry-content strong,
-.brd .post-entry .entry-content strong * {
-	font-weight: bold;
-	}
-
-.brd .entry-content em.bbuline {
-	text-decoration: underline;
-	}
-
-/*************************************************************
-B - FLOAT CLEARING AND HIDDEN STUFF
-**************************************************************/
-
-/* Clear Me
+/* Float Clearing
 -------------------------------------------------------------*/
+
+#brd-main {position: relative}
 
 .brd-page:after,
-#brd-visit:after,
-#brd-about:after,
-#brd-info #stats:after,
-.brd .crumbs:after,
-#brd-info #onlinelist:after,
-.main .paged-head:after,
-.main .paged-foot:after,
-.main .main-head:after,
-.main .main-foot:after,
-.sectioned .main-nav:after,
-.frm .frm-set div:after,
-.frm .link:after,
-.frm .frm-group:after,
-.user .user-info li.status:after,
-.frm .profile:after,
-.main .topic .post .postbody:after,
-.main .topic .post .postfoot:after {
+#brd-main:after,
+.brd .gen-content:after,
+.brd .ct-box:after,
+#brd-Forums .item-head:after,
+#brd-Forums .main-item:after,
+#brd-Forums ul.item-info:after,
+.brd .frm-group:after,
+.brd .mf-set:after,
+.brd .sf-set:after,
+.brd .mf-box:after,
+.brd .sf-box:after,
+.brd .mf-item:after,
+.brd .txt-set:after,
+.brd .txt-box:after,
+.brd .frm-form label:after,
+.brd fieldset:after,
+.brd span.fld-input:after,
+.brd .posthead:after,
+.brd .postbody:after,
+.brd .postfoot .post-options:after {
 	content: "";
 	display: block;
 	font-size: 0;
@@ -128,53 +94,52 @@ B - FLOAT CLEARING AND HIDDEN STUFF
  	clear: both;
 	}
 
-/* Hide Me
+/* Hidden items
 -------------------------------------------------------------*/
 
-.main h1,
-#brd-info .main-head,
-#brd-info #stats h3,
-#qjump legend,
-.crumbs span span,
-.crumbs strong span,
-.main table .tcmod label span,
-.main .main-head h2 span span,
-.main .main-foot .h2 strong span,
-.frm .frm-legend,
-.frm .frm-legend span,
-.frm .frm-info h3,
-.frm .frm-warn,
-.user .user-info .status strong,
-.user .user-info .title strong,
-.frm .profile h3,
-.brd a span span,
-.main .post h3 cite,
-.main .post .posthead .post-select span,
-.main .post .post-entry h4,
-.frm .twin .twin2 .fld-label,
-.brd .frm .frm-group .nodefault span.noshow,
-.main .parted .frm-head {
+#brd-stats .hn,
+#qjump label,
+.brd .post .post-byline span,
+.brd .post .posthead .post-link span,
+.admin .main-subhead,
+.brd .main-item .item-info li span.label,
+.brd .main-item .item-info li label,
+.brd .main-item .you-posted,
+.brd .main-item .item-num,
+#brd-Forums .item-summary .subject-title,
+.brd .group-legend,
+.brd .group-legend span,
+.brd .sf-set legend,
+.brd .sf-set legend span,
+.brd .main-pagehead .page-info,
+.brd p.item-select label,
+.brd .mf-extra .mf-field label,
+.brd .mf-extra .mf-field .aslabel,
+.brd .item-subject .item-nav .pages,
+.brd .post-options a span,
+.brd .main-options .hn,
+.brd .main-head .hn small,
+.brd .entry-title,
+.brd .menu-page .main-head,
+.brd .admin-page .main-head {
  	font-size: 0;
- 	left: -9999px;
- 	text-indent: -9999px;
+ 	left: -999em;
+ 	text-indent: -999em;
  	position:absolute;
  	line-height: 0em;
+ 	visibility: hidden;
  	}
 
 
 /*************************************************************
-C - PAGE LAYOUT and COMMON ELEMENTS
+B - GLOBAL STYLES
 **************************************************************/
 
-/* Page Layout
+/* General Layout
 -------------------------------------------------------------*/
 
-.brd-page {
-/* 	width: 90%; */
-	margin: 0 auto;
-	min-width: 700px;
-	max-width: 1100px;
-	padding: 20px 0;
+.brd {
+	overflow: auto;
 	}
 
 #brd-redirect, #brd-maint, #brd-util {
@@ -182,1222 +147,1427 @@ C - PAGE LAYOUT and COMMON ELEMENTS
 	width: 60%;
 	}
 
-.brd { /* Confines clearing behaviour within forum wrapper */
+.brd-page { /* Confines clearing behaviour within forum wrapper */
 	float: left;
 	width: 100%;
 	position: relative;
 	}
 
+.brd .main-content, .brd .gen-content {
+	border-style: solid;
+	border-width: 1px;
+	}
 
-/* Skip Link
+.brd .gen-content {
+	padding: 0 1.5em;
+	}
+
+#brd-Forums #brd-about, #brd-Forums #brd-stats {
+	margin-top: 1em;
+	}
+
+#brd-visit, #brd-qpost {
+	margin-bottom: 1em;
+	}
+
+
+/* Content Text (Default spacing for paragraphs and lists)
 -------------------------------------------------------------*/
+
+.brd p, .brd .hn {
+	padding: 0.5em 0;
+	}
+
+.brd  ul, .brd ol {
+	padding: 0.5em 0 0.5em 2em;
+	}
+
+.brd ul.spaced {
+	padding: 0.25em 0 0.25em 2em;
+	}
+
+.brd ul.spaced li {
+	padding: 0.25em 0;
+	}
+
+
+/* Headings
+-------------------------------------------------------------*/
+
+.brd th {
+	font-size: 1.084em;
+	padding: 0.462em 1.417em;
+	border-bottom-style: solid;
+	border-bottom-width: 1px;
+	}
+
+.brd .main-head {
+	border-style: solid;
+	border-width: 1px;
+	padding: 0 1.417em;
+	}
+
+.brd .main-head .hn {
+	font-size: 1.084em;
+	padding: 0.462em 10em 0.426em 0;
+	}
+
+.brd .main-subhead {
+	border-style: solid;
+	border-width: 1px;
+	position: relative;
+	margin-bottom: -1px;
+	}
+
+.brd .main-subhead .hn {
+	font-size: 1.084em;
+	padding: 0.462em 1.417em;
+	position: relative;
+	}
+
+.brd .main-pagehead {
+	float: right;
+	margin: -2.5em 1.5em 0 0;
+	}
+
+.brd #brd-admin-uresults .main-pagehead {
+	margin-top: -5.3em;
+	}
+
+.brd .main-pagehead .hn {
+	padding: 0.5em 0;
+	}
+
+.brd .content-head {
+	border-style: solid none;
+	border-width: 1px 0 2px 0;
+	margin-top: -1px;
+	}
+
+.brd .content-head .hn {
+	font-size: 1.084em;
+	border-style: none none solid none;
+	border-width: 1px;
+	padding: 0.462em 1.417em;
+	}
+
+/*************************************************************
+C - COMMON CONTENT TYPES (RE-USABLE FORMATS)
+**************************************************************/
+
+/* Option lists
+-------------------------------------------------------------*/
+
+.brd .options span {
+	border-left-style: solid;
+	border-left-width: 1px;
+	padding: 0 0 0 0.5em;
+	margin: 0 0 0 0.25em;
+	}
+
+.brd .options span.item1 {
+	border-left: 0;
+	padding-left: 0;
+	margin-left: 0;
+	}
+
+/* Content Containers
+-------------------------------------------------------------*/
+
+.brd .ct-box {
+	border-style: solid;
+	border-width: 1px;
+	margin: 1.417em;
+	padding: 0 1em;
+	position: relative;
+	}
+
+.brd .ct-set {
+	border-style: solid;
+	border-width: 1px;
+	margin: 1.417em;
+	padding: 0 0 0 18em;
+	position: relative;
+	}
+
+.brd .ct-group {
+	border-style: solid;
+	border-width: 1px;
+	margin: 1.417em;
+	}
+
+.brd .ct-group .ct-set, .frm-group .ct-set {
+	border-style: dashed none none none;
+	margin: 0;
+	}
+
+.brd .ct-group .ct-box, .brd .frm-group .ct-box {
+	border-style: none;
+	margin: 0;
+	}
+
+.brd .ct-group .ct-set .ct-box, .brd .ct-set .ct-box,
+.brd .frm-group .ct-set .ct-box {
+	border-style: none none none dashed;
+	margin: 0;
+	}
+
+
+.brd .ct-group .group-item1 {
+	border-top: 0;
+	}
+
+.brd .ct-group .set1 {
+	border-top: 0;
+	}
+
+.brd .ct-set .ct-legend {
+	float: left;
+	margin-left: -18em;
+	width: 15.5em;
+	display: inline;
+	position: relative;
+	}
+
+.brd .ct-set ul {
+	padding-left: 0;
+	list-style: none;
+	}
+
+.brd .ct-box div {
+	padding: 0.5em 0;
+	}
+
+.brd .user-box {
+	border-style: solid;
+	border-width: 1px;
+	margin: 1.417em;
+	padding: 0.5em 1em;
+	}
+
+#brd-announcement .user-box {
+	border: 0;
+	margin: 0;
+	padding: 0;
+	}
+
+
+ /* User Identity
+-------------------------------------------------------------*/
+
+.brd .user-ident {
+	padding-left: 0;
+	list-style: none;
+	}
+
+.brd .user-ident .username a,
+.brd .user-ident .username strong {
+	font-size: 1.167em;
+	font-weight: bold;
+	}
+
+.brd .user-ident .username a,
+.brd .user-ident .username a:link,
+.brd .user-ident .username a:visited {
+	text-decoration: none;
+	}
+
+.brd .user-ident .username a:hover,
+.brd .user-ident .username a:active,
+.brd .user-ident .username a:focus {
+	text-decoration: underline;
+	}
+
+.brd .user-ident .usertitle {
+	font-weight: bold;
+	}
+
+.brd .user-ident .useravatar {
+	padding: 0.25em 0;
+	}
+
+.brd .user-ident .useravatar img {
+	display: block;
+	}
+
+ /* Message Boxes
+-------------------------------------------------------------*/
+
+.brd .main-message {
+	padding: 0.5em 1.417em;
+	}
+
+.brd .main-message p span {
+	display: block;
+	padding-top: 0.5em;
+	}
+
+/* Section Menus (By Default - Profile and Admin)
+-------------------------------------------------------------*/
+
+.brd .main-menu, .brd .admin-menu {
+	border: 0;
+	padding: 0.4em 0 0.4em 0.75em;
+	}
+
+.brd .main-menu ul, .brd .admin-menu ul {
+	list-style-type: none;
+	float: left;
+	padding: 0;
+	}
+
+.brd .main-menu li, .brd .admin-menu li {
+	font-size: 1.084em;
+	float: left;
+	display: inline;
+	border-style: none solid;
+	border-width: 0 1px 0 2px;
+	}
+
+#brd-wrap .main-menu a, #brd-wrap .admin-menu a {
+	float: left;
+	position: relative;
+	padding: 0.2em 0.75em 0.4em 0.75em;
+	}
+
+.brd .main-menu li.item1, .brd .admin-menu li.item1 {
+	border-left: 0;
+	}
+
+.brd .admin-submenu ul {
+	padding: 0.5em 0;
+	list-style: none;
+	}
+
+.brd .admin-submenu li {
+	display: inline;
+	margin-right: 0.75em;
+	}
+
+
+/*************************************************************
+D - COMMON INTERFACE ELEMENTS
+**************************************************************/
+
+/* Logo and Tagline
+-------------------------------------------------------------*/
+
+#brd-head {
+	padding-bottom: 0.75em;
+	padding-top: 1em;
+	position: relative;
+	}
+
+#brd-title {
+	padding-bottom: 0;
+	}
+
+#brd-title a, #brd-title strong {
+	font-size: 1.5em;
+	text-decoration: none;
+	font-weight: normal;
+	}
+
+#brd-desc {
+	font-size: 1.084em;
+	padding-top: 0;
+	padding-bottom: 0;
+	}
+
+/* Primary navigation
+-------------------------------------------------------------*/
+
+#brd-navlinks ul {
+	margin: 0;
+	padding: 0.5em 0;
+	float: left;
+	}
+
+#brd-navlinks li {
+	display: inline;
+	margin-right: 1em;
+	}
+
+#brd-navlinks li a {
+	font-size: 1.167em;
+	text-decoration: none;
+	}
+
+#brd-admod {
+	float: right;
+	text-align: right;
+	}
+
+#brd-admod span {
+	margin-left: 0.75em;
+	}
 
 #brd-access {
 	text-align: right;
 	padding: 0;
-	height: 0;
-	margin: 0;
-	position: absolute;
+	margin: -1em -1.5em 0 0;
 	background: transparent;
+	width: 15em;
+	position: relative;
+	float: right;
 	}
 
 #brd-access a, #brd-access a:link, #brd-access a:visited {
 	height: 2em;
-	padding: 0 1.3em;
+	display: block;
+	padding: 0 1.5em;
 	line-height: 2em;
 	position: absolute;
 	left: -999em;
-	margin: 1px;
+	text-index: -999em;
 	width: 12em;
 	}
 
 #brd-access a:hover, #brd-access a:active, #brd-access a:focus {
 	text-indent: 0;
-	background: #000;
 	position: static;
+	}
+
+
+/* Welcome box
+-------------------------------------------------------------*/
+
+#brd-visit #welcome {
+	float: left;
+	}
+
+#brd-visit #visit-links {
+	text-align: right;
 	float: right;
 	}
 
-
-/* Board Title and Description
+/* Paging and posting
 -------------------------------------------------------------*/
 
-#brd-title {
-	padding: 1.3em 1.3em 0.3em 1.3em;
-	white-space: nowrap;
+#brd-pagepost-end {
+	border-top: none;
 	}
 
-#brd-title strong {
-	font-size: 1.5em;
+#brd-pagepost-top {
+	border-bottom: none;
 	}
 
-#brd-desc {
-	padding: 0 1.3em 1em 1.3em;
+.brd .paging {
+	float: left;
 	}
 
-
-/* Main Menu
--------------------------------------------------------------*/
-
-#brd-navlinks ul {
-	padding: 0.7em 1.3em;
-	}
-
-#brd-navlinks ul li {
-	display: inline;
-	margin-right: 0.8em;
-	font-size: 1.2em;
-	}
-
-
-/* Welcome Box
--------------------------------------------------------------*/
-
-#brd-visit {
-	border-style: none solid solid solid;
-	border-width: 1px;
-	padding: 0.8em 1.3em 0.8em 1.3em;
-	margin: 0 0 1em 0;
-	}
-
-#brd-visit ul {
+.brd .posting {
+	text-align: right;
 	float: right;
 	}
 
-#brd-visit ul li {
-	display: inline;
-	margin-left: 0.7em;
+.brd .paging, .brd .paging * {
+	white-space:nowrap;
 	}
 
-#brd-visit p span, #brd-visit ul li a {
-	white-space: nowrap;
+.brd .paging a, .brd .paging strong, .brd .paging span {
+	padding: 0 1em;
+	border-left-style: solid;
+	border-left-width: 1px;
+	float: left;
 	}
 
-#brd-visit p strong,
-#brd-visit ul li strong {
-	font-weight: bold;
+.brd .paging .item1, .brd .paging span.pages {
+	border-left: 0;
+	padding-left: 0;
 	}
 
-
-/* Alert Box
--------------------------------------------------------------*/
-
-#brd-alert, #brd-maintenance {
-	border-style: solid;
-	border-width: 1px;
-	margin: 0 0 1em 0;
-	}
-
-#brd-alert p, #brd-maintenance p {
-	padding: 0.8em 0 0.8em 0;
-	margin: 0 1.3em;
+.brd .posting .newpost {
 	font-size: 1.084em;
+	font-weight: bold;
 	}
 
-#brd-alert strong,
-#brd-maintenance strong,
-#brd-maintenance em {
+/* Breadcrumbs
+-------------------------------------------------------------*/
+
+.brd .crumbs .crumblast {
 	font-weight: bold;
-	font-style: normal;
 	}
 
-.brd #admin-alerts p strong {
-	font-weight: bold;
+.brd .crumbs span, .brd crumbs span * {
+	white-space: nowrap;
+	}
+
+.brd .crumbs {
+	padding: 0.5em 1.5em;
 	}
 
 /* Statistics
 -------------------------------------------------------------*/
 
- #stats ul {
- 	padding: 0.6em 1.3em;
- 	}
+#brd-stats {
+	border-bottom: 0;
+	}
 
- #stats ul li.st-users {
+#brd-stats ul {
+	list-style: none;
+	padding-left: 0;
+	}
+
+#brd-stats ul li.st-users {
  	float: left;
  	clear: both;
  	white-space: nowrap;
- 	line-height: 150%;
  	}
 
- #stats ul li.st-activity {
+ #brd-stats ul li.st-activity {
  	text-align: right;
  	display: block;
  	white-space: nowrap;
- 	line-height: 150%;
  	}
 
-#stats ul li strong {
-	font-weight: bold;
-	}
+ #brd-stats li strong {
+ 	font-weight: bold;
+ 	}
 
-#onlinelist {
-	border-top-style: dashed;
-	border-top-width: 1px;
-	line-height: 150%;
-	padding: 0.6em 1.3em;
-	}
-
-#onlinelist h3 {
-	float: left;
-	margin: 0 0.5em 0 0;
-	}
-
-#onlinelist h3 strong {
-	font-weight: bold;
-	}
-
-
-/* About Box (Footer / Copyright / Jump Menu) and Home Link
--------------------------------------------------------------*/
-
-#brd-about {
-	border-style: solid;
-	border-width: 1px;
-	margin: 0 0 1em 0;
-	padding: 0.6em 1.3em;
-	}
-
-#brd-about p {
-	text-align: right;
-	}
-
-#brd-about #qjump {
-	float: left;
-	width: 40%;
-	}
-
-#brd-about #qjump label {
-	font-weight: bold;
-	display: block;
-	}
-
-#brd-home {
-	font-weight: normal;
-	float:right;
-	padding: 0.4em 1.3em 0 0;
-	}
-
-/* Announcements
--------------------------------------------------------------*/
-
-#brd-announcement .userbox {
-	margin: 0 0 1em 0;
-	padding-bottom: 1em;
-	}
-
-#brd-announcement .msg-head {
-	font-size: 1.2em;
+#brd-online {
+	padding-top: 0.5em;
 	padding-bottom: 0.5em;
-	margin-bottom: 0.5em;
-	border-bottom-style: dashed;
-	border-bottom-width: 1px;
-	font-size: 1.1em;
-	font-weight: bold;
 	}
 
-
-/*************************************************************
-D - MAIN CONTENT COMMON ELEMENTS
-**************************************************************/
-
-/* Common Styling
--------------------------------------------------------------*/
-
-.main .main-content, .paged .paged-foot {
-	margin-bottom: 1em;
-	}
-
-.paged .main-content {
-	margin-bottom: 0;
-	}
-
-.main .main-content {
-	border-style: solid;
-	border-width: 1px;
-	}
-
-
-
-/* Breadcrumbs
--------------------------------------------------------------*/
-
-.brd .brd-crumbs {
-	padding: 0 1.3em;
-	margin: 0 0 1em 0;
-	}
-
-.brd-crumbs .crumb {
-	padding-left: 1.5em;
-	padding-right: 0.5em;
-	background-image: url('images/crumb.png');
-	background-repeat: no-repeat;
-	background-position: center left;
-	white-space: nowrap;
-	float: left;
-	}
-
-.brd-crumbs .crumbfirst {
-	background-image: none;
-	padding-left: 0;
-	}
-
-.brd-crumbs .crumblast {
-	font-weight: bold;
-	}
-
-
-/* Paging and Posting
--------------------------------------------------------------*/
-
-.main .paged-head,
-.main .paged-foot {
-	border-style: solid;
-	border-width: 1px;
-	padding: 0 1.3em;
-	min-height: 2.6em;
-	}
-
-.main .paged-head .paging,
-.main .paged-foot .paging {
-	float: left;
-	font-size: 1.1em;
-	padding: 0.6em 0;
-	}
-
-.main .paged-head .posting,
-.main .paged-foot .posting {
-	float: right;
-	font-size: 1.1em;
-	padding: 0.6em 0;
-	}
-
-.brd .posting, .brd .posting * {
-	white-space: nowrap;
-	}
-
-.main .paged-head .posting span,
-.main .paged-head .paging strong,
-.main .paged-foot .posting span,
-.main .paged-foot .paging strong {
-	font-weight: bold;
-	}
-
-.main .paged-foot .submitting {
-	float: right;
-	padding: 0.3em 0 0.3em 0;
-	}
-
-.main .submitting {
-	text-align: right;
-	}
-
-.main .paged-foot .submitting span {
-	margin-left: 0.8em;
-	}
-
-
-.brd .paging .item1, .brd .paging .pages {
-	border: 0;
-	padding-left: 0;
-	}
-
-.brd .paging .pages {
-	padding-right: 0.3em;
-	}
-
-
-/* Main Headers and Footers
--------------------------------------------------------------*/
-
-.main .main-head,
-.main .main-foot {
-	padding: 0.7em 1.3em;
-	min-height: 1.3em;
-	}
-
-#brd-install .main-head {
-	padding-left: 1.7em;
-	}
-
-.main .main-head h1 {
-	position: static;
-	font-size: 1em;
-	line-height: 1.3em;
-	text-indent: 0;
-	}
-
-.main .main-head h1,
-.main .main-head h2,
-.main .main-foot .h2 {
-	float: left;
-	padding: 0 1px;
-	}
-
-.main .main-head h1 span,
-.main .main-head h2 span,
-.main .main-foot .h2 strong {
-	font-size: 1.1em;
-	}
-
-.main .main-head .main-options,
-.main .main-foot .main-options,
-.admin .main-head h2,
-.admin .main-head h1 {
-	float: right;
-	padding: 0 1px;
-	}
-
-.main .main-head .main-options a.feed-option {
-	margin-left: 0.5em;
-	font-size: 0.9em;
-	float:left;
-	letter-spacing: -0.1em;
-	border-style: solid;
-	border-width: 1px;
-	padding-right: 3px;
-	line-height: 1.2em;
-	height: 1.3em;
-	}
-
-.main .main-head .main-options a.sub-option {
-	float: left;
-	margin-right: 1em;
-	}
-
-.main .main-foot .main-options a.mod-option,
-.main .main-foot .main-options a.user-option {
-	margin-left: 0.8em;
-	}
-
-.main .main-head .main-options a.feed-option,
-.main .main-head .main-options a.feed-option:link,
-.main .main-head .main-options a.feed-option:visited {
-	padding-left: 18px;
-	background-repeat: no-repeat;
-	background-position: left;
-	background-image: url('images/feed.png');
-	}
-
-.main .main-head a.exthelp,
-.main-head a.exthelp:link,
-.main .main-head a.exthelp:visited {
-	padding-left: 20px;
-	background-repeat: no-repeat;
-	background-position: left;
-	background-image: url('images/helpdark.png');
-	}
-
-.main .frm-head {
-	padding: 0.5em 1.7em;
-	border-style: solid none solid none;
-	border-width: 1px;
-	background: #f1f1f1 !important;
-	border-bottom-color: #bbb !important;
-	}
-
-.main .frm-head span, .main .frm-part h3 span {
-	font-size: 1.1em;
-	}
-
-/* Tabbed Navigation (General
--------------------------------------------------------------*/
-
-.main .main-nav {
-	min-width: 62em;
-	}
-
-.main .main-nav * {
-	white-space: nowrap;
-	}
-
-.main .main-nav ul {
-	padding: 0 1.9em;
-	}
-
-.main .main-nav ul li {
-	display: inline;
-	float:left;
-	padding: 0 5px 0 0;
-	}
-
-.main .main-nav ul li a,
-.main .main-nav ul li a:link,
-.main .main-nav ul li a:visited {
-	border-style: solid solid none solid;
-	border-width: 1px;
-	float: left;
-	height: 2.2em;
-	line-height: 2.2em;
-	padding: 0 1em;
-	}
-
-
-/* Tabbed Navigation (with submenu)
--------------------------------------------------------------*/
-.main .submenu {
-	position: relative;
-	}
-
-.main .submenu ul li.topactive ul {
-	border: none;
-	height: 1.85em;
-	left: 0;
-	line-height: 1.5em;
-	margin: 0;
-	padding: 0.3em 1.7em 0.5em;
-	position: absolute;
-	top: 2.3em;
-	}
-
-.main .submenu ul li.topactive ul li a,
-.main .submenu ul li.topactive ul li a:link,
-.main .submenu ul li.topactive ul li a:visited {
-	margin-right: 0.8em;
-	border: none;
-	padding: 0;
-	}
-
-/*************************************************************
-E - MAIN TABLES ( Index / Forums / Userlist )
-**************************************************************/
-
-/* Table Cells Widths and Alignment
--------------------------------------------------------------*/
-
-.main table .tcl {
-	width: 50%;
-	text-align: left;
-	}
-
-.main table .tc2,
-.main table .tc3,
-.main table .tcmod {
-	width: 10%;
-	text-align: center;
-	}
-
-.main table .tcr {
-	width: 30%;
-	text-align: left;
-	}
-
-#brd-userlist table .tcl,
-#brd-searchtopics table .tcl,
-#brd-modforum table .tcl {
-	width: 40%
-	}
-
-#brd-userlist table .tc2,
-#brd-searchtopics table .tc2 {
-	width: 20%;
-	text-align: left;
-	}
-
-#brd-debug  table .tcl {
-	white-space:normal;
-	width: 15%;
-	}
-
-#brd-debug table .tcr {
-	white-space: normal;
-	width: 90%;
-	}
-
-#brd-admin-users table .tcl {
-	width: 35%;
-	line-height: 1.4em;
-	}
-
-
-#brd-admin-users table .tc2 {
-	width: 20%;
-	}
-
-#brd-admin-users table .tc3 {
-	width: 10%;
-	}
-
-#brd-admin-users table .tcr {
-	width: 20%;
-	}
-
-#brd-admin-users table .actions {
-	width: 15%;
-	}
-
-#brd-admin-users td.tcl span {
-	display: block;
-	}
-
-#brd-admin-users td.tcl strong {
-	font-weight: bold;
-	}
-
-
-/* Table Cell Styling
--------------------------------------------------------------*/
-
-.main table .tcl h3 span {
-	font-size: 1.1em;
-	font-weight: bold;
-	}
-
-.main table .tcl span.topic-nav,
-.main table .tcl span.topic-nav *,
-.main table .tcr a {
-	white-space: nowrap;
-	}
-
-.main table .tcl .modlist {
-	display: block;
-	padding-top: 0.3em
-	}
-
-.main table td {
-	padding: 0.6em 1.3em 0.7em 1.3em;
-	border-width: 1px;
-	border-style: solid none none solid;
-	line-height: 130%;
-	}
-
-.main table td.tcl {
-	border-left-style: none;
-	border-left-width: 0
-	}
-
-.main table th {
-	padding: 0.5em 1.3em;
-	border-style: none;
-	}
-
-.main table tbody.statused td.tcl {
-	padding-left: 3.4em;
-	}
-
-.main table tbody.statused span.status {
-	margin-left: -2.4em;
-	position: absolute;
-	}
-
-.main table .tcl img {
-	border-style: solid;
-	border-width: 0.6em;
-	display: inline;
-	height: 0;
-	width: 0;
-	float: left;
-	margin-right: 0.4em;
-	margin-top: 0.1em;
-	}
-
-#brd-Forums .main table .tcl img {
-	border-width: 0.7em;
-	}
-
-#brd-Forums .main table .tcr .byuser {
-	display: block;
-	}
-
-.main table td.actions, .main table th.actions {
-	text-align: right;
-	}
-
-.main table td.actions span {
-	display: block;
-	}
-
-/*************************************************************
-E - MAIN FORMS
-**************************************************************/
-
-/* General Styling
--------------------------------------------------------------*/
-
-.frm .frm-form {
-	margin: 1.7em 1.7em 0.7em 1.7em;
-	}
-
-.frm .frm-set {
-	border-top-style: dashed;
-	border-top-width: 1px;
-	padding: 1.3em 0 0.5em 0;
-	}
-
-.frm .set1 {
-	border-top-style: none;
+#brd-online .hn, #brd-online p {
+	padding-bottom: 0;
 	padding-top: 0;
 	}
 
-.frm .frm-buttons {
-	padding: 0.8em 0 0.3em 15.6em;
-	border-top-style: double;
-	border-top-width: 3px;
-	margin-top: 0.5em;
-	}
+ #brd-online .hn {
+ 	float: left;
+ 	margin-right: 0.5em;
+ 	}
 
-.frm .frm-buttons span {
-	margin-right: 1em;
-	}
-
-.frm .frm-fld span.submit {
-	clear: left;
-	display: block;
-	padding-top: 0.3em;
-	}
-
-.frm table {
-	border-style: solid;
-	border-width: 1px;
-	margin-bottom: 1em;
-	}
-
-/* Text, Select. Link Field and Textarea
+/* Footer
 -------------------------------------------------------------*/
 
-.main form .frm-fld {
-	padding: 0 0 0.7em 0;
-	margin: 0 0 0 15.6em;
-	position: relative;
-	line-height: 1.3em;
+#qjump {
+	float: left;
+	padding: 0.5em 0;
 	}
 
-.main form .frm-fld .fld-label {
-	float: left;
-	width: 14.6em;
-	position: relative;
-	margin-left: -15.6em;
+#qjump div, #qjump label {
+	padding: 0;
+	border: none;
+	}
+
+#copyright {
 	text-align: right;
-	font-weight: bold;
-	padding: 3px 1em 2px 0;
+	float: right;
 	}
 
-.main form .link .fld-label {
-	padding: 0 1em 0 0;
-	}
-
-.admin .frm form fieldset .link .fld-input {
-	float: left;
-	}
-
-.main form .frm-fld .fld-input,
-.main form .frm-fld .fld-input input,
-.main form .frm-fld .fld-input select {
-	float: left;
-	}
-
-.main form .frm-fld .fld-input {
-	padding-right: 0.5em;
-	}
-
-.main form .frm-fld label span.fld-help,
-.main form .frm-fld label span.fld-extra {
-	float: left;
-	width: 98%;
-	display: block;
+#querytime {
+	text-align: center;
 	font-size: 0.9em;
-	margin-left: -2px;
+	}
+
+/* Main and Content Options
+-------------------------------------------------------------*/
+
+.brd .main-options {
+	border-top: none;
+	}
+
+.brd .main-options .options, .brd .main-modoptions .options {
+	text-align: center;
+	}
+
+.brd .main-options span.feed {
+	padding-left: 20px;
+	padding-top: 2px;
+	}
+
+.brd .content-options, .brd .ct-options {
+	float: right;
+	margin-top: -2.7em;
+	padding: 0.5em 1.417em;
 	position: relative;
 	}
 
-.main form .textarea label span.fld-help {
-	width: 86%;
+.brd #select-all {
+	float: right;
 	}
 
-.main form .frm-fld label span.fld-extra {
-	display: inline;
-	width: auto;
-	margin: 0;
-	padding-top: 3px;
-	}
+/*************************************************************
+E - INDEX, FORUMS, SEARCH RESULTS, MODERATE FORUMS
+**************************************************************/
 
-.main form .frm-fld label small.extra {
+/* Header setup generally
+-------------------------------------------------------------*/
+
+.brd .item-summary {
+	height: 2.5em;
+	padding: 0;
+	position: relative;
 	font-size: 1em;
 	}
 
-.main form .frm-fld .fld-label a {
-	margin-left: 0.5em;
-	}
-
-.main form .frm-fld .fld-label a span {
-	font-weight: bold;
-	}
-
-.main form .textarea .fld-input,
-.main form .longtext .fld-input {
- 	width: 84%;
- 	padding-right: 0.8em;
- 	}
-
-.main form .textarea textarea,
-.main form .longtext input {
+.brd .item-summary span {
 	width: 100%;
-	}
-
-.main form .frm-fld em.req-text {
- 	float: left;
- 	padding-top: 2px;
- 	}
-
- .main .frm .frm-part {
-	margin: 0 -1.7em;
- 	padding: 0 1.7em;
- 	border-top: 1px solid #ddd;
- 	margin-top: 1em;
- 	}
-
- .main .frm .frm-part h3 {
- 	margin-top: 0;
- 	background: #f1f1f1;
- 	margin: 1em -1.7em;
- 	margin-top: 0;
- 	margin-bottom: 1.3em;
- 	padding: 0.5em 1.7em;
- 	border-top: 1px solid #fff;
- 	border-bottom: 1px solid #bbb;
- 	}
-
- .main .frm .part1 {
-	margin-top: -1.7em;
-	border-top: none;
- 	}
-
- .main .frm .frm-part h3 * {
- 	color: #113C5E;
- 	}
-
- /* Checkboxes and Radio Buttons
--------------------------------------------------------------*/
-
-.main form .frm-group {
-	padding: 0 0 0.7em 0;
-	position: relative;
-	}
-
-.main form .radbox {
-	padding: 3px 0 0.3em 23px;
-	line-height: 1.3em;
-	position: relative;
-	}
-
-.main form .checkbox {
-	padding-bottom: 1em;
-	}
-
-.main form .radbox input {
-	float: left;
-	position: relative;
-	left: -20px;
-	top: 0.65em;
-	margin: -7px -13px 0 0;
-	min-width: 13px;
-	min-height: 13px;
-	}
-
-.main form .checkbox .fld-label {
-	float: left;
-	width: 14.6em;
-	text-align: right;
-	position: relative;
-	left: -23px;
-	padding: 0;
-	margin-left: -15.6em;
-	font-weight: bold;
-	}
-
-.main form .frm-yesno label,
-.main form .frm-choice label {
-	float: left;
-	}
-
-.main form .frm-yesno label {
-	width: 8em;
-	}
-
-.main form .frm-choice label {
-	width: 11em;
-	}
-
-.main form .frm-group legend span {
 	position: absolute;
-	left: 0;
-	width: 14.6em;
-	text-align: right;
-	padding-top: 3px;
-	font-weight: bold;
+	left: -999em;
+	text-indent: -999em;
+	display: block;
 	}
 
-
- /* Form Information Boxes
--------------------------------------------------------------*/
-
-.frm .frm-info,
-.frm .frm-error,
-.frm .req-warn {
-	margin: 1.7em;
-	padding: 1em 1em 0.3em 1em;
-	border-style: solid;
-	border-width: 1px;
-	}
-
-.frm .frm-form .frm-info {
-	margin: 0.7em 0 1.7em 0;
-	}
-
-.frm .frm-info p,
-.frm .frm-error .warn,
-.frm .frm-error .important {
-	padding: 0 0 0.8em 0;
-	}
-
-.frm .frm-info ul {
-	padding: 0 0 0.2em 1em;
-	margin: 0 0 0 8px;
-	}
-
-.frm .frm-info li,
-.frm .frm-error li {
-	padding: 0 0 0.7em 0.5em;
-	list-style-type: square;
-	line-height: normal;
-	}
-
-#brd-main .frm .actions a, #brd-main .frm .actions a * {
-	font-weight: bold;
-	}
-
-.frm .frm-info .actions {
-	padding-left: 2em;
-	}
-
-.frm .actions a {
-	margin-right: 0.7em;
+.brd .item-summary strong {
+	position: absolute;
+	left: 999em;
+	text-indent: 0;
+	padding: 0.5em 0;
 	white-space: nowrap;
+	font-weight: normal;
+	text-transform: capitalize;
 	}
 
-#brd-search .frm .frm-info .actions {
-	background: url('images/searchicon.png') no-repeat top left;
-	padding-left: 2.2em;
+#brd-wrap .item-summary .subject-title {
+	padding-left: 1.417em;
 	}
 
-.frm .frm-error ul {
-	margin-top: 0;
-	margin-bottom: 0;
-	padding-left: 0;
-	margin-left: 1.6em;
+#brd-wrap .item-summary .info-topics,
+#brd-wrap .item-summary .info-replies {
+	margin-left: 100%;
+	text-align: center;
+	width: 7em;
+	left: 965em;
 	}
 
-.frm .frm-error li {
-	line-height: 1.5em;
+#brd-wrap .item-summary .info-posts,
+#brd-wrap .item-summary .info-views {
+	margin-left: 100%;
+	text-align: center;
+	width: 7em;
+	left: 972em;
 	}
 
-.main form .item-select {
+#brd-wrap .item-summary .info-lastpost {
+	margin-left: 100%;
+	left: 980em;
+	}
+
+#brd-Forums .item-summary {
+	margin-top: -2.5em;
+	}
+
+#brd-wrap p.forum-noview .info-replies {
+	left: 972em;
+	}
+
+/* Content setup generally
+-------------------------------------------------------------*/
+
+.brd .main-content .main-item {
+	border-top-style: solid;
+	border-top-width: 1px;
+	overflow: hidden;
 	position: relative;
+	line-height: 1.4em;
+	}
+
+.brd .main-content .main-item1 {
+	border-top: none;
+	}
+
+.brd .main-content .main-item ul {
 	float: right;
-	margin-top: -2.8em;
-	z-index: 100;
-	padding-bottom: 0;
+	position: relative;
+	padding: 0;
+	list-style: none;
 	}
 
-.main form div.item-select * {
-	font-weight: bold;
+ .brd .main-content .main-item p,
+ .brd .main-content .main-item .hn {
+ 	padding: 0;
+ 	}
+
+ .brd .main-content .main-item .hn .item-status {
+ 	font-weight:normal;
+ 	}
+
+ .brd .main-content .main-item .hn .item-status em {
+ 	font-style:normal;
+ 	}
+
+ .brd .main-content .main-item .item-subject,
+ .brd .main-content .main-item li {
+ 	float: left;
+ 	border-left-style: solid;
+ 	border-left-width: 1px;
+ 	padding-bottom: 10em;
+ 	margin: 0 -2px -9.7em 0;
+ 	position: relative;
+ 	}
+
+.brd .main-content .main-item .item-subject {
+  	padding-top: 0.4em;
+ 	overflow: hidden;
+ 	width: 100%;
+  	}
+
+ .brd .main-content .main-item li.info-topics,
+ .brd .main-content .main-item li.info-posts,
+ .brd .main-content .main-item li.info-views,
+ .brd .main-content .main-item li.info-replies {
+ 	width: 7em;
+ 	text-align:center;
+ 	padding-top: 1em;
+ 	}
+
+.brd .main-content .main-item li.info-lastpost {
+  	padding-top: 0.4em;
+  	width: 20em;
+  	}
+
+.brd .main-content .main-item li.info-lastpost cite {
+	overflow: hidden;
+	width: 18em;
 	}
 
-.main form div.item-select .fld-label {
+.brd .main-item li strong {
 	font-weight: normal;
 	}
 
+.brd .main-content .redirect li.info-lastpost {
+  	padding-top: 1em;
+  	}
 
- /* Data Boxes
+/* Setup for Index and Forums
 -------------------------------------------------------------*/
 
-.main .frm-form .databox {
-	margin: 1.7em 0;
+.brd .main-content .main-item {
+	padding-right: 35em;
+	padding-left: 3.75em;
 	}
 
-.main .databox {
-	margin: 1.7em;
-	padding: 1em 1em 0.3em 1em;
-	border-style: solid;
-	border-width: 1px;
-	overflow: hidden;
-	}
-
-.main .databox p,
-.main .databox ul {
-	padding-bottom: 0.8em;
-	overflow: hidden;
-	}
-
-.main .databox .legend {
-	padding-bottom: 0.5em;
-	border-bottom-style: dashed;
-	border-bottom-width: 1px;
-	margin-bottom: 0.7em;
-	}
-
-.main .databox .legend span,
-.main .databox .term span {
-	font-weight: bold;
-	}
-
-.main .databox .legend strong {
-	float: right;
-	font-weight: bold;
-	}
-
-.main .databox .note {
-	font-weight: bold;
-	padding-bottom: 0.3em;
-	}
-
- /* Multiple Data Boxes (Data Sets)
--------------------------------------------------------------*/
-
-
-.main .dataset {
-	margin: 1.7em;
-	border-style: solid solid solid solid;
-	border-width: 1px;
-	}
-
-.main .frm-form .dataset {
-	margin: 1.7em 0;
-	}
-
-.main .dataset .databox {
-	margin: 0;
-	border-style: dashed none none none;
-	padding: 0.8em 1em 0 1em;
-	}
-
-.main .dataset .db1 {
-	border: none;
-	}
-
-.main .dataset .databox .legend {
-	padding: 0;
-	margin: 0;
-	border: none;
-	}
-
- /* Multiple Data Boxes with Grid layout (Data Grids)
--------------------------------------------------------------*/
-
-.main .datagrid {
-	margin: 1.7em;
-	border-style: solid solid solid solid;
-	border-width: 1px;
-	}
-
-.main .datagrid .databox {
-	margin: 0;
-	padding: 0;
-	width: 100%;
+.brd .main-content .main-item .hn {
 	position: relative;
-	border-style: dashed none none none;
 	}
 
-.main .datagrid .db1 {
-	border: none;
+.brd .main-content .main-item ul {
+	width: 34em;
+	right: -35em;
+	margin-left: -34em;
 	}
 
-.main .datagrid .databox .data {
-	padding: 0.8em 1em 0.8em 1em;
-	margin: 0 0 0 16em;
-	border-left-style: dashed;
-	border-left-width: 1px;
+.brd .forum-noview .main-item {
+	padding-right: 28em;
 	}
 
-.main .datagrid .legend {
-	position: absolute;
-	padding: 0.8em 1em 0 1em;
-	margin: 0;
-	border: none;
-	left: 0;
-	top: 0;
+.brd .forum-noview .main-item ul {
+	width: 27em;
+	right: -28em;
+	margin-left: -27em;
 	}
 
-/*************************************************************
-F - USER PROFILES
-**************************************************************/
+ .brd .main-content .main-item .item-subject span.modlist {
+ 	display: block;
+ 	}
 
- /* User Identity (Profile and Viewtopic)
--------------------------------------------------------------*/
+.brd .main-content .main-item .hn strong {
+  	font-size: 1em;
+  	}
 
-.user .user-ident {
-	position: relative;
-	padding-top: 1.6em;
-	white-space: normal;
-	}
-
-.user .user-ident img {
-	display: block;
-	margin-bottom: 0.3em;
-	}
-
-.user .user-ident .username {
-	font-size: 1.2em;
-	font-weight: bold;
-	display: block;
-	position: absolute;
-	top: 0;
-	margin: 0;
-	line-height:1.2em;
-	}
-
-.user .user-ident a {
-	text-decoration: none;
-	}
-
-.user .user-info li {
-	padding-bottom: 0.2em;
-	line-height: 1.3em;
-	}
-
-.user .user-info .status,
-.user .user-info .title {
-	padding-bottom: 0.8em;
-	}
-
-.user .user-info .title span {
-	font-weight: bold;
-	}
-
-.user .user-info .status span {
-	border-left-style: solid;
-	border-left-width: 0.7em;
-	float:left;
+.brd .main-content .main-item .hn strong span {
 	font-weight: normal;
-	height: 0.8em;
-	line-height: 0.8em;
-	padding-left: 0.4em;
-	position: relative;
+	}
+
+ #brd-Forums .main-content .main-item .hn span {
+	font-size: 1.084em;
+	font-weight: bold;
+ 	}
+#brd-Forums .main-content .main-item .hn small {
+	font-size: 1em;
+	}
+
+.brd .main-content .main-item .item-status {
+	font-weight: bold;
+	}
+
+.brd .main-content .main-item cite {
 	font-style: normal;
 	}
 
+.brd .main-content .main-item span.item-nav,
+.brd .main-content .main-item span.item-nav * {
+	white-space: nowrap;
+	font-style: normal;
+	}
 
- /* Profile normal view and edit profile about page
+ .brd .main-content .main-item .item-subject .hn,
+ .brd .main-content .main-item .item-subject p {
+	margin: 0 1em 0 1.5em;
+ 	}
+
+ .brd .main-content .main-item li.info-lastpost strong,
+ .brd .main-content .main-item li.info-lastpost cite,
+ .brd .main-content .main-item li.info-lastpost span {
+ 	display: block;
+ 	padding: 0 1em;
+ 	font-style: normal;
+ 	font-weight: normal;
+ 	}
+
+ .brd .main-content .main-item li.info-select {
+ 	position: absolute;
+ 	right: 0;
+ 	top: 0;
+ 	padding: 0.3em;
+ 	border-style: none none solid solid;
+ 	border-width: 1px;
+ 	}
+
+ .brd .main-content .main-item .icon {
+ 	border-style: solid;
+ 	border-width: 0.5833em;
+ 	height: 0;
+ 	width: 0;
+ 	float: left;
+ 	margin-top: 0.667em;
+ 	margin-left: -2.417em;
+ 	}
+
+ .brd .main-content .main-item .hn .posted-mark {
+ 	position: absolute;
+ 	font-size: 2em;
+ 	width: auto;
+ 	left: -0.5em;
+ 	top: 0;
+ 	}
+
+/*************************************************************
+F - MAIN CONTENT - FORMS
+**************************************************************/
+
+/*************************************************************
+F - MAIN CONTENT - FORMS
+**************************************************************/
+
+/* Generally
 -------------------------------------------------------------*/
 
-.frm .profile {
-	margin: 1.7em;
-	padding: 1em 1em 0.3em 17em;
+.brd .frm-group {
 	border-style: solid;
 	border-width: 1px;
+	margin: 1.417em;
 	}
 
-.frm .profile .user,
-.frm .profile .user-data,
-.frm .profile .user-actions {
-	float: left;
+.brd .frm-group .set1 {
+	border-top: 0;
+	}
+
+.brd .frm-group .set1 {
+	border-top: 0;
+	}
+
+.brd .sf-box, .brd .mf-box, .brd .txt-box {
+	border-style: solid;
+	border-width: 1px;
+	margin: 1.417em;
+	padding: 0.5em 0.5em 0.5em 0;
+	position: relative;
+	}
+
+.brd .sf-set, .brd .mf-set, .brd .txt-set {
+	border-style: solid;
+	border-width: 1px;
+	margin: 1.417em;
+	padding: 0 0 0 18em;
+	position: relative;
+	}
+
+.brd .sf-set .sf-box, .brd .mf-set .mf-box, .brd .txt-set .txt-box {
+	border-style: none none none dashed;
 	margin: 0;
-	padding-bottom: 1em;
-	padding-left: 4em;
-	display: inline;
 	}
 
-.frm .profile .user {
-	margin: 0 0 0 -16em;
-	padding-left: 0;
-	white-space: normal;
-	padding-bottom: 0;
-	overflow: hidden;
+.brd .frm-group .sf-set, .brd .frm-group .mf-set, .brd .frm-group .txt-set {
+	border-style: dashed none none none;
+	margin: 0;
+	}
+
+.brd .text input, .brd .select select {
+	font-size: 1.084em;
+	}
+
+.brd .frm-buttons {
+	padding: 0 0 0 18em;
+	margin: 0.75em 1.417em 1em 1.417em;
+	position: relative;
+	}
+
+.brd .frm-buttons span.submit {
+	margin-right: 0.75em;
+	}
+
+.brd span.submit input, .brd span.cancel input {
+	overflow: visible;
+	padding-left: 0.5em;
+	padding-right: 0.5em;
+	font-size: 1.084em;
+	}
+
+.brd .button-set {
+	border-top: 0;
+	}
+
+.brd .button-set span.submit {
+	padding-left: 1em;
+	}
+
+/* Single Field Items (Text, Select, Checkbox)
+-------------------------------------------------------------*/
+
+.brd .sf-box label, .brd .sf-box .aslabel {
+	float: left;
+	padding: 0;
+	}
+
+.brd .sf-set .checkbox label {
+	padding: 2px 0 2px 3em;
+	}
+
+.brd .sf-set .text label span, .brd .sf-set .select label span, .brd .sf-set .aslabel span {
+	float: left;
+	margin-left: -18em;
+	display: inline;
+	position: relative;
+	padding: 2px 1em 2px 1em;
 	width: 16em;
 	}
 
-.frm .profile .username {
-	width: 14em;
+.brd .sf-set .checkbox label span {
+	float: left;
+	margin-left: -18em;
+	display: inline;
+	position: relative;
+	padding: 0 1em;
+	width: 16em;
+	left: -3em;
+	}
+
+.brd .sf-set .text label small, .brd .sf-set .select label small {
+	display: block;
+	text-align: left;
+	position: relative;
+	margin: 2em 1em 0 1em;
+	font-size: 0.917em;
+	}
+
+.brd .sf-set .fld-input {
+	position: absolute;
+	top: 0;
+	left: 0;
+	display: block;
+	padding: 0.5em 1em;
+	}
+
+.brd .sf-set .checkbox input {
+	margin: 2px 0 2px -0.25em;
+	height: 1.55em;
+	width: 1.55em;
+	}
+
+.brd .sf-set .text input:not([title]) { /* Fixes alignment issue in Safari */
+	height: 100%;
+	}
+
+.brd .sf-set .sf-short input {
+	width: 4em;
+	}
+
+.brd .sf-set .sf-short label small {
+	font-size: 1em;
+	padding: 2px 0;
+	margin: 0 1em 0 5.5em;
+	}
+
+
+/* Multi-Field Items (Radio/Checkbox Groups)
+-------------------------------------------------------------*/
+
+.brd .mf-box .mf-item {
+	position: relative;
+	padding: 0.25em 0;
+	}
+
+.brd .mf-set legend {
+	position: absolute;
+	height: 0;
+	background: transparent;
+	}
+
+.brd .mf-set legend span {
+	position: absolute;
+	left: -18em;
+	width: 16em;
+	padding: 0.75em 1em;
+	margin: 1px 0 2px 0;
 	overflow: hidden;
 	}
 
-.frm .profile .user-actions li,
-.frm .profile .user-data li {
-	line-height: 1.4em;
-	padding-bottom: 0.8em;
-	list-style-position: outside;
-	list-style-type: disc;
-	white-space: nowrap;
+.brd .mf-set legend span em {
+	display: block;
+	white-space: normal;
+	font-style: normal;
+	font-size: 0.917em;
 	}
 
-.frm .profile .user-actions li a {
+.brd .mf-item .fld-input {
+	position: absolute;
+	top: 0.25em;
+	left: 0;
+	display: block;
+	padding: 0 1em;
+	}
+
+.brd .mf-item input {
+	margin: 0 0 0 -0.25em;
+	height: 1.55em;
+	width: 1.55em;
+	}
+
+.brd .mf-item label {
+	padding: 0 0 0 3em;
+	float: left;
+	}
+
+.brd .mf-set .mf-yesno .mf-item {
+	width: 10em;
+	float: left;
+	}
+
+.brd .mf-set .mf-field {
+	float: left;
+	padding: 0 1em 0 1em;
+	border-left: 1px solid #ccc;
+	}
+
+.brd .mf-set .mf-field1 {
+	border-left: none;
+	}
+
+.brd .mf-set .mf-field label, .mf-set .mf-field .aslabel {
+	position: absolute;
+	top: -2em;
+	display: block;
+	}
+
+.brd .mf-set .mf-cell .fld-input {
+	position: static;
+	padding: 0 0 0 1em;
+	border-left: 1px solid #ccc;
+	}
+
+#brd-wrap .frm-hdgroup {
+	padding-top: 2em;
+	}
+
+.brd .frm-hdgroup .set1 {
+	border-top-style: solid;
+	border-top-width: 1px;
+	border-top-color: #DBE0E4;
+	}
+
+.brd .sf-set .sf-box .sf-forum {
+	width: 25em;
+	}
+
+.brd .mf-set .mf-box .forum-field {
+	width: 25em;
+	}
+
+/* Multi Checkbox Widget
+-------------------------------------------------------------*/
+
+#brd-wrap .checklist {
+	min-height: 6em;
+	max-height: 9em;
+	max-width: 30em;
+	overflow: auto;
+	border-style: solid;
+	border-width: 1px;
+	position: relative;
+	padding: 0.25em 0.5em;
+	margin: 0 1em;
+	}
+
+#brd-wrap .checklist fieldset {
+	height: auto;
+	}
+
+#brd-wrap .checklist legend,
+#brd-wrap .checklist legend span {
+	font-weight: bold;
+	position: static;
+	padding: 0;
+	height: auto;
+	}
+
+#brd-wrap .checklist .checklist-item {
+	position: relative;
+	height: auto;
+	}
+
+#brd-wrap .checklist .checklist-item label {
+	display: block;
+	padding: 0 0 0 2.25em;
+	float: none;
+	height: 100%;
+	background-color: #fff;
+	}
+
+#brd-wrap .checklist .checklist-item .fld-input {
+	position: absolute;
+	left: 0;
+	top: 0;
+	padding: 0;
+	margin: 0;
+	}
+
+#brd-wrap .checklist .checklist-item input {
+	margin: 0;
+	height: 1.55em;
+	width: 1.55em;
+	}
+
+#brd-wrap .checklist .checklist-item label:hover {
+	background: #F2F5F8;
+	}
+
+
+/* Single Field Textareas and Long Inputs (Flexi Width)
+-------------------------------------------------------------*/
+
+.brd .txt-box label {
+	float: left;
+	}
+
+.brd .txt-set label span {
+	float: left;
+	margin-left: -18em;
+	display: inline;
+	position: relative;
+	padding: 2px 1em;
+	width: 16em;
+	height: 1em;
+	}
+
+.brd .txt-set label small {
+	display: block;
+	text-align: left;
+	position: relative;
+	margin: 0 1em 0 0;
+	padding: 2px 1em;
+	font-size: 0.917em;
+	z-index: 100;
+	}
+
+.brd .txt-set .txt-input {
+	position: relative;
+	width: 100%;
+	}
+
+.brd .txt-set .fld-input {
+	display: block;
+	padding: 0 0 0 1em;
+	}
+
+.brd .text .fld-input input {
+	width: 100%;
+	}
+
+.brd .txt-set textarea {
+	width: 95%;
+	}
+
+/* Error handling
+-------------------------------------------------------------*/
+
+.brd .req-warn {
+	display: none;
+	}
+
+.brd #req-msg p em, .brd .required label span em {
+	font-style: normal;
+	font-weight: normal;
+	}
+
+.brd .required label span em {
+	float: left;
+	font-size: 0.917em;
+	line-height: 1.2em;
+	width: 16em;
+	position: relative;
+	}
+
+.brd .req-error {
+	display: block;
+	}
+
+.brd .required label span  {
 	font-weight: bold;
 	}
 
-.frm .sig-demo {
-	margin-left: 15.6em;
-	margin-right: 13%;
-	padding-top: 0.8em;
-	padding-bottom: 1em;
-	border-top: 1px dashed #ccc;
-	clear:left;
-	}
-
-.frm .profile .sig-demo {
-	margin-left: 3em;
-	}
-
-.frm .av-preview img {
-	float: right;
-	margin-left: 2em;
-	margin-bottom: 1em;
-	}
-
 /*************************************************************
-G - TOPICS / POSTS
+G - MAIN CONTENT - TOPICS AND PARSED CONTENT
 **************************************************************/
 
-/* Parsed Content
+/* Structure
 -------------------------------------------------------------*/
 
-.main .post-entry {
-	padding: 0.3em 1em 0 1em;
-	}
-
-.main .entry-content {
-	padding-bottom: 0.8em;
-	overflow: hidden;
-	width: 100%
-	}
-
-.main .sig-content {
-	padding-top: 0.8em
-	}
-
-.main .sig-content .sig-line {
-	border-top-style: solid;
-	border-top-width: 1px;
-	display: block;
-	padding-bottom: 0.5em;
-
-	width: 250px;
-	}
-
-.main .entry-content .quotebox,
-.main .entry-content .codebox {
+.brd .post {
 	border-style: solid;
 	border-width: 1px;
-	margin: 0 1em 1em 1em;
-	padding: 1em 1em 0.3em 1em;
+	position: relative;
+	margin: 1.417em;
+	margin-top: -1.417em;
 	}
 
-.main .entry-content blockquote {
+.brd .firstpost, .brd .singlepost {
+	margin-top: 1.417em;
+	}
+
+.brd .main-topic .lastpost {
+	border-bottom: 0;
+	}
+
+.brd .main-topic .post {
+	border-style: solid none;
+	margin: 0;
+	}
+
+.brd  .main-topic .firstpost {
+	border-top: none;
+	}
+
+.brd .posthead {
+	margin-left: 18em;
+	border-style: none none none solid;
+	border-width: 1px;
+	}
+
+.brd .posthead .hn {
+	padding-right: 1.5em;
+	padding-left: 1em;
+	border-style: none none dashed none;
+	border-width: 1px;
+	}
+
+.brd .post .posthead .post-byline a,
+.brd .post .posthead .post-byline strong {
+	font-size: 1.167em;
+	font-weight: bold;
+	text-decoration: none;
+	font-style: normal;
+	}
+
+.brd .post .posthead .post-byline {
+	float: left;
+	width: 15.5em;
+	padding: 0.5em 1em 0.5em 1.5em;
+	margin-left: -19em;
+	margin-top: -0.5em;
+	position: relative;
+	left: -1px;
+	overflow: hidden;
+	}
+
+.brd .posthead .post-num {
+	float:right;
+	font-weight: bold;
+	}
+
+#brd-modtopic .posthead .hn {
+	padding-right: 2.7em;
+	}
+
+.brd .posthead .post-title {
+	padding: 0 1.5em 0.5em 1em;
+	margin-top: -1px;
+	position: relative;
+	font-family: arial, helvetica, sans-serif;
+	}
+
+.brd .posthead .post-title span {
+	display: block;
+	width: 100%;
+	overflow: hidden
+	}
+
+.brd .posthead .post-title a {
+	font-size: 1.167em;
+	text-decoration: none;
+	font-weight: bold;
+	}
+
+.brd .posthead .post-title small,
+.brd .posthead .post-title small a {
+	font-size: 1em;
+	font-weight:normal;
+	white-space: nowrap;
+	}
+
+.brd .posthead p.item-select {
+	position: absolute;
+	top: 0;
+	right: 0.75em;
+	height: 2.5em;
+	}
+
+.brd .postbody {
+	margin-left: 18em;
+	position: relative;
+	border-left-style: solid;
+	border-left-width: 1px;
+	padding: 0.5em 1.5em 0 1em;
+	clear: both;
+	}
+
+.brd .postfoot {
+	padding-left: 18em;
+	border-top-style: dashed;
+	border-top-width: 1px;
+	position: relative;
+	}
+
+.brd .postfoot .post-options {
+	border-left-style: solid;
+	border-left-width: 1px;
+	}
+
+.brd .postbody .post-author {
+	float: left;
+	width: 15.5em;
+	margin-left: -19em;
+	left: -1px;
+	position: relative;
+	display: inline;
+	padding: 0 1em 0.5em 1.5em;
+	overflow: hidden;
+	margin-top: -1em;
+	}
+
+
+.brd .postbody .post-author ul {
+	margin: 0;
+	padding: 0 0 0.5em 0;
+	list-style: none;
+	}
+
+.brd .post .author-ident .useravatar img {
+	display: block;
+	padding: 0.5em 0;
+	}
+
+.brd .post .author-ident .username {
+	display: none;
+	}
+
+.brd .postbody .author-ident .usertitle {
+	font-weight: bold;
+	line-height: normal;
+	}
+
+.brd .postbody .author-ident .userstatus {
+	padding: 0.75em 0 0.25em 0;
+	margin: 0;
+	line-height: 0.75em;
+	width: 100%;
+	}
+
+.brd .postbody .author-ident .userstatus span {
+	font-size: 0.917em;
+	display: block;
+	border-left-style: solid;
+	border-left-width: 0.7em;
+	text-indent: 0.5em;
+	}
+
+.brd .online .author-ident .userstatus span {
+	font-weight: bold;
+	}
+
+.brd .postfoot .post-contacts {
+	float: left;
+	margin-left: -18em;
+	width: 15.5em;
+	padding: 0.5em 1em 0.5em 1.5em;
+	position: relative;
+	display: inline;
+	left: -1px;
+	}
+
+.brd .postfoot .post-actions {
+	padding: 0.5em 1.5em 0.5em 1em;
+	text-align: right;
+	display: block;
+	float: right;
+	}
+
+.brd .postfoot .post-actions span {
+	margin-left: 0.75em;
+	}
+
+.brd .postfoot .post-contacts span {
+	margin-right: 0.75em;
+	}
+
+/* Content
+-------------------------------------------------------------*/
+
+#brd-wrap .entry-content {
+	padding-bottom: 1em;
+	overflow: hidden;
+	width: 100%;
+	font-size: 1.084em;
+	}
+
+#brd-wrap .entry-content ol {
+	padding-left: 2.5em;
+	list-style-type: decimal;
+	}
+
+#brd-wrap .entry-content ol p,
+#brd-wrap .entry-content ul p {
+	padding: 0;
+	}
+
+#brd-wrap .entry-content ol.alpha {
+	list-style-type: upper-alpha;
+	}
+
+#brd-wrap .entry-content h5, #brd-wrap .entry-content h5 * {
+	font-weight: bold;
+	font-size: 1.084em;
+	padding: 0.5em 0;
+	}
+
+#brd-wrap .entry-content img {
+	vertical-align: text-top;
+	}
+
+#brd-wrap .entry-content .quotebox,
+#brd-wrap .entry-content .codebox {
+	border-style: solid;
+	border-width: 1px;
+	margin: 0.75em 1em;
+	padding: 1em 0.75em;
+	}
+
+#brd-wrap .entry-content blockquote {
 	overflow: hidden;
 	width: 100%;
 	}
 
-.main .entry-content .quotebox cite {
+#brd-wrap .entry-content .quotebox cite {
 	display: block;
 	font-style: normal;
 	font-weight: bold;
-	margin-bottom: 0.8em;
 	}
 
-.main .entry-content .codebox strong {
-	display: block;
-	margin-bottom: 0.8em;
-	}
-
-.main .entry-content pre {
+#brd-wrap .entry-content pre {
 	margin: 0;
 	max-height: 35em;
 	min-height: 2em;
@@ -1406,529 +1576,629 @@ G - TOPICS / POSTS
 	width: 98%;
 	}
 
-.main .entry-content em {
-	font-style: italic
+#brd-wrap .entry-content img {
+	max-width: 100%;
 	}
 
-.main .entry-content em.bbuline {
-	font-style: normal;
+#brd-wrap .entry-content span.bbu {
 	text-decoration: underline;
 	}
 
-.main .entry-content p {
-	margin: 0 0 1em 0;
+#brd-wrap .entry-content br,
+#brd-wrap .sig-demo br,
+#brd-wrap .user-box br,
+#brd-wrap .main-message br,
+#brd-wrap .warn-box br,
+#brd-wrap .data-box br,
+#brd-announcement br {
+	display: inline;
 	}
 
-.frm .post-entry {
-	margin: 1.7em;
-	border-style: solid;
-	border-width: 1px;
+.brd .sig-content {
+	padding-top: 1em;
 	}
 
-/* Topic / Post Layout
--------------------------------------------------------------*/
-
-.main .topic .post {
-	border-style: solid none none none;
-	border-width: 1px;
-	}
-
-.main .topic .firstpost {
-	border-top: none;
-	margin-top: 0;
-	}
-
-.main .topic .post .postmain {
-	margin-left: 17em;
-	position: relative;
-	border-left-style: solid;
-	border-left-width: 1px;
-	}
-
-.main .topic .post .posthead {
-	border-bottom-style: dashed;
-	border-bottom-width: 1px;
-	margin-bottom: 0.7em;
-	}
-
-.main .topic .post .posthead h3 {
-	padding: 0.5em 0 0.5em 1em;
-	margin: 0;
-	}
-
-.main .topic .post .posthead h3 strong {
-	float: right;
-	font-weight: bold;
-	position: relative;
-	text-decoration: none;
-	padding-right: 1em;
-	}
-
-.main .topic .post .postmain  .user {
-	float: left;
-	margin: -2.6em 0 0 -16em;
-	width: 15em;
-	}
-
-.main .topic .user-info {
-	overflow: hidden;
-	width: 15em;
-	}
-
-.main .topic .user-ident .username {
-	overflow: hidden;
-	width: 13em;
-	}
-
-.main .topic .post .user .user-info {
-	padding-bottom: 1em;
-	}
-
-.main .topic .post .postmain .postfoot {
-	margin-left: -17em;
-	text-align: right;
-	border-top-style: dashed;
-	border-top-width: 1px;
-	padding: 0.5em 1em;
-	}
-
-.main .topic .post .postmain .postfoot .post-options a {
-	margin-left: 1em;
-	}
-
-.main .topic .post .postmain .postfoot .post-options a.contact {
-	float: left;
-	margin-right: 1em;
-	margin-left: 0;
-	}
-
-.main .topic .post .postmain .entry-info {
-	padding: 0 0 1em 0;
-	margin: 0 0 0 1.5em;
-	}
-
-.main .post .item-select {
-	padding-right: 1em;
-	}
-
-#brd-searchposts .main .post h3 cite {
-	position: static;
-	font-size: 1em;
-	}
-
-#brd-searchposts .main .post h4.entry-title {
-	position: static;
-	font-size: 1em;
-	padding-bottom: 1em;
-	font-weight: normal;
-	line-height: 1.3em;
-	text-indent: 0;
-	}
-
-#brd-searchposts .main h3 strong {
-	text-decoration: none;
-	}
-
-#brd-searchposts .main h4.entry-title strong {
+.brd span.sig-line {
 	display: block;
-	font-weight: bold;
+	width: 200px;
+	border-top-style: solid;
+	border-top-width: 1px;
+	padding-bottom: 0.5em;
 	}
 
 
 /*************************************************************
-H - OTHER MAIN CONTENT ITEMS
+H - MAIN TABLES
 **************************************************************/
 
-/* Message Boxes / Redirect
+/* Table Cells Widths and Alignment
 -------------------------------------------------------------*/
 
-.main .message {
-	padding-bottom: 0.3em;
+.brd table {
+	width: 100%;
+	table-layout: fixed;
+	empty-cells: show;
+	border-spacing: 0;
+	line-height: 1.3333em;
 	}
 
-.main .message p {
-	padding: 0 1.3em 0;
-	margin: 1em 0;
+.brd td {
+	overflow: hidden;
+	vertical-align: middle;
 	}
 
-.main .message p span {
+#brd-userlist table .tc0 {
+	width: 30%
+	}
+
+#brd-userlist table .tc1 {
+	width: 20%;
+	text-align: left;
+	}
+
+#brd-userlist table .tc2 {
+	width: 10%;
+	text-align: center;
+	}
+
+#brd-debug table .tcl {
+	white-space:normal;
+	width: 10%;
+	}
+
+#brd-debug table .tcr {
+	white-space: normal;
+	width: 90%;
+	}
+
+#brd-admin-uresults table .tc0,
+#brd-admin-iresults table .tc0 {
+	width: 45%;
+	}
+
+#brd-admin-uresults table .tc1,
+#brd-admin-iresults table .tc1,
+#brd-admin-iresults table .tc2 {
+	width: 20%;
+	}
+
+#brd-admin-uresults table .tc2,
+#brd-admin-uresults table .tc4 {
+	width: 10%;
+	text-align: center;
+	}
+
+#brd-admin-uresults .tc3 {
+	width: 15%;
+	}
+
+#brd-admin-uresults td.tc0 span,
+#brd-admin-uresults td.tc3 span {
 	display: block;
-	padding-top: 1em;
+	white-space: nowrap;
 	}
 
+#brd-admin-uresults td.tc0 a,
+#brd-admin-uresults td.tc3 a {
+	font-weight: bold;
+	}
+
+#brd-admin-iresults table .tc0 {
+	width: 25%;
+	}
+
+#brd-admin-iresults table .tc1 {
+	width: 25%;
+	}
+
+#brd-admin-iresults table .tc2 {
+	width: 20%;
+	}
+
+#brd-admin-iresults .tc3 {
+	width: 30%;
+	}
+
+
+/* Table Cell Styling
+-------------------------------------------------------------*/
+
+.brd .main-content th {
+	font-size: 1.084em;
+	padding: 0.462em 1.417em;
+	font-weight: normal;
+	}
+
+.brd table td {
+	padding: 0.5em 1.417em;
+	border-width: 1px;
+	border-style: solid none none solid;
+	}
+
+.brd table td.tc0 {
+	border-left-style: none;
+	border-left-width: 0
+	}
+
+.brd table th {
+	padding: 0.5em 1.3em;
+	border-style: none;
+	}
+
+.brd table td.actions, .brd table th.actions {
+	text-align: right;
+	}
+
+.brd table td.actions span {
+	display: block;
+	}
+
+
+/*************************************************************
+H - MAIN CONTENT - ODDMENTS
+**************************************************************/
+
+/* Reports
+-------------------------------------------------------------*/
+
+.brd .report {
+	margin-left: 4em;
+	}
+
+.brd .report h3 span {
+	display: block;
+	font-style: normal;
+	}
+
+.brd .report h3 cite {
+	font-style: normal;
+	font-size: 1.084em;
+	font-weight: bold;
+	}
+
+.brd .report h3 strong {
+	position: absolute;
+	left: -3.1em;
+	width: 1.5em;
+	text-align: right;
+	font-size: 1.167em;
+	}
+
+.brd .report p strong {
+	display: block;
+	font-weight: normal;
+	}
+
+.brd .report h4 {
+	border-bottom-style: dashed;
+	border-bottom-width: 1px;
+	}
+
+#brd-admin-reports .frm-buttons {
+	margin-left: 3.5em;
+	margin-top: 0;
+	}
+
+.brd .report .item-select {
+	position: absolute;
+	top: 0;
+	right: 0.75em;
+	height: 2.5em;
+	}
 
 /* Help File
 -------------------------------------------------------------*/
 
-.frm .example code {
+.brd .help-box samp {
 	display: block;
+	margin-left: 1.5em;
 	}
 
-.frm .example li,
-.frm div.example {
-	padding: 0 0 1em 0;
-	line-height: normal;
-	margin: 0 0 0 1.5em;
-	list-style: disc;
+.brd .help-box h5 samp {
+	margin-left: 1.417em;
 	}
 
-.frm .example code {
-	padding-bottom: 0.1em;
+.brd .help-box code {
+	font-family: courier;
+	font-size: 1.084em;
 	}
 
-.frm ul.example {
-	padding: 0 0 0 0.5em;
-	margin: 0;
+.brd .help-box .entry-content {
+	padding: 0;
 	}
 
-.frm .example span {
-	font-size: 0.9em;
+.brd .help-box .hn {
+	padding-bottom: 0.5em;
+	border-bottom-style: dashed;
+	border-bottom-width: 1px;
+	margin-bottom: 0.5em;
+	color: #294F6E
 	}
 
-#brd-help h3 {
-	padding: 0 0 0.7em 0;
-	margin: 0;
-	}
-
-#brd-help .quotebox, #brd-help .codebox {
-	margin: 0.3em 0 0 0;
-	}
-
-.frm .example code * {
-	vertical-align: middle;
-	}
-
-
-/* Rules
+/* Announcement box
 -------------------------------------------------------------*/
 
-.brd .userbox {
-	padding: 1em 1.3em 0.7em 1.3em;
-	margin: 1.7em;
-	border-style: solid;
-	border-width: 1px;
-	}
+#brd-announcement {
+    font-size: 1.1em;
+    margin: 10px 0 10px 0;
+    padding: 10px 14px;
+    }
 
-.brd .userbox p, .brd .userbox h2, .brd .userbox h3, .brd .userbox h4 {
-	margin: 0 0 0.8em 0;
-	list-style: disc;
-	}
-
-.brd .userbox h2 {
-	font-size: 1.2em;
-	font-weight: bold;
-	}
-
-.brd .userbox h3 {
-	font-size: 1.1em;
-	font-weight: bold;
-	}
-
-.brd .userbox ul, .brd .userbox ol {
-	margin: 0 0 0.3em 1.5em;
-	list-style: disc;
-	}
-
-.brd .userbox li {
-	margin-bottom: 0.5em;
-	}
-
-.brd .userbox strong {
-	font-weight: bold;
-	}
-
-.brd .userbox em {
-	font-style: italic;
-	}
+#brd-announcement .msg-head {
+    font-weight: bold;
+    padding-bottom: 0.5em;
+    }
 
 
 
-/*************************************************************
-COLOUR CHART
-**************************************************************/
+/* General colour scheme
+----------------------------------------------------------------*/
 
-/* Basic					#fff / #333 */
-/* (Light back) a, a:link, a:visited		#00569c */
-/* (Light back) a:hover, a:active, a:focus	#b42000 */
-/* (Dark back) a, a:link, a:visited		#ddd */
-/* (Dark back) a:hover, a:active, a:focus	#fff */
-/* Logo						#296fa5 / #fff */
-/* Main menu					#113C5E / #ddd */
-/* Main headings				#1f537b / #ddd */
-/* Info Boxes (Yellow)				#ffffe1 */
-/* Info Boxes (Blue)				#f4f9fd */
-/* General Background (Lightest)		#fbfbfb */
-/* General Background (Slightly darker)		#f4f4f4 */
-/* Strong text (not in bold)			#000 */
-
-
-/*************************************************************
-A - BACKGROUND and BORDERS
-**************************************************************/
-
-.main-content, #brd-visit, .paged-head, .paged-foot, .postmain {
-	background: #fbfbfb;
-	}
-
-#brd-about, .main th, .main td.tc2, .main td.tc3, #brd-debug td.tcl {
-	background: #f4f4f4;
-	}
-
-.posthead {
-	background: #f1f1f1;
-	}
-
-#brd-title, #brd-desc {
-	background:#296fa5;
-	}
-
-#brd-navlinks {
-	background: #113c5e;
-	}
-
-.main-head, .main-foot {
-	background: #1f537b;
-	}
-
-.frm-info, .frm-error, #brd-alert, #brd-maintenance, .dataset .ext-error, .brd #admin-alerts {
-	background: #ffffe1;
-	}
-
-.entry-content .codebox, .entry-content .quotebox {
+body {
 	background: #fff;
-	}
-
-.brd div, div.brd, .brd td, .brd table, #stats h3, .frm .frm-set {
-	border-color: #ddd;
-	}
-
-.profile, .user, .topic, .databox, .userbox {
-	background: #f4f9fd;
-	}
-
-.status span, .sig-content span.sig-line, .databox .legend, #brd-announcement .msg-head {
-	border-color: #bbb;
-	}
-
-.online .status span {
-	border-color: #296FA5;
-	}
-
-.main .frm-head {
-	border-color: #fff #fff #bbb #fff;
-	}
-
-.main .frm-head {
-	background: #f1f1f1;
-	}
-
-.frm .frm-subhead, .frm .frm-info, .dataset, .datagrid, .databox, .databox .data {
-	border-color: #ddd;
-	}
-
-.brd .paging a, .brd .paging strong, .brd .paging span {
-	border-color: #ddd;
-	}
-
-.brd .paged-head, .brd .paged-foot {
-	background: #fff;
-	}
-
-/*************************************************************
-B - TEXT
-**************************************************************/
-
-.brd {
 	color: #333;
 	}
 
-#brd-title {
-	color: #fff;
-	}
-
-#brd-desc, #brd-navlinks, .main-head, .main-foot, #brd-home {
-	color: #ddd;
-	}
-
-.main-content li span, .databox .data, .frm-info, .frm-info span, .frm-set, .fld-label,
-.isonline, .example code, .example li code, .example li samp, .frm .frm-group legend,
-.example li span, .example li .samp, p.item span, .entry-info li * {
-	color: #666;
-	}
-
-.main-content li strong, .important strong, .user-info li.title span,
-.frm-error li span, .frm-info li span strong, .online .isonline, .frm h3.link *, .frm h4.link *,
-#brd-help h3, .main th, #brd-maintenance em, .brd #admin-alerts p strong {
-	color: #000;
-	}
-
-.user .username {
-	color: #00569c;
-	}
-
-.main .frm-head, .main .databox .legend, .brd .userbox .msg-head {
-	color: #113C5E;
-	}
-
-.main-content .userbox li {
-	color: #333;
-	}
-
-.user-actions li {
-	color: #CD9C96;
-	}
-
-em.req-text, #req-msg p em, .brd li.warn, .brd .warn strong, .brd .frm-group .warn, .main .ext-error .legend,
-.brd #admin-alerts .legend span {
-	color: #b42000;
-	}
-	
-.brd div.thread-title {
-	font-size: 125%;
-	padding-left: 1.5em;
-	line-height: 180%;
-	font-weight: bold;
-	}
-
-/*************************************************************
-C - LINKS
-**************************************************************/
-
-.brd a, .brd a:link, .brd a:visited {
-	color: #00569c;
-	}
-
-#brd-home a, #brd-home a:link, #brd-home a:visited,
-.main-head a, .main-head a:link, .main-head a:visited,
-#brd-navlinks a, #brd-navlinks a:link, #brd-navlinks a:visited {
-	color: #ddd;
-	text-decoration: none;
-	}
-
-.main-foot a, .main-foot a:link, .main-foot a:visited {
-	color: #ddd;
-	}
-
-.main-head a.feed-option, .main-head a.feed-option:link, .main-head a.feed-option:visited {
-	border-color: #6F9EFF;
-	background: #4D80E7;
-	color: #fff;
+.brd a:link, .brd a:visited {
+	color: #00579C;
 	}
 
 .brd a:hover, .brd a:active, .brd a:focus {
 	color: #b42000;
+	text-decoration: none;
 	}
 
-.main-head a:hover, .main-head a:active, .main-head a:focus,
-.main-foot a:hover, .main-foot a:active, .main-foot a:focus,
-#brd-home a:hover, #brd-home a:active, #brd-home a:focus,
-#brd-navlinks a:hover, #brd-navlinks a:active, #brd-navlinks a:focus,
-#brd-access a:hover, #brd-access a:active, #brd-access a:focus {
-	color: #fff;
+.brd .main-pagepost a:link, .brd .crumbs a:link,
+.brd .main-pagepost a:visited, .brd .crumbs a:visited {
+	text-decoration: none;
+	}
+
+.brd .main-pagepost a:hover, .brd .crumbs a:hover,
+.brd .main-pagepost a:active, .brd .crumbs a:active,
+.brd .main-pagepost a:focus, .brd .crumbs a:focus {
 	text-decoration: underline;
 	}
 
-.main-head a.feed-option:hover, .main-head a.feed-option:active, .main-head a.feed-option:focus {
-	text-decoration: none;
+.brd .gen-content, .brd .main-content {
+	background: #fbfbfb;
+	border-color: #DFE6ED;
+	border-bottom-color: #CBD1D8;
+	}
+
+.brd .main-pagepost {
+	background: #fff;
+	border-color: #DDE4EB;
+	}
+
+.brd .crumbs {
+	background: #fff;
 	border-color: #fff;
 	}
 
 
-.posting a, p.crumbs a {
-	text-decoration: none;
+.brd .main-item, .brd .main-item li, .brd .main-item div, .brd td {
+	border-color: #DDE4EB;
 	}
 
-.main .topic .post .posthead h3 a strong {
-	text-decoration: none;
+.brd .main-item li.info-posts,
+.brd .main-item li.info-replies,
+.brd .main-item li.info-views,
+.brd .main-item li.info-topics {
+	}
+
+.brd .main-content .main-item .item-nav {
+	color: #888;
+	}
+
+.brd .main-content .sticky {
+	background: #F2F4FA;
+	}
+
+.brd .main-content .main-item .hn .item-status em.sticky {
+ 	color: #314B60;
+ 	font-weight: bold;
+ 	}
+
+.brd .main-content .main-item .hn .item-status em.closed {
+ 	color: #314B60;
+ 	font-weight: bold;
+ 	}
+
+.brd .main-content .main-item .hn .item-status em.moved {
+ 	color: #314B60;
+ 	font-weight: bold;
+ 	}
+
+.brd .post * {
+	border-color: #DDE4EB
+	}
+
+.brd .post {
+	border-color: #DDE4EB;
+	border-top-color: #fff;
+	border-bottom-color: #ccc;
+	}
+
+#topic-review .firstpost, .brd .singlepost {
+	border-top-color: #DDE4EB;
+	border-bottom-color: #DDE4EB;
+	}
+
+.brd .post {
+	background: #EDF1F5;
+	}
+
+.brd .posthead, .brd .postbody, .brd .post-options {
+	background: #f9f9f9;
+	}
+
+.brd .posthead .hn {
+	background: #E9EBEE;
+	}
+
+.brd .online .userstatus span {
+	border-color: #517CA1;
+	}
+
+.brd .ct-box, .brd .ct-set, .brd .ct-group, .brd .user-box {
+	background: #EDF1F5;
+	border-color: #DBE0E4;
+	}
+
+.brd #brd-announcement .user-box {
+	background: transparent;
+	}
+
+.brd .warn-group, .brd .warn-set, .brd .warn-box, .brd .error-box {
+	background: #FEFFE6;
+	border-color: #F4EBCE;
+	}
+
+.brd .warn-group, .brd .warn-set, .brd .warn-box, .brd .error-box {
+	border-color: #E6D190;
 	}
 
 
-/*************************************************************
-D - TABBED NAVIGATION
-**************************************************************/
+.brd ul.info-list li {
+	color: #6A97BF;
+	}
 
-.main-nav ul li a, .main-nav ul li a:link, .main-nav ul li a:visited {
-	text-decoration: none;
+.brd ul.info-list li span {
+	color: #666;
+	}
+
+.brd ul li strong {
+	font-weight: normal;
+	color: #333;
+	}
+
+.brd .post-entry ul li strong {
+	font-weight: bold;
+	}
+
+.brd .ct-box .hn {
+	border-color: #DBE0E4;
+	}
+
+.brd .help-box {
+	background: #f4f4f4;
+	}
+
+.brd .frm-group, .brd .mf-set, .brd .sf-set, .brd .sf-box, .brd .mf-box, .brd .txt-set, .brd .txt-box {
+	background: #F2F5F8;
+	border-color: #DBE0E4;
+	}
+
+
+.brd .frm-buttons {
+	border-color: #DBE0E4;
+	}
+
+.brd .checklist {
+	background: #fff;
+	border-color: #ccc;
+	}
+
+.brd label, .brd .aslabel, .brd .mf-set legend, .brd .ct-legend * {
+	color: #294F6E;
+	}
+
+.brd .paging * {
+	border-color: #dedfdf;
+	}
+
+
+#brd-wrap .required label em, #brd-wrap #req-msg em {
+	color: #b42000;
+	}
+
+#brd-wrap .entry-content .quotebox, #brd-wrap .entry-content .codebox {
+	background: #fff;
 	border-color: #ddd;
 	}
 
-.main-nav ul li a:hover, .main-nav ul li a:active, .main-nav ul li a:focus {
-	border-top-color: #b42000;
+.brd .main-options span.feed {
+	background: url(feed-icon.png) center left no-repeat;
 	}
 
-.main-nav ul li.topactive a, .main-nav ul li.topactive a:link,
-.main-nav ul li.topactive a:visited {
-	color: #F4F9FD;
+/* Menus
+----------------------------------------------------------------*/
+
+#brd-navlinks {
+	background: #313D47;
+	border-color: #313D47;
+	color: #ddd;
+	}
+
+#brd-navlinks a:link, #brd-navlinks a:visited {
+	color: #ddd;
+	}
+
+#brd-navlinks a:hover, #brd-navlinks a:active, #brd-navlinks a:focus {
+	color: #fff;
 	text-decoration: underline;
-	background: #1f537b;
+	}
+
+.brd .main-options, .brd .main-options span {
+	border-color: #CBD1D8;
+	background: #DDE4EB;
+	}
+
+.brd .options span {
+	border-color: #dedfdf;
+	}
+
+.brd .main-options .options span {
+	border-color: #ABAFB6
+	}
+
+.brd .main-menu, .brd .admin-menu {
+	background: #294F6E;
+	}
+
+.brd .main-menu ul, .brd .admin-menu ul {
+	border-right-color: #1A4566;
+	}
+
+.brd .main-menu li, .brd .admin-menu li {
+	border-left-color: #1A4566;
+	border-right-color: #426482;
+	}
+
+.brd .admin-submenu {
+	background: #DFE6ED;
+	border-color: #CBD1D8;
+	}
+
+#brd-wrap .main-menu a:link, #brd-wrap .main-menu a:visited, #brd-wrap .admin-menu a {
+	color: #ddd;
+	text-decoration: none;
+	}
+
+#brd-wrap .main-menu a:hover, #brd-wrap .main-menu a:active, #brd-wrap .main-menu a:focus,
+#brd-wrap .admin-menu a:hover, #brd-wrap .admin-menu a:active, #brd-wrap .admin-menu a:focus {
+	text-decoration: underline;
+	color: #fff;
+	}
+
+#brd-wrap .main-menu li.active a:hover, #brd-wrap .main-menu li.active a:active, #brd-wrap .main-menu li.active a:focus,
+#brd-wrap .admin-menu li.active a:hover, #brd-wrap .admin-menu li.active a:active, #brd-wrap .admin-menu li.active a:focus {
+	text-decoration: none;
+	}
+
+
+#brd-wrap .main-menu li.active a, #brd-wrap .admin-menu li.active a {
+	background: url(tab.png) bottom center no-repeat;
+	color: #fff;
+	}
+
+#brd-admod #alert a {
+	color: #F6F8C7;
+	}
+
+#brd-access a:hover, #brd-access a:active, #brd-access a:focus {
+	background: #000;
+	color: #fff;
+	text-decoration: underline;
+	}
+
+/* Logo and Headings
+----------------------------------------------------------------*/
+
+#brd-head {
+	background: #517CA1;
+	color: #ddd;
+	border-color: #517CA1;
+	}
+
+#brd-head a, #brd-head a:link, #brd-head a:visited {
+	color: #fff;
+	}
+
+.brd .main-head, .brd .main-pagehead {
+	background: #294F6E;
+	color: #ddd;
 	border-color: #1f537b;
 	}
 
-.submenu ul li.topactive ul li a,
-.submenu ul li.topactive ul li a:link,
-.submenu ul li.topactive ul li a:visited {
-	background: transparent;
+/* .brd #brd-admin-uresults .main-pagehead {
+	background: none;
+	color: #333;
+	} */
+
+.brd .main-subhead {
+	border-color: #DFE6ED #DFE6ED #CBD1D8 #DFE6ED;
+	background: #DFE6ED;
+	}
+
+.brd .content-head, .brd th {
+	background: #EDF1F5;
+	border-bottom-color: #fff;
+	border-top-color: #ddd;
+	}
+
+.brd .group-head {
+	background: #EDF1F5;
+	border-color: #DBE0E4;
+	}
+
+.brd .content-head .hn {
+	border-bottom-color: #ddd;
+	}
+
+.brd .main-head a:link, .brd .main-head a:visited {
+	color: #ddd;
 	text-decoration: none;
-	color: #dedfdf;
 	}
 
-.submenu ul li.topactive ul li.isactive a,
-.submenu ul li.topactive ul li.isactive a:link,
-.submenu ul li.topactive ul li.isactive a:visited {
-	text-decoration: underline;
+.brd .main-head a:hover, .brd .main-head a:active, .brd .main-head a:focus {
 	color: #fff;
-	background:#1f537b;
-	}
-
-.submenu ul li.topactive ul li a:hover,
-.submenu ul li.topactive ul li a:active,
-.submenu ul li.topactive ul li a:focus {
 	text-decoration: underline;
-	color: #fff;
-	background: #1f537b;
 	}
 
-
-
-
-/*************************************************************
-E - POST STATUS INDICATORS
-**************************************************************/
-
-td.tcl span.status img {
-	border-color: #E6E6E6 #DEDEDE #DADADA #E2E2E2
+.brd th {
+	background: #DDE4EB;
 	}
 
-tr.redirect td.tcl img {
+.brd td {
+	background: #f5f5f5;
+	}
+
+/* Status indicators
+----------------------------------------------------------------*/
+
+.brd .main-content .main-item .icon {
+	border-color: #EDF1F5 #DDE0E4 #C6CBD3 #BABFC6
+	}
+
+ .brd .main-content .redirect .icon {
 	border-color: #f4f4f4 #f4f4f4 #f4f4f4 #f4f4f4
 	}
 
-td.tcl span.new img {
+ .brd .main-content .sticky .icon {
+	border-color: #D7E5F3 #C3CFDC #9FB3C7 #90A2B4
+	}
+
+ .brd .main-content .closed .icon {
+	border-color: #ACACAC #979797 #898989 #7A7A7A
+	}
+
+ .brd .main-content .sticky .closed {
+	border-color: #D7E5F3 #C3CFDC #898989 #7A7A7A
+	}
+
+ .brd .main-content .new .icon {
 	border-color: #2B75AD #235E8C #1F537B #266799
 	}
 
+/* Announcement box
+----------------------------------------------------------------*/
 
-
-/* LL */
-
-.summary {
-	position: absolute;
-	width: 300px;
-	text-align: left;
-	overflow: hidden;
-	background-color: #ffffe1;
-	border: solid 1px #ddd;
+#brd-announcement {
+    background-color: #f4f9fd;
 	}
 
-.deletedpost .post-entry {
-	background-color: #ffffe1;
-	font-size: 80%;
-}
-
-.newpost .posthead {
-	background-color: #ffffe1;
-}
-
-.pollbar {
-	background-color: #f4f9fd;
-}
+#brd-announcement .msg-head {
+    border-bottom: 1px dashed #bbb;
+    color: #113c5e;
+    }

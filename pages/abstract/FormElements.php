@@ -251,7 +251,7 @@ abstract class InputElement extends ActiveFormElement {
 			<label for="'.$this->getId().'">
 				<span class="fld-label">'.$this->label.'</span>
 				<span class="fld-input">'.$input.'</span>
-				'.($this->required ? '<em class="req-text">'.$this->L10n->getText('Required').'()</em>' : '').'
+				'.($this->required ? '<em class="req-text">('.$this->L10n->getText('Required').')</em>' : '').'
 				'.(!empty($this->help) ? '<span class="fld-help">'.$this->help.'</span>' : '').'
 			</label>
 		</div>';

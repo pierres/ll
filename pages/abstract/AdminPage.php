@@ -33,13 +33,13 @@ public function __construct()
 
 protected function getMenu()
 	{
-	$menu =	'<div id="brd-navlinks"><ul>
+	$menu =	'<ul>
 	<li id="navindex"><a href="'.$this->Output->createUrl('Forums').'"><span>Übersicht</span></a></li>
 	<li><a href="'.$this->Output->createUrl('AdminSettings').'"><span>Einstellungen</span></a>'.($this->User->isLevel(User::ROOT) ? ' <a href="'.$this->Output->createUrl('AdminGlobalSettings').'"><span>Globale Einstellungen</span></a>' : '').'</li>
 	<li><a href="'.$this->Output->createUrl('AdminCats').'"><span>Kategorien &amp; Foren</span></a></li>
 	<li><a href="'.$this->Output->createUrl('AdminDesign').'"><span>Layout &amp; Design</span></a></li>
 	<li><a href="'.$this->Output->createUrl('Logout').'"><span id="logout">Abmelden</span></a></li>
-	</ul></div>';
+	</ul>';
 
 	return $menu;
 	}

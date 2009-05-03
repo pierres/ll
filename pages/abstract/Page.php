@@ -136,7 +136,7 @@ public function __construct()
 
 protected function getMenu()
 	{
-	$menu =	'<div id="brd-navlinks"><ul>';
+	$menu =	'<ul>';
 	
 	$menu .= '
 		<li id="navindex"><a href="'.$this->Output->createUrl('Forums').'"><span>'.$this->L10n->getText('Index').'</span></a></li>
@@ -165,7 +165,7 @@ protected function getMenu()
 			<li id="navlogin"><a href="'.$this->Output->createUrl('Login').'"><span>'.$this->L10n->getText('Login').'</span></a></li>';
 		}
 
-	return $menu.'</ul></div>';
+	return $menu.'</ul>';
 	}
 
 public function setValue($key, $value)
@@ -225,27 +225,22 @@ private function getHead()
 		<link rel="search" type="application/opensearchdescription+xml" href="'.$this->Output->createUrl('GetOpenSearch').'" title="'.$this->Board->getName().'" />';
 	}
 
-private function getVisit()
+private function getWelcome()
 	{
-	$menu = '<div id="brd-visit">
-			<ul>
-				<li id="vs-searchnew"><a href="'.$this->Output->createUrl('Recent').'">'.$this->L10n->getText('New posts').'</a></li>';
-	
 	if ($this->User->isOnline())
 		{
-		$menu .= '
-			<li id="vs-markread"><a href="'.$this->Output->createUrl('MarkAllAsRead').'">'.$this->L10n->getText('Mark all topics as read').'</a></li>
-			</ul><p>
-				<span id="vs-logged">'.sprintf($this->L10n->getText('Logged in as %s.'), '<strong>'.$this->User->getName().'</strong>').'</span>
-				<span id="vs-message">'.$this->L10n->getText('Last visit').': <strong>'.$this->L10n->getDateTime($this->User->getLastUpdate()).'</strong></span>
-			</p>';
+		return '<span>'.sprintf($this->L10n->getText('Logged in as %s.'), '<strong>'.$this->User->getName().'</strong>').'</span>
+			<span>'.$this->L10n->getText('Last visit').' '.$this->L10n->getDateTime($this->User->getLastUpdate()).'</span>';
 		}
 	else
 		{
-		$menu .= '</ul><p></p>';
+		return '';
 		}
-	
-	return $menu.'</div>';
+	}
+
+private function getVisit()
+	{
+	return '<span class="item1"><a href="'.$this->Output->createUrl('Recent').'">'.$this->L10n->getText('New posts').'</a></span>';
 	}
 
 private function sendOutput()
@@ -260,6 +255,7 @@ private function sendOutput()
 	$this->variables['menu'] = $this->getMenu();
 	$this->variables['head'] = $this->getHead();
 	$this->variables['page'] = $this->getName();
+	$this->variables['welcome'] = $this->getWelcome();
 	$this->variables['visit'] = $this->getVisit();
 
 // 	if ($this->User->isOnline())
@@ -279,10 +275,7 @@ private function sendOutput()
 // 		</div>
 // 		');
 
-	$this->setValue('about',
-	'<div id="brd-about">
-		<p id="copyright">Powered by <strong><a href="http://www.laber-land.de/">LL 4.0</a></strong></p>
-	</div>');
+	$this->setValue('about', 'Powered by <strong><a href="http://www.laber-land.de/">LL 4.0</a></strong>');
 
 
 // 	if ($this->Settings->getValue('debug') && function_exists('xdebug_time_index'))
