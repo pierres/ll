@@ -5,6 +5,8 @@ LL 4 TODO
 
 * use L10n-Methods for all (english) Strings
 * maybe reimplement simple generic crumb menu support
+* Layout/Design:
+	* <strong> allways needed?
 
 
 == Optional ==
@@ -18,7 +20,6 @@ LL 4 TODO
 * readd tagging feature
 * add simple FormElement to ger user's confirmation
 	* means generic "Are you sure to..." dialog
-* set Focus on first TextInputElement
 * separate Threads and PrivateThreads in DB
 * extract common Methods to list Postigns in order to simplify Postings and PrivatePostings
 * remove image size from db or reimplement usage
@@ -27,6 +28,7 @@ LL 4 TODO
 * solve issue when date/time is undefined (1970 problem)
 * make fileinfo non optional (included in PHP 5.3 anyway)
 * create some kind of test scripts that checks server and php configuration
+* create Form that can be embedded into a Page
 
 == Security ==
 
