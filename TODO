@@ -7,7 +7,8 @@ LL 4 TODO
 * maybe reimplement simple generic crumb menu support
 * Layout/Design:
 	* <strong> allways needed?
-
+	* Form set/group as own class
+	* add method to set help text or description per form
 
 == Optional ==
 

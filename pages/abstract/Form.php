@@ -119,35 +119,30 @@ protected function checkForm()
 protected function showForm()
 	{
 	$body = '
-	<div id="brd-main" class="main">
-
-		<h1><span>'.$this->getTitle().'</span></h1>
-
 		<div class="main-head">
-			<h2><span>'.$this->getTitle().'</span></h2>
+			<h1 class="hn"><span>'.$this->getTitle().'</span></h1>
 		</div>
-
-		<div class="main-content frm">
-		'.$this->getWarning().'
-		<form '.$this->encoding.' method="'.$this->method.'" action="'.$this->Output->createUrl($this->getName(), $this->params).'" class="frm-form">
-			<div class="hidden">
-				'.implode(' ', $this->hiddenElements).'
-			</div>
-			<fieldset class="frm-set set1">
-				'.implode(' ', $this->inputElements).'
-			</fieldset>
-			<div class="frm-buttons">
-				'.implode(' ', $this->buttonElements).'
-			</div>
-		</form>
-		'.(!is_null(InputElement::getFocusElement()) ?
-		'<script type="text/javascript">
-			/* <![CDATA[ */
-			document.getElementById("'.InputElement::getFocusElement()->getId().'").focus();
-			/* ]]> */
-		</script>' :'').'
+		<div class="main-content main-frm">
+			'.$this->getWarning().'
+			<form class="frm-form"'.$this->encoding.' method="'.$this->method.'" action="'.$this->Output->createUrl($this->getName(), $this->params).'">
+				<div class="hidden">
+					'.implode(' ', $this->hiddenElements).'
+				</div>
+				<div class="frm-group">
+					'.implode(' ', $this->inputElements).'
+				</div>
+				<div class="frm-buttons">
+					'.implode(' ', $this->buttonElements).'
+				</div>
+			</form>
+			'.(!is_null(InputElement::getFocusElement()) ?
+			'<script type="text/javascript">
+				/* <![CDATA[ */
+				document.getElementById("'.InputElement::getFocusElement()->getId().'").focus();
+				/* ]]> */
+			</script>' :'').'
 		</div>
-	</div>';
+		';
 
 	$this->setBody($body);
 	}
@@ -194,9 +189,9 @@ protected function getWarning()
 		{
 		$warning =
 			'
-			<div id="req-msg" class="frm-error">
-				<h3 class="warn">'.$this->L10n->getText('Warning').'</h3>
-				<ul>
+			<div class="ct-box error-box">
+				<h2 class="warn hn"><span>'.$this->L10n->getText('Warning').'</span></h2>
+				<ul class="error-list">
 					<li>'.implode('</li><li>', $this->warning).'</li>
 				</ul>
 			</div>

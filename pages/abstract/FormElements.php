@@ -103,7 +103,7 @@ class DividerElement extends PassiveFormElement {
 
 	public function __construct()
 		{
-		parent::__construct('</fieldset><fieldset class="frm-set">');
+		parent::__construct('');
 		}
 }
 
@@ -120,11 +120,11 @@ class LabeledElement extends PassiveFormElement {
 	public function __toString()
 		{
 		return
-		'<div class="frm-fld">
+		'<div class="sf-box">
 			<label for="'.$this->getId().'">
-				<span class="fld-label">'.$this->label.'</span>
-				<span class="fld-input">'.$this->content.'</span>
+				<span>'.$this->label.'</span>
 			</label>
+			<span class="fld-input">'.$this->content.'</span>
 		</div>';
 		}
 }
@@ -234,6 +234,7 @@ class SecurityTokenElement extends HiddenElement {
 abstract class InputElement extends ActiveFormElement {
 
 	protected $help = '';
+	protected $type = '';
 	private static $focusElement = null;
 
 	public function __construct($name, $value, $label)
@@ -247,13 +248,14 @@ abstract class InputElement extends ActiveFormElement {
 	protected function formatOutput($input)
 		{
 		return
-		'<div class="frm-fld'.($this->required ? ' required' : '').'">
-			<label for="'.$this->getId().'">
-				<span class="fld-label">'.$this->label.'</span>
+		'<div class="sf-set">
+			<div class="sf-box '.$this->type.($this->required ? ' required' : '').'">
+				<label for="'.$this->getId().'">
+					<span>'.$this->label.': '.($this->required ? '<em>('.$this->L10n->getText('Required').')</em>' : '').'</span>
+					'.(!empty($this->help) ? '<small>'.$this->help.'</small>' : '').'
+				</label>
 				<span class="fld-input">'.$input.'</span>
-				'.($this->required ? '<em class="req-text">('.$this->L10n->getText('Required').')</em>' : '').'
-				'.(!empty($this->help) ? '<span class="fld-help">'.$this->help.'</span>' : '').'
-			</label>
+			</div>
 		</div>';
 		}
 
@@ -283,6 +285,7 @@ abstract class InputElement extends ActiveFormElement {
 class TextInputElement extends InputElement {
 
 	protected $size = 80;
+	protected $type = 'text';
 
 	public function setSize($size)
 		{
@@ -374,6 +377,7 @@ class PasswordInputElement extends TextInputElement {
 
 class TextareaInputElement extends InputElement {
 
+	protected $type = 'textarea';
 	private $columns = 80;
 	private $rows = 20;
 
@@ -416,6 +420,7 @@ class FileInputElement extends InputElement {
 
 class CheckboxInputElement extends InputElement {
 
+	protected $type = 'checkbox';
 	private $checked = false;
 	protected $minLength = 0;
 	protected $maxLength = 2;
