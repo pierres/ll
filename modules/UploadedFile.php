@@ -103,6 +103,7 @@ private function getTypeFromFile($file)
 		$finfo = finfo_open(FILEINFO_MIME);
 		$type = finfo_file($finfo, $file);
 		finfo_close($finfo);
+		$type = strtok($type, ';');
 		}
 	else
 		{

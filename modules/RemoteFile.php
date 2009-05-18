@@ -135,6 +135,7 @@ private function getTypeFromContent($content)
 		$finfo = finfo_open(FILEINFO_MIME);
 		$type = finfo_buffer($finfo, $content);
 		finfo_close($finfo);
+		$type = strtok($type, ';');
 		}
 	else
 		{
