@@ -39,7 +39,16 @@ public function show()
 		$id = $this->Board->getId();
 		}
 
-	if (!($content = $this->ObjectCache->getObject('LL:GetRecent:Atom:'.$id)))
+	try
+		{
+		$forum = $this->Input->Request->getInt('forum');
+		}
+	catch (RequestException $e)
+		{
+		$forum = 0;
+		}
+
+	if (!($content = $this->ObjectCache->getObject('LL:GetRecent:Atom:'.$id.':'.$forum)))
 		{
 		!$this->init && $this->initDB();
 
@@ -48,33 +57,59 @@ public function show()
 
 		try
 			{
-			$stm = $this->DB->prepare
-				('
-				SELECT
-					threads.id,
-					threads.name,
-					threads.firstdate,
-					threads.firstusername,
-					threads.firstuserid,
-					threads.summary
-				FROM
-					threads,
-					forum_cat,
-					cats
-				WHERE
-					threads.deleted = 0
-					AND forum_cat.forumid = threads.forumid
-					AND forum_cat.catid = cats.id
-					AND cats.boardid = ?
-				ORDER BY
-					threads.firstdate DESC
-				LIMIT
-					25
-				');
-			$stm->bindInteger($this->Board->getId());
-			$result = $stm->getRowSet();
+			if ($forum == 0)
+				{
+				$stm = $this->DB->prepare
+					('
+					SELECT
+						threads.id,
+						threads.name,
+						threads.firstdate,
+						threads.firstusername,
+						threads.firstuserid,
+						threads.summary
+					FROM
+						threads,
+						forum_cat,
+						cats
+					WHERE
+						threads.deleted = 0
+						AND forum_cat.forumid = threads.forumid
+						AND forum_cat.catid = cats.id
+						AND cats.boardid = ?
+					ORDER BY
+						threads.firstdate DESC
+					LIMIT
+						25
+					');
+				$stm->bindInteger($id);
+				}
+			else
+				{
+				$stm = $this->DB->prepare
+					('
+					SELECT
+						threads.id,
+						threads.name,
+						threads.firstdate,
+						threads.firstusername,
+						threads.firstuserid,
+						threads.summary
+					FROM
+						threads
+					WHERE
+						threads.deleted = 0
+						AND threads.forumid = ?
+						AND threads.forumid > 0
+					ORDER BY
+						threads.firstdate DESC
+					LIMIT
+						25
+					');
+				$stm->bindInteger($forum);
+				}
 
-			foreach($result as $thread)
+			foreach($stm->getRowSet() as $thread)
 				{
 				if ($thread['firstdate'] > $lastdate)
 					{
@@ -84,14 +119,14 @@ public function show()
 				$entries .=
 				'
 				<entry>
-					<id>'.$this->Input->getURL().'?page=Postings;id='.$this->Board->getId().';thread='.$thread['id'].'</id>
+					<id>'.$this->Input->getURL().'?page=Postings;id='.$id.';thread='.$thread['id'].'</id>
 					<title>'.$thread['name'].'</title>
-					<link rel="alternate" type="text/html" href="'.$this->Input->getURL().'?page=Postings;id='.$this->Board->getId().';thread='.$thread['id'].';post=-1" />
+					<link rel="alternate" type="text/html" href="'.$this->Input->getURL().'?page=Postings;id='.$id.';thread='.$thread['id'].';post=-1" />
 					<updated>'.date('c', $thread['firstdate']).'</updated>
 					<summary>'.$thread['summary'].'</summary>
 					<author>
 						<name>'.$thread['firstusername'].'</name>
-						<uri>'.$this->Input->getURL().'?page=ShowUser;id='.$this->Board->getId().';user='.$thread['firstuserid'].'</uri>
+						<uri>'.$this->Input->getURL().'?page=ShowUser;id='.$id.';user='.$thread['firstuserid'].'</uri>
 					</author>
 				</entry>
 				';
@@ -109,15 +144,15 @@ public function show()
 		$content =
 '<?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="de">
-	<id>'.$this->Input->getURL().'?page=GetRecent;id='.$this->Board->getId().'</id>
+	<id>'.$this->Input->getURL().'?page=GetRecent;id='.$id.'</id>
 	<title>'.$this->Board->getName().'</title>
-	<link rel="self" type="application/atom+xml" href="'.$this->Input->getURL().'?page=GetRecent;id='.$this->Board->getId().'" />
-	<link rel="alternate" type="text/html" href="'.$this->Input->getURL().'?page=Forums;id='.$this->Board->getId().'" />
+	<link rel="self" type="application/atom+xml" href="'.$this->Input->getURL().'?page=GetRecent;id='.$id.'" />
+	<link rel="alternate" type="text/html" href="'.$this->Input->getURL().'?page=Forums;id='.$id.'" />
 	<updated>'.date('c', $lastdate).'</updated>
 	'.$entries.'
 </feed>';
 
-		$this->ObjectCache->addObject('LL:GetRecent:Atom:'.$this->Board->getId(), $content, 15*60);
+		$this->ObjectCache->addObject('LL:GetRecent:Atom:'.$id.':'.$forum, $content, 15*60);
 		}
 
 	$this->sendInlineFile('application/atom+xml; charset=UTF-8', 'recent.xml', strlen($content), $content);
