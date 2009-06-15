@@ -138,13 +138,17 @@ public function show()
 							threads.firstdate,
 							threads.firstusername,
 							threads.firstuserid,
-							threads.summary
+							threads.summary,
+							posts.text
 						FROM
-							threads
+							threads,
+							posts
 						WHERE
 							threads.deleted = 0
 							AND threads.forumid = ?
 							AND threads.forumid > 0
+							AND posts.threadid = threads.id
+							AND posts.counter = 0
 						ORDER BY
 							threads.firstdate DESC
 						LIMIT
@@ -161,22 +165,18 @@ public function show()
 							threads.firstdate,
 							threads.firstusername,
 							threads.firstuserid,
-							threads.summary,
-							posts.text
+							threads.summary
 						FROM
-							threads,
-							posts
+							threads
 						WHERE
 							threads.deleted = 0
 							AND threads.forumid = ?
 							AND threads.forumid > 0
-							AND posts.threadid = threads.id
-							AND posts.counter = 0
 						ORDER BY
 							threads.firstdate DESC
 						LIMIT
 							25
-						')
+						');
 					}
 				$stm->bindInteger($forum);
 				}
