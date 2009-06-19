@@ -59,7 +59,6 @@ protected function setForm()
 		}
 	catch (DBNoDataException $e)
 		{
-		$stm->close();
 		}
 	}
 
