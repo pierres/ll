@@ -42,7 +42,7 @@ public function show()
 
 	try
 		{
-		$forum = $this->Input->Request->getInt('forum');
+		$forum = $this->Input->Get->getInt('forum');
 		}
 	catch (RequestException $e)
 		{
@@ -51,7 +51,7 @@ public function show()
 
 	try
 		{
-		$showContent = $this->Input->Request->getInt('content') > 0;
+		$showContent = $this->Input->Get->getInt('content') > 0;
 		}
 	catch (RequestException $e)
 		{
@@ -229,7 +229,7 @@ public function show()
 		$this->ObjectCache->addObject('LL:GetRecent:Atom:'.$id.':'.$forum.':'.$showContent, $content, 15*60);
 		}
 
-	$this->sendInlineFile('application/atom+xml; charset=UTF-8', 'recent.xml', strlen($content), $content);
+	$this->sendInlineFile('application/atom+xml; charset=UTF-8', 'recent.xml', $content);
 	}
 
 }
