@@ -40,7 +40,25 @@ public function show()
 		$id = $this->Board->getId();
 		}
 
-	if (!($content = $this->ObjectCache->getObject('LL:GetRecent:Atom:'.$id)))
+	try
+		{
+		$forum = $this->Input->Request->getInt('forum');
+		}
+	catch (RequestException $e)
+		{
+		$forum = 0;
+		}
+
+	try
+		{
+		$showContent = $this->Input->Request->getInt('content') > 0;
+		}
+	catch (RequestException $e)
+		{
+		$showContent = false;
+		}
+
+	if (!($content = $this->ObjectCache->getObject('LL:GetRecent:Atom:'.$id.':'.$forum.':'.$showContent)))
 		{
 		!$this->init && $this->initDB();
 
@@ -49,33 +67,122 @@ public function show()
 
 		try
 			{
-			$stm = $this->DB->prepare
-				('
-				SELECT
-					threads.id,
-					threads.name,
-					threads.firstdate,
-					threads.firstusername,
-					threads.firstuserid,
-					threads.summary
-				FROM
-					threads,
-					forum_cat,
-					cats
-				WHERE
-					threads.deleted = 0
-					AND forum_cat.forumid = threads.forumid
-					AND forum_cat.catid = cats.id
-					AND cats.boardid = ?
-				ORDER BY
-					threads.firstdate DESC
-				LIMIT
-					25
-				');
-			$stm->bindInteger($this->Board->getId());
-			$result = $stm->getRowSet();
+			if ($forum == 0)
+				{
+				if ($showContent)
+					{
+					$stm = $this->DB->prepare
+						('
+						SELECT
+							threads.id,
+							threads.name,
+							threads.firstdate,
+							threads.firstusername,
+							threads.firstuserid,
+							threads.summary,
+							posts.text
+						FROM
+							threads,
+							forum_cat,
+							cats,
+							posts
+						WHERE
+							threads.deleted = 0
+							AND forum_cat.forumid = threads.forumid
+							AND forum_cat.catid = cats.id
+							AND cats.boardid = ?
+							AND posts.threadid = threads.id
+							AND posts.counter = 0
+						ORDER BY
+							threads.firstdate DESC
+						LIMIT
+							25
+						');
+					}
+				else
+					{
+					$stm = $this->DB->prepare
+						('
+						SELECT
+							threads.id,
+							threads.name,
+							threads.firstdate,
+							threads.firstusername,
+							threads.firstuserid,
+							threads.summary
+						FROM
+							threads,
+							forum_cat,
+							cats
+						WHERE
+							threads.deleted = 0
+							AND forum_cat.forumid = threads.forumid
+							AND forum_cat.catid = cats.id
+							AND cats.boardid = ?
+						ORDER BY
+							threads.firstdate DESC
+						LIMIT
+							25
+						');
+					}
+				$stm->bindInteger($id);
+				}
+			else
+				{
+				if ($showContent)
+					{
+					$stm = $this->DB->prepare
+						('
+						SELECT
+							threads.id,
+							threads.name,
+							threads.firstdate,
+							threads.firstusername,
+							threads.firstuserid,
+							threads.summary,
+							posts.text
+						FROM
+							threads,
+							posts
+						WHERE
+							threads.deleted = 0
+							AND threads.forumid = ?
+							AND threads.forumid > 0
+							AND posts.threadid = threads.id
+							AND posts.counter = 0
+						ORDER BY
+							threads.firstdate DESC
+						LIMIT
+							25
+						');
+					}
+				else
+					{
+					$stm = $this->DB->prepare
+						('
+						SELECT
+							threads.id,
+							threads.name,
+							threads.firstdate,
+							threads.firstusername,
+							threads.firstuserid,
+							threads.summary
+						FROM
+							threads
+						WHERE
+							threads.deleted = 0
+							AND threads.forumid = ?
+							AND threads.forumid > 0
+						ORDER BY
+							threads.firstdate DESC
+						LIMIT
+							25
+						');
+					}
+				$stm->bindInteger($forum);
+				}
 
-			foreach($result as $thread)
+			foreach($stm->getRowSet() as $thread)
 				{
 				if ($thread['firstdate'] > $lastdate)
 					{
@@ -90,6 +197,7 @@ public function show()
 					<link rel="alternate" type="text/html" href="'.$this->Output->createUrl('page=Postings', array('thread' => $thread['id'], 'post' => '-1')).'" />
 					<updated>'.date('c', $thread['firstdate']).'</updated>
 					<summary>'.$thread['summary'].'</summary>
+					'.($showContent ? '<content type="html"><![CDATA['.$thread['text'].']]></content>' : '').'
 					<author>
 						<name>'.$thread['firstusername'].'</name>
 						<uri>'.$this->Output->createUrl('ShowUser', array('user' => $thread['firstuserid'])).'</uri>
@@ -118,7 +226,7 @@ public function show()
 	'.$entries.'
 </feed>';
 
-		$this->ObjectCache->addObject('LL:GetRecent:Atom:'.$this->Board->getId(), $content, 15*60);
+		$this->ObjectCache->addObject('LL:GetRecent:Atom:'.$id.':'.$forum.':'.$showContent, $content, 15*60);
 		}
 
 	$this->sendInlineFile('application/atom+xml; charset=UTF-8', 'recent.xml', strlen($content), $content);
