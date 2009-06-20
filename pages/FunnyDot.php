@@ -17,13 +17,19 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-class FunnyDot extends Modul implements IOutput{
+
+class FunnyDot extends Modul implements IOutput {
 
 
 public function prepare()
 	{
-	$this->Output->setCookie('AntiSpamTime', $this->Input->getTime());
-	$this->Output->setCookie('AntiSpamHash', substr(sha1($this->Input->getTime().$this->Settings->getValue('antispam_hash')), 0, 4));
+	try
+		{
+		$this->Output->setCookie('AntiSpamHash', substr(sha1($this->Input->Cookie->getInt('AntiSpamTime').$this->Settings->getValue('antispam_hash')), 0, 4));
+		}
+	catch (RequestException $e)
+		{
+		}
 	}
 
 public function show()
@@ -33,7 +39,7 @@ public function show()
 	header('Content-Type: image/png');
 	header('Content-Length: 135');
 
-	/** transparent png (1px*1px) */
+	# transparent png (1px*1px)
 	echo base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAAXNSR0IArs4c6QAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9gLFxMRGNZyzLoAAAACYktHRAD/h4/MvwAAAAtJREFUCB1j+M8AAAIBAQDFXxteAAAAAElFTkSuQmCC');
 
 	exit;
