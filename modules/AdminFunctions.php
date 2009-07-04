@@ -29,7 +29,7 @@ public static function delThread($thread)
 	{
 	try
 		{
-		$stm = self::__get('DB')->prepare
+		$stm = self::get('DB')->prepare
 			('
 			SELECT
 				forumid
@@ -56,7 +56,7 @@ public static function delPost($post)
 	{
 	try
 		{
-		$stm = self::__get('DB')->prepare
+		$stm = self::get('DB')->prepare
 			('
 			SELECT
 				threads.forumid,
@@ -83,7 +83,7 @@ public static function delPost($post)
 
 	try
 		{
-		$stm = self::__get('DB')->prepare
+		$stm = self::get('DB')->prepare
 			('
 			SELECT
 				COUNT(*)
@@ -117,7 +117,7 @@ public static function delPost($post)
 private static function removeThread($thread)
 	{
 	/** FIXME: redundant */
-	$stm = self::__get('DB')->prepare
+	$stm = self::get('DB')->prepare
 		('
 		DELETE FROM
 			post_attachments
@@ -128,7 +128,7 @@ private static function removeThread($thread)
 	$stm->execute();
 	$stm->close();
 
-	$stm = self::__get('DB')->prepare
+	$stm = self::get('DB')->prepare
 		('
 		DELETE FROM
 			posts
@@ -139,7 +139,7 @@ private static function removeThread($thread)
 	$stm->execute();
 	$stm->close();
 
-	$stm = self::__get('DB')->prepare
+	$stm = self::get('DB')->prepare
 		('
 		DELETE FROM
 			polls
@@ -150,7 +150,7 @@ private static function removeThread($thread)
 	$stm->execute();
 	$stm->close();
 
-	$stm = self::__get('DB')->prepare
+	$stm = self::get('DB')->prepare
 		('
 		DELETE FROM
 			poll_values
@@ -161,7 +161,7 @@ private static function removeThread($thread)
 	$stm->execute();
 	$stm->close();
 
-	$stm = self::__get('DB')->prepare
+	$stm = self::get('DB')->prepare
 		('
 		DELETE FROM
 			poll_voters
@@ -172,7 +172,7 @@ private static function removeThread($thread)
 	$stm->execute();
 	$stm->close();
 
-	$stm = self::__get('DB')->prepare
+	$stm = self::get('DB')->prepare
 		('
 		DELETE FROM
 			threads
@@ -183,7 +183,7 @@ private static function removeThread($thread)
 	$stm->execute();
 	$stm->close();
 
-	$stm = self::__get('DB')->prepare
+	$stm = self::get('DB')->prepare
 		('
 		DELETE FROM
 			threads_log
@@ -194,7 +194,7 @@ private static function removeThread($thread)
 	$stm->execute();
 	$stm->close();
 
-	$stm = self::__get('DB')->prepare
+	$stm = self::get('DB')->prepare
 		('
 		DELETE FROM
 			thread_user
@@ -208,7 +208,7 @@ private static function removeThread($thread)
 
 private static function removePost($post)
 	{
-	$stm = self::__get('DB')->prepare
+	$stm = self::get('DB')->prepare
 		('
 		DELETE FROM
 			post_attachments
@@ -219,7 +219,7 @@ private static function removePost($post)
 	$stm->execute();
 	$stm->close();
 
-	$stm = self::__get('DB')->prepare
+	$stm = self::get('DB')->prepare
 		('
 		DELETE FROM
 			posts
@@ -235,7 +235,7 @@ public static function delForum($forum)
 	{
 	try
 		{
-		$stm = self::__get('DB')->prepare
+		$stm = self::get('DB')->prepare
 			('
 			SELECT
 				id
@@ -256,7 +256,7 @@ public static function delForum($forum)
 		{
 		}
 
-	$stm = self::__get('DB')->prepare
+	$stm = self::get('DB')->prepare
 		('
 		DELETE FROM
 			forums
@@ -267,7 +267,7 @@ public static function delForum($forum)
 	$stm->execute();
 	$stm->close();
 
-	$stm = self::__get('DB')->prepare
+	$stm = self::get('DB')->prepare
 		('
 		DELETE FROM
 			forum_cat
@@ -283,7 +283,7 @@ public static function delCat($cat)
 	{
 	try
 		{
-		$stm = self::__get('DB')->prepare
+		$stm = self::get('DB')->prepare
 			('
 			SELECT
 				forums.id
@@ -310,7 +310,7 @@ public static function delCat($cat)
 		$stm->close();
 		}
 
-	$stm = self::__get('DB')->prepare
+	$stm = self::get('DB')->prepare
 		('
 		DELETE FROM
 			forum_cat
@@ -321,7 +321,7 @@ public static function delCat($cat)
 	$stm->execute();
 	$stm->close();
 
-	$stm = self::__get('DB')->prepare
+	$stm = self::get('DB')->prepare
 		('
 		DELETE FROM
 			cats
@@ -337,7 +337,7 @@ public static function delBoard($board)
 	{
 	try
 		{
-		$stm = self::__get('DB')->prepare
+		$stm = self::get('DB')->prepare
 			('
 			SELECT
 				id
@@ -359,7 +359,7 @@ public static function delBoard($board)
 		$stm->close();
 		}
 
-	$stm = self::__get('DB')->prepare
+	$stm = self::get('DB')->prepare
 		('
 		DELETE FROM
 			boards
@@ -370,7 +370,7 @@ public static function delBoard($board)
 	$stm->execute();
 	$stm->close();
 
-	$stm = self::__get('DB')->prepare
+	$stm = self::get('DB')->prepare
 		('
 		DELETE FROM
 			tags
@@ -388,9 +388,9 @@ public static function updateThread($thread)
 	{
 	try
 		{
- 		self::__get('DB')->execute('LOCK TABLES posts READ, threads WRITE');
+ 		self::get('DB')->execute('LOCK TABLES posts READ, threads WRITE');
 
-		$stm = self::__get('DB')->prepare
+		$stm = self::get('DB')->prepare
 			('
 			SELECT
 				dat,
@@ -409,7 +409,7 @@ public static function updateThread($thread)
 		$lastpost = $stm->getRow();
 		$stm->close();
 
-		$stm = self::__get('DB')->prepare
+		$stm = self::get('DB')->prepare
 			('
 			SELECT
 				dat,
@@ -428,7 +428,7 @@ public static function updateThread($thread)
 		$firstpost = $stm->getRow();
 		$stm->close();
 
-		$stm = self::__get('DB')->prepare
+		$stm = self::get('DB')->prepare
 			('
 			UPDATE
 				threads
@@ -457,7 +457,7 @@ public static function updateThread($thread)
 		$stm->execute();
 		$stm->close();
 
- 		self::__get('DB')->execute('UNLOCK TABLES');
+ 		self::get('DB')->execute('UNLOCK TABLES');
 
 		self::updatePostCounter($thread);
 		}
@@ -465,7 +465,7 @@ public static function updateThread($thread)
 		{
 		$stm->close();
 		/** Ein Thread ohne Postings können wir auch als gelöscht markieren */
-		$stm = self::__get('DB')->prepare
+		$stm = self::get('DB')->prepare
 			('
 			UPDATE
 				threads
@@ -478,17 +478,17 @@ public static function updateThread($thread)
 		$stm->execute();
 		$stm->close();
 
- 		self::__get('DB')->execute('UNLOCK TABLES');
+ 		self::get('DB')->execute('UNLOCK TABLES');
 		}
 	}
 
 public static function updatePostCounter($thread)
 	{
- 	self::__get('DB')->execute('LOCK TABLES posts WRITE');
+ 	self::get('DB')->execute('LOCK TABLES posts WRITE');
 
 	try
 		{
-		$stm = self::__get('DB')->prepare
+		$stm = self::get('DB')->prepare
 			('
 			SELECT
 				id,
@@ -505,7 +505,7 @@ public static function updatePostCounter($thread)
 
 		$counter = 0;
 
-		$stm2 = self::__get('DB')->prepare
+		$stm2 = self::get('DB')->prepare
 			('
 			UPDATE
 				posts
@@ -529,9 +529,9 @@ public static function updatePostCounter($thread)
 		}
 	catch (DBNoDataException $e)
 		{
-		self::__get('DB')->execute('LOCK TABLES threads WRITE');
+		self::get('DB')->execute('LOCK TABLES threads WRITE');
 		$stm->close();
-		$stm2 = self::__get('DB')->prepare
+		$stm2 = self::get('DB')->prepare
 			('
 			UPDATE
 				threads
@@ -545,14 +545,14 @@ public static function updatePostCounter($thread)
 		$stm2->close();
 		}
 
- 	self::__get('DB')->execute('UNLOCK TABLES');
+ 	self::get('DB')->execute('UNLOCK TABLES');
 	}
 
 public static function updateForum($forum)
 	{
 	try
 		{
-		$stm = self::__get('DB')->prepare
+		$stm = self::get('DB')->prepare
 			('
 			UPDATE
 				forums
@@ -577,13 +577,13 @@ public static function updateForum($forum)
 
 public static function updateThreadCounter($forum)
 	{
-	self::__get('DB')->execute('LOCK TABLES threads WRITE');
+	self::get('DB')->execute('LOCK TABLES threads WRITE');
 
 	try
 		{
 		/** FIXME: movedfrom.counter wird von forumid überschrieben oder umgekehrt
 		 -> deshalb wird es erstmal deaktiviert */
-		$stm = self::__get('DB')->prepare
+		$stm = self::get('DB')->prepare
 			('
 			SELECT
 				id,
@@ -605,7 +605,7 @@ public static function updateThreadCounter($forum)
 
 	$counter = 0;
 
-	$stm2 = self::__get('DB')->prepare
+	$stm2 = self::get('DB')->prepare
 		('
 		UPDATE
 			threads
@@ -627,7 +627,7 @@ public static function updateThreadCounter($forum)
 	$stm2->close();
 	$stm->close();
 
- 	self::__get('DB')->execute('UNLOCK TABLES');
+ 	self::get('DB')->execute('UNLOCK TABLES');
 	}
 
 public static function buildPositionMenu($name, $values, $marked)
@@ -644,7 +644,7 @@ public static function buildPositionMenu($name, $values, $marked)
 
 public static function getUserId($name)
 	{
-	$stm = self::__get('DB')->prepare
+	$stm = self::get('DB')->prepare
 		('
 		SELECT
 			id
@@ -662,7 +662,7 @@ public static function getUserId($name)
 
 public static function getUserName($id)
 	{
-	$stm = self::__get('DB')->prepare
+	$stm = self::get('DB')->prepare
 		('
 		SELECT
 			name
@@ -680,7 +680,7 @@ public static function getUserName($id)
 
 public static function delUser($id)
 	{
-	$stm = self::__get('DB')->prepare
+	$stm = self::get('DB')->prepare
 		('
 		DELETE FROM
 			users
@@ -691,7 +691,7 @@ public static function delUser($id)
 	$stm->execute();
 	$stm->close();
 
-	$stm = self::__get('DB')->prepare
+	$stm = self::get('DB')->prepare
 		('
 		DELETE FROM
 			avatars
@@ -702,7 +702,7 @@ public static function delUser($id)
 	$stm->execute();
 	$stm->close();
 
-	$stm = self::__get('DB')->prepare
+	$stm = self::get('DB')->prepare
 		('
 		DELETE FROM
 			poll_voters
@@ -713,7 +713,7 @@ public static function delUser($id)
 	$stm->execute();
 	$stm->close();
 
-	$stm = self::__get('DB')->prepare
+	$stm = self::get('DB')->prepare
 		('
 		DELETE FROM
 			attachments
@@ -724,7 +724,7 @@ public static function delUser($id)
 	$stm->execute();
 	$stm->close();
 
-	self::__get('DB')->execute
+	self::get('DB')->execute
 		('
 		DELETE FROM
 			attachment_thumbnails
@@ -732,7 +732,7 @@ public static function delUser($id)
 			id NOT IN (SELECT id FROM attachments)
 		');
 
-	self::__get('DB')->execute
+	self::get('DB')->execute
 		('
 		DELETE FROM
 			post_attachments
@@ -740,7 +740,7 @@ public static function delUser($id)
 			attachment_id NOT IN (SELECT id FROM attachments)
 		');
 
-	self::__get('DB')->execute
+	self::get('DB')->execute
 		('
 		UPDATE
 			posts
@@ -751,7 +751,7 @@ public static function delUser($id)
 			AND id NOT IN (SELECT postid FROM post_attachments)
 		');
 
-	$stm = self::__get('DB')->prepare
+	$stm = self::get('DB')->prepare
 		('
 		DELETE FROM
 			thread_user
@@ -765,7 +765,7 @@ public static function delUser($id)
 	/** Remove orphaned PrivateThreads */
 	try
 		{
-		$privateThreads = self::__get('DB')->getColumnSet
+		$privateThreads = self::get('DB')->getColumnSet
 			('
 			SELECT
 				id
@@ -784,7 +784,7 @@ public static function delUser($id)
 		{
 		}
 
-	$stm = self::__get('DB')->prepare
+	$stm = self::get('DB')->prepare
 		('
 		DELETE FROM
 			threads_log
@@ -795,7 +795,7 @@ public static function delUser($id)
 	$stm->execute();
 	$stm->close();
 
-	$stm = self::__get('DB')->prepare
+	$stm = self::get('DB')->prepare
 		('
 		DELETE FROM
 			user_group
@@ -806,7 +806,7 @@ public static function delUser($id)
 	$stm->execute();
 	$stm->close();
 
-	$stm = self::__get('DB')->prepare
+	$stm = self::get('DB')->prepare
 		('
 		DELETE FROM
 			password_key
@@ -817,7 +817,7 @@ public static function delUser($id)
 	$stm->execute();
 	$stm->close();
 
-	$stm = self::__get('DB')->prepare
+	$stm = self::get('DB')->prepare
 		('
 		UPDATE
 			threads
@@ -830,7 +830,7 @@ public static function delUser($id)
 	$stm->execute();
 	$stm->close();
 
-	$stm = self::__get('DB')->prepare
+	$stm = self::get('DB')->prepare
 		('
 		UPDATE
 			threads
@@ -843,7 +843,7 @@ public static function delUser($id)
 	$stm->execute();
 	$stm->close();
 
-	$stm = self::__get('DB')->prepare
+	$stm = self::get('DB')->prepare
 		('
 		UPDATE
 			posts
@@ -856,7 +856,7 @@ public static function delUser($id)
 	$stm->execute();
 	$stm->close();
 
-	$stm = self::__get('DB')->prepare
+	$stm = self::get('DB')->prepare
 		('
 		UPDATE
 			posts
@@ -869,7 +869,7 @@ public static function delUser($id)
 	$stm->execute();
 	$stm->close();
 
-	$stm = self::__get('DB')->prepare
+	$stm = self::get('DB')->prepare
 		('
 		DELETE FROM
 			session

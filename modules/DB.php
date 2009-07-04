@@ -24,7 +24,7 @@ private $link = null;
 
 public function connect($user, $password, $database)
 	{
-	$this->link = mysqli_connect(null, $user, $password, $database);
+	$this->link = mysqli_connect('localhost', $user, $password, $database);
 
 	if (!$this->link)
 		{
@@ -359,7 +359,17 @@ public function bindBinary($value)
 private function bindParams($types, $values)
 	{
 	$params = array_merge(array($this->stm, $types), $values);
-	if (!call_user_func_array('mysqli_stmt_bind_param', $params))
+
+	# create a new array with references to the old
+	# FIXME: ugly workaround
+	# see comments at http://de2.php.net/manual/en/function.call-user-func-array.php
+	$args = array();
+	foreach($params as &$arg)
+		{
+		$args[] = &$arg;
+		}
+
+	if (!call_user_func_array('mysqli_stmt_bind_param', $args))
 		{
 		throw new DBStatementException($this->stm);
 		}

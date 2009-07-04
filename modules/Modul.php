@@ -62,7 +62,7 @@ public static function loadModul($name)
 		}
 	}
 
-public static function __get($name)
+public static function get($name)
 	{
 	if (!isset(self::$loadedModules[$name]))
 		{
@@ -77,7 +77,12 @@ public static function __get($name)
 		}
 	}
 
-public static function __set($name, $object)
+public function __get($name)
+	{
+	return self::get($name);
+	}
+
+public static function set($name, $object)
 	{
 	if (!isset(self::$loadedModules[$name]))
 		{
@@ -88,6 +93,11 @@ public static function __set($name, $object)
 		{
 		return self::$loadedModules[$name];
 		}
+	}
+
+public function __set($name, $object)
+	{
+	return self::set($name, $object);
 	}
 
 protected function getName()
