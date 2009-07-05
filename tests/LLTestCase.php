@@ -17,104 +17,40 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-require_once 'PHPUnit/Framework/TestCase.php';
+require_once 'PHPUnit/Framework.php';
 
 ini_set('include_path', ini_get('include_path').':../');
 
+require ('modules/Modul.php');
 require ('modules/Settings.php');
 require ('modules/Exceptions.php');
 require ('modules/Functions.php');
 require ('modules/Input.php');
 require ('modules/Output.php');
+require ('modules/L10n.php');
 
-Modul::__set('Settings', new Settings());
-Modul::__set('Input', new Input());
-Modul::__set('Output', new Output());
 
 function __autoload($class)
 	{
 	Modul::loadModul($class);
 	}
 
-abstract class Modul extends PHPUnit_Framework_TestCase{
 
-private static $loadedModules = array();
+class TestModul extends Modul {}
 
-private static $availableModules = array
-	(
-	'AdminForm' => 'pages/abstract/AdminForm.php',
-	'AdminPage' => 'pages/abstract/AdminPage.php',
-	'Form' => 'pages/abstract/Form.php',
-	'GetFile' => 'pages/abstract/GetFile.php',
-	'Page' => 'pages/abstract/Page.php',
-	'Poll' => 'modules/Poll.php',
-	'AdminFunctions' => 'modules/AdminFunctions.php',
-	'Board' => 'modules/Board.php',
-	'DB' => 'modules/DB.php',
-	'Exceptions' => 'modules/Exceptions.php',
-	'Functions' => 'modules/Functions.php',
-	'Input' => 'modules/Input.php',
-	'Log' => 'modules/Log.php',
-	'Mail' => 'modules/Mail.php',
-	'Markup' => 'modules/Markup.php',
-	'Modul' => 'modules/Modul.php',
-	'ObjectCache' => 'modules/ObjectCache.php',
-	'Ouput' => 'modules/Output.php',
-	'PersistentCache' => 'modules/PersistentCache.php',
-	'Settings' => 'modules/Settings.php',
-	'Stack' => 'modules/Stack.php',
-	'ThreadList' => 'modules/ThreadList.php',
-	'UnMarkup' => 'modules/UnMarkup.php',
-	'User' => 'modules/User.php'
-	);
 
-public static function loadModul($name)
-	{
-	if (isset(self::$availableModules[$name]))
-		{
-		include_once(self::$availableModules[$name]);
-		}
-	else
-		{
-		throw new RuntimeException('Modul '.$name.' wurde nicht gefunden!', 0);
-		}
-	}
+abstract class LLTestCase extends PHPUnit_Framework_TestCase {
 
-public static function __get($name)
-	{
-	if (!isset(self::$loadedModules[$name]))
-		{
-		self::loadModul($name);
-		$new = new $name();
-		self::$loadedModules[$name] = &$new;
-		return $new;
-		}
-	else
-		{
-		return self::$loadedModules[$name];
-		}
-	}
-
-public static function __set($name, $object)
-	{
-	if (!isset(self::$loadedModules[$name]))
-		{
-		self::$loadedModules[$name] = $object;
-		return $object;
-		}
-	else
-		{
-		return self::$loadedModules[$name];
-		}
-	}
-
-}
-
-abstract class LLTestCase extends Modul{
+protected $ll = null;
 
 
 public function setUp()
 	{
+	Modul::set('Settings', new Settings());
+	Modul::set('Input', new Input());
+	Modul::set('L10n', new L10n());
+	Modul::set('Output', new Output());
+	$this->ll = new TestModul();
 	}
 
 public function tearDown()
