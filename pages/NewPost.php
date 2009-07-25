@@ -67,6 +67,7 @@ protected function setFile()
 			$filesInput = new SelectInputElement('files', 'Dateien anhängen');
 			$filesInput->setMinLength(1);
 			$filesInput->setMaxLength(11);
+			$filesInput->setSize(10);
 			$filesInput->setMultiple();
 
 			try
@@ -145,7 +146,7 @@ protected function sendFile($postid)
 				postid = ?,
 				attachment_id = ?'
 			);
-		foreach($files as $file => $blubb)
+		foreach($files as $file)
 			{
 			try
 				{
