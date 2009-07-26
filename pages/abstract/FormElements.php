@@ -157,20 +157,22 @@ abstract class ActiveFormElement extends FormElement {
 
 	public function validate()
 		{
-		if ($this->required && $this->Input->Post->isEmptyString($this->name))
+		$currentLength = $this->Input->Post->getLength($this->name);
+
+		if ($this->required && $currentLength == 0)
 			{
 			throw new FormElementException('Das Feld "'.$this->label.'" darf nicht leer sein.');
 			}
-
-		$currentLength = $this->Input->Post->getLength($this->name);
-
-		if ($currentLength < $this->minLength)
+		elseif ($currentLength > 0)
 			{
-			throw new FormElementException('Im Feld "'.$this->label.'" fehlen noch '.($this->minLength - $currentLength).' Zeichen.');
-			}
-		elseif ($currentLength > $this->maxLength)
-			{
-			throw new FormElementException('Im Feld "'.$this->label.'" sind '.($currentLength - $this->maxLength).' Zeichen zuviel.');
+			if ($currentLength < $this->minLength)
+				{
+				throw new FormElementException('Im Feld "'.$this->label.'" fehlen noch '.($this->minLength - $currentLength).' Zeichen.');
+				}
+			elseif ($currentLength > $this->maxLength)
+				{
+				throw new FormElementException('Im Feld "'.$this->label.'" sind '.($currentLength - $this->maxLength).' Zeichen zuviel.');
+				}
 			}
 		}
 }

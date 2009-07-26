@@ -51,7 +51,6 @@ protected function setForm()
 			{
 			$inputName = new TextInputElement('category['.$cat['id'].'][name]', $cat['name'], 'Name');
 			$inputName->setRequired(false);
-			$inputName->setMinLength(0);
 			$this->add($inputName);
 
 			$positionMenu = new SelectInputElement('category['.$cat['id'].'][position]', 'Position');
@@ -62,7 +61,6 @@ protected function setForm()
 			$positionMenu->setSelected($cat['position']);
 			$positionMenu->setSize(1);
 			$positionMenu->setRequired(false);
-			$positionMenu->setMinLength(0);
 			$this->add($positionMenu);
 
 			$this->add(new LabeledElement

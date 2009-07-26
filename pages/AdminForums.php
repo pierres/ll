@@ -77,11 +77,9 @@ protected function setForm()
 			{
 			$nameInput = new TextInputElement('forums['.$forum['id'].'][name]', $forum['name'], 'Name');
 			$nameInput->setRequired(false);
-			$nameInput->setMinLength(0);
 			$this->add($nameInput);
 			$descInput = new TextareaInputElement('forums['.$forum['id'].'][description]', $forum['description'], 'Beschreibung');
 			$descInput->setRequired(false);
-			$descInput->setMinLength(0);
 			$descInput->setRows(5);
 			$this->add($descInput);
 
@@ -93,7 +91,6 @@ protected function setForm()
 			$positionMenu->setSelected($forum['position']);
 			$positionMenu->setSize(1);
 			$positionMenu->setRequired(false);
-			$positionMenu->setMinLength(0);
 			$this->add($positionMenu);
 
 			$this->add(new LabeledElement
@@ -124,7 +121,6 @@ protected function setForm()
 			$positionMenu->setSelected($forum['position']);
 			$positionMenu->setSize(1);
 			$positionMenu->setRequired(false);
-			$positionMenu->setMinLength(0);
 			$this->add($positionMenu);
 
 			$this->add(new LabeledElement
@@ -140,12 +136,10 @@ protected function setForm()
 
 	$nameInput = new TextInputElement('newname', '', 'Name');
 	$nameInput->setRequired(false);
-	$nameInput->setMinLength(0);
 	$this->add($nameInput);
 	
 	$descInput = new TextareaInputElement('newdescription', '', 'Beschreibung');
 	$descInput->setRequired(false);
-	$descInput->setMinLength(0);
 	$descInput->setRows(5);
 	$this->add($descInput);
 
@@ -157,7 +151,6 @@ protected function setForm()
 	$positionMenu->setSelected($totalForums+1);
 	$positionMenu->setSize(1);
 	$positionMenu->setRequired(false);
-	$positionMenu->setMinLength(0);
 	$this->add($positionMenu);
 
 	$this->add(new LabeledElement
