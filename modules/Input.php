@@ -55,11 +55,13 @@ public function getHost()
 	return $this->Server->getString('HTTP_HOST');
 	}
 
-public function getURL()
+public function getPath()
 	{
+	$directory = dirname($this->Server->getString('SCRIPT_NAME'));
+
 	return 'http'.(!$this->Server->isString('HTTPS') ? '' : 's').'://'
 			.$this->getHost()
-			.dirname($this->Server->getString('SCRIPT_NAME'));
+			.($directory == '/' ? '' : $directory).'/';
 	}
 
 public function getRemoteFile($url)

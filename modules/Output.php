@@ -127,7 +127,7 @@ public function createUrl($page, $options = array(), $html = true)
 		$params .= $separator.$key.'='.urlencode($value);
 		}
 
-	return $this->Input->getURL().'/?id='.$this->Board->getId().$params;
+	return $this->Input->getPath().'?id='.$this->Board->getId().$params;
 	}
 
 }

@@ -42,7 +42,7 @@ public function prepare()
 				Diese Daten werden für statistische Zwecke oder zur Erkennung von Angriffen verwendet. Diese Daten werden eine Woche lang archiviert. Hier ein beispielhafter Log-Eintrag:
 				<pre>
 				127.0.0.1 - - [31/Jan/2007:09:49:14 +0100] "GET /images/bg.png
-				HTTP/1.1" 200 154 "'.$this->Input->getURL().'" "Mozilla/5.0
+				HTTP/1.1" 200 154 "'.$this->Input->getPath().'" "Mozilla/5.0
 				(compatible; Konqueror/3.5) KHTML/3.5.6 (like Gecko)"
 				</pre>
 				</p>
