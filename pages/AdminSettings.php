@@ -128,7 +128,7 @@ protected function checkForm()
 
 	if(!$this->Input->Post->isEmptyString('admins') && ($this->User->isUser($this->Board->getAdmin()) || $this->User->isLevel(User::ADMIN)))
 		{
-		$admins = array_map('trim', explode("\n", $this->Input->Post->getString('admins')));
+		$admins = explode("\n", trim($this->Input->Post->getString('admins')));
 
 		foreach ($admins as $admin)
 			{
@@ -142,33 +142,10 @@ protected function checkForm()
 				}
 			}
 		}
-	if(!$this->Input->Post->isEmptyString('host') && ($this->User->isUser($this->Board->getAdmin()) || $this->User->isLevel(User::ADMIN)))
-		{
-		try
-			{
-			$fp = fsockopen($this->Input->Post->getString('host'), 80, $errno, $errstr, 5);
-			if (!$fp)
-				{
-				$this->showWarning('Fehler beim Verbinden mit Host <em>'.$this->Input->Post->getString('host').'</em>: <strong>'.$errstr.'</strong>.');
-				}
-			else
-				{
-				fclose($fp);
-				}
-			if (gethostbyname($this->Input->Post->getString('host')) != getenv('SERVER_ADDR'))
-				{
-				$this->showWarning('Der Host <em>'.$this->Input->Post->getString('host').'</em> zeigt nicht auf die IP <em>'.getenv('SERVER_ADDR').'</em>.');
-				}
-			}
-		catch (InternalRuntimeException $e)
-			{
-			$this->showWarning('Fehler beim Verbinden mit Host <em>'.$this->Input->Post->getString('host').'</em>:<div style="color:darkred;margin-left:50px;">'.$e->getMessage().'</div>');
-			}
-		}
 
 	if(!$this->Input->Post->isEmptyString('mods'))
 		{
-		$mods = array_map('trim', explode("\n", $this->Input->Post->getString('mods')));
+		$mods = explode("\n", trim($this->Input->Post->getString('mods')));
 
 		foreach ($mods as $mod)
 			{
