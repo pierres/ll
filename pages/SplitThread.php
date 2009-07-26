@@ -37,7 +37,7 @@ protected function setForm()
 		}
 	catch (RequestException $e)
 		{
-		$this->showWarning($this->L10n->getText('No post specified.'))
+		$this->showWarning($this->L10n->getText('No post specified.'));
 		}
 
 	$this->checkAccess();
