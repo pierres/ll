@@ -69,6 +69,7 @@ protected function setForm()
 		}
 	$modsInput = new TextareaInputElement('mods', $mods, 'Moderatoren');
 	$modsInput->setRows(5);
+	$modsInput->setRequired(false);
 	$this->add($modsInput);
 
 	if($this->User->isUser($this->Board->getAdmin()) || $this->User->isLevel(User::ADMIN))
@@ -101,34 +102,13 @@ protected function setForm()
 			}
 		$adminsInput = new TextareaInputElement('admins', $admins, 'Administratoren');
 		$adminsInput->setRows(5);
+		$adminsInput->setRequired(false);
 		$this->add($adminsInput);
 
 		$hostInput = new TextInputElement('host', $this->Board->getHost(), 'Host/Domain');
 		$hostInput->setMinLength(6);
 		$hostInput->setMaxLength(100);
 		$this->add($hostInput);
-
-		$stm = $this->DB->prepare
-			('
-			SELECT
-				admin_name,
-				admin_email,
-				admin_tel,
-				admin_address
-			FROM
-				boards
-			WHERE
-				id = ?'
-			);
-		$stm->bindInteger($this->Board->getId());
-		$address = $stm->getRow();
-
-		$this->add(new TextInputElement('admin_name', $address['admin_name'], 'Name'));
-		$this->add(new TextInputElement('admin_email', $address['admin_email'], 'E-Mail'));
-		$this->add(new TextInputElement('admin_tel', $address['admin_tel'], 'Telefon'));
-		$addressInput = new TextareaInputElement('admin_address', br2nl($address['admin_address']), 'Adresse');
-		$addressInput->setRows(5);
-		$this->add($addressInput);
 		}
 	}
 
@@ -202,27 +182,10 @@ protected function checkForm()
 				}
 			}
 		}
-
-	if($this->User->isUser($this->Board->getAdmin()) || $this->User->isLevel(User::ADMIN))
-		{
-		if (!$this->Mail->validateMail($this->Input->Post->getHtml('admin_email')))
-			{
-			$this->showWarning('Keine gültige E-Mail-Adresse angegeben!');
-			}
-		}
 	}
 
 protected function sendForm()
 	{
-	$description = $this->Markup->toHtml($this->Input->Post->getString('description'));
-	// BugFix for Bug#1
-	if ($length = strlen($description) > 65536)
-		{
-		$this->showWarning('Der Text ist '.($length-65536).' Zeichen zu lang!');
-		$this->showForm();
-		return;
-		}
-
 	if($this->User->isLevel(User::ADMIN))
 		{
 		$stm = $this->DB->prepare
@@ -256,30 +219,6 @@ protected function sendForm()
 		$stm->execute();
 		$stm->close();
 		}
-
-	if($this->User->isUser($this->Board->getAdmin()) || $this->User->isLevel(User::ADMIN))
-		{
-		$stm = $this->DB->prepare
-			('
-			UPDATE
-				boards
-			SET
-				admin_name = ?,
-				admin_address = ?,
-				admin_email = ?,
-				admin_tel = ?
-			WHERE
-				id = ?'
-			);
-		$stm->bindString($this->Input->Post->getHtml('admin_name'));
-		$stm->bindString(nl2br($this->Input->Post->getHtml('admin_address')));
-		$stm->bindString($this->Input->Post->getHtml('admin_email'));
-		$stm->bindString($this->Input->Post->getHtml('admin_tel'));
-		$stm->bindInteger($this->Board->getId());
-		$stm->execute();
-		$stm->close();
-		}
-
 
 	$stm = $this->DB->prepare
 		('
