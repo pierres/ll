@@ -71,7 +71,7 @@ public function prepare()
 	$this->totalThreads = count($this->resultSet);
 	$this->resultSet = array_slice($this->resultSet, $this->currentThread, $this->Settings->getValue('max_threads'));
 
-	$this->addUserMenuEntry('<a href="'.$this->Output->createUrl('MarkAllAsRead').'">'.$this->L10n->getText('Mark all topics as read').'</a>';
+	$this->addUserMenuEntry('<a href="'.$this->Output->createUrl('MarkAllAsRead').'">'.$this->L10n->getText('Mark all topics as read').'</a>');
 
 	$body = $this->getBody();
 
