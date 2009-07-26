@@ -47,10 +47,10 @@ protected $ll = null;
 
 public function setUp()
 	{
-	Modul::__set('Settings', new Settings());
-	Modul::__set('Input', new Input());
-	Modul::__set('L10n', new L10n());
-	Modul::__set('Output', new Output());
+	Modul::set('Settings', new Settings());
+	Modul::set('Input', new Input());
+	Modul::set('L10n', new L10n());
+	Modul::set('Output', new Output());
 	$this->ll = new TestModul();
 	}
 
