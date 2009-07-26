@@ -62,7 +62,7 @@ function ExceptionHandler(Exception $e)
 </body>
 </html>';
 
-		if (Modul::__get('Settings')->getValue('debug'))
+		if (Modul::get('Settings')->getValue('debug'))
 			{
 			header('HTTP/1.1 500 Exception');
 			header('Content-Length: '.strlen($screen));
@@ -72,15 +72,15 @@ function ExceptionHandler(Exception $e)
 			}
 		else
 			{
-			if (Modul::__get('Settings')->getValue('log_dir') != '')
+			if (Modul::get('Settings')->getValue('log_dir') != '')
 				{
-				file_put_contents(Modul::__get('Settings')->getValue('log_dir').time().'.html', $screen);
+				file_put_contents(Modul::get('Settings')->getValue('log_dir').time().'.html', $screen);
 				}
 
-			$mail = Modul::__get('Mail');
+			$mail = Modul::get('Mail');
 
-			$mail->setTo(Modul::__get('Settings')->getValue('email'));
-			$mail->setFrom(Modul::__get('Settings')->getValue('email'));
+			$mail->setTo(Modul::get('Settings')->getValue('email'));
+			$mail->setFrom(Modul::get('Settings')->getValue('email'));
 			$mail->setSubject('LL-Error');
 			$mail->setText(strip_tags($screen));
 			$mail->send();
@@ -96,7 +96,7 @@ function ExceptionHandler(Exception $e)
 				<h1 style="font-size:16px;">Fehler in Modul '.get_class($e).'</h1>
 				<p>Es ist ein schwerer Fehler aufgetreten. Die Administration wurde bereits benachrichtigt. Das Problem wird sobald wie möglich behoben.</p>
 				<h2 style="font-size:14px;">Kontakt</h2>
-				<p><a href="mailto:'.Modul::__get('Settings')->getValue('email').'">'.Modul::__get('Settings')->getValue('email').'</a></p>
+				<p><a href="mailto:'.Modul::get('Settings')->getValue('email').'">'.Modul::get('Settings')->getValue('email').'</a></p>
 			</body>
 			</html>';
 
