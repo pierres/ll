@@ -74,7 +74,6 @@ private static $availablePages = array
 	'GetImage' => 'pages/GetImage.php',
 	'GetOpenSearch' => 'pages/GetOpenSearch.php',
 	'GetRecent' => 'pages/GetRecent.php',
-	'Impressum' => 'pages/Impressum.php',
 	'InviteToPrivateThread' => 'pages/InviteToPrivateThread.php',
 	'Login' => 'pages/Login.php',
 	'Logout' => 'pages/Logout.php',
@@ -93,7 +92,6 @@ private static $availablePages = array
 	'NotFound' => 'pages/NotFound.php',
 	'Poll' => 'pages/Poll.php',
 	'Postings' => 'pages/Postings.php',
-	'Privacy' => 'pages/Privacy.php',
 	'PrivatePostings' => 'pages/PrivatePostings.php',
 	'PrivateThreads' => 'pages/PrivateThreads.php',
 	'QuotePost' => 'pages/QuotePost.php',
@@ -270,10 +268,6 @@ private function sendOutput()
 
 // 	$this->setBody($this->getValue('body').
 // 		'
-// 		<div style="text-align:right;font-size:10px;margin-top:5px;">
-// 			<a href="'.$this->Output->createUrl('Privacy').'">Datenschutz</a> ::
-// 			<a href="'.$this->Output->createUrl('Impressum').'">Impressum</a>
-// 		</div>
 // 		<div style="text-align:right;font-size:10px;margin-top:30px;">
 // 			Powered by <a href="http://www.laber-land.de">LL 4.0</a><br />
 // 			&copy; Copyright 2002&ndash;2009 Pierre Schmitz

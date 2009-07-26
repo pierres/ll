@@ -42,10 +42,6 @@ protected function setForm()
 	$emailInput->setMaxLength(50);
 	$emailInput->setSize(50);
 	$this->add($emailInput);
-
-	$privacyInput = new CheckboxInputElement('confirmPrivacy', $this->L10n->getText('Privacy'));
-	$privacyInput->setHelp('<a href="'.$this->Output->createUrl('Privacy').'">'.$this->L10n->getText('Privacy').'</a>.');
-	$this->add($privacyInput);
 	}
 
 protected function checkForm()
