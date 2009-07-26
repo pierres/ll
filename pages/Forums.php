@@ -187,9 +187,8 @@ private function getPrivateThreads()
 		
 	$icon = '<span class="status-'.$status.'"></span>';
 
+	$data['lastdate'] = empty($data['lastdate']) ? '' : $this->L10n->getDateTime($data['lastdate']);
 	$lastposter = empty($data['lastusername']) ? '' : $this->L10n->getText('by').' '.$data['lastusername'];
-	
-	$data['lastdate'] = $this->L10n->getDateTime($data['lastdate']);
 
 	return
 		'
