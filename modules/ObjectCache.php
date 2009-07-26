@@ -18,7 +18,7 @@
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-class ObjectCache implements ICache{
+class ObjectCache implements ICache {
 
 private $cache = null;
 
@@ -27,10 +27,6 @@ public function __construct()
 	if (function_exists('apc_store'))
 		{
 		$this->cache = new APCObjectCache();
-		}
-	elseif (function_exists('xcache_set'))
-		{
-		$this->cache = new XCacheObjectCache();
 		}
 	else
 		{
@@ -55,7 +51,7 @@ public function isObject($key)
 
 }
 
-class NOOPObjectCache implements ICache{
+class NOOPObjectCache implements ICache {
 
 public function addObject($key, $object, $ttl = 0)
 	{
@@ -73,7 +69,7 @@ public function isObject($key)
 	}
 }
 
-class APCObjectCache implements ICache{
+class APCObjectCache implements ICache {
 
 public function addObject($key, $object, $ttl = 0)
 	{
@@ -89,24 +85,6 @@ public function isObject($key)
 	{
 	apc_fetch($key, $success);
 	return $success;
-	}
-}
-
-class XCacheObjectCache implements ICache{
-
-public function addObject($key, $object, $ttl = 0)
-	{
-	return xcache_set($key, $object, $ttl);
-	}
-
-public function getObject($key)
-	{
-	return xcache_get($key);
-	}
-
-public function isObject($key)
-	{
-	return xcache_isset($key);
 	}
 }
 
