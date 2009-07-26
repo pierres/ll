@@ -513,7 +513,7 @@ private function makeNamedLink($matches, $cutName = false)
 
 	if ($cutName && strlen($name) > 50)
 		{
-		$name = mb_substr($name, 0, 37, 'UTF-8').'...'.mb_substr($name, -10, 'UTF-8');
+		$name = mb_substr($name, 0, 37, 'UTF-8').'...'.mb_substr($name, -10, null, 'UTF-8');
 		$cutted = true;
 		}
 	else
