@@ -17,13 +17,13 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-/** TODO Dies kann man auch benutzerfreundlicher realisieren */
+
 class NotFound extends Page{
 
 
 public function prepare()
 	{
-	$this->Output->redirect('Search', array('search' => urlencode(trim(preg_replace('/\W/', ' ',  str_replace('.php', '', $this->Input->Server->getString('REQUEST_URI', '')))))));
+	$this->showFailure('Seite nicht gefunden!');
 	}
 
 }

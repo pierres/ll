@@ -36,8 +36,6 @@ protected function setForm()
 	$this->setTitle('Kategorien löschen');
 	$this->setParam('cat', $this->cat);
 
-// 	$this->addOutput('Hierdurch werden allen enthaltenen Foren und Beiträge unwiederruflich gelöscht!');
-
 	$this->add(new SubmitButtonElement('Kategorie löschen'));
 	}
 

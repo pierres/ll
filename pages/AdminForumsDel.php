@@ -67,8 +67,6 @@ protected function setForm()
 
 	$this->setParam('forum', $this->forum);
 
-// 	$this->addOutput('Hierdurch werden allen enthaltenen Beiträge unwiederruflich gelöscht!');
-
 	$this->add(new SubmitButtonElement('Forum löschen'));
 	}
 

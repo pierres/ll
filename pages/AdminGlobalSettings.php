@@ -30,34 +30,16 @@ public function prepare()
 
 	$this->setTitle('Globale Einstellungen');
 
-	$body=
-		'<div id="brd-main" class="main">
-			<h1><span>'.$this->getTitle().'</span></h1>
-			<div class="main-head">
-				<h2><span>'.$this->getTitle().'</span></h2>
-			</div>
-			<div class="main-content">
-				<ul>
-					<li>
-					<a href="'.$this->Output->createUrl('AdminDeletedThreads').'"><span>Gelöschte Themen</span></a>
-					</li>
-					<li>
-					<a href="'.$this->Output->createUrl('AdminDeletedPosts').'"><span>Gelöschte Beiträge</span></a>
-					</li>
-					<li>
-					<a href="'.$this->Output->createUrl('AdminRenameUser').'"><span>Benutzer umbenennen</span></a>
-					</li>
-					<li>
-					<a href="'.$this->Output->createUrl('AdminCreateBoard').'"><span>Board erstellen</span></a>
-					</li>
-					<li>
-					<a href="'.$this->Output->createUrl('AdminDelBoard').'"><span>Board löschen</span></a>
-					</li>
-					<li>
-					<a href="'.$this->Output->createUrl('AdminForumsMerge').'"><span>Foren zusammenlegen</span></a>
-					</li>
-				</ul>
-			</div>
+	$body= '
+		<div class="box">
+			<ul>
+				<li><a href="'.$this->Output->createUrl('AdminDeletedThreads').'">Gelöschte Themen</a></li>
+				<li><a href="'.$this->Output->createUrl('AdminDeletedPosts').'">Gelöschte Beiträge</a></li>
+				<li><a href="'.$this->Output->createUrl('AdminRenameUser').'">Benutzer umbenennen</a></li>
+				<li><a href="'.$this->Output->createUrl('AdminCreateBoard').'">Board erstellen</a></li>
+				<li><a href="'.$this->Output->createUrl('AdminDelBoard').'">Board löschen</a></li>
+				<li><a href="'.$this->Output->createUrl('AdminForumsMerge').'">Foren zusammenlegen</a></li>
+			</ul>
 		</div>
 		';
 

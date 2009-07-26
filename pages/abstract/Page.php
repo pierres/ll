@@ -27,6 +27,7 @@ require ('modules/ICache.php');
 abstract class Page extends Modul implements IOutput {
 
 protected $variables = array();
+private $userMenu = array();
 
 private static $availablePages = array
 	(
@@ -71,10 +72,8 @@ private static $availablePages = array
 	'GetAvatar' => 'pages/GetAvatar.php',
 	'GetCss' => 'pages/GetCss.php',
 	'GetImage' => 'pages/GetImage.php',
-	'GetLLCodes' => 'pages/GetLLCodes.php',
 	'GetOpenSearch' => 'pages/GetOpenSearch.php',
 	'GetRecent' => 'pages/GetRecent.php',
-	'GetSmilies' => 'pages/GetSmilies.php',
 	'Impressum' => 'pages/Impressum.php',
 	'InviteToPrivateThread' => 'pages/InviteToPrivateThread.php',
 	'Login' => 'pages/Login.php',
@@ -134,40 +133,6 @@ public function __construct()
 	$this->variables['meta.robots']	 = 'index,follow';
 	}
 
-protected function getMenu()
-	{
-	$menu =	'<ul>';
-	
-	$menu .= '
-		<li id="navindex"><a href="'.$this->Output->createUrl('Forums').'"><span>'.$this->L10n->getText('Index').'</span></a></li>
-
-		<li id="navsearch"><a href="'.$this->Output->createUrl('Search').'"><span>'.$this->L10n->getText('Search').'</span></a></li>';
-
-
-	if ($this->User->isOnline())
-		{
-		$menu .=
-			'<li id="navprofile"><a href="'.$this->Output->createUrl('MyProfile').'"><span>'.$this->L10n->getText('My profile').'</span></a></li>';
-
-		if ($this->User->isAdmin())
-			{
-			$menu .=
-			'<li id="navadmin"><a href="'.$this->Output->createUrl('AdminSettings').'"><span>'.$this->L10n->getText('Administration').'</span></a></li>';
-			}
-
-		$menu .= '<li id="navlogout"><a href="'.$this->Output->createUrl('Logout').'"><span>'.$this->L10n->getText('Logout').'</span></a></li>';
-		}
-	else
-		{
-		$menu .=
-			'<li id="navregister"><a href="'.$this->Output->createUrl('Register').'"><span>'.$this->L10n->getText('Register').'</span></a></li>
-
-			<li id="navlogin"><a href="'.$this->Output->createUrl('Login').'"><span>'.$this->L10n->getText('Login').'</span></a></li>';
-		}
-
-	return $menu.'</ul>';
-	}
-
 public function setValue($key, $value)
 	{
 	$this->variables[$key] = $value;
@@ -197,7 +162,7 @@ protected function showWarning($text)
 	{
 	$this->setValue('meta.robots', 'noindex,nofollow');
 	$this->setTitle($this->L10n->getText('Warning'));
-	$this->setBody('<div class="warn">'.$text.'</div>');
+	$this->setBody('<div class="box"><div class="warning">'.$text.'</div></div>');
 	$this->sendOutput();
 	}
 
@@ -205,7 +170,7 @@ protected function showFailure($text)
 	{
 	$this->setValue('meta.robots', 'noindex,nofollow');
 	$this->setTitle($this->L10n->getText('Failure'));
-	$this->setBody('<div class="warn">'.$text.'</div>');
+	$this->setBody('<div class="box"><div class="failure">'.$text.'</div></div>');
 	$this->sendOutput();
 	}
 
@@ -217,20 +182,49 @@ public function prepare()
 
 private function getHead()
 	{
-	return '<meta name="robots" content="'.$this->getValue('meta.robots').'" />
+	return '
+		<meta http-equiv="content-type" content="'.$this->Output->getContentType().'" />
+		<meta name="robots" content="'.$this->getValue('meta.robots').'" />
 		<title>'.$this->getTitle().'</title>
 		<!-- <link rel="stylesheet" media="screen" href="'.$this->Output->createUrl('GetCss').'" /> -->
-		<link rel="stylesheet" media="screen" href="oxygen.css" />
+		<link rel="stylesheet" media="screen" href="ll.css" />
 		<link rel="alternate" type="application/atom+xml" title="'.$this->L10n->getText('Recent topics').'" href="'.$this->Output->createUrl('GetRecent').'" />
-		<link rel="search" type="application/opensearchdescription+xml" href="'.$this->Output->createUrl('GetOpenSearch').'" title="'.$this->Board->getName().'" />';
+		<link rel="search" type="application/opensearchdescription+xml" href="'.$this->Output->createUrl('GetOpenSearch').'" title="'.$this->Board->getName().'" />
+		';
 	}
 
-private function getWelcome()
+protected function getMainMenu()
+	{
+	$menu = '
+		<ul>
+			<li><a href="'.$this->Output->createUrl('Forums').'">'.$this->L10n->getText('Index').'</a></li>';
+
+
+	if ($this->User->isOnline())
+		{
+		if ($this->User->isAdmin())
+			{
+			$menu .=
+			'<li><a href="'.$this->Output->createUrl('AdminSettings').'">'.$this->L10n->getText('Administration').'</a></li>';
+			}
+
+		$menu .= '<li><a href="'.$this->Output->createUrl('Logout').'">'.$this->L10n->getText('Logout').'</a></li>';
+		}
+	else
+		{
+		$menu .=
+			'<li><a href="'.$this->Output->createUrl('Register').'">'.$this->L10n->getText('Register').'</a></li>
+			 <li><a href="'.$this->Output->createUrl('Login').'">'.$this->L10n->getText('Login').'</a></li>';
+		}
+
+	return $menu.'</ul>';
+	}
+
+private function getUserWelcome()
 	{
 	if ($this->User->isOnline())
 		{
-		return '<span>'.sprintf($this->L10n->getText('Logged in as %s.'), '<strong>'.$this->User->getName().'</strong>').'</span>
-			<span>'.$this->L10n->getText('Last visit').' '.$this->L10n->getDateTime($this->User->getLastUpdate()).'</span>';
+		return '<div>'.sprintf($this->L10n->getText('Logged in as %s.'), '<a href="'.$this->Output->createUrl('MyProfile').'"><strong>'.$this->User->getName().'</strong></a>').'</div>';
 		}
 	else
 		{
@@ -238,25 +232,35 @@ private function getWelcome()
 		}
 	}
 
-private function getVisit()
+private function getUserMenu()
 	{
-	return '<span class="item1"><a href="'.$this->Output->createUrl('Recent').'">'.$this->L10n->getText('New posts').'</a></span>';
+	return '
+		<ul>
+			<li>'.implode('</li><li>', $this->userMenu).'</li>
+			<li><a href="'.$this->Output->createUrl('Search').'">'.$this->L10n->getText('Search').'</a></li>
+			<li><a href="'.$this->Output->createUrl('Recent').'">'.$this->L10n->getText('New posts').'</a></li>
+		</ul>';
+	}
+
+protected function addUserMenuEntry($entry)
+	{
+	$this->userMenu[] = $entry;
 	}
 
 private function sendOutput()
 	{
 // 	$file = $this->Board->getHtml();
-	$file = file_get_contents('oxygen.html');
+	$file = file_get_contents('ll.html');
 
-	$this->variables['content-type'] = $this->Output->getContentType();
-	$this->variables['id'] = $this->Board->getId();
+// 	$this->variables['content-type'] = $this->Output->getContentType();
+// 	$this->variables['id'] = $this->Board->getId();
 	$this->variables['name'] = $this->Board->getName();
-	$this->variables['description'] = $this->Board->getDescription();
-	$this->variables['menu'] = $this->getMenu();
+// 	$this->variables['description'] = $this->Board->getDescription();
+	$this->variables['main-menu'] = $this->getMainMenu();
 	$this->variables['head'] = $this->getHead();
-	$this->variables['page'] = $this->getName();
-	$this->variables['welcome'] = $this->getWelcome();
-	$this->variables['visit'] = $this->getVisit();
+// 	$this->variables['page'] = $this->getName();
+	$this->variables['user-welcome'] = $this->getUserWelcome();
+	$this->variables['user-menu'] = $this->getUserMenu();
 
 // 	if ($this->User->isOnline())
 // 		{
@@ -275,7 +279,7 @@ private function sendOutput()
 // 		</div>
 // 		');
 
-	$this->setValue('about', 'Powered by <strong><a href="http://www.laber-land.de/">LL 4.0</a></strong>');
+// 	$this->setValue('about', 'Powered by <strong><a href="http://www.laber-land.de/">LL 4.0</a></strong>');
 
 
 // 	if ($this->Settings->getValue('debug') && function_exists('xdebug_time_index'))
@@ -288,6 +292,7 @@ private function sendOutput()
 // 			);
 // 		}
 
+	/** FIXME Explizit aufrufen und body zuletzt ersetzen; sonst dorht rekursive Ersetzung */
 	foreach ($this->variables as $key => $value)
 		{
 		$file = str_replace('<!-- '.$key.' -->', $value, $file);

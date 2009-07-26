@@ -22,7 +22,6 @@ class Board extends Modul {
 
 private $id 		= 1;
 private $name 		= '';
-private $description	= '';
 private $host 		= '';
 private $html 		= '';
 private $mods		= 0;
@@ -59,7 +58,6 @@ public function __construct()
 		}
 
 	$this->name 		= $board['name'];
-	$this->description 	= $board['description'];
 	$this->id		= $board['id'];
 	$this->admin 		= $board['admin'];
 	$this->admins 		= $board['admins'];
@@ -77,7 +75,6 @@ private function getBoard($id)
 		SELECT
 			id,
 			name,
-			description,
 			admin,
 			admins,
 			mods,
@@ -104,7 +101,6 @@ private function getBoardByHost()
 		SELECT
 			id,
 			name,
-			description,
 			admin,
 			admins,
 			mods,
@@ -132,11 +128,6 @@ public function getId()
 public function getName()
 	{
 	return $this->name;
-	}
-
-public function getDescription()
-	{
-	return $this->description;
 	}
 
 public function getAdmin()

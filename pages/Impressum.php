@@ -31,8 +31,7 @@ public function prepare()
 			admin_name,
 			admin_email,
 			admin_address,
-			admin_tel,
-			description
+			admin_tel
 		FROM
 			boards
 		WHERE
@@ -43,27 +42,27 @@ public function prepare()
 	$stm->close();
 
 	$body = '
-		<div id="brd-main" class="main">
-			<div class="main-head">
-					Impressum
-			</div>
-			<div class="main-content frm paged-head">
-				<div class="paging">
-					<a href="'.$this->Output->createUrl('ShowUser', array('user' => $this->Board->getAdmin())).'" class="">'.$board['admin_name'].'</a><br />
-					<br />
-					<b>Adresse</b><br />
-					'.$board['admin_address'].'<br />
-					<br />
-					<b>E-Mail</b><br />
-					'.$board['admin_email'].'<br />
-					<br />
-					<b>Telefon</b><br />
-					'.$board['admin_tel'].'<br />
-					<br />
-					<br />
-					'.$board['description'].'
-				</div>
-			</div>		
+		<div class="box">
+			<table>
+				<tr>
+					<th>Name</th>
+					<td>
+						<a href="'.$this->Output->createUrl('ShowUser', array('user' => $this->Board->getAdmin())).'">'.$board['admin_name'].'</a>
+					</td>
+				</tr>
+				<tr>
+					<th>Adresse</th>
+					<td>'.$board['admin_address'].'</td>
+				</tr>
+				<tr>
+					<th>E-Mail</th>
+					<td>'.$board['admin_email'].'</td>
+				</tr>
+				<tr>
+					<th>Telefon</th>
+					<td>'.$board['admin_tel'].'</td>
+				</tr>
+			</table>
 		</div>
 		';
 

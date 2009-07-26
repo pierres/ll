@@ -67,7 +67,9 @@ protected function setForm()
 		{
 		$stm->close();
 		}
-	$this->add(new TextareaInputElement('mods', $mods, 'Moderatoren'));
+	$modsInput = new TextareaInputElement('mods', $mods, 'Moderatoren');
+	$modsInput->setRows(5);
+	$this->add($modsInput);
 
 	if($this->User->isUser($this->Board->getAdmin()) || $this->User->isLevel(User::ADMIN))
 		{
@@ -97,7 +99,9 @@ protected function setForm()
 			{
 			$stm->close();
 			}
-		$this->add(new TextareaInputElement('admins', $admins, 'Administratoren'));
+		$adminsInput = new TextareaInputElement('admins', $admins, 'Administratoren');
+		$adminsInput->setRows(5);
+		$this->add($adminsInput);
 
 		$hostInput = new TextInputElement('host', $this->Board->getHost(), 'Host/Domain');
 		$hostInput->setMinLength(6);
@@ -122,31 +126,10 @@ protected function setForm()
 		$this->add(new TextInputElement('admin_name', $address['admin_name'], 'Name'));
 		$this->add(new TextInputElement('admin_email', $address['admin_email'], 'E-Mail'));
 		$this->add(new TextInputElement('admin_tel', $address['admin_tel'], 'Telefon'));
-		$this->add(new TextareaInputElement('admin_address', br2nl($address['admin_address']), 'Adresse'));
+		$addressInput = new TextareaInputElement('admin_address', br2nl($address['admin_address']), 'Adresse');
+		$addressInput->setRows(5);
+		$this->add($addressInput);
 		}
-
-
-
-	try
-		{
-		$stm = $this->DB->prepare
-			('
-			SELECT
-				description
-			FROM
-				boards
-			WHERE id = ?'
-			);
-		$stm->bindInteger($this->Board->getId());
-		$description = $stm->getColumn();
-		}
-	catch (DBNoDataException $e)
-		{
-		$description = '';
-		}
-	$stm->close();
-
-	$this->add(new TextareaInputElement('description', $this->UnMarkup->fromHtml($description), 'Beschreibung'));
 	}
 
 protected function checkForm()
@@ -303,13 +286,11 @@ protected function sendForm()
 		UPDATE
 			boards
 		SET
-			name = ?,
-			description = ?
+			name = ?
 		WHERE
 			id = ?'
 		);
 	$stm->bindString($this->Input->Post->getHtml('name'));
-	$stm->bindString($description);
 	$stm->bindInteger($this->Board->getId());
 	$stm->execute();
 	$stm->close();

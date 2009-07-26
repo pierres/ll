@@ -54,8 +54,6 @@ protected function setPoll()
 
 			$this->poll_question = $this->Input->Post->getString('poll_question', '');
 
-			$this->add(new DividerElement());
-
 			$questionInput = new TextInputElement('poll_question', $this->poll_question, 'Frage');
 			$questionInput->setMinLength(3);
 			$questionInput->setMaxLength(200);

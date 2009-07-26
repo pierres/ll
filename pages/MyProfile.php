@@ -25,7 +25,6 @@ private $jabber		= '';
 private $deleteavatar	= false;
 private $newavatar 	= null;
 private $hasavatar	= false;
-private $hiddenStatus	= false;
 
 
 protected function setForm()
@@ -49,11 +48,6 @@ protected function setForm()
 	$jabberInput->setMinLength(6);
 	$jabberInput->setMaxLength(50);
 	$this->add($jabberInput);
-
-	$hiddenInput = new CheckboxInputElement('hidden', 'unsichtbar');
-	$hiddenInput->setChecked($this->hiddenStatus);
-	$hiddenInput->setRequired(false);
-	$this->add($hiddenInput);
 
 	$avatarInput = new FileInputElement('newavatar', '', 'neuer Avatar');
 	$this->add($avatarInput);
@@ -139,8 +133,6 @@ protected function checkForm()
 	catch (FileException $e)
 		{
 		}
-
-	$this->hiddenStatus = $this->Input->Post->isString('hidden');
 	}
 
 private function getData()
@@ -152,8 +144,7 @@ private function getData()
 			SELECT
 				realname,
 				jabber,
-				(SELECT id FROM avatars WHERE id = users.id) AS avatar,
-				hidden
+				(SELECT id FROM avatars WHERE id = users.id) AS avatar
 			FROM
 				users
 			WHERE
@@ -172,7 +163,6 @@ private function getData()
 	$this->realname 	= unhtmlspecialchars($data['realname']);
 	$this->jabber 		= unhtmlspecialchars($data['jabber']);
 	$this->hasavatar 	= !empty($data['avatar']) ;
-	$this->hiddenStatus	= ($data['hidden'] == 1);
 	}
 
 protected function sendForm()
@@ -183,14 +173,12 @@ protected function sendForm()
 			users
 		SET
 			realname = ?,
-			jabber = ?,
-			hidden = ?
+			jabber = ?
 		WHERE
 			id = ?'
 		);
 	$stm->bindString(htmlspecialchars($this->realname));
 	$stm->bindString(htmlspecialchars($this->jabber));
-	$stm->bindInteger(($this->hiddenStatus ? 1 : 0));
 	$stm->bindInteger($this->User->getId());
 
 	$stm->execute();

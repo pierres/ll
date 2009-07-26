@@ -29,19 +29,14 @@ public function __construct()
 		{
 		$this->showFailure('Zutritt verboten!');
 		}
-	}
 
-protected function getMenu()
-	{
-	$menu =	'<ul>
-	<li id="navindex"><a href="'.$this->Output->createUrl('Forums').'"><span>Übersicht</span></a></li>
-	<li><a href="'.$this->Output->createUrl('AdminSettings').'"><span>Einstellungen</span></a>'.($this->User->isLevel(User::ROOT) ? ' <a href="'.$this->Output->createUrl('AdminGlobalSettings').'"><span>Globale Einstellungen</span></a>' : '').'</li>
-	<li><a href="'.$this->Output->createUrl('AdminCats').'"><span>Kategorien &amp; Foren</span></a></li>
-	<li><a href="'.$this->Output->createUrl('AdminDesign').'"><span>Layout &amp; Design</span></a></li>
-	<li><a href="'.$this->Output->createUrl('Logout').'"><span id="logout">Abmelden</span></a></li>
-	</ul>';
-
-	return $menu;
+	if ($this->User->isLevel(User::ROOT))
+		{
+		$this->addUserMenuEntry('<a href="'.$this->Output->createUrl('AdminGlobalSettings').'">Globale Einstellungen</a>');
+		}
+	$this->addUserMenuEntry('<a href="'.$this->Output->createUrl('AdminSettings').'">Einstellungen</a>');
+	$this->addUserMenuEntry('<a href="'.$this->Output->createUrl('AdminCats').'">Kategorien &amp; Foren</a>');
+	$this->addUserMenuEntry('<a href="'.$this->Output->createUrl('AdminDesign').'">Layout &amp; Design</a>');
 	}
 
 }

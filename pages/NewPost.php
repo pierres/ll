@@ -63,7 +63,6 @@ protected function setFile()
 		if (($this->Input->Post->isString('addfile')) && !$this->Input->Post->isString('nofile'))
 			{
 			$this->add(new ButtonElement('nofile', 'keine Dateien'));
-			$this->add(new DividerElement());
 			$filesInput = new SelectInputElement('files', 'Dateien anhängen');
 			$filesInput->setMinLength(1);
 			$filesInput->setMaxLength(11);

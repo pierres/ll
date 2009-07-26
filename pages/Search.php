@@ -28,7 +28,7 @@ protected function setForm()
 
 	$this->add(new SubmitButtonElement($this->L10n->getText('Submit')));
 
-	$searchInput = new TextInputElement('search', '', $this->L10n->getText('Search'));
+	$searchInput = new TextInputElement('search', $this->Input->Get->getHtml('search', ''), $this->L10n->getText('Search'));
 	$searchInput->setMinLength(3);
 	$searchInput->setMaxLength(50);
 	$searchInput->setSize(50);
@@ -58,7 +58,6 @@ private function storeResult()
 					threads.lastdate,
 					threads.posts,
 					threads.lastusername,
-					threads.firstdate,
 					threads.firstusername,
 					threads.closed,
 					threads.sticky,
@@ -85,7 +84,6 @@ private function storeResult()
 					threads.lastdate,
 					threads.posts,
 					threads.lastusername,
-					threads.firstdate,
 					threads.firstusername,
 					threads.closed,
 					threads.sticky,

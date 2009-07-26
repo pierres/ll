@@ -35,8 +35,7 @@ public function prepare()
 		$this->showFailure($e->getMessage());
 		}
 
-	$this->pageHead = '<p class="posting"><a class="newpost" href="'.$this->Output->createUrl('Search').'"><span>'.$this->L10n->getText('New search').'</span></a></p>';
-	$this->pageFoot = $this->pageHead;
+	$this->addUserMenuEntry('<a href="'.$this->Output->createUrl('Search', array('search' => $this->search)).'">'.$this->L10n->getText('Edit Search').'</a>');
 
 	$this->setTitle(sprintf($this->L10n->getText('Search results for %s'), $this->search));
 

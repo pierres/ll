@@ -36,16 +36,16 @@ protected function setForm()
 		$html = $this->Markup->toHtml($this->text);
 
 		$this->add(new LabeledElement('previewwindow',
-		'<div class="preview">'.$html.'</div>'));
+		'<div>'.$html.'</div>'));
 
 		$this->add(new LabeledElement('html',
-		'<pre class="preview">'.htmlspecialchars($html).'</pre>'));
+		'<pre>'.htmlspecialchars($html).'</pre>'));
 
 		$this->add(new LabeledElement('summary',
-		'<pre class="preview">'.getTextFromHtml($html).'</pre>'));
+		'<pre>'.getTextFromHtml($html).'</pre>'));
 
 		$this->add(new LabeledElement('unmarkup',
-		'<pre class="preview">'.htmlspecialchars($this->text = $this->UnMarkup->fromHtml($html)).'</pre>'));
+		'<pre>'.htmlspecialchars($this->text = $this->UnMarkup->fromHtml($html)).'</pre>'));
 		}
 
 	$this->add(new TextareaInputElement('text', $this->text, 'Deine Nachricht'));

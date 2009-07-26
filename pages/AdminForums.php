@@ -75,8 +75,14 @@ protected function setForm()
 		{
 		if ($forum['boardid'] == $this->Board->getId())
 			{
-			$this->add(new TextInputElement('forums['.$forum['id'].'][name]', $forum['name'], 'Name'));
-			$this->add(new TextareaInputElement('forums['.$forum['id'].'][description]', $forum['description'], 'Beschreibung'));
+			$nameInput = new TextInputElement('forums['.$forum['id'].'][name]', $forum['name'], 'Name')
+			$nameInput->setRequired(false);
+			$nameInput->setMinLength(0);
+			$this->add($nameInput);
+			$descInput = new TextareaInputElement('forums['.$forum['id'].'][description]', $forum['description'], 'Beschreibung');
+			$descInput->setRequired(false);
+			$descInput->setMinLength(0);
+			$this->add($descInput);
 
 			$positionMenu = new SelectInputElement('forums['.$forum['id'].'][position]', 'Position');
 			for ($i = 1; $i <= $totalForums; $i++)
@@ -85,6 +91,8 @@ protected function setForm()
 				}
 			$positionMenu->setSelected($forum['position']);
 			$positionMenu->setSize(1);
+			$positionMenu->setRequired(false);
+			$positionMenu->setMinLength(0);
 			$this->add($positionMenu);
 
 			$this->add(new LabeledElement
@@ -101,8 +109,6 @@ protected function setForm()
 				('', '	'.$this->getMods($forum['mods']).'
 					<br />
 					<a href="'.$this->Output->createUrl('AdminForumsMods', array('forum' => $forum['id'])).'"><span class="button">Moderatoren</span></a>'));
-	
-			$this->add(new DividerElement());
 			}
 		else
 			{
@@ -116,6 +122,8 @@ protected function setForm()
 				}
 			$positionMenu->setSelected($forum['position']);
 			$positionMenu->setSize(1);
+			$positionMenu->setRequired(false);
+			$positionMenu->setMinLength(0);
 			$this->add($positionMenu);
 
 			$this->add(new LabeledElement
@@ -125,14 +133,19 @@ protected function setForm()
 
 			$this->add(new LabeledElement
 				('', '	'.$this->getMods($forum['mods']).' '));
-
-			$this->add(new DividerElement());
 			}
 		}
 	$stm->close();
 
-	$this->add(new TextInputElement('newname', '', 'Name'));
-	$this->add(new TextareaInputElement('newdescription', '', 'Beschreibung'));
+	$nameInput = new TextInputElement('newname', '', 'Name');
+	$nameInput->setRequired(false);
+	$nameInput->setMinLength(0);
+	$this->add($nameInput);
+	
+	$descInput = new TextareaInputElement('newdescription', '', 'Beschreibung');
+	$descInput->setRequired(false);
+	$descInput->setMinLength(0);
+	$this->add($descInput);
 
 	$positionMenu = new SelectInputElement('newposition', 'Position');
 	for ($i = 1; $i <= $totalForums+1; $i++)
@@ -141,6 +154,8 @@ protected function setForm()
 		}
 	$positionMenu->setSelected($totalForums+1);
 	$positionMenu->setSize(1);
+	$positionMenu->setRequired(false);
+	$positionMenu->setMinLength(0);
 	$this->add($positionMenu);
 
 	$this->add(new LabeledElement

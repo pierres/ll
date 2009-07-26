@@ -49,7 +49,10 @@ protected function setForm()
 
 		foreach ($cats as $cat)
 			{
-			$this->add(new TextInputElement('category['.$cat['id'].'][name]', $cat['name'], 'Name'));
+			$inputName = new TextInputElement('category['.$cat['id'].'][name]', $cat['name'], 'Name');
+			$inputName->setRequired(false);
+			$inputName->setMinLength(0);
+			$this->add($inputName);
 
 			$positionMenu = new SelectInputElement('category['.$cat['id'].'][position]', 'Position');
 			for ($i = 1; $i <= $catnum; $i++)
@@ -58,13 +61,13 @@ protected function setForm()
 				}
 			$positionMenu->setSelected($cat['position']);
 			$positionMenu->setSize(1);
+			$positionMenu->setRequired(false);
+			$positionMenu->setMinLength(0);
 			$this->add($positionMenu);
 
 			$this->add(new LabeledElement
 				('', '<a href="'.$this->Output->createUrl('AdminForums', array('cat' => $cat['id'])).'"><span class="button">Foren</span></a>
 				<a href="'.$this->Output->createUrl('AdminCatsDel', array('cat' => $cat['id'])).'"><span class="button" style="background-color:#CC0000">löschen</span></a>'));
-
-			$this->add(new DividerElement());
 			}
 		$stm->close();
 		}
@@ -73,15 +76,18 @@ protected function setForm()
 		$catnum = 0;
 		}
 
-	$this->add(new TextInputElement('newname', '', 'Neue Kategorie'));
-	$positionMenu = new SelectInputElement('newposition', 'Position');
+	$newnameInput = new TextInputElement('newname', '', 'Neue Kategorie');
+	$newnameInput->setRequired(false);
+	$this->add($newnameInput);
+	$newpositionMenu = new SelectInputElement('newposition', 'Position');
 	for ($i = 1; $i <= $catnum+1; $i++)
 		{
-		$positionMenu->addOption($i, $i);
+		$newpositionMenu->addOption($i, $i);
 		}
-	$positionMenu->setSelected($catnum+1);
-	$positionMenu->setSize(1);
-	$this->add($positionMenu);
+	$newpositionMenu->setSelected($catnum+1);
+	$newpositionMenu->setSize(1);
+	$newpositionMenu->setRequired(false);
+	$this->add($newpositionMenu);
 	}
 
 protected function checkForm()

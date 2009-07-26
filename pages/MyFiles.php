@@ -57,23 +57,27 @@ protected function setForm()
 		}
 
 	$list =
-		'<table>
-		<tr>
-		<th>Datei</th>
-		<th style="width:120px;">Größe&nbsp;(KByte)</th>
-		<th style="width:200px;">Typ</th>
-		<th>Datum</th>
-		<th style="width:80px;"></th>
-		</tr>';
+		'<table class="files">
+			<thead>
+				<tr>
+					<th>Datei</th>
+					<th style="width:200px;">Größe (KByte)</th>
+					<th>Typ</th>
+					<th style="width:80px;">Datum</th>
+					<th style="width:80px;"></th>
+				</tr>
+			</thead>
+			<tbody>';
 
 	foreach ($files as $file)
 		{
-		$list .= '<tr>
-		<td><a href="'.$this->Output->createUrl('GetAttachment', array('file' => $file['id'])).'">'.$file['name'].'</a></td>
-		<td style="text-align:right;">'.round($file['size'] / 1024, 2).'</td>
-		<td style="text-align:right;">'.$file['type'].'</td>
-		<td style="text-align:right;">'.$this->L10n->getDateTime($file['uploaded']).'</td>
-		<td style="text-align:right;"><a href="'.$this->Output->createUrl('DelFile', array('file' => $file['id'])).'">löschen</a></td>
+		$list .= '
+		<tr>
+			<td><a href="'.$this->Output->createUrl('GetAttachment', array('file' => $file['id'])).'">'.$file['name'].'</a></td>
+			<td>'.round($file['size'] / 1024, 2).'</td>
+			<td>'.$file['type'].'</td>
+			<td>'.$this->L10n->getDate($file['uploaded']).'</td>
+			<td><a href="'.$this->Output->createUrl('DelFile', array('file' => $file['id'])).'">löschen</a></td>
 		</tr>';
 		}
 	$stm->close();
@@ -100,16 +104,20 @@ protected function setForm()
 		$data['quota'] = 0;
 		}
 
-	$list .= '<tr>
-		<th style="padding-top:10px;">Noch '.($this->Settings->getValue('files') - $data['files']).' Dateien übrig</th>
-		<th style="text-align:right;padding-top:10px;">Noch '.round(($this->Settings->getValue('quota') - $data['quota']) / 1024, 2).'</th>
-		<th></th>
-		<th></th>
-		<th></th>
-		</tr></table>';
+	$list .= '
+			</tbody>
+			<tfoot>
+				<tr>
+					<th>Noch '.($this->Settings->getValue('files') - $data['files']).' Dateien übrig</th>
+					<th>Noch '.round(($this->Settings->getValue('quota') - $data['quota']) / 1024, 2).'</th>
+					<th></th>
+					<th></th>
+					<th></th>
+				</tr>
+			</tfoot>
+		</table>';
 
 	$this->add(new PassiveFormElement($list));
-	$this->add(new DividerElement());
 	$this->add(new SubmitButtonElement('Hochladen'));
 	$this->add(new FileInputElement('file', '', 'Datei hinzufügen'));
 	$this->setEncoding('enctype="multipart/form-data"');

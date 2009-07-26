@@ -41,8 +41,6 @@ protected function setForm()
 	$passwordInput->setHelp('<a href="'.$this->Output->createUrl('ForgotPassword').'">Passwort vergessen?</a>');
 	$this->add($passwordInput);
 
-	$this->add(new DividerElement());
-
 	$cookieInput = new CheckboxInputElement('cookie', 'Keks benutzen');
 	$cookieInput->setRequired(false);
 	$this->add($cookieInput);

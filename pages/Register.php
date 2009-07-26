@@ -35,6 +35,7 @@ protected function setForm()
 	$nameInput->setMaxLength(50);
 	$nameInput->setSize(50);
 	$nameInput->setHelp('Dieser Name wird öffentlich angezeigt.');
+	$nameInput->setFocus();
 	$this->add($nameInput);
 
 	$emailInput = new TextInputElement('email', '', 'Deine E-Mail-Adresse');
@@ -43,8 +44,6 @@ protected function setForm()
 	$emailInput->setSize(50);
 	$emailInput->setHelp('Achte auf die Gültigkeit dieser Adresse, da die Zugangsdaten dorthin verschickt werden.');
 	$this->add($emailInput);
-
-	$this->add(new DividerElement());
 
 	$privacyInput = new CheckboxInputElement('confirmPrivacy', 'Datenschutz');
 	$privacyInput->setHelp('Bitte bestätige die <a href="'.$this->Output->createUrl('Privacy').'">Datenschutzerklärung</a>.');

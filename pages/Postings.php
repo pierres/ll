@@ -190,42 +190,33 @@ catch (DBNoDataException $e)
 	$result = array();
 	}
 
-$postings	= '';
-$first 		= true;
-$closed 	= (empty($thread['closed']) ? false : true);
-$deleted 	= false;
-
-$postcount	= 1;
-$posttype 	= array('post');
+$first = true;
+$postings = '';
+$closed = (empty($thread['closed']) ? false : true);
 
 foreach ($result as $data)
 	{
-	if($data['deleted'] == 1)
-		{
-		$posttype[] = 'deletedpost';
-		$deleted = true;
-		}
-	else
-		{
-		$deleted = false;
-		}
-
-	$postid = $data['id'];
+	$postMenu = array();
+	$modMenu = array();
 
 	if ($this->User->isOnline() && $data['dat'] > $lastVisit)
 		{
-		$posttype[] = 'newpost';
+		$status = 'status-new';
+		}
+	else
+		{
+		$status = 'status-old';
 		}
 
 	if ($data['editdate'] > 0)
 		{
 		if (empty($data['editorname']))
 			{
-			$edited = '<p class="lastedit"><em>'.$this->L10n->getText('Last edited').' ('.$this->L10n->getDateTime($data['editdate']).')</em></p>';
+			$edited = '<div class="posts-lastedit">'.$this->L10n->getText('Last edited').' ('.$this->L10n->getDateTime($data['editdate']).')</div>';
 			}
 		else
 			{
-			$edited = '<p class="lastedit"><em>'.sprintf($this->L10n->getText('Last edited by %s'), '<a href="'.$this->Output->createUrl('ShowUser', array('user' => $data['editby'])).'">'.$data['editorname'].'</a> ('.$this->L10n->getDateTime($data['editdate'])).')</em></p>';
+			$edited = '<div class="posts-lastedit">'.sprintf($this->L10n->getText('Last edited by %s'), '<a href="'.$this->Output->createUrl('ShowUser', array('user' => $data['editby'])).'">'.$data['editorname'].'</a> ('.$this->L10n->getDateTime($data['editdate'])).')</div>';
 			}
 		}
 	else
@@ -233,174 +224,133 @@ foreach ($result as $data)
 		$edited = '';
 		}
 
-	if (!$deleted && !$closed && $thread['deleted'] == 0)
+	if ($data['deleted'] == 0 && !$closed && $thread['deleted'] == 0)
 		{
 		if ($this->User->isOnline())
 			{
 			if ($first && $this->post == 0)
 				{
-				$edit_button = (($this->ismod or $this->User->isUser($data['userid'])) ?
-							' <a href="'.$this->Output->createUrl('EditThread', array('thread' => $this->thread)).'"><span>'.$this->L10n->getText('Edit topic').'</span></a>' : '');
+				if ($this->ismod or $this->User->isUser($data['userid']))
+					{
+					$modMenu[] = '<a href="'.$this->Output->createUrl('EditThread', array('thread' => $this->thread)).'">'.$this->L10n->getText('Edit topic').'</a>';
+					}
 
-				$del_button = ($this->ismod ?
-							' <a href="'.$this->Output->createUrl('DelThread', array('thread' => $this->thread)).'"><span>'.$this->L10n->getText('Delete topic').'</span></a>' : '');
-
-				$split_button = '';
-				$move_button = '';
-
+				if ($this->ismod)
+					{
+					$modMenu[] = '<a href="'.$this->Output->createUrl('DelThread', array('thread' => $this->thread)).'">'.$this->L10n->getText('Delete topic').'</a>';
+					}
 				$first = false;
 				}
 			else
 				{
-				$edit_button = (($this->ismod or $this->User->isUser($data['userid'])) ?
-							' <a href="'.$this->Output->createUrl('EditPost', array('post' => $data['id'])).'"><span>'.$this->L10n->getText('Edit post').'</span></a>' : '');
+				if ($this->ismod or $this->User->isUser($data['userid']))
+					{
+					$modMenu[] = '<a href="'.$this->Output->createUrl('EditPost', array('post' => $data['id'])).'">'.$this->L10n->getText('Edit post').'</a>';
+					}
 
-				$del_button = ($this->ismod ?
-							' <a href="'.$this->Output->createUrl('DelPost', array('post' => $data['id'])).'"><span>'.$this->L10n->getText('Delete post').'</span></a>' : '');
-
-				$split_button = ($this->ismod ?
-							' <a href="'.$this->Output->createUrl('SplitThread', array('post' => $data['id'])).'"><span>'.$this->L10n->getText('Split topic').'</span></a>' : '');
-
-				$move_button = ($this->ismod ?
-							' <a href="'.$this->Output->createUrl('MovePosting', array('post' => $data['id'])).'"><span>'.$this->L10n->getText('Move post').'</span></a>' : '');
+				if ($this->ismod)
+					{
+					$modMenu[] = '<a href="'.$this->Output->createUrl('DelPost', array('post' => $data['id'])).'">'.$this->L10n->getText('Delete post').'</a>';
+					$modMenu[] = '<a href="'.$this->Output->createUrl('SplitThread', array('post' => $data['id'])).'">'.$this->L10n->getText('Split topic').'</a>';
+					$modMenu[] = '<a href="'.$this->Output->createUrl('MovePosting', array('post' => $data['id'])).'">'.$this->L10n->getText('Move post').'</a>';
+					}
 				}
 			}
-		else
-			{
-			$edit_button = '';
-			$del_button = '';
-			$split_button = '';
-			$move_button = '';
-			}
 
-		$quote_button = '<a href="'.$this->Output->createUrl('QuotePost', array('post' => $postid)).'"><span>'.$this->L10n->getText('Quote post').'</span></a>';
+		$postMenu[] = '<a href="'.$this->Output->createUrl('QuotePost', array('post' => $data['id'])).'">'.$this->L10n->getText('Quote post').'</a>';
 		}
-	elseif($thread['deleted'] == 1)
+	elseif ($this->ismod && $data['deleted'] == 1 && !$closed)
 		{
-		$edit_button = '';
-		$quote_button = '';
-		$del_button = '';
-		$split_button = '';
-		$move_button = '';
+		$modMenu[] = '<a href="'.$this->Output->createUrl('DelPost', array('post' => $data['id'])).'">'.$this->L10n->getText('Recover post').'</a>';
 		}
-	else
-		{
-		$edit_button = '';
-		$quote_button = '';
-		$split_button = '';
-		$move_button = '';
 
-		if ($this->User->isOnline() && $deleted && !$closed)
-			{
-			$del_button = ($this->ismod ? ' <a href="'.$this->Output->createUrl('DelPost', array('post' => $data['id'])).'"><span>'.$this->L10n->getText('Recover post').'</span></a>' : '');
-			}
-		else
-			{
-			$del_button = '';
-			}
+	if (count($modMenu) > 1)
+		{
+		$postMenu[] = 'Moderation<ul><li>'.implode('</li><li>', $modMenu).'</li></ul>';
 		}
+	elseif (count($modMenu) == 1)
+		{
+		$postMenu[] = array_pop($modMenu);
+		}
+
 
 	$poster = (!empty($data['userid']) ? '<a href="'.$this->Output->createUrl('ShowUser', array('user' => $data['userid'])).'">'.$data['name'].'</a>' : $data['username']);
 
 	$avatar = (empty($data['avatar']) ? '' : '<img src="'.$this->Output->createUrl('GetAvatar', array('user' => $data['userid'])).'" alt="" />');
 
-	if ($data['file'] == 1)
-		{
-		$files = $this->getFiles($data['id']);
-		}
-	else
-		{
-		$files = '';
-		}
-
-
-	$posttype[] = ($postcount % 2 == 0 ? 'even' : 'odd');
-	$posttype[] = ($postcount == 1 ? 'firstpost' : '');
-	$posttype[] = ($postcount == 1 && $this->post == 0 ? 'topicpost' : 'replypost');
+	$files = $data['file'] == 1 ? $this->getFiles($data['id']) : '';
 
 	$postings .=
 		'
-		<div class="'.implode(' ', $posttype).'">
-			<div class="postmain">
-				<div id="p3" class="posthead">
-					<h3><a class="permalink" rel="bookmark" href="'.$this->Output->createUrl('Postings', array('thread' => $thread['id'], 'post' => ($this->post + $postcount - 1))).'"><strong>'.($this->post + $postcount).'</strong></a> <span>'.$this->L10n->getDateTime($data['dat']).'</span></h3>
-				</div>
-				<div class="postbody">
-					<div class="user">
-						<h4 class="user-ident">'.$avatar.'<strong class="username">'.$poster.'</strong></h4>
-					</div>
-					<div class="post-entry">
-						<div class="entry-content">
-							<p>'.$data['text'].'</p>
-							'.$edited.'
-							'.$files.'
-						</div>
-					</div>
-				</div>
-				<div class="postfoot">
-					<div class="post-options">
-						'.$del_button.$edit_button.$quote_button.$split_button.$move_button.'
-					</div>
-				</div>
-			</div>
-		</div>
+		<tbody class="'.$status.'">
+			<tr>
+				<td class="posts-user">
+					'.$poster.'
+				</td>
+				<td class="posts-date">
+					'.$this->L10n->getDateTime($data['dat']).'
+				</td>
+			</tr>
+			<tr>
+				<td rowspan="2" class="posts-avatar">
+					'.$avatar.'
+				</td>
+				<td class="posts-text">
+					'.$data['text'].$files.$edited.'
+				</td>
+			</tr>
+			<tr>
+				<td class="posts-menu">
+					<ul>
+						<li>'.implode('</li><li>', $postMenu).'</li>
+					</ul>
+				</td>
+			</tr>
+		</tbody>
 		';
-
-		$postcount++;
-		$posttype = array('post');
 		}
 $stm->close();
-if ($thread['poll'] == 1)
-	{
-	$poll = $this->getPoll();
-	}
-else
-	{
-	$poll = '';
-	}
 
-$thread_buttons = ($this->ismod ?
-	'<a class="mod-option" href="'.$this->Output->createUrl('MoveThread', array('thread' => $thread['id'])).'">'.$this->L10n->getText('Move topic').'</a>
-	<a class="mod-option" href="'.$this->Output->createUrl('DelThread', array('thread' => $thread['id'])).'">'.$this->L10n->getText('Delete topic').'</a>
-	<a class="mod-option" href="'.$this->Output->createUrl('StickThread', array('thread' => $thread['id'])).'">'.$this->L10n->getText('Stick topic').'</a>
-	<a class="mod-option" href="'.$this->Output->createUrl('CloseThread', array('thread' => $thread['id'])).'">'.($closed ? $this->L10n->getText('Open topic') : $this->L10n->getText('Close topic')).'</a>
-	' : '');
+$poll = $thread['poll'] == 1 ? $this->getPoll() : '';
 
-$reply_button = (!$closed && $thread['deleted'] == 0 ? '<a class="newpost" href="'.$this->Output->createUrl('NewPost', array('thread' => $thread['id'])).'"><span>'.$this->L10n->getText('Post reply').'</span></a>' : '');
+if (!$closed && $thread['deleted'] == 0)
+	{
+	$this->addUserMenuEntry('<a href="'.$this->Output->createUrl('NewPost', array('thread' => $thread['id'])).'">'.$this->L10n->getText('Post reply').'</a>');
+	}
+	
+if ($this->ismod)
+	{
+	$this->addUserMenuEntry(''.$this->L10n->getText('Moderation').'
+		<ul>
+			<li><a href="'.$this->Output->createUrl('MoveThread', array('thread' => $thread['id'])).'">'.$this->L10n->getText('Move topic').'</a></li>
+			<li><a href="'.$this->Output->createUrl('DelThread', array('thread' => $thread['id'])).'">'.$this->L10n->getText('Delete topic').'</a></li>
+			<li><a href="'.$this->Output->createUrl('StickThread', array('thread' => $thread['id'])).'">'.$this->L10n->getText('Stick topic').'</a></li>
+			<li><a href="'.$this->Output->createUrl('CloseThread', array('thread' => $thread['id'])).'">'.($closed ? $this->L10n->getText('Open topic') : $this->L10n->getText('Close topic')).'</a></li>
+		</ul>
+		');
+	}
 
 
 $body =
 	'
-	<div id="brd-main" class="main paged">
-
-	
-	'.$poll.'
-	<div class="paged-head">
-		<p class="paging"><span class="pages">'.$this->L10n->getText('Pages').':</span> '.$pages.'</p>
-		<p class="posting">'.$reply_button.'</p>
-	</div>
-
-	<div class="main-head">
-		<div class="thread-title">'.$thread['name'].'</div>
-	</div>
-
-	<div id="forum1" class="main-content topic">
+	<table id="posts">
+		<thead>
+			<tr>
+				<th colspan="2">
+					'.$pages.'
+				</th>
+			</tr>
+		</thead>
+		'.$poll.'
 		'.$postings.'
-	</div>
-
-	<div class="main-foot">
-		<p class="h2"><strong>'.$this->L10n->getText('Posts').' [ '.$this->posts.' ]</strong></p>
-		<p class="main-options">
-			'.$thread_buttons.'
-		</p>
-	</div>
-
-	<div class="paged-foot">
-		<p class="posting">'.$reply_button.'</p>
-		<p class="paging"><span class="pages">'.$this->L10n->getText('Pages').':</span> '.$pages.'</p>
-	</div>
-
-</div>
+		<tfoot>
+			<tr>
+				<th colspan="2">
+					'.$pages.'
+				</th>
+			</tr>
+		</tfoot>
+	</table>
 	';
 $this->setTitle($thread['name']);
 $this->setBody($body);
@@ -409,18 +359,15 @@ $this->setBody($body);
 protected function getPages()
 	{
 	$pages = '';
-	$firstitem = ' class="item1"';
 
 	if ($this->post > ($this->Settings->getValue('max_posts')))
 		{
-		$pages .= '<a'.$firstitem.' href="'.$this->Output->createUrl($this->getName(), array('thread' => $this->thread)).'">&laquo;</a>';
-		$firstitem = '';
+		$pages .= '<a href="'.$this->Output->createUrl($this->getName(), array('thread' => $this->thread)).'">&laquo;</a>';
 		}
 
 	if ($this->post > 0)
 		{
-		$pages .= ' <a'.$firstitem.' href="'.$this->Output->createUrl($this->getName(), array('thread' => $this->thread, 'post' => nat($this->post-$this->Settings->getValue('max_posts')))).'">&lsaquo;</a>';
-		$firstitem = '';
+		$pages .= ' <a href="'.$this->Output->createUrl($this->getName(), array('thread' => $this->thread, 'post' => nat($this->post-$this->Settings->getValue('max_posts')))).'">&lsaquo;</a>';
 		}
 
 	for ($i = 0; $i < ($this->posts / $this->Settings->getValue('max_posts')) && ($this->posts / $this->Settings->getValue('max_posts')) > 1; $i++)
@@ -437,13 +384,11 @@ protected function getPages()
 
 		if ($this->post == ($this->Settings->getValue('max_posts') * $i))
 			{
-			$pages .= ' <strong'.$firstitem.'>'.($i+1).'</strong>';
-			$firstitem = '';
+			$pages .= ' <strong>'.($i+1).'</strong>';
 			}
 		else
 			{
-			$pages .= ' <a'.$firstitem.' href="'.$this->Output->createUrl($this->getName(), array('thread' => $this->thread, 'post' => ($this->Settings->getValue('max_posts') * $i))).'">'.($i+1).'</a>';
-			$firstitem = '';
+			$pages .= ' <a href="'.$this->Output->createUrl($this->getName(), array('thread' => $this->thread, 'post' => ($this->Settings->getValue('max_posts') * $i))).'">'.($i+1).'</a>';
 			}
 		}
 
@@ -491,7 +436,7 @@ protected function getFiles($post)
 		}
 
 
-	$list = '<p><table>';
+	$list = '<table>';
 
 	foreach ($files as $file)
 		{
@@ -502,22 +447,22 @@ protected function getFiles($post)
 			{
 			$list .= '<tr>
  			<td>
-			<a href="'.$this->Output->createUrl('GetAttachment', array('file' => $file['id'])).'" rel="nofollow"><img src="'.$this->Output->createUrl('GetAttachmentThumb', array('file' => $file['id'])).'" alt="'.$file['name'].'" /></a>
+			<a href="'.$this->Output->createUrl('GetAttachment', array('file' => $file['id'])).'" rel="nofollow"><img src="'.$this->Output->createUrl('GetAttachmentThumb', array('file' => $file['id'])).'" alt="'.$file['name'].'" title="'.$file['name'].'" /></a>
  			</td>
-			<td>'.round($file['size'] / 1024, 2).' KByte</td>
+			<td>'.round($file['size'] / 1024, 2).'&thinsp;KByte</td>
 			</tr>';
 			}
 		else
 			{
 			$list .= '<tr>
  			<td><a href="'.$this->Output->createUrl('GetAttachment', array('file' => $file['id'])).'">'.$file['name'].'</a></td>
-			<td>'.round($file['size'] / 1024, 2).' KByte</td>
+			<td>'.round($file['size'] / 1024, 2).'&thinsp;KByte</td>
 			</tr>';
 			}
 		}
 	$stm->close();
 
-	return $list.'</table></p>';
+	return $list.'</table>';
 	}
 
 protected function getPoll()
@@ -570,34 +515,39 @@ protected function getPoll()
 			$options .=
 				'
 				<tr>
-					<th style="width:30%">
-						'.$data['value'].'
-					</th>
+					<th>'.$data['value'].'</th>
 					<td>
-						<div class="pollbar" style="width:'.round($percent).'%">
+						<div class="poll-bar" style="width:'.round($percent).'%">
 							&nbsp;
 						</div>
 					</td>
-					<td style="width:30%">
-						'.round($percent, 2).'% ('.$data['votes'].')
-					</td>
+					<td class="poll-percent">'.round($percent, 2).'&thinsp;%</td>
+					<td class="poll-votes">'.$data['votes'].'</td>
 				</tr>
 				';
 			}
 		$stm->close();
 
 		$body =
-			'<div class="main-head">
-				<h2><span>'.$question.'</span></h2>
-			</div>
-			<table>
-				'.$options.'
-			</table>
-			<div class="main-foot">
-				<p class="main-options">
-				<a class="mod-option" href="'.$this->Output->createUrl('Poll', array('thread' => $this->thread, 'target' => $this->getName())).'">'.$this->L10n->getText('Submit').'</a>
-				</p>
-			</div>
+			'
+			<tbody class="poll">
+				<tr>
+					<th rowspan="3">'.$this->L10n->getText('Poll').'</th>
+					<td class="poll-question">'.$question.'</td>
+				</tr>
+				<tr>
+					<td class="poll-options">
+						<table style="width:100%;">
+							'.$options.'
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<td class="poll-vote">
+						<a href="'.$this->Output->createUrl('Poll', array('thread' => $this->thread, 'target' => $this->getName())).'">'.$this->L10n->getText('Vote').'</a>
+					</td>
+				</tr>
+			</tbody>
 			';
 
 		return $body;

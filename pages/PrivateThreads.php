@@ -64,7 +64,6 @@ public function prepare()
 				threads.name,
 				threads.lastdate,
 				threads.lastusername,
-				threads.firstdate,
 				threads.firstusername,
 				threads.posts,
 				threads.deleted,
@@ -94,9 +93,8 @@ public function prepare()
 		{
 		$this->resultSet = array();
 		}
-
-	$this->pageHead = '<p class="posting"><a class="newpost" href="'.$this->Output->createUrl('NewPrivateThread').'"><span>'.$this->L10n->getText('Post new topic').'</span></a></p>';
-	$this->pageFoot = $this->pageHead;
+	
+	$this->addUserMenuEntry('<a href="'.$this->Output->createUrl('NewPrivateThread').'">'.$this->L10n->getText('Post new topic').'</a>');
 
 	$this->setTitle($this->L10n->getText('Private topics'));
 	$this->target = 'PrivatePostings';

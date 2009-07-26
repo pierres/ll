@@ -32,8 +32,33 @@ public function prepare()
 		}
 	catch (RequestException $e)
 		{
-		$this->showWarning($this->L10n->getText('No user specified!'));
+		$this->showFailure($this->L10n->getText('No user specified!'));
 		}
+
+	try
+		{
+		$stm = $this->DB->prepare
+			('
+			SELECT
+				id,
+				name
+			FROM
+				users
+			WHERE
+				id = ?'
+			);
+		$stm->bindInteger($user);
+		$data = $stm->getRow();
+		$stm->close();
+		}
+	catch (DBNoDataException $e)
+		{
+		$stm->close();
+		$this->Output->setStatus(Output::NOT_FOUND);
+		$this->showFailure($this->L10n->getText('User not found.'));
+		}
+
+	$this->setTitle(sprintf($this->L10n->getText('Recent posts of %s'), $data['name']));
 
 	try
 		{
@@ -73,7 +98,7 @@ public function prepare()
 				'.$this->Settings->getValue('max_threads')
 			);
 
-		$stm->bindInteger($user);
+		$stm->bindInteger($data['id']);
 		$stm->bindInteger($this->Board->getId());
 		$this->resultSet = $stm->getRowSet();
 		}

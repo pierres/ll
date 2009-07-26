@@ -101,7 +101,6 @@ public function prepare()
 					threads.name,
 					threads.lastdate,
 					threads.lastusername,
-					threads.firstdate,
 					threads.firstusername,
 					threads.closed,
 					threads.sticky,
@@ -122,7 +121,6 @@ public function prepare()
 					threads.name,
 					threads.lastdate,
 					threads.lastusername,
-					threads.firstdate,
 					threads.firstusername,
 					threads.closed,
 					threads.sticky,
@@ -153,10 +151,13 @@ public function prepare()
 		{
 		$this->resultSet = array();
 		}
+	
+	$this->addUserMenuEntry('<a href="'.$this->Output->createUrl('NewThread', array('forum' => $this->forum)).'">'.$this->L10n->getText('Post new topic').'</a>');
 
-	$this->pageHead = '<p class="posting"><a class="newpost" href="'.$this->Output->createUrl('NewThread', array('forum' => $this->forum)).'"><span>'.$this->L10n->getText('Post new topic').'</span></a></p>';
-	$this->pageFoot = $this->pageHead;
-	$this->mainFoot = '<p class="main-options"><a class="user-option" href="'.$this->Output->createUrl('MarkAsRead', array('forum' => $this->forum)).'"><span>'.$this->L10n->getText('Mark forum as read').'</span></a></p>';
+	if ($this->User->isOnline())
+		{
+		$this->addUserMenuEntry('<a href="'.$this->Output->createUrl('MarkAsRead', array('forum' => $this->forum)).'">'.$this->L10n->getText('Mark forum as read').'</a>');
+		}
 
 	$this->setTitle($forum['name']);
 

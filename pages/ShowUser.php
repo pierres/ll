@@ -63,48 +63,54 @@ public function prepare()
 		$this->showFailure($this->L10n->getText('User not found.'));
 		}
 
-	$data['regdate'] = $this->L10n->getDateTime($data['regdate']);
-	$data['lastpost'] = $this->L10n->getDateTime($data['lastpost']);
-
 	$avatar = (empty($data['avatar']) ? '' : '<img src="'.$this->Output->createUrl('GetAvatar', array('user' => $data['id'])).'" alt="" />');
 
 	$this->setTitle(sprintf($this->L10n->getText('Profile of %s'), $data['name']));
 
 	$body =
 		'
-<div id="brd-main" class="main">
-
-	<h1><span>'.$this->getTitle().'</span></h1>
-
-	<div class="main-head">
-		<h2><span>'.$this->getTitle().'</span></h2>
-	</div>
-
-	<div class="main-content frm">
-		<div class="profile vcard">
-			<h3>'.$this->L10n->getText('User information').'</h3>
-			<div class="user">
-				<h4 class="user-ident">'.$avatar.' <strong class="username fn nickname">'.$data['name'].'</strong></h4>
-				<ul class="user-info">
-						<li><span><strong>'.$this->L10n->getText('Registered').':</strong> '.$data['regdate'].'</span></li>
-						<li><span><strong>'.$this->L10n->getText('Posts').':</strong> '.$data['posts'].'</span></li>
-				</ul>
-			</div>
-			<ul class="user-data">
-				<li><span><strong>'.$this->L10n->getText('Real name').':</strong> '.$data['realname'].'</span></li>
-						<li><span><strong>'.$this->L10n->getText('Last post').':</strong> '.$data['lastpost'].'</span></li>
-						'.($this->User->isLevel(User::ROOT) ? '<li><strong>'.$this->L10n->getText('E-mail').':</strong> <span><a href="mailto:'.$data['email'].'">'.$data['email'].'</a></span></li>' : '').'
-			</ul>
-			<h3>User actions</h3>
-			<ul class="user-actions">
-				<li><a href="'.$this->Output->createUrl('UserRecent', array('user' => $this->id)).'">'.$this->L10n->getText('Show all posts').'</a></li>
-				'.($this->User->isOnline() ? '<li><a href="'.$this->Output->createUrl('NewPrivateThread', array('recipients' => $data['name'])).'">'.$this->L10n->getText('Post new topic').'</a></li>' :'').'
-				'.($this->User->isLevel(User::ROOT) ? '<li><a href="'.$this->Output->createUrl('DeleteUser', array('user' => $this->id)).'">'.$this->L10n->getText('Delete account').'</a></li>' :'').'
-			</ul>
+		<div class="box">
+			<table>
+				<tr>
+					<th>'.$this->L10n->getText('Real name').'</th>
+					<td> '.$data['realname'].'</td>
+				</tr>
+				<tr>
+					<th>'.$this->L10n->getText('Avatar').'</th>
+					<td>'.$avatar.'</td>
+				</tr>
+				'.($this->User->isLevel(User::ROOT) ? '
+				<tr>
+					<th>'.$this->L10n->getText('E-mail').'</th>
+					<td>'.$data['email'].'</td>
+				</tr>
+				' : '').'
+				<tr>
+					<th>'.$this->L10n->getText('Registered').'</th>
+					<td>'.$this->L10n->getDateTime($data['regdate']).'</td>
+				</tr>
+				<tr>
+					<th>'.$this->L10n->getText('Posts').'</th>
+					<td>'.$data['posts'].'</td>
+				</tr>
+				'.(!empty($data['lastpost']) ? '.
+				<tr>
+					<th>'.$this->L10n->getText('Last post').'</th>
+					<td>'.$this->L10n->getDateTime($data['lastpost']).'</td>
+				</tr>' 
+				: '').'
+				<tr>
+					<th>'.$this->L10n->getText('User actions').'</th>
+					<td>
+						<ul>
+							<li><a href="'.$this->Output->createUrl('UserRecent', array('user' => $this->id)).'">'.$this->L10n->getText('Show all posts').'</a></li>
+							'.($this->User->isOnline() ? '<li><a href="'.$this->Output->createUrl('NewPrivateThread', array('recipients' => $data['name'])).'">'.$this->L10n->getText('Post new topic').'</a></li>' :'').'
+							'.($this->User->isLevel(User::ROOT) ? '<li><a href="'.$this->Output->createUrl('DeleteUser', array('user' => $this->id)).'">'.$this->L10n->getText('Delete account').'</a></li>' :'').'
+						</ul>
+					</td>
+				</tr>
+			</table>
 		</div>
-	</div>
-
-</div>
 		';
 
 	$this->setBody($body);

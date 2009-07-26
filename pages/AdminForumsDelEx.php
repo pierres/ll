@@ -68,8 +68,6 @@ public function setForm()
 
 	$this->setParam('forum', $this->forum);
 
-// 	$this->addOutput('Hierdurch wird der Verweis auf das externe Forum aus dem Board entfernt. Dabei werden keine Beiträge gelöscht.');
-
 	$this->add(new SubmitButtonElement('Externes Forum löschen'));
 	}
 

@@ -82,7 +82,7 @@ protected function setForm()
 		$inputRadio = new RadioInputElement('newcat', 'Ziel');
 		foreach ($stm->getRowSet() as $cat)
 			{
-			$inputRadio->addOption('<strong>'.$cat['board'].'</strong> '.$cat['name'], $cat['id']);
+			$inputRadio->addOption($cat['name'], $cat['id']);
 			}
 		$this->add($inputRadio);
 

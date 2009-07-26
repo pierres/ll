@@ -35,24 +35,12 @@ protected function setForm()
 
 protected function checkForm()
 	{
-	if (!preg_match('<!-- body -->', $this->Input->Post->getString('html')))
+	foreach (array('body', 'user-menu', 'user-welcome', 'main-menu', 'title', 'name') as $tag)
 		{
-		$this->showWarning('Der body-Tag fehlt!');
-		}
-
-	if (!preg_match('<!-- title -->', $this->Input->Post->getString('html')))
-		{
-		$this->showWarning('Der title-Tag fehlt!');
-		}
-
-	if (!preg_match('<!-- menu -->', $this->Input->Post->getString('html')))
-		{
-		$this->showWarning('Der menu-Tag fehlt!');
-		}
-
-	if (!preg_match('<!-- user -->', $this->Input->Post->getString('html')))
-		{
-		$this->showWarning('Der user-Tag fehlt!');
+		if (!preg_match('<!-- '.$tag.' -->', $this->Input->Post->getString('html')))
+			{
+			$this->showWarning('Der &quot;&lt;!-- '.$tag.' --&gt;&quot;-Tag fehlt!');
+			}
 		}
 	}
 

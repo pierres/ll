@@ -51,7 +51,7 @@ class ButtonElement extends FormElement {
 
 	public function __toString()
 		{
-		return '<span class="submit"><input type="submit" name="'.$this->name.'" value="'.$this->label.'" /></span>';
+		return '<input type="submit" name="'.$this->name.'" value="'.$this->label.'" />';
 		}
 }
 
@@ -72,7 +72,7 @@ class ResetButtonElement extends ButtonElement {
 
 	public function __toString()
 		{
-		return '<span class="submit"><input type="reset" name="'.$this->name.'" value="'.$this->label.'" /></span>';
+		return '<input type="reset" name="'.$this->name.'" value="'.$this->label.'" />';
 		}
 }
 
@@ -95,15 +95,7 @@ class PassiveFormElement extends FormElement {
 
 	public function __toString()
 		{
-		return $this->content;
-		}
-}
-
-class DividerElement extends PassiveFormElement {
-
-	public function __construct()
-		{
-		parent::__construct('');
+		return '<tr><td colspan="2">'.$this->content.'</td></tr>';
 		}
 }
 
@@ -120,12 +112,14 @@ class LabeledElement extends PassiveFormElement {
 	public function __toString()
 		{
 		return
-		'<div class="sf-box">
-			<label for="'.$this->getId().'">
-				<span>'.$this->label.'</span>
-			</label>
-			<span class="fld-input">'.$this->content.'</span>
-		</div>';
+		'<tr>
+			<th>
+				<label for="'.$this->getId().'">'.$this->label.'</label>
+			</th>
+			<td>
+				'.$this->content.'
+			</td>
+		</tr>';
 		}
 }
 
@@ -234,7 +228,6 @@ class SecurityTokenElement extends HiddenElement {
 abstract class InputElement extends ActiveFormElement {
 
 	protected $help = '';
-	protected $type = '';
 	private static $focusElement = null;
 
 	public function __construct($name, $value, $label)
@@ -248,15 +241,15 @@ abstract class InputElement extends ActiveFormElement {
 	protected function formatOutput($input)
 		{
 		return
-		'<div class="sf-set">
-			<div class="sf-box '.$this->type.($this->required ? ' required' : '').'">
-				<label for="'.$this->getId().'">
-					<span>'.$this->label.': '.($this->required ? '<em>('.$this->L10n->getText('Required').')</em>' : '').'</span>
-					'.(!empty($this->help) ? '<small>'.$this->help.'</small>' : '').'
-				</label>
-				<span class="fld-input">'.$input.'</span>
-			</div>
-		</div>';
+		'<tr>
+			<th>
+				<label for="'.$this->getId().'">'.$this->label.'</label>
+			</th>
+			<td>
+				'.$input.'
+				'.(!empty($this->help) ? '<div class="form-help">'.$this->help.'</div>' : '').'
+			</td>
+		</tr>';
 		}
 
 	public function setHelp($help)
@@ -285,7 +278,6 @@ abstract class InputElement extends ActiveFormElement {
 class TextInputElement extends InputElement {
 
 	protected $size = 80;
-	protected $type = 'text';
 
 	public function setSize($size)
 		{
@@ -318,7 +310,7 @@ class AntiSpamElement extends TextInputElement {
 		{
 		// we need this workaround because some browsers
 		// don't even load elemnts that have "display:none"
-		return '<div style="background-image:url('.$this->Output->createUrl('FunnyDot').');visibility:hidden;position:absolute;z-index:-1">'.parent::formatOutput($input).'</div>';
+		return '<tbody style="visibility:hidden;background-image:url('.$this->Output->createUrl('FunnyDot').');position:absolute;">'.parent::formatOutput($input).'</tbody>';
 		}
 
 	public function validate()
@@ -377,9 +369,8 @@ class PasswordInputElement extends TextInputElement {
 
 class TextareaInputElement extends InputElement {
 
-	protected $type = 'textarea';
 	private $columns = 80;
-	private $rows = 20;
+	private $rows = 25;
 
 	public function setColumns($columns)
 		{
@@ -420,7 +411,6 @@ class FileInputElement extends InputElement {
 
 class CheckboxInputElement extends InputElement {
 
-	protected $type = 'checkbox';
 	private $checked = false;
 	protected $minLength = 0;
 	protected $maxLength = 2;
@@ -481,7 +471,7 @@ class RadioInputElement extends InputElement {
 		foreach ($this->options as $value => $label)
 			{
 			$output .=
-				'<div class="radbox">
+				'<div>
 					<label for="'.$this->getId().'-'.$optionCount.'">
 						<input type="radio" name="'.$this->name.'"'.($value == $this->checked ? ' checked="checked"' : '').' value="'.$value.'" id="'.$this->getId().'-'.$optionCount.'" />
 						'.$label.'
