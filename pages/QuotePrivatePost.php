@@ -22,9 +22,6 @@ require('NewPrivatePost.php');
 class QuotePrivatePost extends NewPrivatePost {
 
 
-protected $title = 'Beitrag zitieren';
-
-
 protected function checkInput()
 	{
 	/** Hier noch weitere Test bzgl. PrivateThreads nötig */
@@ -56,12 +53,12 @@ protected function checkInput()
 	catch (RequestException $e)
 		{
 		$stm->close();
-		$this->showFailure('Kein Beitrag angegeben!');
+		$this->showFailure($this->L10n->getText('No post specified.'));
 		}
 	catch (DBNoDataException $e)
 		{
 		$stm->close();
-		$this->showFailure('Beitrag nicht gefunden!');
+		$this->showFailure($this->L10n->getText('Post not found.'));
 		}
 
 	$this->text = '<quote '.unhtmlspecialchars($data['username']).">\n".$this->UnMarkup->fromHtml($data['text'])."\n</quote>\n\n";

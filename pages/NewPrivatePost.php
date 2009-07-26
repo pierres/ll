@@ -28,7 +28,7 @@ public function __construct()
 
 	if (!$this->User->isOnline())
 		{
-		$this->showFailure('Nur für Mitglieder');
+		$this->showFailure($this->L10n->getText('Access denied!'));
 		}
 	}
 
@@ -57,12 +57,12 @@ protected function checkInput()
 	catch (RequestException $e)
 		{
 		$stm->close();
-		$this->showFailure('Kein Thema angegeben!');
+		$this->showFailure($this->L10n->getText('No topic specified.'));
 		}
 	catch (DBNoDataException $e)
 		{
 		$stm->close();
-		$this->showFailure('Thema nicht gefunden!');
+		$this->showFailure($this->L10n->getText('Topic not found.'));
 		}
 
 	$this->setParam('thread', $this->thread);

@@ -23,7 +23,7 @@ class NotFound extends Page{
 
 public function prepare()
 	{
-	$this->showFailure('Seite nicht gefunden!');
+	$this->showFailure($this->L10n->getText('Page not found!'));
 	}
 
 }

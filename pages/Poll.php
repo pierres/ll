@@ -38,7 +38,7 @@ protected function setForm()
 
 	if (!$this->User->isOnline())
 		{
-		$this->showFailure('Nur für Mitglieder');
+		$this->showFailure($this->L10n->getText('Access denied!'));
 		}
 
 	try
@@ -101,7 +101,7 @@ protected function setForm()
 			');
 		$stm->bindInteger($this->thread);
 
-		$inputRadio = new RadioInputElement('option', 'Optionen');
+		$inputRadio = new RadioInputElement('option', $this->L10n->getText('Poll options'));
 		foreach ($stm->getRowSet() as $option)
 			{
 			$inputRadio->addOption($option['value'], $option['id']);
@@ -114,11 +114,11 @@ protected function setForm()
 		$stm->close();
 		$this->Output->setStatus(Output::NOT_FOUND);
 		$this->setValue('meta.robots', 'noindex,nofollow');
-		$this->showWarning('Keine Umfrage gefunden.');
+		$this->showWarning($this->L10n->getText('No poll found.'));
 		}
 
 	$this->setTitle($question);
-	$this->add(new SubmitButtonElement('Abstimmen'));
+	$this->add(new SubmitButtonElement($this->L10n->getText('Vote')));
 
 	$this->setParam('thread', $this->thread);
 	$this->setParam('target', $this->target);
@@ -142,7 +142,7 @@ protected function checkForm()
 		$stm->bindInteger($this->User->getId());
 		$stm->getColumn();
 		$stm->close();
-		$this->showWarning('Du hast bereits abgestimmt!');
+		$this->showWarning($this->L10n->getText('You have already voted!'));
 		}
 	catch (DBNoDataException $e)
 		{

@@ -22,7 +22,7 @@ class Recent extends ThreadList {
 
 public function prepare()
 	{
-	$this->setTitle('Aktuelles');
+	$this->setTitle($this->L10n->getText('Recent topics'));
 	$this->currentThread = $this->Input->Get->getInt('thread', 0);
 
 	try
@@ -71,7 +71,7 @@ public function prepare()
 	$this->totalThreads = count($this->resultSet);
 	$this->resultSet = array_slice($this->resultSet, $this->currentThread, $this->Settings->getValue('max_threads'));
 
-	$this->mainFoot = '<p class="main-options"><a class="user-option" href="'.$this->Output->createUrl('MarkAllAsRead').'"><span>Mark all as read</span></a></p>';
+	$this->addUserMenuEntry('<a href="'.$this->Output->createUrl('MarkAllAsRead').'">'.$this->L10n->getText('Mark all topics as read').'</a>';
 
 	$body = $this->getBody();
 

@@ -26,7 +26,7 @@ public function prepare(){
 
 if (!$this->User->isOnline())
 	{
-	$this->showWarning($this->L10n->getText('Access denied!'));
+	$this->showFailure($this->L10n->getText('Access denied!'));
 	}
 
 try
@@ -35,7 +35,7 @@ try
 	}
 catch (RequestException $e)
 	{
-	$this->showWarning($this->L10n->getText('No topic specified.'));
+	$this->showFailure($this->L10n->getText('No topic specified.'));
 	}
 
 
@@ -263,7 +263,7 @@ foreach ($result as $data)
 
 	if (count($modMenu) > 1)
 		{
-		$postMenu[] = 'Moderation<ul><li>'.implode('</li><li>', $modMenu).'</li></ul>';
+		$postMenu[] = $this->L10n->getText('Moderation').'<ul><li>'.implode('</li><li>', $modMenu).'</li></ul>';
 		}
 	elseif (count($modMenu) == 1)
 		{
@@ -328,7 +328,7 @@ $body =
 				</th>
 			</tr>
 			<tr>
-				<th>Empfänger</th>
+				<th>'.$this->L10n->getText('Recipients').'</th>
 				<td>
 					'.$recipients.'
 				</td>

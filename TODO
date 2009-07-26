@@ -8,6 +8,14 @@ LL 4 TODO
 	* <strong> allways needed?
 	* add method to set help text or description per form
 * isEmptyString fails on arrays
+* Cleanup Markup and convert posts
+* adapt new theme
+* move Privacy and Impressum to external sites
+* dfeine common translations
+* drop support for xcache
+* drop supprt for php < 5.3 (at least when its in extra)
+* review use of showFailure and showWarning
+* APC user var collision when running several instances on one server
 
 == Optional ==
 

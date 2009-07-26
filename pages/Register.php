@@ -26,27 +26,25 @@ private $name = '';
 
 protected function setForm()
 	{
-	$this->setTitle('Registrieren');
+	$this->setTitle($this->L10n->getText('Register'));
 
-	$this->add(new SubmitButtonElement('Registrieren'));
+	$this->add(new SubmitButtonElement($this->L10n->getText('Register')));
 
-	$nameInput = new TextInputElement('name', '', 'Dein Name');
+	$nameInput = new TextInputElement('name', '', $this->L10n->getText('Name'));
 	$nameInput->setMinLength(3);
 	$nameInput->setMaxLength(50);
 	$nameInput->setSize(50);
-	$nameInput->setHelp('Dieser Name wird öffentlich angezeigt.');
 	$nameInput->setFocus();
 	$this->add($nameInput);
 
-	$emailInput = new TextInputElement('email', '', 'Deine E-Mail-Adresse');
+	$emailInput = new TextInputElement('email', '', $this->L10n->getText('e-mail address'));
 	$emailInput->setMinLength(6);
 	$emailInput->setMaxLength(50);
 	$emailInput->setSize(50);
-	$emailInput->setHelp('Achte auf die Gültigkeit dieser Adresse, da die Zugangsdaten dorthin verschickt werden.');
 	$this->add($emailInput);
 
-	$privacyInput = new CheckboxInputElement('confirmPrivacy', 'Datenschutz');
-	$privacyInput->setHelp('Bitte bestätige die <a href="'.$this->Output->createUrl('Privacy').'">Datenschutzerklärung</a>.');
+	$privacyInput = new CheckboxInputElement('confirmPrivacy', $this->L10n->getText('Privacy'));
+	$privacyInput->setHelp('<a href="'.$this->Output->createUrl('Privacy').'">'.$this->L10n->getText('Privacy').'</a>.');
 	$this->add($privacyInput);
 	}
 
@@ -57,7 +55,7 @@ protected function checkForm()
 
 	if (!$this->Mail->validateMail($this->email))
 		{
-		$this->showWarning('Keine gültige E-Mail-Adresse angegeben!');
+		$this->showWarning($this->L10n->getText('e-mail address is invalid'));
 		}
 
 	try
@@ -77,7 +75,7 @@ protected function checkForm()
 		$stm->getColumn();
 		$stm->close();
 
-		$this->showWarning('Name oder E-Mail bereits vergeben!');
+		$this->showWarning($this->L10n->getText('An account with this name or e-mail address already exists'));
 		}
 	catch (DBNoDataException $e)
 		{
@@ -135,22 +133,18 @@ protected function sendForm()
 
 	$this->Mail->setTo($this->email);
 	$this->Mail->setFrom($this->Settings->getValue('email'));
-	$this->Mail->setSubject('Registrierung bei '.$this->Board->getName());
-	$this->Mail->setText(
-'Hallo '.$this->name.'!
+	$this->Mail->setSubject(sprintf($this->L10n->getText('Register at %s'), $this->Board->getName()));
+	$this->Mail->setText(sprintf($this->L10n->getText(<<<eot
+'Hello %s!
 
-Deine Registrierung bei "'.$this->Board->getName().'" war erfolgreich.
-Du kannst Dein Passwort ändern, wenn Du folgende Seite besuchst:
-'.$this->Output->createUrl('ChangePasswordKey').'
+Thank you for your registration at "%s".
+You can now set your password at the follwing website:
+%s
 
-Sollte obiger Link bei Deinem Mail-Programm nicht funktionieren,
-so wähle im Anmelde-Dialog die Option "Passwort setzen" und gebe folgende Daten an:
-Benutzer-ID:	'.$userid.'
-Schlüssel:	'.$key.'
-
-
-
-');
+User-ID:	%d
+Key:		%s
+eot
+), $this->name, $this->Board->getName(), $this->Output->createUrl('ChangePasswordKey'), $userid, $key));
 	$this->Mail->send();
 
  	$this->Output->redirect('Login');

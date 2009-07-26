@@ -266,7 +266,7 @@ foreach ($result as $data)
 
 	if (count($modMenu) > 1)
 		{
-		$postMenu[] = 'Moderation<ul><li>'.implode('</li><li>', $modMenu).'</li></ul>';
+		$postMenu[] = $this->L10n->getText('Moderation').'<ul><li>'.implode('</li><li>', $modMenu).'</li></ul>';
 		}
 	elseif (count($modMenu) == 1)
 		{

@@ -27,14 +27,13 @@ protected $poll_question 	= '';
 protected $poll_options 	= '';
 protected $forum 		= 0;
 
-protected $title 		= 'Neues Thema erstellen';
-
 
 protected function setForm()
 	{
+	$this->title = $this->L10n->getText('Post new topic');
 	$this->checkInput();	// doing this here to ensure we initialize the topic if it allready exists
 	$this->topic = $this->Input->Post->getString('topic', $this->topic);
-	$topicInput = new TextInputElement('topic', $this->topic, 'Thema');
+	$topicInput = new TextInputElement('topic', $this->topic, $this->L10n->getText('Topic'));
 	$this->add($topicInput);
 	parent::setForm();
 	$this->topic = $this->Input->Post->getString('topic', $this->topic);
@@ -50,11 +49,11 @@ protected function setPoll()
 		{
 		if (($this->Input->Post->isString('poll')) && !$this->Input->Post->isString('nopoll'))
 			{
-			$this->add(new ButtonElement('nopoll', 'keine Umfrage'));
+			$this->add(new ButtonElement('nopoll', $this->L10n->getText('Remove poll')));
 
 			$this->poll_question = $this->Input->Post->getString('poll_question', '');
 
-			$questionInput = new TextInputElement('poll_question', $this->poll_question, 'Frage');
+			$questionInput = new TextInputElement('poll_question', $this->poll_question,  $this->L10n->getText('Question'));
 			$questionInput->setMinLength(3);
 			$questionInput->setMaxLength(200);
 			$this->add($questionInput);
@@ -74,33 +73,32 @@ protected function setPoll()
 
 					if (strlen($poll_option) > 100)
 						{
-						$this->showWarning('Antwort '.$i.' ist '.(strlen($poll_option)-100).' Zeichen zu lang.');
+						$this->showWarning(sprintf($this->L10n->getText('Option %s is %d characters too long.'), $i, (strlen($poll_option)-100)));
 						}
 					elseif (strlen($poll_option) < 1)
 						{
-						$this->showWarning('Antwort '.$i.' ist '.(1-strlen($poll_option)).' Zeichen zu kurz.');
+						$this->showWarning(sprintf($this->L10n->getText('Option %s is %d characters too long.'), $i, (1-strlen($poll_option))));
 						}
 					$i++;
 					}
 
-				if ($i < 3)
+				if ($i < 3)	#FIXME Why <3?
 					{
-					$this->showWarning('Sind das zu wenige oder zu wenige Antwortmöglichkeiten?');
+					$this->showWarning($this->L10n->getText('Please add more options'));
 					}
 				}
 			catch (RequestException $e)
 				{
 				}
 
-			$pollInput = new TextareaInputElement('poll_options', $this->poll_options, 'Antworten');
+			$pollInput = new TextareaInputElement('poll_options', $this->poll_options, $this->L10n->getText('Options'));
 			$pollInput->setRows(5);
-			$pollInput->setHelp('Pro Zeile eine Option');
 			$this->add($pollInput);
 			$this->add(new HiddenElement('poll', 1));
 			}
 		else
 			{
-			$this->add(new ButtonElement('poll', 'Umfrage'));
+			$this->add(new ButtonElement('poll', $this->L10n->getText('Add poll')));
 			}
 		}
 	}
@@ -115,7 +113,7 @@ protected function checkInput()
 			}
 		catch (RequestException $e)
 			{
-			$this->showFailure('Kein Forum angegeben');
+			$this->showFailure($this->L10n->getText('No forum specified.'));
 			}
 		}
 

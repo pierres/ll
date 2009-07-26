@@ -20,13 +20,10 @@
 
 class NewPost extends Form {
 
-
+protected $title 	= '';
 protected $text 	= '';
 protected $thread	= 0;
 protected $forum	= 0;
-
-protected $title 	= 'Beitrag schreiben';
-
 protected $counter 	= 0;
 
 
@@ -35,19 +32,21 @@ protected function setForm()
 	$this->checkInput();
 	$this->checkAccess();
 
+	$this->title = $this->L10n->getText('Post reply');
+
 	$this->setTitle($this->title);
 
-	$this->add(new SubmitButtonElement('Abschicken'));
+	$this->add(new SubmitButtonElement($this->L10n->getText('Submit')));
 
 	if (!$this->User->isOnline())
 		{
-		$nameInput = new TextInputElement('name', '', 'Dein Name');
+		$nameInput = new TextInputElement('name', '', $this->L10n->getText('Name'));
 		$nameInput->setMinLength(3);
 		$nameInput->setMaxLength(25);
 		$this->add($nameInput);
 		}
 
-	$textInput = new TextareaInputElement('text', $this->text, 'Deine Nachricht');
+	$textInput = new TextareaInputElement('text', $this->text, $this->L10n->getText('Message'));
 	$textInput->setMinLength(3);
 	$textInput->setMaxLength(65536);
 	$textInput->setFocus();
@@ -62,8 +61,8 @@ protected function setFile()
 		{
 		if (($this->Input->Post->isString('addfile')) && !$this->Input->Post->isString('nofile'))
 			{
-			$this->add(new ButtonElement('nofile', 'keine Dateien'));
-			$filesInput = new SelectInputElement('files', 'Dateien anhängen');
+			$this->add(new ButtonElement('nofile', $this->L10n->getText('Remove files')));
+			$filesInput = new SelectInputElement('files', $this->L10n->getText('Attach files'));
 			$filesInput->setMinLength(1);
 			$filesInput->setMaxLength(11);
 			$filesInput->setSize(10);
@@ -102,7 +101,7 @@ protected function setFile()
 			}
 		else
 			{
-			$this->add(new ButtonElement('addfile', 'Dateien'));
+			$this->add(new ButtonElement('addfile', $this->L10n->getText('Add files')));
 			}
 		}
 	}
@@ -210,17 +209,17 @@ protected function checkInput()
 	catch (RequestException $e)
 		{
 		$stm->close();
-		$this->showFailure('Kein Thema angegeben!');
+		$this->showFailure($this->L10n->getText('No topic specified.'));
 		}
 	catch (DBNoDataException $e)
 		{
 		$stm->close();
-		$this->showFailure('Thema nicht gefunden!');
+		$this->showFailure($this->L10n->getText('Topic not found.'));
 		}
 
 	if ($data['closed'] != 0)
 		{
-		$this->showFailure('Thema wurde geschlossen!');
+		$this->showFailure($this->L10n->getText('Topic is closed.'));
 		}
 
 	$this->thread = $data['id'];
@@ -252,7 +251,7 @@ protected function checkForm()
 			$user = $stm->getRow();
 			$stm->close();
 
-			$this->showWarning('Der Name <strong><a href="'.$this->Output->createUrl('ShowUser', array('user' => $user['id'])).'">'.$user['name'].'</a></strong> wurde bereits registriert. <strong><a href="'.$this->Output->createUrl('Login').'">Melde Dich an</a></strong>, falls dies Dein Benutzer-Konto ist.');
+			$this->showWarning(sprintf($this->L10n->getText('Name %s is already registered', '<a href="'.$this->Output->createUrl('ShowUser', array('user' => $user['id'])).'">'.$user['name'].'</a>')));
 			}
 		catch (DBNoDataException $e)
 			{
@@ -261,10 +260,9 @@ protected function checkForm()
 		}
 
 	$this->text = $this->Markup->toHtml($this->text);
-	// BugFix for Bug#1
 	if ($length = strlen($this->text) > 65536)
 		{
-		$this->showWarning('Der Text ist '.($length-65536).' Zeichen zu lang!');
+		$this->showWarning(sprintf($this->L10n->getText('Text is %d characters too long', ($length-65536))));
 		}
 	}
 

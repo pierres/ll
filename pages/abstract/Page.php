@@ -117,7 +117,7 @@ public static function loadPage($name)
 		}
 	else
 		{
-		throw new RuntimeException('Seite '.$name.' wurde nicht gefunden!', 0);
+		throw new RuntimeException(sprintf($this->L10n->getText('Page "%s" not found!'), $name), 0);
 		}
 	}
 
