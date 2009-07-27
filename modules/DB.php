@@ -165,9 +165,9 @@ public function getColumnSet($query)
 		}
 	}
 
-public function getNumRows()
+public function getAffectedRows()
 	{
-	return mysqli_num_rows($this->link);
+	return mysqli_affected_rows($this->link);
 	}
 
 }
@@ -308,6 +308,11 @@ public function rewind()
 public function valid()
 	{
 	return !is_null($this->row);
+	}
+
+public function getNumRows()
+	{
+	return mysqli_num_rows($this->result);
 	}
 
 }
@@ -517,6 +522,11 @@ public function getColumn()
 public function getNumRows()
 	{
 	return mysqli_stmt_num_rows($this->stm);
+	}
+
+public function getAffectedRows()
+	{
+	return mysqli_stmt_affected_rows($this->stm);
 	}
 
 }
