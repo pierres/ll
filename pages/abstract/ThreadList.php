@@ -30,22 +30,12 @@ protected $target = 'Postings';
 protected function getBody()
 	{
 	$pages = $this->getPages();
-	$count = sprintf($this->L10n->getText('Topic %d to %d of %d'), ($this->currentThread+1), ($this->currentThread+$this->Settings->getValue('max_threads')), $this->totalThreads);
+	$fromThread = $this->currentThread + 1;
+	$toThread = ($this->currentThread + $this->Settings->getValue('max_threads') > $this->totalThreads ? $this->totalThreads : $this->currentThread + $this->Settings->getValue('max_threads'));
+	$count = sprintf($this->L10n->getText('Topic %d to %d of %d'), $fromThread, $toThread, $this->totalThreads);
 
 	$body =
 	'
-	<script type="text/javascript">
-		/* <![CDATA[ */
-		function writeText(text)
-			{
-			var pos;
-			pos = document;
-			while ( pos.lastChild && pos.lastChild.nodeType == 1 )
-				pos = pos.lastChild;
-			pos.parentNode.appendChild( document.createTextNode(text));
-			}
-		/* ]]> */
-	</script>
 	<table id="threads">
 		<thead>
 			<tr>
@@ -128,24 +118,15 @@ private function listThreads()
 			$status = 'old';
 			}
 
-		$icon = '<span class="status-'.$status.'"></span>';
-		$data['lastdate'] = $this->L10n->getDateTime($data['lastdate']);
-
 		$threads .=
 			'
 			<tr>
 				<th class="thread-status">
-					'.$icon.'
+					<span class="status-'.$status.'"></span>
 				</th>
-				<td class="thread-main"
-					 onmouseover="javascript:document.getElementById(\'thread-summary'.$data['id'].'\').style.visibility=\'visible\'"
-					 onmouseout="javascript:document.getElementById(\'thread-summary'.$data['id'].'\').style.visibility=\'hidden\'">
-					<div class="thread-summary" style="visibility:hidden;" id="thread-summary'.$data['id'].'">
-						<script type="text/javascript">
-							/* <![CDATA[ */
-							writeText("'.$data['summary'].'");
-							/* ]]> */
-						</script>
+				<td class="thread-main">
+					<div class="thread-summary">
+						'.$data['summary'].'
 					</div>
 					<div>
 					<a href="'.$this->Output->createUrl($this->target, array('thread' => $data['id'])).'">'.$data['name'].'</a>
@@ -156,7 +137,7 @@ private function listThreads()
 					'.$data['posts'].'
 				</td>
 				<td class="thread-lastpost">
-					<div><a href="'.$this->Output->createUrl($this->target, array('thread' => $data['id'], 'post' => '-1')).'">'.$data['lastdate'].'</a></div>
+					<div><a href="'.$this->Output->createUrl($this->target, array('thread' => $data['id'], 'post' => '-1')).'">'.$this->L10n->getDateTime($data['lastdate']).'</a></div>
 					<div>von '.$data['lastusername'].'</div>
 				</td>
 			</tr>

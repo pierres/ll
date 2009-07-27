@@ -282,6 +282,9 @@
 	overflow:hidden;
 	padding:5px;
 }
+#ll #body #threads tbody tr:hover .thread-main .thread-summary {
+	visibility:visible;
+}
 #ll #body #threads tbody .thread-posts {
 	font-weight:bold;
 	padding:5px;
