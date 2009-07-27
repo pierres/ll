@@ -43,10 +43,6 @@ public function __construct()
 	$this->config['max_age']			= 31536000;
 	$this->config['max_threads'] 			= 20;
 	$this->config['max_posts'] 			= 20;
-	$this->config['max_summary'] 			= 5;
-	$this->config['max_users'] 			= 150;
-	$this->config['max_post'] 			= 40000;
-	$this->config['min_post'] 			= 3;
 
 	$this->config['log_dir'] 			= '';
 	$this->config['mail_log_dir'] 			= '';
