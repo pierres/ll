@@ -334,8 +334,6 @@ $body =
 				</td>
 			</tr>
 		</thead>
-		'.$poll.'
-		'.$postings.'
 		<tfoot>
 			<tr>
 				<th colspan="2">
@@ -343,6 +341,8 @@ $body =
 				</th>
 			</tr>
 		</tfoot>
+		'.$poll.'
+		'.$postings.'
 	</table>
 	';
 $this->setTitle($thread['name']);

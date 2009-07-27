@@ -52,9 +52,6 @@ protected function setList()
 				</td>
 			</tr>
 		</thead>
-		<tbody>
-			'.$this->listThreads().'
-		</tbody>
 		<tfoot>
 			<tr>
 				<td colspan="2">
@@ -65,6 +62,9 @@ protected function setList()
 				</td>
 			</tr>
 		</tfoot>
+		<tbody>
+			'.$this->listThreads().'
+		</tbody>
 	</table>
 	';
 

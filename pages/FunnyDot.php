@@ -35,7 +35,7 @@ public function prepare()
 public function show()
 	{
 	header('HTTP/1.1 200 OK');
-	header("Cache-Control: no-cache, must-revalidate");
+	header("Cache-Control: no-cache");
 	header('Content-Type: image/png');
 	header('Content-Length: 135');
 

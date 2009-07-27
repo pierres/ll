@@ -310,9 +310,16 @@ class AntiSpamElement extends TextInputElement {
 
 	protected function formatOutput($input)
 		{
-		// we need this workaround because some browsers
-		// don't even load elemnts that have "display:none"
-		return '<tbody style="visibility:hidden;background-image:url('.$this->Output->createUrl('FunnyDot').');position:absolute;">'.parent::formatOutput($input).'</tbody>';
+		return
+		'<tr style="background-image:url('.$this->Output->createUrl('FunnyDot').');visibility:hidden;position:absolute;z-index:-1">
+			<th>
+				<label for="'.$this->getId().'">'.$this->label.'</label>
+			</th>
+			<td>
+				<input id="'.$this->getId().'" type="text" name="'.$this->name.'" size="'.$this->size.'" value="'.$this->value.'" />
+				'.(!empty($this->help) ? '<div class="form-help">'.$this->help.'</div>' : '').'
+			</td>
+		</tr>';
 		}
 
 	public function validate()
