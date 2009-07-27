@@ -257,17 +257,23 @@ public function toArray()
 class DBResult extends ADBResult{
 
 private $result		= null;
+# null on failure
 private $row 		= null;
+# 0 on failure
 private $current 	= 0;
 
 public function __construct($result)
 	{
 	$this->result = $result;
+	$this->next();
 	}
 
 public function __destruct()
 	{
-	$this->rewind();
+	$this->row = null;
+	$this->current = 0;
+	mysqli_free_result($this->result);
+	$this->result = null;
 	}
 
 public function current()
@@ -282,29 +288,26 @@ public function key()
 
 public function next()
 	{
+	$this->row = mysqli_fetch_assoc($this->result);
+	if ($this->valid())
+		{
+		$this->current++;
+		}
 	}
 
 public function rewind()
 	{
-	if ($this->current > 0)
+	if ($this->current > 1)
 		{
-		mysqli_free_result($this->result);
+		mysqli_data_seek($this->result, 0);
 		$this->current = 0;
+		$this->next();
 		}
 	}
 
 public function valid()
 	{
-	if ($this->row = mysqli_fetch_assoc($this->result))
-		{
-		$this->current++;
-		return true;
-		}
-	else
-		{
-		$this->rewind();
-		return false;
-		}
+	return !is_null($this->row);
 	}
 
 }
@@ -524,17 +527,25 @@ class DBStatementResult extends ADBResult{
 
 private $stm 		= null;
 private $row 		= null;
+# 0 on failure
 private $current 	= 0;
+# false on failure; null when empty
+private $state		= null;
 
 public function __construct($stm, &$row)
 	{
 	$this->stm = $stm;
 	$this->row = &$row;
+	$this->next();
 	}
 
 public function __destruct()
 	{
-	$this->rewind();
+	$this->row = null;
+// 	mysqli_stmt_free_result($this->stm);
+	$this->stm = null;
+	$this->current = 0;
+	$this->state = null;
 	}
 
 public function current()
@@ -549,35 +560,30 @@ public function key()
 
 public function next()
 	{
+	$this->state = mysqli_stmt_fetch($this->stm);
+	if ($this->valid())
+		{
+		$this->current++;
+		}
+	elseif ($this->state === false)
+		{
+		throw new DBStatementException($this->stm);
+		}
 	}
 
 public function rewind()
 	{
-	if ($this->current > 0)
+	if ($this->current > 1)
 		{
-		mysqli_stmt_free_result($this->stm);
+		mysqli_stmt_data_seek($this->result, 0);
 		$this->current = 0;
+		$this->next();
 		}
 	}
 
 public function valid()
 	{
-	$result = mysqli_stmt_fetch($this->stm);
-
-	if ($result === true)
-		{
-		$this->current++;
-		return true;
-		}
-	elseif ($result === null)
-		{
-		$this->rewind();
-		return false;
-		}
-	else
-		{
-		throw new DBStatementException($this->stm);
-		}
+	return !is_null($this->state) && $this->state;
 	}
 
 }
