@@ -207,11 +207,18 @@
 #ll #body form table tr th {
 	width:200px;
 }
-#ll * input[type=text],
-#ll * input[type=password],
-#ll * input[type=file],
-#ll * textarea {
-	font-family: monospace
+#ll #body form input[type=text],
+#ll #body form input[type=password],
+#ll #body form input[type=file],
+#ll #body form textarea {
+	font-family:monospace;
+	color:grey;
+}
+#ll #body form input[type=text]:focus,
+#ll #body form input[type=password]:focus,
+#ll #body form input[type=file]:focus,
+#ll #body form textarea:focus {
+	color:black;
 }
 #ll #body form .form-help {
 	font-size:12px;
