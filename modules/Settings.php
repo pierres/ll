@@ -41,8 +41,8 @@ public function __construct()
 	$this->config['session_timeout'] 		= 3600;
 	$this->config['session_refresh'] 		= 900;
 	$this->config['max_age']			= 31536000;
-	$this->config['max_threads'] 			= 20;
-	$this->config['max_posts'] 			= 20;
+	$this->config['max_threads'] 			= 25;
+	$this->config['max_posts'] 			= 25;
 
 	$this->config['log_dir'] 			= '';
 	$this->config['mail_log_dir'] 			= '';

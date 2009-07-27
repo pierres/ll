@@ -94,15 +94,28 @@ CREATE TABLE `boards` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `cache`
+-- Tabellenstruktur für Tabelle `search`
 --
 
-CREATE TABLE `cache` (
-  `key` varchar(255) NOT NULL,
-  `value` mediumblob NOT NULL,
-  `expires` int(11) NULL,
-  PRIMARY KEY  (`key`(100)),
-  KEY `expires` (`expires`)
+CREATE TABLE `search` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `query` varchar(255) NOT NULL,
+  `expires` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `query` (`query`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `search_threads`
+--
+
+CREATE TABLE `search_threads` (
+  `searchid` int(10) unsigned NOT NULL,
+  `threadid` int(10) unsigned NOT NULL,
+  `score` double unsigned NOT NULL,
+  KEY `searchid` (`searchid`,`threadid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------

@@ -99,10 +99,8 @@ public function prepare()
 	$this->setTitle($this->L10n->getText('Private topics'));
 	$this->target = 'PrivatePostings';
 
-	$body = $this->getBody();
+	$this->setList();
 	$stm->close();
-
-	$this->setBody($body);
 	}
 }
 

@@ -23,64 +23,50 @@ class Recent extends ThreadList {
 public function prepare()
 	{
 	$this->setTitle($this->L10n->getText('Recent topics'));
-	$this->currentThread = $this->Input->Get->getInt('thread', 0);
 
 	try
 		{
-		if (!($this->resultSet = $this->ObjectCache->getObject('LL:Recent::'.$this->Board->getId())))
-			{
-			$stm = $this->DB->prepare
-				('
-				SELECT
-					threads.id,
-					threads.name,
-					threads.lastdate,
-					threads.posts,
-					threads.lastusername,
-					threads.firstdate,
-					threads.firstusername,
-					threads.closed,
-					threads.sticky,
-					threads.posts,
-					threads.summary
-				FROM
-					forums,
-					threads,
-					forum_cat,
-					cats
-				WHERE
-					threads.deleted = 0
-					AND threads.forumid = forums.id
-					AND forum_cat.forumid = forums.id
-					AND forum_cat.catid = cats.id
-					AND cats.boardid = ?
-				ORDER BY
-					threads.lastdate DESC
-				LIMIT '.$this->Settings->getValue('max_threads') * 5
-				);
-			$stm->bindInteger($this->Board->getId());
-			$this->resultSet = $stm->getRowSet()->toArray();
-			$this->ObjectCache->addObject('LL:Recent::'.$this->Board->getId(), $this->resultSet, 10*60);
-			}
+		$stm = $this->DB->prepare
+			('
+			SELECT
+				threads.id,
+				threads.name,
+				threads.lastdate,
+				threads.posts,
+				threads.lastusername,
+				threads.firstdate,
+				threads.firstusername,
+				threads.closed,
+				threads.sticky,
+				threads.posts,
+				threads.summary
+			FROM
+				forums,
+				threads,
+				forum_cat,
+				cats
+			WHERE
+				threads.deleted = 0
+				AND threads.forumid = forums.id
+				AND forum_cat.forumid = forums.id
+				AND forum_cat.catid = cats.id
+				AND cats.boardid = ?
+			ORDER BY
+				threads.lastdate DESC
+			LIMIT '.$this->Settings->getValue('max_threads')
+			);
+		$stm->bindInteger($this->Board->getId());
+		$this->resultSet = $stm->getRowSet();
+		$this->totalThreads = $stm->getNumRows();
 		}
 	catch (DBNoDataException $e)
 		{
 		$this->resultSet = array();
 		}
 
-	$this->totalThreads = count($this->resultSet);
-	$this->resultSet = array_slice($this->resultSet, $this->currentThread, $this->Settings->getValue('max_threads'));
-
 	$this->addUserMenuEntry('<a href="'.$this->Output->createUrl('MarkAllAsRead').'">'.$this->L10n->getText('Mark all topics as read').'</a>');
-
-	$body = $this->getBody();
-
-	if (isset($stm))
-		{
-		$stm->close();
-		}
-
-	$this->setBody($body);
+	$this->setList();
+	$stm->close();
 	}
 
 }

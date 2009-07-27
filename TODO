@@ -16,6 +16,7 @@ LL 4 TODO
 * APC user var collision when running several instances on one server
 * Add/remove files is confusing
 * atm its not possible to remove files from a posting
+* DB: automatic close of connections on error
 
 == Optional ==
 

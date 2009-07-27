@@ -101,20 +101,15 @@ public function prepare()
 		$stm->bindInteger($data['id']);
 		$stm->bindInteger($this->Board->getId());
 		$this->resultSet = $stm->getRowSet();
+		$this->totalThreads = $stm->getNumRows();
 		}
 	catch (DBNoDataException $e)
 		{
 		$this->resultSet = array();
 		}
 
-	$this->totalThreads = $this->Settings->getValue('max_threads');
-	$body = $this->getBody();
-	if (isset($stm))
-		{
-		$stm->close();
-		}
-
-	$this->setBody($body);
+	$this->setList();
+	$stm->close();
 	}
 
 }

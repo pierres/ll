@@ -162,10 +162,9 @@ public function prepare()
 	$this->setTitle($forum['name']);
 
 	$this->pageOptions = array('forum' => $this->forum); 
-	$body = $this->getBody();
-	$stm->close();
 
-	$this->setBody($body);
+	$this->setList();
+	$stm->close();
 	}
 
 }

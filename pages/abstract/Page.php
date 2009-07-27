@@ -26,7 +26,7 @@ require ('modules/ICache.php');
 
 abstract class Page extends Modul implements IOutput {
 
-protected $variables = array();
+private $variables = array();
 private $userMenu = array();
 
 private static $availablePages = array
@@ -132,27 +132,27 @@ public function __construct()
 	$this->variables['meta.robots']	 = 'index,follow';
 	}
 
-public function setValue($key, $value)
+protected function setValue($key, $value)
 	{
 	$this->variables[$key] = $value;
 	}
 
-public function getValue($key)
+protected function getValue($key)
 	{
 	return $this->variables[$key];
 	}
 
-public function setTitle($value)
+protected function setTitle($value)
 	{
 	$this->setValue('title', $value);
 	}
 
-public function getTitle()
+protected function getTitle()
 	{
 	return $this->getValue('title');
 	}
 
-public function setBody($value)
+protected function setBody($value)
 	{
 	$this->setValue('body', $value);
 	}
@@ -192,7 +192,7 @@ private function getHead()
 		';
 	}
 
-protected function getMainMenu()
+private function getMainMenu()
 	{
 	$menu = '
 		<ul>

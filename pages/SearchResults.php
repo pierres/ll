@@ -20,34 +20,85 @@
 
 class SearchResults extends ThreadList {
 
-private $search 	= '';
-
 
 public function prepare()
 	{
 	try
 		{
-		$this->search = $this->Input->Get->getHtml('search');
+		$searchId = $this->Input->Get->getInt('searchId');
 		$this->currentThread = $this->Input->Get->getInt('thread', 0);
 		}
 	catch (RequestException $e)
 		{
 		$this->showFailure($e->getMessage());
 		}
-
-	$this->addUserMenuEntry('<a href="'.$this->Output->createUrl('Search', array('search' => $this->search)).'">'.$this->L10n->getText('Edit Search').'</a>');
-
-	$this->setTitle(sprintf($this->L10n->getText('Search results for %s'), $this->search));
-
-	if (!($this->resultSet = $this->PersistentCache->getObject('LL:Search:'.$this->Board->getId().'::'.$this->search)))
+		
+	try
+		{
+		$stm = $this->DB->prepare
+			('
+			SELECT
+				query,
+				COUNT(search_threads.threadid) AS threads
+			FROM
+				search,
+				search_threads
+			WHERE
+				search.id = ?
+				AND search_threads.searchid = search.id
+			');
+		$stm->bindInteger($searchId);
+		$data = $stm->getRow();
+		$stm->close();
+		$search = $data['query'];
+		$this->totalThreads = $data['threads'];
+		}
+	catch (DBNoDataException $e)
 		{
 		$this->showFailure($this->L10n->getText('No search results.'));
 		}
-	$this->totalThreads = count($this->resultSet);
-	$this->resultSet = array_slice($this->resultSet, $this->currentThread, $this->Settings->getValue('max_threads'));
+		
 
-	$this->pageOptions = array('search' => $this->search);
-	$this->setBody($this->getBody());
+	$this->addUserMenuEntry('<a href="'.$this->Output->createUrl('Search', array('search' => $search)).'">'.$this->L10n->getText('Edit Search').'</a>');
+	$this->setTitle(sprintf($this->L10n->getText('Search results for %s'), '&quot;'.$search.'&quot;'));
+	
+	try
+		{
+		$stm = $this->DB->prepare
+			('
+			SELECT
+				threads.id,
+				threads.name,
+				threads.lastdate,
+				threads.posts,
+				threads.lastusername,
+				threads.firstdate,
+				threads.firstusername,
+				threads.closed,
+				threads.sticky,
+				threads.posts,
+				threads.summary
+			FROM
+				threads,
+				search_threads
+			WHERE
+				search_threads.searchid = ?
+				AND search_threads.threadid = threads.id
+			ORDER BY
+				search_threads.score DESC
+			LIMIT '.$this->currentThread.','.$this->Settings->getValue('max_threads')
+			);
+		$stm->bindInteger($searchId);
+		$this->resultSet = $stm->getRowSet();
+		}
+	catch (DBNoDataException $e)
+		{
+		$this->showFailure($this->L10n->getText('No search results.'));
+		}
+
+	$this->pageOptions = array('searchId' => $searchId);
+	$this->setList();	
+	$stm->close();
 	}
 
 }

@@ -27,7 +27,7 @@ protected $pageOptions = array();
 protected $target = 'Postings';
 
 
-protected function getBody()
+protected function setList()
 	{
 	$pages = $this->getPages();
 	$fromThread = $this->currentThread + 1;
@@ -68,7 +68,7 @@ protected function getBody()
 	</table>
 	';
 
-	return $body;
+	$this->setBody($body);
 	}
 
 private function listThreads()

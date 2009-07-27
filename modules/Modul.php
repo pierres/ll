@@ -41,7 +41,6 @@ private static $availableModules = array
 	'Modul' => 'modules/Modul.php',
 	'ObjectCache' => 'modules/ObjectCache.php',
 	'Ouput' => 'modules/Output.php',
-	'PersistentCache' => 'modules/PersistentCache.php',
 	'Settings' => 'modules/Settings.php',
 	'Stack' => 'modules/Stack.php',
 	'ThreadList' => 'pages/abstract/ThreadList.php',

@@ -20,7 +20,9 @@
 
 class Search extends Form {
 
-private $search 	= '';
+private $search = '';
+private $searchId = 0;
+private $ttl = 10800;
 
 protected function setForm()
 	{
@@ -30,8 +32,8 @@ protected function setForm()
 
 	$searchInput = new TextInputElement('search', $this->Input->Get->getHtml('search', ''), $this->L10n->getText('Search'));
 	$searchInput->setMinLength(3);
-	$searchInput->setMaxLength(50);
-	$searchInput->setSize(50);
+	$searchInput->setMaxLength(100);
+	$searchInput->setSize(100);
 	$searchInput->setFocus();
 	$this->add($searchInput);
 	}
@@ -45,28 +47,65 @@ protected function checkForm()
 
 private function storeResult()
 	{
+	$stm = $this->DB->prepare
+		('
+		DELETE
+			search,
+			search_threads
+		FROM
+			search,
+			search_threads
+		WHERE
+			search.expires < ?
+			AND search.id = search_threads.searchid
+		');
+	$stm->bindInteger($this->Input->getTime());
+	$stm->execute();
+	$stm->close();
+
 	try
 		{
-		if (!$this->PersistentCache->isObject('LL:Search:'.$this->Board->getId().'::'.$this->search))
-			{
-			$stm = $this->DB->prepare
+		$stm = $this->DB->prepare
 			('
-			(
+			SELECT
+				id
+			FROM
+				search
+			WHERE
+				query = ?
+			');
+		$stm->bindString($this->search);
+		$this->searchId = $stm->getColumn();
+		$stm->close();
+		}
+	catch (DBNoDataException $e)
+		{
+		$stm = $this->DB->prepare
+			('
+			INSERT INTO
+				search
+			SET
+				query = ?,
+				expires = ?
+			');
+		$stm->bindString($this->search);
+		$stm->bindInteger($this->Input->getTime() + $this->ttl);
+		$stm->execute();
+		$this->searchId = $this->DB->getInsertId();
+		$stm->close();
+
+		$stm = $this->DB->prepare
+			('
+			INSERT INTO
+				search_threads
+				(
 				SELECT
+					LAST_INSERT_ID(),
 					threads.id,
-					threads.name,
-					threads.lastdate,
-					threads.posts,
-					threads.lastusername,
-					threads.firstusername,
-					threads.closed,
-					threads.sticky,
-					threads.posts,
 					(
 						MATCH (threads.name) AGAINST (? IN BOOLEAN MODE)
 						* (threads.lastdate + threads.firstdate)
-					) AS score,
-					threads.summary
+					)
 				FROM
 					threads,
 					forums
@@ -75,24 +114,16 @@ private function storeResult()
 					AND threads.forumid = forums.id
 					AND threads.deleted = 0
 					AND forums.boardid = ?
-			)
-			UNION
-			(
+				)
+				UNION
+				(
 				SELECT
+					LAST_INSERT_ID(),
 					threads.id,
-					threads.name,
-					threads.lastdate,
-					threads.posts,
-					threads.lastusername,
-					threads.firstusername,
-					threads.closed,
-					threads.sticky,
-					threads.posts,
 					(
 						MATCH (posts.text) AGAINST (? IN BOOLEAN MODE)
 						* (threads.lastdate + threads.firstdate)
-					) AS score,
-					threads.summary
+					)
 				FROM
 					posts,
 					threads,
@@ -105,29 +136,23 @@ private function storeResult()
 					AND posts.deleted = 0
 					AND forums.boardid = ?
 					GROUP BY threads.id
-			)
-			ORDER BY score DESC
-			LIMIT 1000'
-			);
-			$stm->bindString($this->search);
-			$stm->bindString($this->search);
-			$stm->bindInteger($this->Board->getId());
-			$stm->bindString($this->search);
-			$stm->bindString($this->search);
-			$stm->bindInteger($this->Board->getId());
-			$result = $stm->getRowSet()->toArray();
-			$this->PersistentCache->addObject('LL:Search:'.$this->Board->getId().'::'.$this->search, $result, 3*60*60);
-			}
-		}
-	catch (DBNoDataException $e)
-		{
-		$this->showWarning($this->L10n->getText('No search results.'));
+				)
+				LIMIT 500
+			');
+		$stm->bindString($this->search);
+		$stm->bindString($this->search);
+		$stm->bindInteger($this->Board->getId());
+		$stm->bindString($this->search);
+		$stm->bindString($this->search);
+		$stm->bindInteger($this->Board->getId());
+		$stm->execute();
+		$stm->close();
 		}
 	}
 
 protected function sendForm()
 	{
- 	$this->Output->redirect('SearchResults', array('search' => $this->search));
+ 	$this->Output->redirect('SearchResults', array('searchId' => $this->searchId));
 	}
 
 }
