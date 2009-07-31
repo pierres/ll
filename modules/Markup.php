@@ -21,19 +21,28 @@
 class Markup extends Modul{
 
 
-private $sep 			= '';
-private $sepc 			= '';
+private $sep = '';
+private $sepc = '';
 /*
 	Zwischenspeicher für gefundene Tags
 */
-private $Stack			= null;
-private $Codes 			= null;
+private $Stack = null;
+private $Codes = null;
 
-private $linkNumber 		= 1;
-
-private $smilies 		= array();
-
-private $HighLight 		= null;
+private $linkNumber = 1;
+public static $smilies = array(
+	'0:-)' => 'angel',
+	':-*)' => 'embarrassed',
+	':-*'  => 'kiss',
+	'xD'   => 'laugh',
+	':-|'  => 'plain',
+	':-P'  => 'raspberry',
+	':-('  => 'sad',
+	':-D'  => 'smile-big',
+	':-)'  => 'smile',
+	':-0'  => 'surprise',
+	':-/'  => 'uncertain',
+	';-)'  => 'wink');
 
 
 function __construct()
@@ -43,32 +52,6 @@ function __construct()
 
 	$this->Stack = new Stack();
 	$this->Codes = new Stack();
-
-	$this->smilies = array(
-		';-)' => 'wink',
-		';)' => 'wink',
-		';D' => 'grin',
-		'::)' => 'rolleyes',
-		':-)' => 'smiley',
-		':)' => 'smiley',
-		':-\\' => 'undecided',
-		':-/' => 'undecided',
-		':-X' => 'lipsrsealed',
-		':-x' => 'lipsrsealed',
-		':-[' => 'embarassed',
-		':-*' => 'kiss',
-		'&gt;:(' => 'angry',
-		':P' => 'tongue',
-		':p' => 'tongue',
-		':D' => 'cheesy',
-		':-(' => 'sad',
-		':(' => 'sad',
-		':O' => 'shocked',
-		':o' => 'shocked',
-		'8)' => 'cool',
-		'???' => 'huh',
-		':\'(' => 'cry',
-		'\'(' => 'cry');
 	}
 
 private function createStackLink($string)
@@ -143,54 +126,20 @@ private function complieSecondPass($text)
 	$text = preg_replace_callback('/--(.+?)--/', array($this, 'makeDel'), $text);
 
 	$text = preg_replace_callback('/\+\+(.+?)\+\+/', array($this, 'makeIns'), $text);
-
-	$text = $this->compileSmilies($text);
+	
+	foreach (self::$smilies as $search => $replace)
+		{
+		$text = str_replace(
+			$search,
+			$this->createStackLink('<img src="images/smilies/'.$replace.'.png" alt="'.$replace.'" class="smiley" />'),
+			$text);
+		}
 
 	/** Listen */
 	$text = preg_replace_callback('/(?:^\*+ [^\n]+$\n?)+/m',array($this, 'makeList'), $text);
 
 	/** Zitate */
 	$text = preg_replace_callback('#&lt;quote(?: .+?)?&gt;.+&lt;/quote&gt;#s', array($this, 'makeQuote'), $text);
-
-	return $text;
-	}
-
-private function compileSmilies($text)
-	{
-	//;-) ;)
-	$text = preg_replace_callback('/(^|\s)(;-?\))($|\W)/', array($this, 'makeSmiley'), $text);
-	//;D
-	$text = preg_replace_callback('/(^|\s)(;D)($|\W)/', array($this, 'makeSmiley'), $text);
-	//::)
-	$text = preg_replace_callback('/(^|\s)(::\))($|\W)/', array($this, 'makeSmiley'), $text);
-	//:-) :)
-	$text = preg_replace_callback('/(^|\s)(:-?\))($|\W)/', array($this, 'makeSmiley'), $text);
-	//:-\ :-/
-	$text = preg_replace_callback('/(^|\s)(:-\\\|:-\/)($|\W)/', array($this, 'makeSmiley'), $text);
-	//:-X :-x
-	$text = preg_replace_callback('/(^|\s)(:-X)($|\W)/i', array($this, 'makeSmiley'), $text);
-	//:-[
-	$text = preg_replace_callback('/(^|\s)(:-\[)($|\W)/', array($this, 'makeSmiley'), $text);
-	//:-*
-	$text = preg_replace_callback('/(^|\s)(:-\*)($|\W)/', array($this, 'makeSmiley'), $text);
-	//>:(
-	$text = preg_replace_callback('/(^|\s)(&gt;:\()($|\W)/', array($this, 'makeSmiley'), $text);
-	//:P :p
-	$text = preg_replace_callback('/(^|\s)(:P)($|\W)/i', array($this, 'makeSmiley'), $text);
-	//:D
-	$text = preg_replace_callback('/(^|\s)(:D)($|\W)/', array($this, 'makeSmiley'), $text);
-	//:-( :(
-	$text = preg_replace_callback('/(^|\s)(:-?\()($|\W)/', array($this, 'makeSmiley'), $text);
-	//:o :O
-	$text = preg_replace_callback('/(^|\s)(:o)($|\W)/i', array($this, 'makeSmiley'), $text);
-	//8)
-	$text = preg_replace_callback('/(^|\s)(8\))($|\W)/', array($this, 'makeSmiley'), $text);
-	//???
-	$text = preg_replace_callback('/(^|\s)(\?\?\?)($|\W)/', array($this, 'makeSmiley'), $text);
-	//'( :'(
-	$text = preg_replace_callback('/(^|\s)(:?\'\()($|\W)/', array($this, 'makeSmiley'), $text);
-
-	$text = preg_replace_callback('/&lt;(\w{2,15})&gt;/', array($this, 'makeExtraSmiley'), $text);
 
 	return $text;
 	}
@@ -572,25 +521,6 @@ private function makeEmail($matches)
 	$email = htmlspecialchars($matches[0], ENT_COMPAT, 'UTF-8');
 
 	return $this->createStackLink('<a href="mailto:'.$email.'">'.$email.'</a>');
-	}
-
-private function makeSmiley($matches)
-	{
-	return $matches[1].$this->createStackLink('<img src="images/smilies/'.$this->smilies[$matches[2]].'.gif" alt="'.$this->smilies[$matches[2]].'" class="smiley" />').$matches[3];
-	}
-
-private function makeExtraSmiley($matches)
-	{
-	$smilies = array('2thumbsup','Mr-T','afro','alien','angel','angry','annoyed','antlers','anxious','argue','army','artist','baby','balloon','balloon2','balloon3','bandana','batman','beadyeyes','beadyeyes2','beam','beatnik','beatnik2','behead','behead2','bigcry','biker','blank','blush','bobby','bobby2','bomb','bomb2','book','book2','bow','brood','bucktooth','builder','builder2','bulb','bulb2','charming','cheesy','chef','chinese','clown','computer','confused','cool','cool2','cool3','cool4','cowboy','crown','crowngrin','cry','cry2','curtain','cyclist','daisy','dead','deal','deal2','devil','devilish','disappointed','disguise','dizzy','dizzy2','dozey','drummer','drunk','dunce','dunce2','earmuffs','ears','egypt','elf','elvis','embarassed','end','evil','evil2','evil3','evilgrin','fireman','freak','furious','furious2','furious3','glasses','glasses2','goofy','gorgeous','gossip','greedy','grin','grin2','grin3','guitarist','hair','hair2','hanged','happy','happy2','hat','hat2','heart','helmet','help','hippy','huh','huh2','idea','idea2','idea3','iloveyou','indian_brave','indian_chief','inquisitive','jester','joker','juggle','juggle2','karate','kid','kiss','kiss2','klingon','knife','laugh','laugh2','laugh3','laugh4','leer','lips','lips2','lipsrsealed','lipsrsealed2','lost','love','mad','mask','mean','mellow','mickey','moustache','nice','no','oops','operator','party','party2','party3','pimp','pimp2','pirate','pleased','policeman','pumpkin','punk','rifle','rockstar','rolleyes','rolleyes2','rolleyes3','rolleyes4','rolleyes5','sad','sad2','sad3','santa','santa2','santa3','scholar','shame','shifty','shocked','shocked2','shocked3','shout','shy','sick','sick2','singer','skull','sleep','sleeping','sleepy','smart','smartass','smartass2','smash','smile','smiley','smiley2','smitten','smoking','smug','smug2','sneaky','snobby','snore','sombrero','speechless','square','stare','stars','stooge_curly','stooge_larry','stooge_moe','stop','stunned','stupid','sultan','sunny','surprised','sweatdrop','sweetheart','thinking','thinking2','thumbsdown','thumbsup','tiny','tired','toff','toilet','tongue','tongue2','tongue3','uhoh','uhoh2','undecided','uneasy','vampire','vanish','veryangry','veryangry2','vulcan','wacko','wacky','wall','whip','wideeyed','wings','wink','wink2','wink3','wiseguy','withclever','worried','worried2','wreck','wry','xmas','yes','zzz');
-
-	if (in_array($matches[1], $smilies))
-		{
-		return $this->createStackLink('<img src="images/smilies/extra/'.$matches[1].'.gif" alt="'.$matches[1].'" class="smiley" />');
-		}
-	else
-		{
-		return '&lt;'.$matches[1].'&gt;';
-		}
 	}
 
 }

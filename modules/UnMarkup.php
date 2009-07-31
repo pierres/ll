@@ -82,10 +82,7 @@ public function fromHtml($text)
 
 	$text = preg_replace_callback('#<a href="(.+?)"(?: onclick="return !window\.open\(this\.href\);" rel="nofollow" class="extlink"| class="link")>(.+?)</a>#', array($this, 'unmakeLink'), $text);
 
-
-	$text = preg_replace_callback('#<img src="images/smilies/\w+.gif" alt="(\w+)" class="smiley" />#',array($this, 'unmakeSmiley'), $text);
-
-	$text = preg_replace_callback('#<img src="images/smilies/extra/\w+.gif" alt="(\w+)" class="smiley" />#',array($this, 'unmakeExtraSmiley'), $text);
+	$text = preg_replace_callback('#<img src="images/smilies/[\w-]+.png" alt="([\w-]+)" class="smiley" />#',array($this, 'unmakeSmiley'), $text);
 
 	$text = preg_replace_callback('#<a href="(?:.+?)GetImage(?:.+?)url=(.+?)" onclick="return !window\.open\(this\.href\);" rel="nofollow"><img src="(?:.+?)" alt="" class="image" /></a>#', array($this, 'urldecode'), $text);
 
@@ -160,35 +157,15 @@ private function unmakeCuttedLink($matches)
 
 private function unmakeSmiley($matches)
 	{
-	/** TODO: Stack verwenden */
-
-	switch($matches[1])
+	foreach (Markup::$smilies as $replace => $search)
 		{
-		case 'wink' 			: return ';-)';
-		case 'grin' 			: return ';D';
-		case 'rolleyes' 		: return '::)';
-		case 'smiley' 			: return ':-)';
-		case 'undecided' 		: return ':-\\';
-		case 'lipsrsealed' 		: return ':-X';
-		case 'embarassed' 		: return ':-[';
-		case 'kiss' 			: return ':-*';
-		case 'angry' 			: return '>:(';
-		case 'tongue' 			: return ':P';
-		case 'cheesy' 			: return ':D';
-		case 'sad' 			: return ':-(';
-		case 'shocked' 			: return ':o';
-		case 'cool' 			: return '8)';
-		case 'huh' 			: return '???';
-		case 'cry' 			: return ':\'(';
-		default 			: return $matches[1];
+		if ($matches[1] == $search)
+			{
+			return $replace;
+			}
 		}
-	}
-
-private function unmakeExtraSmiley($matches)
-	{
-	$this->Stack->push( '<'.$matches[1].'>');
-
-	return $this->sep.$this->Stack->lastID().$this->sep;
+	
+	return $matches[1];
 	}
 
 private function unmakeList($matches)

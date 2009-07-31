@@ -243,7 +243,7 @@ public function testURL()
 
 public function testSmilies()
 	{
-	$this->assertEquals('<img src="images/smilies/wink.gif" alt="wink" class="smiley" />',$this->ll->Markup->toHtml(';-)'));
+	$this->assertEquals('<img src="images/smilies/wink.png" alt="wink" class="smiley" />',$this->ll->Markup->toHtml(';-)'));
 	}
 
 public function testBug74()
