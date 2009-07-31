@@ -179,16 +179,6 @@ public function testListAndStrong()
 	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
 	}
 
-public function testHeading()
-	{
-	$this->assertEquals('<h1>test</h1>', $this->ll->Markup->toHtml('!test'));
-	$this->assertEquals('<h2>test</h2>', $this->ll->Markup->toHtml('!!test'));
-	$this->assertEquals('<h3>test</h3>', $this->ll->Markup->toHtml('!!!test'));
-	$this->assertEquals('<h4>test</h4>', $this->ll->Markup->toHtml('!!!!test'));
-	$this->assertEquals('<h5>test</h5>', $this->ll->Markup->toHtml('!!!!!test'));
-	$this->assertEquals('<h6>test</h6>', $this->ll->Markup->toHtml('!!!!!!test'));
-	}
-
 public function testEm()
 	{
 	$this->assertEquals('<em>test</em>', $this->ll->Markup->toHtml('//test//'));

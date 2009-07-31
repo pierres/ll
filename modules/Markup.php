@@ -112,8 +112,6 @@ private function complieFirstPass($text)
 
 private function complieSecondPass($text)
 	{
-	/** Überschriften */
-	$text = preg_replace_callback('/^(!{1,6})(.+?)$(\n?)/m', array($this, 'makeHeading'), $text);
 	/** Hervorhebungen */
 	$text = preg_replace_callback('#//([^/\n]+?)//#', array($this, 'makeEm'), $text);
 
@@ -324,12 +322,6 @@ private function makeList($matches)
 	$out .= str_repeat('</li></ul>', $cur);
 
 	return $this->createStackLink($out);
-	}
-
-private function makeHeading($matches)
-	{
-	$level = strlen($matches[1]);
-	return $this->createStackLink('<h'.$level.'>'.$matches[2].'</h'.$level.'>'.$matches[3]);
 	}
 
 private function makeEm($matches)
