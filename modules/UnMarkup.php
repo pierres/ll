@@ -25,7 +25,7 @@ private $Stack;
 
 function __construct()
 	{
-	$this->sep 	= chr(28);
+	$this->sep = chr(28);
 
 	$this->Stack = new Stack();
 	}
@@ -57,21 +57,20 @@ public function fromHtml($text)
 	$text = str_replace('<q>', '"', $text);
 	$text = str_replace('</q>', '"', $text);
 
-	$text = preg_replace('#<a href="mailto:(.+?)">.+?</a>#', '$1', $text);
+	$text = preg_replace_callback('#<a href="(?:.+?)GetImage(?:.+?)url=(.+?)" rel="nofollow" rev="auto"><img src="(?:.+?)" alt="" class="image" /></a>#', array($this, 'unmakeAutoImage'), $text);
+	$text = preg_replace_callback('#<a href="(?:.+?)GetImage(?:.+?)url=(.+?)" rel="nofollow"><img src="(?:.+?)" alt="" class="image" /></a>#', array($this, 'unmakeImage'), $text);
 
-	$text = preg_replace_callback('#<!-- cutted --><a href="(.+?)"(?: onclick="return !window\.open\(this\.href\);" rel="nofollow" class="extlink"| class="link")>.+?</a><!-- /cutted -->#', array($this, 'unmakeCuttedLink'), $text);
+	$text = preg_replace_callback('#<video src="(.+?)" controls="controls" rev="auto"><a href="(?:.+?)" rel="nofollow">(?:.+?)</a></video>#', array($this, 'unmakeAutoVideo'), $text);
+	$text = preg_replace_callback('#<video src="(.+?)" controls="controls"><a href="(?:.+?)" rel="nofollow">(?:.+?)</a></video>#', array($this, 'unmakeVideo'), $text);
+	$text = preg_replace_callback('#<audio src="(.+?)" controls="controls"><a href="(?:.+?)" rel="nofollow">(?:.+?)</a></audio>#', array($this, 'unmakeAudio'), $text);
 
-	$text = preg_replace_callback('#<a href="(.+?)"(?: onclick="return !window\.open\(this\.href\);" rel="nofollow" class="extlink"| class="link")>(.+?)</a>#', array($this, 'unmakeLink'), $text);
+	$text = preg_replace_callback('#<a href="(.+?)" rel="nofollow" rev="auto">.+?</a>#', array($this, 'unmakeAutoLink'), $text);
+	$text = preg_replace_callback('#<a href="(.+?)" rel="nofollow">(.+?)</a>#', array($this, 'unmakeNamedLink'), $text);
 
 	$text = preg_replace_callback('#<img src="images/smilies/[\w-]+.png" alt="([\w-]+)" class="smiley" />#',array($this, 'unmakeSmiley'), $text);
 
-	$text = preg_replace_callback('#<a href="(?:.+?)GetImage(?:.+?)url=(.+?)" onclick="return !window\.open\(this\.href\);" rel="nofollow"><img src="(?:.+?)" alt="" class="image" /></a>#', array($this, 'urldecode'), $text);
-
 	$text = preg_replace_callback('#<ul>.+</ul>#m', array($this, 'unmakeList'), $text);
 
-	/*
-	Jetzt schreiben wir wieder alle gefundenen Tags zurück
-	*/
 	while ($this->Stack->hasNext())
 		{
 		$text = str_replace
@@ -87,38 +86,46 @@ public function fromHtml($text)
 	return $text;
 	}
 
-private function urldecode($matches)
+private function unmakeImage($matches)
 	{
-	return urldecode($matches[1]);
+	$this->Stack->push('<img src="'.urldecode($matches[1]).'" />');
+	return $this->sep.$this->Stack->lastID().$this->sep;
 	}
 
-private function unmakeLocalUrl($url)
+private function unmakeAutoImage($matches)
 	{
-	if (empty($url) || strpos($url, '?') === 0 || strpos($url, '/') === 0)
-		{
-		return 'http'.(!getenv('HTTPS') ? '' : 's').'://'
-			.getenv('HTTP_HOST').(strpos($url, '?') === 0 ? '/': '').$url;
-		}
-	else
-		{
-		return $url;
-		}
+	$this->Stack->push(urldecode($matches[1]));
+	return $this->sep.$this->Stack->lastID().$this->sep;
 	}
 
-private function unmakeLink($matches)
+private function unmakeVideo($matches)
 	{
-	$url = $matches[1];
-	$name = $matches[2];
+	$this->Stack->push('<video src="'.$matches[1].'" />');
+	return $this->sep.$this->Stack->lastID().$this->sep;
+	}
 
-	$this->Stack->push( '<'.$this->unmakeLocalUrl($url).' '.$name.'>');
+private function unmakeAutoVideo($matches)
+	{
+	$this->Stack->push($matches[1]);
+	return $this->sep.$this->Stack->lastID().$this->sep;
+	}
+
+private function unmakeAudio($matches)
+	{
+	$this->Stack->push('<audio src="'.$matches[1].'" />');
+	return $this->sep.$this->Stack->lastID().$this->sep;
+	}
+
+private function unmakeNamedLink($matches)
+	{
+	$this->Stack->push( '<a href="'.$matches[1].'">'.$matches[2].'</a>');
 
 	return $this->sep.$this->Stack->lastID().$this->sep;
 	}
 
-private function unmakeCuttedLink($matches)
+private function unmakeAutoLink($matches)
 	{
-	$url = $matches[1];
-	$this->Stack->push($this->unmakeLocalUrl($url));
+	$this->Stack->push($matches[1]);
 
 	return $this->sep.$this->Stack->lastID().$this->sep;
 	}
@@ -132,7 +139,7 @@ private function unmakeSmiley($matches)
 			return $replace;
 			}
 		}
-	
+
 	return $matches[1];
 	}
 

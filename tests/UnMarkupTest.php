@@ -141,10 +141,10 @@ abc';
 public function testLinkInList()
 	{
 	$out =
-'* <http://www.heise.de Heise>
+'* <a href="http://www.heise.de">Heise</a>
 * 2gg
 ';
-	$in = '<ul><li><a href="http://www.heise.de" onclick="return !window.open(this.href);" rel="nofollow" class="extlink">Heise</a></li><li>2gg</li></ul>';
+	$in = '<ul><li><a href="http://www.heise.de" rel="nofollow">Heise</a></li><li>2gg</li></ul>';
   	$this->assertEquals($out, $this->ll->UnMarkup->fromHtml($in));
 	}
 
@@ -188,13 +188,6 @@ reg
 </pre><br /><ul><li>2</li><li>3</li></ul>';
 
 	$this->assertEquals($out, $this->ll->UnMarkup->fromHtml($in));
-	}
-
-public function testBug93()
-	{
-	$this->assertEquals('<http://www.laber-land.de aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa>', $this->ll->UnMarkup->fromHtml('<a href="http://www.laber-land.de" onclick="return !window.open(this.href);" rel="nofollow" class="extlink">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</a>'));
-
-	$this->assertEquals('http://www.laber-land.de/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', $this->ll->UnMarkup->fromHtml('<!-- cutted --><a href="http://www.laber-land.de/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" onclick="return !window.open(this.href);" rel="nofollow" class="extlink">http://www.laber-land.de/aaaaaaaaaaaa...</a><!-- /cutted -->'));
 	}
 
 }

@@ -17,15 +17,11 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-/** FIXME: maximale Tiefe in Schleifen festlegen ->DOS */
-class Markup extends Modul{
 
+class Markup extends Modul {
 
 private $sep = '';
 private $sepc = '';
-/*
-	Zwischenspeicher für gefundene Tags
-*/
 private $Stack = null;
 private $Codes = null;
 
@@ -46,8 +42,8 @@ public static $smilies = array(
 
 function __construct()
 	{
-	$this->sep 	= chr(28);
-	$this->sepc 	= chr(26);
+	$this->sep = chr(28);
+	$this->sepc = chr(26);
 
 	$this->Stack = new Stack();
 	$this->Codes = new Stack();
@@ -69,43 +65,41 @@ private function complieFirstPass($text)
 	$path 		= '(?:\/(?:[a-z0-9_%&:;,\+\-\/=~\.#]*[a-z0-9\/])?)?';
 	$request 	= '(?:\?[a-z0-9_%&:;,\+\-\/=~\.#]*[a-z0-9])?';
 	$img	 	= '[a-z0-9_\-]+\.(?:gif|jpe?g|png)';
+	$video	 	= '[a-z0-9_\-]+\.(?:ogg|ogm)';
 
 
-	/** Code muß am Zeilenanfang beginnen */
 	$text = preg_replace_callback('#<pre>(.+?)</pre>#s', array($this, 'makePre'), $text);
-	/** Inline Code */
 	$text = preg_replace_callback('#<code>(.+?)</code>#s', array($this, 'makeCode'), $text);
 
-	/** komplette URL mit Namen */
-	$text = preg_replace_callback('/<('.$protocoll.$address.$path.$request.') (.+?)>/is', array($this, 'makeNamedLink'), $text);
-	/** www.domain.tld  mit Namen */
-	$text = preg_replace_callback('/<(www\.'.$domain.$path.$request.') (.+?)>/is',  array($this, 'makeNamedWWWLink'), $text);
-	/** ftp.domain.tld  mit Namen */
-	$text = preg_replace_callback('/<(ftp\.'.$domain.$path.$request.') (.+?)>/is',  array($this, 'makeNamedFTPLink'), $text);
+	$text = preg_replace_callback('#<a href="('.$protocoll.'.+?)">(.+?)</a>#', array($this, 'makeNamedLink'), $text);
+	$text = preg_replace_callback('#<a href="(www\..+?)">(.+?)</a>#',  array($this, 'makeNamedWWWLink'), $text);
+	$text = preg_replace_callback('#<a href="(ftp\..+?)">(.+?)</a>#',  array($this, 'makeNamedFTPLink'), $text);
 
-	/** E-Mails */
-	$text = preg_replace_callback('/'.$name.'@'.$domain.'/i', array($this, 'makeEmail'), $text);
+	$text = preg_replace_callback('#<img src="('.$protocoll.'.+?)" />#', array($this, 'makeImage'), $text);
+	$text = preg_replace_callback('#<img src="(www\..+?)" />#', array($this, 'makeWWWImage'), $text);
+	$text = preg_replace_callback('#<img src="(ftp\..+?)" />#', array($this, 'makeFTPImage'), $text);
+	
+	$text = preg_replace_callback('#<video src="('.$protocoll.'.+?)" />#', array($this, 'makeVideo'), $text);
+	$text = preg_replace_callback('#<audio src="('.$protocoll.'.+?)" />#', array($this, 'makeAudio'), $text);
 
-	/** Bilder */
-	$text = preg_replace_callback('/'.$protocoll.$address.$path.$img.'/i', array($this, 'makeImage'), $text);
-	/** Bilder www.domain.tld */
-	$text = preg_replace_callback('/www\.'.$domain.$path.$img.'/i', array($this, 'makeWWWImage'), $text);
-	/** Bilder ftp.domain.tld */
-	$text = preg_replace_callback('/ftp\.'.$domain.$path.$img.'/i', array($this, 'makeFTPImage'), $text);
+	# auto detection
+	$text = preg_replace_callback('/'.$protocoll.$address.$path.$video.'/i', array($this, 'makeAutoVideo'), $text);
+	$text = preg_replace_callback('/www\.'.$domain.$path.$video.'/i', array($this, 'makeAutoWWWVideo'), $text);
+	$text = preg_replace_callback('/ftp\.'.$domain.$path.$video.'/i', array($this, 'makeAutoFTPVideo'), $text);
 
-	/** komplette URL */
-	$text = preg_replace_callback('/'.$protocoll.$address.$path.$request.'/i', array($this, 'makeLink'), $text);
-	/** www.domain.tld */
-	$text = preg_replace_callback('/www\.'.$domain.$path.$request.'/i', array($this, 'makeWWWLink'), $text);
-	/** ftp.domain.tld */
-	$text = preg_replace_callback('/ftp\.'.$domain.$path.$request.'/i', array($this, 'makeFTPLink'), $text);
+	$text = preg_replace_callback('/'.$protocoll.$address.$path.$img.'/i', array($this, 'makeAutoImage'), $text);
+	$text = preg_replace_callback('/www\.'.$domain.$path.$img.'/i', array($this, 'makeAutoWWWImage'), $text);
+	$text = preg_replace_callback('/ftp\.'.$domain.$path.$img.'/i', array($this, 'makeAutoFTPImage'), $text);
+
+	$text = preg_replace_callback('/'.$protocoll.$address.$path.$request.'/i', array($this, 'makeAutoLink'), $text);
+	$text = preg_replace_callback('/www\.'.$domain.$path.$request.'/i', array($this, 'makeAutoWWWLink'), $text);
+	$text = preg_replace_callback('/ftp\.'.$domain.$path.$request.'/i', array($this, 'makeAutoFTPLink'), $text);
 
 	return $text;
 	}
 
 private function complieSecondPass($text)
 	{
-	/** Hervorhebungen */
 	$text = preg_replace_callback("#'''(.+?)'''#", array($this, 'makeStrong'), $text);
 	$text = preg_replace_callback("#''(.+?)''#", array($this, 'makeEm'), $text);
 
@@ -119,18 +113,12 @@ private function complieSecondPass($text)
 			$text);
 		}
 
-	/** Listen */
 	$text = preg_replace_callback('/(?:^\*+ [^\n]+$\n?)+/m',array($this, 'makeList'), $text);
-
-	/** Zitate */
 	$text = preg_replace_callback('#&lt;quote(?: .+?)?&gt;.+&lt;/quote&gt;#s', array($this, 'makeQuote'), $text);
 
 	return $text;
 	}
 
-/**
-* @param &$text Text
-*/
 public function toHtml($text)
 	{
 	if (empty($text))
@@ -258,9 +246,6 @@ private function makeQuote($matches)
 	return $out;
 	}
 
-/**
-	erzeugt Listenelemente (auch geschachtelt)
-*/
 private function makeList($matches)
 	{
 	$out = '';
@@ -325,138 +310,148 @@ private function makeInlineQuote($matches)
 	return $this->createStackLink('<q>'.$matches[1].'</q>');
 	}
 
-private function makeLink($matches)
+private function makeAutoLink($matches)
 	{
-	$matches[1] = $matches[0];
-	$matches[2] = $matches[0];
-
 	return $this->makeNamedLink($matches, true);
 	}
 
-private function makeWWWLink($matches)
+private function makeAutoWWWLink($matches)
 	{
-	$matches[1] = $matches[0];
-	$matches[2] = $matches[0];
-
 	return $this->makeNamedWWWLink($matches, true);
 	}
 
-private function makeFTPLink($matches)
+private function makeAutoFTPLink($matches)
 	{
-	$matches[1] = $matches[0];
-	$matches[2] = $matches[0];
-
 	return $this->makeNamedFTPLink($matches, true);
 	}
 
-private function isLocalHost($url)
+private function makeNamedLink($matches, $auto = false)
 	{
-	$request = parse_url($url);
-
-	try
+	if ($auto)
 		{
-		return ($this->Input->getHost() == $request['host']);
-		}
-	catch (RequestException $e)
-		{
-		return false;
-		}
-	}
-
-private function makeLocalUrl($url)
-	{
-	$request = parse_url($url);
-
-	$path = empty($request['path']) ? '' : substr($request['path'], 1);
-	$query = empty($request['query']) ? '' : '?'.$request['query'];
-	$fragment = empty($request['fragment']) ? '' : '#'.$request['fragment'];
-
-	$newUrl = $path.$query.$fragment;
-
-	return empty($newUrl) ? $url : $newUrl;
-	}
-
-private function makeNamedLink($matches, $cutName = false)
-	{
-	$url = $matches[1];
-	$name = $matches[2];
-
-	if ($this->isLocalHost($url))
-		{
-		$target = ' class="link"';
-		$url = $this->makeLocalUrl($url);
-		// $url == $name?
-		if ($matches[1] == $matches[2])
-			{
-			$name = $url;
-			}
+		$url = htmlspecialchars($matches[0], ENT_COMPAT, 'UTF-8');
+		$name = $url;
+		$rev = ' rev="auto"';
 		}
 	else
 		{
-		$target = ' onclick="return !window.open(this.href);" rel="nofollow" class="extlink"';
+		$url = htmlspecialchars($matches[1], ENT_COMPAT, 'UTF-8');
+		$name = htmlspecialchars($matches[2], ENT_COMPAT, 'UTF-8');
+		$rev = '';
 		}
 
-	if ($cutName && strlen($name) > 50)
+	return $this->createStackLink('<a href="'.$url.'" rel="nofollow"'.$rev.'>'.$name.'</a>');
+	}
+
+private function makeNamedWWWLink($matches, $auto = false)
+	{
+	$offset = ($auto ? 0 : 1);
+	$matches[$offset] = 'http://'.$matches[$offset];
+	return $this->makeNamedLink($matches, $auto);
+	}
+
+private function makeNamedFTPLink($matches, $auto = false)
+	{
+	$offset = ($auto ? 0 : 1);
+	$matches[$offset] = 'ftp://'.$matches[$offset];
+	return $this->makeNamedLink($matches, $auto);
+	}
+
+private function makeImage($matches, $auto = false)
+	{
+	if ($auto)
 		{
-		$name = mb_substr($name, 0, 37, 'UTF-8').'...'.mb_substr($name, -10, null, 'UTF-8');
-		$cutted = true;
+		$url = $matches[0];
+		$rev = ' rev="auto"';
 		}
 	else
 		{
-		$cutted = false;
+		$url = $matches[1];
+		$rev = '';
 		}
 
+	return $this->createStackLink('<a href="'.$this->Output->createUrl('GetImage', array('url' => $url)).'" rel="nofollow"'.$rev.'><img src="'.$this->Output->createUrl('GetImage', array('thumb' => 1, 'url' => $url)).'" alt="" class="image" /></a>');
+	}
 
-	$link = '<a href="'.htmlspecialchars($url, ENT_COMPAT, 'UTF-8').'"'.$target.'>'.htmlspecialchars($name, ENT_COMPAT, 'UTF-8').'</a>';
+private function makeWWWImage($matches, $auto = false)
+	{
+	$offset = ($auto ? 0 : 1);
+	$matches[$offset] = 'http://'.$matches[$offset];
+	return $this->makeImage($matches, $auto);
+	}
 
-	if ($cutted)
+private function makeFTPImage($matches, $auto = false)
+	{
+	$offset = ($auto ? 0 : 1);
+	$matches[$offset] = 'ftp://'.$matches[$offset];
+	return $this->makeImage($matches, $auto);
+	}
+
+private function makeAutoImage($matches)
+	{
+	return $this->makeImage($matches, true);
+	}
+
+private function makeAutoWWWImage($matches)
+	{
+	return $this->makeWWWImage($matches, true);
+	}
+
+private function makeAutoFTPImage($matches)
+	{
+	return $this->makeFTPImage($matches, true);
+	}
+
+private function makeVideo($matches, $auto = false)
+	{
+	if ($auto)
 		{
-		$link = $this->tagElement('cutted', $link);
+		$url = htmlspecialchars($matches[0], ENT_COMPAT, 'UTF-8');
+		$rev = ' rev="auto"';
+		}
+	else
+		{
+		$url = htmlspecialchars($matches[1], ENT_COMPAT, 'UTF-8');
+		$rev = '';
 		}
 
-	return $this->createStackLink($link);
+	return $this->createStackLink('<video src="'.$url.'" controls="controls"'.$rev.'><a href="'.$url.'" rel="nofollow">'.$url.'</a></video>');
 	}
 
-private function tagElement($tag, $element)
+private function makeWWWVideo($matches, $auto = false)
 	{
-	return '<!-- '.$tag.' -->'.$element.'<!-- /'.$tag.' -->';
+	$offset = ($auto ? 0 : 1);
+	$matches[$offset] = 'http://'.$matches[$offset];
+	return $this->makeVideo($matches, $auto);
 	}
 
-
-private function makeNamedWWWLink($matches, $cutName = false)
+private function makeFTPVideo($matches, $auto = false)
 	{
-	$matches[1] = 'http://'.$matches[1];
-	return $this->makeNamedLink($matches, $cutName);
+	$offset = ($auto ? 0 : 1);
+	$matches[$offset] = 'ftp://'.$matches[$offset];
+	return $this->makeVideo($matches, $auto);
 	}
 
-private function makeNamedFTPLink($matches, $cutName = false)
+private function makeAutoVideo($matches)
 	{
-	$matches[1] = 'ftp://'.$matches[1];
-	return $this->makeNamedLink($matches, $cutName);
+	return $this->makeVideo($matches, true);
 	}
 
-private function makeImage($matches)
+private function makeAutoWWWVideo($matches)
 	{
-	return $this->createStackLink('<a href="'.$this->Output->createUrl('GetImage', array('url' => $matches[0])).'" onclick="return !window.open(this.href);" rel="nofollow"><img src="'.$this->Output->createUrl('GetImage', array('thumb' => 1, 'url' => $matches[0])).'" alt="" class="image" /></a>');
+	return $this->makeWWWVideo($matches, true);
 	}
 
-private function makeWWWImage($matches)
+private function makeAutoFTPVideo($matches)
 	{
-	$matches[0] = 'http://'.$matches[0];
-	return $this->makeImage($matches);
+	return $this->makeFTPVideo($matches, true);
 	}
 
-private function makeFTPImage($matches)
+private function makeAudio($matches)
 	{
-	$matches[0] = 'ftp://'.$matches[0];
-	return $this->makeImage($matches);
-	}
+	$url = htmlspecialchars($matches[0], ENT_COMPAT, 'UTF-8');
 
-private function makeEmail($matches)
-	{
-	$email = htmlspecialchars($matches[0], ENT_COMPAT, 'UTF-8');
-
-	return $this->createStackLink('<a href="mailto:'.$email.'">'.$email.'</a>');
+	return $this->createStackLink('<audio src="'.$url.'" controls="controls"'.$rev.'><a href="'.$url.'" rel="nofollow">'.$url.'</a></audio>');
 	}
 
 }
