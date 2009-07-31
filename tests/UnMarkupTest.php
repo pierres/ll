@@ -148,16 +148,6 @@ public function testLinkInList()
   	$this->assertEquals($out, $this->ll->UnMarkup->fromHtml($in));
 	}
 
-public function testDel()
-	{
-	$this->assertEquals('--test--', $this->ll->UnMarkup->fromHtml('<span><del>test</del></span>'));
-	}
-
-public function testIns()
-	{
-	$this->assertEquals('++test++', $this->ll->UnMarkup->fromHtml('<span><ins>test</ins></span>'));
-	}
-
 public function testStrong()
 	{
 	$this->assertEquals('**test**', $this->ll->UnMarkup->fromHtml('<strong>test</strong>'));

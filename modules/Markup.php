@@ -111,12 +111,6 @@ private function complieSecondPass($text)
 	$text = preg_replace_callback('/\*\*([^\*\s](?:[^\*\n]*?[^\*\s])?)\*\*/', array($this, 'makeStrong'), $text);
 
 	$text = preg_replace_callback('/&quot;(.+?)&quot;/', array($this, 'makeInlineQuote'), $text);
-
-	$text = preg_replace('/^----+$(\n?)/m', '<hr />$1', $text);
-
-	$text = preg_replace_callback('/--(.+?)--/', array($this, 'makeDel'), $text);
-
-	$text = preg_replace_callback('/\+\+(.+?)\+\+/', array($this, 'makeIns'), $text);
 	
 	foreach (self::$smilies as $search => $replace)
 		{
@@ -330,16 +324,6 @@ private function makeStrong($matches)
 private function makeInlineQuote($matches)
 	{
 	return $this->createStackLink('<q>'.$matches[1].'</q>');
-	}
-
-private function makeDel($matches)
-	{
-	return $this->createStackLink('<span><del>'.$matches[1].'</del></span>');
-	}
-
-private function makeIns($matches)
-	{
-	return $this->createStackLink('<span><ins>'.$matches[1].'</ins></span>');
 	}
 
 private function makeLink($matches)

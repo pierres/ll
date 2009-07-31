@@ -199,21 +199,6 @@ public function testInlineQuote()
 	$this->assertEquals('<q>test</q>', $this->ll->Markup->toHtml('"test"'));
 	}
 
-public function testHr()
-	{
-	$this->assertEquals('<hr />', $this->ll->Markup->toHtml('----'));
-	}
-
-public function testDel()
-	{
-	$this->assertEquals('<span><del>test</del></span>', $this->ll->Markup->toHtml('--test--'));
-	}
-
-public function testIns()
-	{
-	$this->assertEquals('<span><ins>test</ins></span>', $this->ll->Markup->toHtml('++test++'));
-	}
-
 public function testURL()
 	{
 	$this->assertEquals('<a href="http://www.laber-land.de" onclick="return !window.open(this.href);" rel="nofollow" class="extlink">Laber-Land</a>', $this->ll->Markup->toHtml('<http://www.laber-land.de Laber-Land>'));
@@ -231,13 +216,6 @@ public function testURL()
 public function testSmilies()
 	{
 	$this->assertEquals('<img src="images/smilies/wink.png" alt="wink" class="smiley" />',$this->ll->Markup->toHtml(';-)'));
-	}
-
-public function testBug74()
-	{
-	$this->assertEquals('<q>--test</q>--', $this->ll->Markup->toHtml('"--test"--'));
-	$this->assertEquals('<span><del><q>test</q></del></span>', $this->ll->Markup->toHtml('--"test"--'));
-	$this->assertEquals('<q>--test--</q>', $this->ll->Markup->toHtml('"--test--"'));
 	}
 
 public function testBug86()

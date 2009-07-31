@@ -60,16 +60,8 @@ public function fromHtml($text)
 	$text = str_replace('<strong>', '**', $text);
 	$text = str_replace('</strong>', '**', $text);
 
-	$text = str_replace('<hr />', "----\n", $text);
-
 	$text = str_replace('<q>', '"', $text);
 	$text = str_replace('</q>', '"', $text);
-
-	$text = str_replace('<span><del>', '--', $text);
-	$text = str_replace('</del>', '--', $text);
-
-	$text = str_replace('<span><ins>', '++', $text);
-	$text = str_replace('</ins>', '++', $text);
 
 	$text = preg_replace('#<a href="mailto:(.+?)">.+?</a>#', '$1', $text);
 
