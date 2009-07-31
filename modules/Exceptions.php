@@ -64,10 +64,21 @@ function ExceptionHandler(Exception $e)
 
 		if (Modul::get('Settings')->getValue('debug'))
 			{
-			header('HTTP/1.1 500 Exception');
-			header('Content-Length: '.strlen($screen));
-			header('Content-Type: text/html; charset=UTF-8');
-			echo $screen;
+			if (!headers_sent())
+				{
+				header('HTTP/1.1 500 Exception');
+				header('Content-Length: '.strlen($screen));
+				header('Content-Type: text/html; charset=UTF-8');
+				}
+
+			if (isset($_SERVER{'TERM'}))
+				{
+				echo strip_tags(unhtmlspecialchars($screen));
+				}
+			else
+				{
+				echo $screen;
+				}
 			die();
 			}
 		else
@@ -82,7 +93,7 @@ function ExceptionHandler(Exception $e)
 			$mail->setTo(Modul::get('Settings')->getValue('email'));
 			$mail->setFrom(Modul::get('Settings')->getValue('email'));
 			$mail->setSubject('LL-Error');
-			$mail->setText(strip_tags($screen));
+			$mail->setText(strip_tags(unhtmlspecialchars($screen)));
 			$mail->send();
 
 			$screen = '<?xml version="1.0" encoding="UTF-8" ?>
@@ -100,10 +111,21 @@ function ExceptionHandler(Exception $e)
 			</body>
 			</html>';
 
-			header('HTTP/1.1 500 Exception');
-			header('Content-Type: text/html; charset=UTF-8');
-			header('Content-Length: '.strlen($screen));
-			echo $screen;
+			if (!headers_sent())
+				{
+				header('HTTP/1.1 500 Exception');
+				header('Content-Type: text/html; charset=UTF-8');
+				header('Content-Length: '.strlen($screen));
+				}
+
+			if (isset($_SERVER{'TERM'}))
+				{
+				echo strip_tags(unhtmlspecialchars($screen));
+				}
+			else
+				{
+				echo $screen;
+				}
 			die();
 			}
 		}
