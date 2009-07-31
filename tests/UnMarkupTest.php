@@ -30,27 +30,25 @@ public function testEmpty()
 
 public function testCode()
 	{
-	$in =
-'<pre>
-test&quot;&lt;pre&gt;
-</pre>';
 	$out =
-'<pre>
+'- <pre>
 test"<pre>
-</pre>';
+</pre> -';
+	$in =
+'<p>- <pre>
+test&quot;&lt;pre&gt;
+</pre> -</p>';
 
 	$this->assertEquals($out, $this->ll->UnMarkup->fromHtml($in));
 
-	$in =
-'-<br /><pre>
-test&quot;&lt;pre&gt;
-</pre><br />-';
 	$out =
-'-
-<pre>
+'<pre>
 test"<pre>
-</pre>
--';
+</pre>';
+	$in =
+'<p><pre>
+test&quot;&lt;pre&gt;
+</pre></p>';
 
 	$this->assertEquals($out, $this->ll->UnMarkup->fromHtml($in));
 	}
@@ -58,7 +56,7 @@ test"<pre>
 public function testQuote()
 	{
 	$out = '<quote></quote>';
-	$in = htmlspecialchars('<quote></quote>');
+	$in = '<p>'.htmlspecialchars('<quote></quote>').'</p>';
 	$this->assertEquals($out, $this->ll->UnMarkup->fromHtml($in));
 
 	$out = '<quote>test</quote>';
@@ -93,9 +91,8 @@ public function testList()
 **** 2bii
 ** 2c
 * 3
-** 4
-';
-	$in = '<ul><li>1</li><li>2<ul><li>2a</li><li>2b<ul><li>2bi<ul><li>2bii</li></ul></li></ul></li><li>2c</li></ul></li><li>3<ul><li>4</li></ul></li></ul>';
+** 4';
+	$in = '<p><ul><li>1</li><li>2<ul><li>2a</li><li>2b<ul><li>2bi<ul><li>2bii</li></ul></li></ul></li><li>2c</li></ul></li><li>3<ul><li>4</li></ul></li></ul></p>';
  	$this->assertEquals($out, $this->ll->UnMarkup->fromHtml($in));
 
 		$out =
@@ -109,7 +106,7 @@ public function testList()
 * 3
 ** 4
 abc';
-	$in = '<ul><li>1</li><li>2<ul><li>2a</li><li>2b<ul><li>2bi<ul><li>2bii</li></ul></li></ul></li><li>2c</li></ul></li><li>3<ul><li>4</li></ul></li></ul>abc';
+	$in = '<p><ul><li>1</li><li>2<ul><li>2a</li><li>2b<ul><li>2bi<ul><li>2bii</li></ul></li></ul></li><li>2c</li></ul></li><li>3<ul><li>4</li></ul></li></ul>abc</p>';
 	$this->assertEquals($out, $this->ll->UnMarkup->fromHtml($in));
 
 	$out =
@@ -134,7 +131,9 @@ abcd
 * 3
 ** 4
 abc';
-	$in = 'o<br /><ul><li>1</li><li>2<ul><li>2a</li><li>2b<ul><li>2bi<ul><li>2bii</li></ul></li></ul></li><li>2c</li></ul></li><li>3<ul><li>4</li></ul></li></ul>abcd<br /><ul><li>1</li><li>2<ul><li>2a</li><li>2b<ul><li>2bi<ul><li>2bii</li></ul></li></ul></li><li>2c</li></ul></li><li>3<ul><li>4</li></ul></li></ul>abc';
+	$in = '<p>o
+<ul><li>1</li><li>2<ul><li>2a</li><li>2b<ul><li>2bi<ul><li>2bii</li></ul></li></ul></li><li>2c</li></ul></li><li>3<ul><li>4</li></ul></li></ul>abcd
+<ul><li>1</li><li>2<ul><li>2a</li><li>2b<ul><li>2bi<ul><li>2bii</li></ul></li></ul></li><li>2c</li></ul></li><li>3<ul><li>4</li></ul></li></ul>abc</p>';
   	$this->assertEquals($out, $this->ll->UnMarkup->fromHtml($in));
 	}
 
@@ -142,9 +141,9 @@ public function testLinkInList()
 	{
 	$out =
 '* <a href="http://www.heise.de">Heise</a>
-* 2gg
-';
-	$in = '<ul><li><a href="http://www.heise.de" rel="nofollow">Heise</a></li><li>2gg</li></ul>';
+* 2gg';
+	$in = '<p>
+<ul><li><a href="http://www.heise.de" rel="nofollow">Heise</a></li><li>2gg</li></ul></p>';
   	$this->assertEquals($out, $this->ll->UnMarkup->fromHtml($in));
 	}
 
@@ -159,9 +158,11 @@ public function testBug86()
 <pre>
 123
 </pre>
-blah', $this->ll->UnMarkup->fromHtml('test<br /><pre>
+blah', $this->ll->UnMarkup->fromHtml('test
+<pre>
 123
-</pre><br />blah'));
+</pre>
+blah'));
 	}
 
 public function testBug85()
@@ -170,7 +171,8 @@ public function testBug85()
 * 1
 * 2
 </quote>';
-	$in = '<blockquote><div><br /><ul><li>1</li><li>2</li></ul></div></blockquote>';
+	$in = '<blockquote><div>
+<ul><li>1</li><li>2</li></ul></div></blockquote>';
 
 	$this->assertEquals($out, $this->ll->UnMarkup->fromHtml($in));
 
@@ -181,11 +183,11 @@ public function testBug85()
 reg
 </pre>
 * 2
-* 3
-';
+* 3';
 	$in = '<ul><li>2</li><li>3</li><li>4</li></ul><pre>
 reg
-</pre><br /><ul><li>2</li><li>3</li></ul>';
+</pre>
+<ul><li>2</li><li>3</li></ul>';
 
 	$this->assertEquals($out, $this->ll->UnMarkup->fromHtml($in));
 	}

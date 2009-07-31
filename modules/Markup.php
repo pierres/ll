@@ -126,18 +126,14 @@ public function toHtml($text)
 		return '';
 		}
 
-	// Man weiß ja nie ....
 	$text = str_replace($this->sep, '', $text);
 	$text = str_replace($this->sepc, '', $text);
-	$text = str_replace("\r", '', $text);	//Wer braucht schon Windows-Zeilenumbrche?
+	$text = str_replace("\r", '', $text);
 
 	$text = $this->complieFirstPass($text);
 	$text = htmlspecialchars($text, ENT_COMPAT, 'UTF-8');
 	$text = $this->complieSecondPass($text);
 
-/*
-	Jetzt schreiben wir wieder alle gefundenen Tags zurück
-*/
 	while ($this->Stack->hasNext())
 		{
 		$text = str_replace
@@ -148,10 +144,7 @@ public function toHtml($text)
 			);
 		}
 
-	$text = preg_replace('/\n{2,}/', '<br /><br />', $text);
-	/** Altes Verhalten bei Zeilenumbrüchen */
-	$text = str_replace("\n", '<br />', $text);
-	$text = preg_replace('/\s{1,}/', ' ', $text);
+	$text = preg_replace('/(.+?)(?:\n{2,}|$)/s', '<p>$1</p>', $text);
 
 	while ($this->Codes->hasNext())
 		{
@@ -449,9 +442,9 @@ private function makeAutoFTPVideo($matches)
 
 private function makeAudio($matches)
 	{
-	$url = htmlspecialchars($matches[0], ENT_COMPAT, 'UTF-8');
+	$url = htmlspecialchars($matches[1], ENT_COMPAT, 'UTF-8');
 
-	return $this->createStackLink('<audio src="'.$url.'" controls="controls"'.$rev.'><a href="'.$url.'" rel="nofollow">'.$url.'</a></audio>');
+	return $this->createStackLink('<audio src="'.$url.'" controls="controls"><a href="'.$url.'" rel="nofollow">'.$url.'</a></audio>');
 	}
 
 }

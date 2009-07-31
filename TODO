@@ -17,6 +17,7 @@ LL 4 TODO
 * Add/remove files is confusing
 * atm its not possible to remove files from a posting
 * DB: automatic close of connections on error
+* Docu
 
 == Optional ==
 

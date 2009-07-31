@@ -38,11 +38,8 @@ public function fromHtml($text)
 		return '';
 		}
 
-	/** LL3.1-Kompatibilität */
-	$text = str_replace('<br />', "\n", $text);
-
-	$text = preg_replace('/<span class="\w+?">/', '', $text);
-	$text = str_replace('</span>', '', $text);
+	$text = str_replace('<p>', "", $text);
+	$text = str_replace('</p>', "\n\n", $text);
 
 	$text = preg_replace('#<cite>(.+?)</cite><blockquote><div>#', '<quote $1>', $text);
 	$text = str_replace('<blockquote><div>', '<quote>', $text);
@@ -83,7 +80,7 @@ public function fromHtml($text)
 
 	$text = unhtmlspecialchars($text);
 
-	return $text;
+	return trim($text);
 	}
 
 private function unmakeImage($matches)

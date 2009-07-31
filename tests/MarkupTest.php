@@ -37,9 +37,11 @@ test"<pre>
 </pre>
 -';
 	$out =
-'-<br /><pre>
+'<p>-
+<pre>
 test&quot;&lt;pre&gt;
-</pre><br />-';
+</pre>
+-</p>';
 	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
 
 	$in =
@@ -47,47 +49,47 @@ test&quot;&lt;pre&gt;
 test"<pre>
 </pre>';
 	$out =
-'<pre>
+'<p><pre>
 test&quot;&lt;pre&gt;
-</pre>';
+</pre></p>';
 	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
 	}
 
 public function testQuote()
 	{
 	$in = '<quote></quote>';
-	$out = htmlspecialchars('<quote></quote>');
+	$out = '<p>'.htmlspecialchars('<quote></quote>').'</p>';
 	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
 
 	$in = '<quote>test</quote>';
-	$out = '<blockquote><div>test</div></blockquote>';
+	$out = '<p><blockquote><div>test</div></blockquote></p>';
 	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
 
 	$in = '<quote>test<quote>test2</quote></quote>';
-	$out = '<blockquote><div>test<blockquote><div>test2</div></blockquote></div></blockquote>';
+	$out = '<p><blockquote><div>test<blockquote><div>test2</div></blockquote></div></blockquote></p>';
 	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
 
 	$in = '<quote ></quote>';
-	$out = htmlspecialchars('<quote ></quote>');
+	$out = '<p>'.htmlspecialchars('<quote ></quote>').'</p>';
 	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
 
 	$in = '<quote author>test</quote>';
-	$out = '<cite>author</cite><blockquote><div>test</div></blockquote>';
+	$out = '<p><cite>author</cite><blockquote><div>test</div></blockquote></p>';
 	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
 
 	$in = '<quote author>test<quote author2>test2</quote></quote>';
-	$out = '<cite>author</cite><blockquote><div>test<cite>author2</cite><blockquote><div>test2</div></blockquote></div></blockquote>';
+	$out = '<p><cite>author</cite><blockquote><div>test<cite>author2</cite><blockquote><div>test2</div></blockquote></div></blockquote></p>';
 	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
 	}
 
 public function testQuoteAndLink()
 	{
 	$in = '<quote>http://www.laber-land.de/</quote>';
-	$out = '<blockquote><div><a href="http://www.laber-land.de/" rel="nofollow" rev="auto">http://www.laber-land.de/</a></div></blockquote>';
+	$out = '<p><blockquote><div><a href="http://www.laber-land.de/" rel="nofollow" rev="auto">http://www.laber-land.de/</a></div></blockquote></p>';
 	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
 
 	$in = 'http://www.laber-land.de/test.html</quote>';
-	$out = '<a href="http://www.laber-land.de/test.html" rel="nofollow" rev="auto">http://www.laber-land.de/test.html</a>&lt;/quote&gt;';
+	$out = '<p><a href="http://www.laber-land.de/test.html" rel="nofollow" rev="auto">http://www.laber-land.de/test.html</a>&lt;/quote&gt;</p>';
 	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
 	}
 
@@ -103,7 +105,7 @@ public function testList()
 ** 2c
 * 3
 ** 4';
-	$out = '<ul><li>1</li><li>2<ul><li>2a</li><li>2b<ul><li>2bi<ul><li>2bii</li></ul></li></ul></li><li>2c</li></ul></li><li>3<ul><li>4</li></ul></li></ul>';
+	$out = '<p><ul><li>1</li><li>2<ul><li>2a</li><li>2b<ul><li>2bi<ul><li>2bii</li></ul></li></ul></li><li>2c</li></ul></li><li>3<ul><li>4</li></ul></li></ul></p>';
 	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
 
 $in =
@@ -117,7 +119,7 @@ $in =
 * 3
 ** 4
 abc';
-	$out = '<ul><li>1</li><li>2<ul><li>2a</li><li>2b<ul><li>2bi<ul><li>2bii</li></ul></li></ul></li><li>2c</li></ul></li><li>3<ul><li>4</li></ul></li></ul>abc';
+	$out = '<p><ul><li>1</li><li>2<ul><li>2a</li><li>2b<ul><li>2bi<ul><li>2bii</li></ul></li></ul></li><li>2c</li></ul></li><li>3<ul><li>4</li></ul></li></ul>abc</p>';
 	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
 
 	/** Teste Robustheit */
@@ -131,7 +133,7 @@ abc';
 ** 2c
 * 3
 ****** 4';
-	$out = '<ul><li>1</li><li>2<ul><li>2a</li><li>2b<ul><li>2bi<ul><li>2bii</li></ul></li></ul></li><li>2c</li></ul></li><li>3<ul><li>4</li></ul></li></ul>';
+	$out = '<p><ul><li>1</li><li>2<ul><li>2a</li><li>2b<ul><li>2bi<ul><li>2bii</li></ul></li></ul></li><li>2c</li></ul></li><li>3<ul><li>4</li></ul></li></ul></p>';
 	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
 
 	$in =
@@ -155,51 +157,54 @@ abcd
 * 3
 ** 4
 abc';
-	$out = '<ul><li>1</li><li>2<ul><li>2a</li><li>2b<ul><li>2bi<ul><li>2bii</li></ul></li></ul></li><li>2c</li></ul></li><li>3<ul><li>4</li></ul></li></ul>abcd<br /><ul><li>1</li><li>2<ul><li>2a</li><li>2b<ul><li>2bi<ul><li>2bii</li></ul></li></ul></li><li>2c</li></ul></li><li>3<ul><li>4</li></ul></li></ul>abc';
+	$out = '<p><ul><li>1</li><li>2<ul><li>2a</li><li>2b<ul><li>2bi<ul><li>2bii</li></ul></li></ul></li><li>2c</li></ul></li><li>3<ul><li>4</li></ul></li></ul>abcd
+<ul><li>1</li><li>2<ul><li>2a</li><li>2b<ul><li>2bi<ul><li>2bii</li></ul></li></ul></li><li>2c</li></ul></li><li>3<ul><li>4</li></ul></li></ul>abc</p>';
 	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
 	}
 
 public function testEm()
 	{
-	$this->assertEquals('<em>test</em>', $this->ll->Markup->toHtml("''test''"));
+	$this->assertEquals('<p><em>test</em></p>', $this->ll->Markup->toHtml("''test''"));
 	}
 
 public function testStrong()
 	{
-	$this->assertEquals('<strong>test</strong>', $this->ll->Markup->toHtml("'''test'''"));
+	$this->assertEquals('<p><strong>test</strong></p>', $this->ll->Markup->toHtml("'''test'''"));
 	}
 
 public function testInlineCode()
 	{
-	$this->assertEquals("<code>''test''</code>", $this->ll->Markup->toHtml("<code>''test''</code>"));
+	$this->assertEquals("<p><code>''test''</code></p>", $this->ll->Markup->toHtml("<code>''test''</code>"));
 	}
 
 public function testInlineQuote()
 	{
-	$this->assertEquals('<q>test</q>', $this->ll->Markup->toHtml('"test"'));
+	$this->assertEquals('<p><q>test</q></p>', $this->ll->Markup->toHtml('"test"'));
 	}
 
 public function testURL()
 	{
-	$this->assertEquals('<a href="http://www.laber-land.de" rel="nofollow">Laber-Land</a>', $this->ll->Markup->toHtml('<a href="http://www.laber-land.de">Laber-Land</a>'));
-	$this->assertEquals('<a href="http://www.laber-land.de" rel="nofollow">Laber-Land</a>', $this->ll->Markup->toHtml('<a href="www.laber-land.de">Laber-Land</a>'));
-	$this->assertEquals('<a href="ftp://ftp.laber-land.de" rel="nofollow">Laber-Land</a>', $this->ll->Markup->toHtml('<a href="ftp.laber-land.de">Laber-Land</a>'));
+	$this->assertEquals('<p><a href="http://www.laber-land.de" rel="nofollow">Laber-Land</a></p>', $this->ll->Markup->toHtml('<a href="http://www.laber-land.de">Laber-Land</a>'));
+	$this->assertEquals('<p><a href="http://www.laber-land.de" rel="nofollow">Laber-Land</a></p>', $this->ll->Markup->toHtml('<a href="www.laber-land.de">Laber-Land</a>'));
+	$this->assertEquals('<p><a href="ftp://ftp.laber-land.de" rel="nofollow">Laber-Land</a></p>', $this->ll->Markup->toHtml('<a href="ftp.laber-land.de">Laber-Land</a>'));
 
-	$this->assertEquals('<a href="http://www.laber-land.de" rel="nofollow" rev="auto">http://www.laber-land.de</a>', $this->ll->Markup->toHtml('http://www.laber-land.de'));
-	$this->assertEquals('<a href="http://www.laber-land.de" rel="nofollow" rev="auto">http://www.laber-land.de</a>', $this->ll->Markup->toHtml('www.laber-land.de'));
-	$this->assertEquals('<a href="ftp://ftp.laber-land.de" rel="nofollow" rev="auto">ftp://ftp.laber-land.de</a>', $this->ll->Markup->toHtml('ftp.laber-land.de'));
+	$this->assertEquals('<p><a href="http://www.laber-land.de" rel="nofollow" rev="auto">http://www.laber-land.de</a></p>', $this->ll->Markup->toHtml('http://www.laber-land.de'));
+	$this->assertEquals('<p><a href="http://www.laber-land.de" rel="nofollow" rev="auto">http://www.laber-land.de</a></p>', $this->ll->Markup->toHtml('www.laber-land.de'));
+	$this->assertEquals('<p><a href="ftp://ftp.laber-land.de" rel="nofollow" rev="auto">ftp://ftp.laber-land.de</a></p>', $this->ll->Markup->toHtml('ftp.laber-land.de'));
 	}
 
 public function testSmilies()
 	{
-	$this->assertEquals('<img src="images/smilies/wink.png" alt="wink" class="smiley" />',$this->ll->Markup->toHtml(';-)'));
+	$this->assertEquals('<p><img src="images/smilies/wink.png" alt="wink" class="smiley" /></p>',$this->ll->Markup->toHtml(';-)'));
 	}
 
 public function testBug86()
 	{
-	$this->assertEquals('test<br /><pre>
+	$this->assertEquals('<p>test
+<pre>
 123
-</pre><br />blah', $this->ll->Markup->toHtml('test
+</pre>
+blah</p>', $this->ll->Markup->toHtml('test
 <pre>
 123
 </pre>
@@ -212,7 +217,8 @@ public function testBug85()
 * 1
 * 2
 </quote>';
-	$out = '<blockquote><div><br /><ul><li>1</li><li>2</li></ul></div></blockquote>';
+	$out = '<p><blockquote><div>
+<ul><li>1</li><li>2</li></ul></div></blockquote></p>';
 
 	$this->assertEquals($out,  $this->ll->Markup->toHtml($in));
 
@@ -224,9 +230,10 @@ reg
 </pre>
 * 2
 * 3';
-	$out = '<ul><li>2</li><li>3</li><li>4</li></ul><pre>
+	$out = '<p><ul><li>2</li><li>3</li><li>4</li></ul><pre>
 reg
-</pre><br /><ul><li>2</li><li>3</li></ul>';
+</pre>
+<ul><li>2</li><li>3</li></ul></p>';
 
 	$this->assertEquals($out,  $this->ll->Markup->toHtml($in));
 	}
@@ -236,24 +243,25 @@ public function testBug121()
 	$in = '<quote>
 * a</quote>';
 
-	$out = '&lt;quote&gt;<br /><ul><li>a&lt;/quote&gt;</li></ul>';
+	$out = '<p>&lt;quote&gt;
+<ul><li>a&lt;/quote&gt;</li></ul></p>';
 	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
 
 	$in = '<quote></quote></quote><quote></quote>';
 
-	$out = '<blockquote><div></div></blockquote>&lt;/quote&gt;<blockquote><div></div></blockquote>';
+	$out = '<p><blockquote><div></div></blockquote>&lt;/quote&gt;<blockquote><div></div></blockquote></p>';
 	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
 
 	$in = 'a<quote>b</quote>c</quote>d<quote>e</quote>f';
 
-	$out = 'a<blockquote><div>b</div></blockquote>c&lt;/quote&gt;d<blockquote><div>e</div></blockquote>f';
+	$out = '<p>a<blockquote><div>b</div></blockquote>c&lt;/quote&gt;d<blockquote><div>e</div></blockquote>f</p>';
 	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
 	}
 
 public function testBug131()
 	{
 	$in = '<quote>a<quote>b</quote>';
-	$out = '<blockquote><div>a<blockquote><div>b</div></blockquote></div></blockquote>';
+	$out = '<p><blockquote><div>a<blockquote><div>b</div></blockquote></div></blockquote></p>';
 	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
 	}
 
