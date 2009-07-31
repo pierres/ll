@@ -32,24 +32,24 @@ public function testCode()
 	{
 	$in =
 '<pre>
-test&quot;&lt;code&gt;
+test&quot;&lt;pre&gt;
 </pre>';
 	$out =
-'<code>
-test"<code>
-</code>';
+'<pre>
+test"<pre>
+</pre>';
 
 	$this->assertEquals($out, $this->ll->UnMarkup->fromHtml($in));
 
 	$in =
 '-<br /><pre>
-test&quot;&lt;code&gt;
+test&quot;&lt;pre&gt;
 </pre><br />-';
 	$out =
 '-
-<code>
-test"<code>
-</code>
+<pre>
+test"<pre>
+</pre>
 -';
 
 	$this->assertEquals($out, $this->ll->UnMarkup->fromHtml($in));
@@ -156,9 +156,9 @@ public function testStrong()
 public function testBug86()
 	{
 	$this->assertEquals('test
-<code>
+<pre>
 123
-</code>
+</pre>
 blah', $this->ll->UnMarkup->fromHtml('test<br /><pre>
 123
 </pre><br />blah'));
@@ -177,9 +177,9 @@ public function testBug85()
 	$out = '* 2
 * 3
 * 4
-<code>
+<pre>
 reg
-</code>
+</pre>
 * 2
 * 3
 ';

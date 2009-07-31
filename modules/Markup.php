@@ -72,9 +72,9 @@ private function complieFirstPass($text)
 
 
 	/** Code muß am Zeilenanfang beginnen */
-	$text = preg_replace_callback('#^<code>$(.+?)^</code>$#sm', array($this, 'makeCode'), $text);
+	$text = preg_replace_callback('#<pre>(.+?)</pre>#s', array($this, 'makePre'), $text);
 	/** Inline Code */
-	$text = preg_replace_callback('/==(.+?)==/', array($this, 'makeInlineCode'), $text);
+	$text = preg_replace_callback('#<code>(.+?)</code>#s', array($this, 'makeCode'), $text);
 
 	/** komplette URL mit Namen */
 	$text = preg_replace_callback('/<('.$protocoll.$address.$path.$request.') (.+?)>/is', array($this, 'makeNamedLink'), $text);
@@ -179,14 +179,14 @@ public function toHtml($text)
 	return $text;
 	}
 
-private function makeCode($matches)
+private function makePre($matches)
 	{
 	$this->Codes->push('<pre>'.htmlspecialchars($matches[1], ENT_COMPAT, 'UTF-8').'</pre>');
 
 	return $this->sepc.$this->Codes->lastID().$this->sepc;
 	}
 
-private function makeInlineCode($matches)
+private function makeCode($matches)
 	{
 	$this->Codes->push('<code>'.htmlspecialchars($matches[1], ENT_COMPAT, 'UTF-8').'</code>');
 

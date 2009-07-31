@@ -41,12 +41,6 @@ public function fromHtml($text)
 	/** LL3.1-Kompatibilität */
 	$text = str_replace('<br />', "\n", $text);
 
-	$text = str_replace('<code>', '==', $text);
-	$text = str_replace('</code>', '==', $text);
-
-	$text = str_replace('<pre>', '<code>', $text);
-	$text = str_replace('</pre>', "</code>", $text);
-
 	$text = preg_replace('/<span class="\w+?">/', '', $text);
 	$text = str_replace('</span>', '', $text);
 

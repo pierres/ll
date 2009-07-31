@@ -32,23 +32,23 @@ public function testCode()
 	{
 	$in =
 '-
-<code>
-test"<code>
-</code>
+<pre>
+test"<pre>
+</pre>
 -';
 	$out =
 '-<br /><pre>
-test&quot;&lt;code&gt;
+test&quot;&lt;pre&gt;
 </pre><br />-';
 	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
 
 	$in =
-'<code>
-test"<code>
-</code>';
+'<pre>
+test"<pre>
+</pre>';
 	$out =
 '<pre>
-test&quot;&lt;code&gt;
+test&quot;&lt;pre&gt;
 </pre>';
 	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
 	}
@@ -191,7 +191,7 @@ public function testStrong()
 
 public function testInlineCode()
 	{
-	$this->assertEquals('<code>//test//</code>', $this->ll->Markup->toHtml('==//test//=='));
+	$this->assertEquals('<code>//test//</code>', $this->ll->Markup->toHtml('<code>//test//</code>'));
 	}
 
 public function testInlineQuote()
@@ -223,9 +223,9 @@ public function testBug86()
 	$this->assertEquals('test<br /><pre>
 123
 </pre><br />blah', $this->ll->Markup->toHtml('test
-<code>
+<pre>
 123
-</code>
+</pre>
 blah'));
 	}
 
@@ -242,9 +242,9 @@ public function testBug85()
 	$in = '* 2
 * 3
 * 4
-<code>
+<pre>
 reg
-</code>
+</pre>
 * 2
 * 3';
 	$out = '<ul><li>2</li><li>3</li><li>4</li></ul><pre>
