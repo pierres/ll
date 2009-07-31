@@ -106,9 +106,8 @@ private function complieFirstPass($text)
 private function complieSecondPass($text)
 	{
 	/** Hervorhebungen */
-	$text = preg_replace_callback('#//([^/\n]+?)//#', array($this, 'makeEm'), $text);
-
-	$text = preg_replace_callback('/\*\*([^\*\s](?:[^\*\n]*?[^\*\s])?)\*\*/', array($this, 'makeStrong'), $text);
+	$text = preg_replace_callback("#'''(.+?)'''#", array($this, 'makeStrong'), $text);
+	$text = preg_replace_callback("#''(.+?)''#", array($this, 'makeEm'), $text);
 
 	$text = preg_replace_callback('/&quot;(.+?)&quot;/', array($this, 'makeInlineQuote'), $text);
 	

@@ -159,39 +159,19 @@ abc';
 	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
 	}
 
-public function testListAndStrong()
-	{
-	$in =
-'* 1
-** test **';
-
-	$out = '<ul><li>1<ul><li>test **</li></ul></li></ul>';
-
-	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
-
-	$in =
-'* 1
-** 2
-**test**';
-
-	$out = '<ul><li>1<ul><li>2</li></ul></li></ul><strong>test</strong>';
-
-	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
-	}
-
 public function testEm()
 	{
-	$this->assertEquals('<em>test</em>', $this->ll->Markup->toHtml('//test//'));
+	$this->assertEquals('<em>test</em>', $this->ll->Markup->toHtml("''test''"));
 	}
 
 public function testStrong()
 	{
-	$this->assertEquals('<strong>test</strong>', $this->ll->Markup->toHtml('**test**'));
+	$this->assertEquals('<strong>test</strong>', $this->ll->Markup->toHtml("'''test'''"));
 	}
 
 public function testInlineCode()
 	{
-	$this->assertEquals('<code>//test//</code>', $this->ll->Markup->toHtml('<code>//test//</code>'));
+	$this->assertEquals("<code>''test''</code>", $this->ll->Markup->toHtml("<code>''test''</code>"));
 	}
 
 public function testInlineQuote()

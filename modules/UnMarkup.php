@@ -48,11 +48,11 @@ public function fromHtml($text)
 	$text = str_replace('<blockquote><div>', '<quote>', $text);
 	$text = str_replace('</div></blockquote>', '</quote>', $text);
 
-	$text = str_replace('<em>', '//', $text);
-	$text = str_replace('</em>', '//', $text);
+	$text = str_replace('<em>', "''", $text);
+	$text = str_replace('</em>', "''", $text);
 
-	$text = str_replace('<strong>', '**', $text);
-	$text = str_replace('</strong>', '**', $text);
+	$text = str_replace('<strong>', "'''", $text);
+	$text = str_replace('</strong>', "'''", $text);
 
 	$text = str_replace('<q>', '"', $text);
 	$text = str_replace('</q>', '"', $text);

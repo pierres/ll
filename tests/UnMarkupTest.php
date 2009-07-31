@@ -150,7 +150,7 @@ public function testLinkInList()
 
 public function testStrong()
 	{
-	$this->assertEquals('**test**', $this->ll->UnMarkup->fromHtml('<strong>test</strong>'));
+	$this->assertEquals("'''test'''", $this->ll->UnMarkup->fromHtml('<strong>test</strong>'));
 	}
 
 public function testBug86()
