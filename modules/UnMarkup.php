@@ -73,9 +73,6 @@ public function fromHtml($text)
 
 	$text = preg_replace('#<a href="mailto:(.+?)">.+?</a>#', '$1', $text);
 
-
-	$text = preg_replace_callback('#<!-- numbered --><a href="(.+?)"(?: onclick="return !window\.open\(this\.href\);" rel="nofollow" class="extlink"| class="link")>\[\d+?\]</a><!-- /numbered -->#', array($this, 'unmakeNumberedLink'), $text);
-
 	$text = preg_replace_callback('#<!-- cutted --><a href="(.+?)"(?: onclick="return !window\.open\(this\.href\);" rel="nofollow" class="extlink"| class="link")>.+?</a><!-- /cutted -->#', array($this, 'unmakeCuttedLink'), $text);
 
 	$text = preg_replace_callback('#<a href="(.+?)"(?: onclick="return !window\.open\(this\.href\);" rel="nofollow" class="extlink"| class="link")>(.+?)</a>#', array($this, 'unmakeLink'), $text);
@@ -128,14 +125,6 @@ private function unmakeLink($matches)
 	$name = $matches[2];
 
 	$this->Stack->push( '<'.$this->unmakeLocalUrl($url).' '.$name.'>');
-
-	return $this->sep.$this->Stack->lastID().$this->sep;
-	}
-
-private function unmakeNumberedLink($matches)
-	{
-	$url = $matches[1];
-	$this->Stack->push( '<'.$this->unmakeLocalUrl($url).'>');
 
 	return $this->sep.$this->Stack->lastID().$this->sep;
 	}

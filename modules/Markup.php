@@ -29,7 +29,6 @@ private $sepc = '';
 private $Stack = null;
 private $Codes = null;
 
-private $linkNumber = 1;
 public static $smilies = array(
 	'0:-)' => 'angel',
 	':-*)' => 'embarrassed',
@@ -83,12 +82,6 @@ private function complieFirstPass($text)
 	$text = preg_replace_callback('/<(www\.'.$domain.$path.$request.') (.+?)>/is',  array($this, 'makeNamedWWWLink'), $text);
 	/** ftp.domain.tld  mit Namen */
 	$text = preg_replace_callback('/<(ftp\.'.$domain.$path.$request.') (.+?)>/is',  array($this, 'makeNamedFTPLink'), $text);
-	/** komplette URL */
-	$text = preg_replace_callback('/<('.$protocoll.$address.$path.$request.')>/is', array($this, 'makeNumberedLink'), $text);
-	/** www.domain.tld */
-	$text = preg_replace_callback('/<(www\.'.$domain.$path.$request.')>/is', array($this, 'makeNumberedWWWLink'), $text);
-	/** ftp.domain.tld */
-	$text = preg_replace_callback('/<(ftp\.'.$domain.$path.$request.')>/is', array($this, 'makeNumberedFTPLink'), $text);
 
 	/** E-Mails */
 	$text = preg_replace_callback('/'.$name.'@'.$domain.'/i', array($this, 'makeEmail'), $text);
@@ -398,38 +391,6 @@ private function makeLocalUrl($url)
 	$newUrl = $path.$query.$fragment;
 
 	return empty($newUrl) ? $url : $newUrl;
-	}
-
-private function makeNumberedLink($matches)
-	{
-	$url = $matches[1];
-
-	$name = $this->linkNumber;
-	$this->linkNumber++;
-
-	if ($this->isLocalHost($url))
-		{
-		$target = ' class="link"';
-		$url = $this->makeLocalUrl($url);
-		}
-	else
-		{
-		$target = ' onclick="return !window.open(this.href);" rel="nofollow" class="extlink"';
-		}
-
-	return $this->createStackLink($this->tagElement('numbered', '<a href="'.htmlspecialchars($url, ENT_COMPAT, 'UTF-8').'"'.$target.'>['.$name.']</a>'));
-	}
-
-private function makeNumberedWWWLink($matches)
-	{
-	$matches[1] = 'http://'.$matches[1];
-	return $this->makeNumberedLink($matches);
-	}
-
-private function makeNumberedFTPLink($matches)
-	{
-	$matches[1] = 'ftp://'.$matches[1];
-	return $this->makeNumberedLink($matches);
 	}
 
 private function makeNamedLink($matches, $cutName = false)
