@@ -130,6 +130,18 @@ public function createUrl($page, $options = array(), $html = true)
 	return $this->Input->getPath().'?id='.$this->Board->getId().$params;
 	}
 
+public function createRelativeUrl($page, $options = array(), $html = true)
+	{
+	$separator = ($html ? $this->outputSeparatorHtml : $this->outputSeparator);
+	$params = '';
+	foreach (array_merge(array('page' => $page), $options) as $key => $value)
+		{
+		$params .= $separator.$key.'='.urlencode($value);
+		}
+
+	return '?id='.$this->Board->getId().$params;
+	}
+
 }
 
 class OutputException extends RuntimeException{

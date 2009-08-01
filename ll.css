@@ -413,6 +413,85 @@
 	display: block;
 }
 
+#ll #body #posts tbody .posts-text pre {
+	font-family:monospace;
+	color:#000000;
+	background-color:#ffffff;
+	padding:10px;
+	margin:11px;
+	overflow:auto;
+	max-height:700px;
+	border:solid 1px #002468;
+}
+#ll #body #posts tbody .posts-text code {
+	font-family:monospace;
+	color:#000000;
+	background-color:#ffffff;
+	border:solid 1px #002468;
+	padding:2px;
+}
+#ll #body #posts tbody .posts-text a {
+	border-bottom:1px solid;
+	text-decoration:none;
+}
+#ll #body #posts tbody .posts-text a[rev=auto] {
+	border-bottom:1px dotted;
+	text-decoration:none;
+}
+#ll #body #posts tbody .posts-text .image {
+	border: solid 1px transparent;
+	display:block;
+	margin:10px;
+}
+#ll #body #posts tbody .posts-text .image:hover {
+	background-color:#6c83af;
+	border:solid 1px #6c83af;
+}
+#ll #body #posts tbody .posts-text audio,
+#ll #body #posts tbody .posts-text video {
+	display:block;
+	margin:10px;
+	max-width:80%;
+	max-height:700px;
+}
+#ll #body #posts tbody .posts-text .smiley {
+	border: none;
+	vertical-align:top;
+	text-align:center;
+}
+#ll #body #posts tbody .posts-text strong {
+	font-weight:bolder;
+}
+#ll #body #posts tbody .posts-text em {
+	font-weight:bold;
+	font-style:italic;
+}
+#ll #body #posts tbody .posts-text q {
+	font-style:italic;
+}
+#ll #body #posts tbody .posts-text cite {
+	font-style:italic;
+	margin-left:12px;
+}
+#ll #body #posts tbody .posts-text blockquote {
+	border:solid 1px #002468;
+	padding:0px;
+	padding-left:15px;
+	padding-right:15px;
+	margin:0px;
+	margin-left:10px;
+	margin-right:10px;
+}
+#ll #body #posts tbody:nth-child(odd) .posts-text blockquote {
+	background-color:#eeeeee;
+}
+#ll #body #posts tbody:nth-child(even) .posts-text blockquote {
+	background-color:#dbdbdb;
+}
+#ll #body #posts tbody .posts-text ul {
+	list-style-type:square;
+}
+
 
 /* MyFiles */
 #ll #body form table .files tbody tr:nth-child(odd) {

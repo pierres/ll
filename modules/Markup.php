@@ -22,7 +22,7 @@ class MarkupException extends RuntimeException {
 
 function __construct($message)
 	{
-	parent::__construct('MarkupException: '.htmlspecialchars($message, ENT_COMPAT, 'UTF-8'), 0);
+	parent::__construct($message, 0);
 	}
 
 }
@@ -73,7 +73,7 @@ private function complieFirstPass($text)
 	$img	 	= '[a-z0-9_\-]+\.(?:gif|jpe?g|png)';
 	$video	 	= '[a-z0-9_\-]+\.(?:ogg|ogm)';
 
-
+	# restricted HTML support
 	$text = preg_replace_callback('#<pre>(.+?)</pre>#s', array($this, 'makePre'), $text);
 	$text = preg_replace_callback('#<code>(.+?)</code>#s', array($this, 'makeCode'), $text);
 
@@ -88,7 +88,7 @@ private function complieFirstPass($text)
 	$text = preg_replace_callback('#<video src="('.$protocoll.'.+?)" />#', array($this, 'makeVideo'), $text);
 	$text = preg_replace_callback('#<audio src="('.$protocoll.'.+?)" />#', array($this, 'makeAudio'), $text);
 
-	# auto detection
+	# auto detection for some URLs
 	$text = preg_replace_callback('/'.$protocoll.$address.$path.$video.'/i', array($this, 'makeAutoVideo'), $text);
 	$text = preg_replace_callback('/www\.'.$domain.$path.$video.'/i', array($this, 'makeAutoWWWVideo'), $text);
 	$text = preg_replace_callback('/ftp\.'.$domain.$path.$video.'/i', array($this, 'makeAutoFTPVideo'), $text);
@@ -101,16 +101,6 @@ private function complieFirstPass($text)
 	$text = preg_replace_callback('/www\.'.$domain.$path.$request.'/i', array($this, 'makeAutoWWWLink'), $text);
 	$text = preg_replace_callback('/ftp\.'.$domain.$path.$request.'/i', array($this, 'makeAutoFTPLink'), $text);
 
-	return $text;
-	}
-
-private function complieSecondPass($text)
-	{
-	$text = preg_replace_callback("#'''(.+?)'''#", array($this, 'makeStrong'), $text);
-	$text = preg_replace_callback("#''(.+?)''#", array($this, 'makeEm'), $text);
-
-	$text = preg_replace_callback('/&quot;(.+?)&quot;/', array($this, 'makeInlineQuote'), $text);
-	
 	foreach (self::$smilies as $search => $replace)
 		{
 		$text = str_replace(
@@ -119,9 +109,15 @@ private function complieSecondPass($text)
 			$text);
 		}
 
-	$text = preg_replace_callback('/(?:^\*+ [^\n]+$\n?)+/m',array($this, 'makeList'), $text);
+	return $text;
+	}
 
-	$text = $this->makeQuoteAndParagraph($text);
+private function complieSecondPass($text)
+	{
+	$text = preg_replace_callback("#'''(.+?)'''#", array($this, 'makeStrong'), $text);
+	$text = preg_replace_callback("#''(.+?)''#", array($this, 'makeEm'), $text);
+	$text = preg_replace_callback('/&quot;(.+?)&quot;/', array($this, 'makeInlineQuote'), $text);
+	$text = preg_replace_callback('/(?:^\*+ [^\n]+$\n?)+/m',array($this, 'makeList'), $text);
 
 	return $text;
 	}
@@ -134,11 +130,13 @@ public function toHtml($text)
 		}
 
 	$text = str_replace($this->sep, '', $text);
-	$text = str_replace("\r", '', $text);
 
 	$text = $this->complieFirstPass($text);
 	$text = htmlspecialchars($text, ENT_COMPAT, 'UTF-8');
 	$text = $this->complieSecondPass($text);
+	$text = preg_replace('/[\n\r]{2,}/', "\n\n", $text);
+	$text = preg_replace('/[^\S\n]+/', " ", $text);
+	$text = $this->makeQuoteAndParagraph($text);
 
 	while ($this->Stack->hasNext())
 		{
@@ -165,9 +163,6 @@ private function makeCode($matches)
 
 private function makeQuoteAndParagraph($text)
 	{
-	$text = preg_replace('/\n{2,}/', "\n\n", $text);
-	$text = preg_replace('/[^\S\n]+/', " ", $text);
-
 	$pos = 0;
 	$ppos = 0;
 	$last = 0;
@@ -187,7 +182,11 @@ private function makeQuoteAndParagraph($text)
 			$out .= '<p>';
 			$popen++;
 			}
-		elseif ($open == 0 && $ppos !== false && ($start === false || $ppos < $start))
+		elseif ($open == 0 && $end !== false && $start === false && $pos === $end)
+			{
+			throw new MarkupException('quote closed but not started');
+			}
+		elseif ($open == 0 && $ppos !== false && ($start === false || $ppos < $start) && ($end == false || $ppos < $end))
 			{
 			$out .= substr($text, $last, $ppos-$last);
 			$out .= '</p>';
@@ -230,7 +229,7 @@ private function makeQuoteAndParagraph($text)
 				}
 			else
 				{
-				throw new MarkupException('<quote> tag incomplete');
+				throw new MarkupException('quote tag incomplete');
 				}
 			}
 		elseif ($end !== false)
@@ -249,12 +248,12 @@ private function makeQuoteAndParagraph($text)
 				}
 			else
 				{
-				throw new MarkupException('<quote> closed but not started');
+				throw new MarkupException('quote closed but not started');
 				}
 			}
 		elseif ($start !== false && $end === false)
 			{
-			throw new MarkupException('</quote> not found');
+			throw new MarkupException('quote not closed');
 			}
 		else
 			{
@@ -267,7 +266,7 @@ private function makeQuoteAndParagraph($text)
 
 	if ($open > 0)
 		{
-		throw new MarkupException('<quote> not closed');
+		throw new MarkupException('quote not closed');
 		}
 
 	if ($popen > 0)
@@ -287,41 +286,38 @@ private function makeList($matches)
 		{
 		$cur = 0;
 
-		/* Ermittle die aktuelle Tiefe */
+		# get the current depth
 		while (strlen($line) > $cur && $line[$cur] == '*')
 			{
 			$cur++;
 			}
 
-		/* eine Ebene tiefer */
+		# go down
 		if ($cur == $last+1)
 			{
 			$out .= '<ul>';
 			}
-		elseif ($cur > $last)
-			{
-			$line = substr($line, $cur-$last-1);
-			$cur = $last + 1;
-
-			$out .= '<ul>';
-			}
-		/* eine oder mehrere Ebene höher */
+		# go high
 		elseif ($cur < $last)
 			{
 			$out .= '</li>'.str_repeat('</ul></li>', $last-$cur);
+			}
+		elseif ($cur > $last+1)
+			{
+			throw new MarkupException('incorrect list depth');
 			}
 		else
 			{
 			$out .= '</li>';
 			}
 
-		/* Füge Zeile ohne Ebenenzeichen und Leerzeichen (+1) hinzu */
+		# add line without '* '
 		$out .= '<li>'.substr($line, $cur+1);
 
 		$last = $cur;
 		}
 
-	/* Alle geöffneten Tags auf jeden Fall schließen */
+	# close all open tags
 	$out .= str_repeat('</li></ul>', $cur);
 
 	return $this->createStackLink($out);
@@ -402,7 +398,7 @@ private function makeImage($matches, $auto = false)
 		$rev = '';
 		}
 
-	return $this->createStackLink('<a href="'.$this->Output->createUrl('GetImage', array('url' => $url)).'" rel="nofollow"'.$rev.'><img src="'.$this->Output->createUrl('GetImage', array('thumb' => 1, 'url' => $url)).'" alt="" class="image" /></a>');
+	return $this->createStackLink('<a href="'.$this->Output->createRelativeUrl('GetImage', array('url' => $url)).'" rel="nofollow"'.$rev.'><img src="'.$this->Output->createRelativeUrl('GetImage', array('thumb' => 1, 'url' => $url)).'" alt="" class="image" /></a>');
 	}
 
 private function makeWWWImage($matches, $auto = false)

@@ -4,11 +4,7 @@ LL 4 TODO
 == Required for Release ==
 
 * use L10n-Methods for all (english) Strings
-* Layout/Design:
-	* <strong> allways needed?
-	* add method to set help text or description per form
 * isEmptyString fails on arrays
-* Cleanup Markup and convert posts
 * adapt new theme
 * dfeine common translations
 * drop supprt for php < 5.3 (at least when its in extra)
@@ -17,16 +13,11 @@ LL 4 TODO
 * Add/remove files is confusing
 * atm its not possible to remove files from a posting
 * DB: automatic close of connections on error
-* Docu
 
 == Optional ==
 
 * use L10n-Methods for all Strings
 	* translate to German
-* simplify LLCodes
-	* needs rebuild of all posts
-	* provide update script
-	* don't open new window for external links (let the user decide)
 * readd tagging feature
 * add simple FormElement to ger user's confirmation
 	* means generic "Are you sure to..." dialog

@@ -259,10 +259,17 @@ protected function checkForm()
 			}
 		}
 
+	try
+		{
 	$this->text = $this->Markup->toHtml($this->text);
 	if ($length = strlen($this->text) > 65536)
 		{
 		$this->showWarning(sprintf($this->L10n->getText('Text is %d characters too long', ($length-65536))));
+		}
+		}
+	catch (MarkupException $e)
+		{
+		$this->showWarning($e->getMessage());
 		}
 	}
 

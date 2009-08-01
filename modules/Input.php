@@ -64,6 +64,13 @@ public function getPath()
 			.($directory == '/' ? '' : $directory).'/';
 	}
 
+public function getRelativePath()
+	{
+	$directory = dirname($this->Server->getString('SCRIPT_NAME'));
+
+	return ($directory == '/' ? '' : $directory).'/';
+	}
+
 public function getRemoteFile($url)
 	{
 	return new RemoteFile($url);

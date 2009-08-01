@@ -37,7 +37,7 @@ public function __construct()
 		{
 		$board = $this->getBoardByHost();
 		}
-	catch (DBNoDataException $e)
+	catch (Exception $e)
 		{
 		try
 			{

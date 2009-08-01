@@ -76,6 +76,27 @@ public function testQuote()
 	$in = '<quote author>test<quote author2>test2</quote></quote>';
 	$out = '<cite>author</cite><blockquote><p>test</p><cite>author2</cite><blockquote><p>test2</p></blockquote></blockquote>';
 	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
+
+	try
+		{
+		$in = '</quote>
+
+a';
+		$this->ll->Markup->toHtml($in);
+		$this->fail();
+		}
+	catch (MarkupException $e)
+		{
+		}
+	}
+
+public function testParagraph()
+	{
+	$in = 'a
+
+b';
+	$out = '<p>a</p><p>b</p>';
+	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
 	}
 
 public function testQuoteAndLink()
@@ -124,8 +145,10 @@ abc';
 	$out = '<p><ul><li>1</li><li>2<ul><li>2a</li><li>2b<ul><li>2bi<ul><li>2bii</li></ul></li></ul></li><li>2c</li></ul></li><li>3<ul><li>4</li></ul></li></ul>abc</p>';
 	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
 
-	/** Teste Robustheit */
-	$in =
+
+	try
+		{
+		$in =
 '*** 1
 * 2
 ** 2a
@@ -135,8 +158,12 @@ abc';
 ** 2c
 * 3
 ****** 4';
-	$out = '<p><ul><li>1</li><li>2<ul><li>2a</li><li>2b<ul><li>2bi<ul><li>2bii</li></ul></li></ul></li><li>2c</li></ul></li><li>3<ul><li>4</li></ul></li></ul></p>';
-	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
+		$this->ll->Markup->toHtml($in);
+		$this->fail();
+		}
+	catch (MarkupException $e)
+		{
+		}
 
 	$in =
 '* 1

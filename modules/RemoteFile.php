@@ -104,7 +104,7 @@ public function getFileContent()
 
 		if (!$this->isAllowedType($this->type))
 			{
-			throw new FileException(sprintf($this->L10n->getText('Uploading files of type %s is not allowed.', htmlspecialchars($this->file['type']))));
+			throw new FileException(sprintf($this->L10n->getText('Uploading files of type %s is not allowed.'), htmlspecialchars($this->type)));
 			}
 
 		$this->size = strlen($this->content);
