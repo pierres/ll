@@ -121,7 +121,7 @@ private function complieSecondPass($text)
 
 	$text = preg_replace_callback('/(?:^\*+ [^\n]+$\n?)+/m',array($this, 'makeList'), $text);
 
-	$text = $this->makeQuote($text);
+	$text = $this->makeQuoteAndParagraph($text);
 
 	return $text;
 	}
@@ -163,7 +163,7 @@ private function makeCode($matches)
 	return $this->createStackLink('<code>'.htmlspecialchars($matches[1], ENT_COMPAT, 'UTF-8').'</code>');
 	}
 
-private function makeQuote($text)
+private function makeQuoteAndParagraph($text)
 	{
 	$text = preg_replace('/\n{2,}/', "\n\n", $text);
 	$text = preg_replace('/[^\S\n]+/', " ", $text);
@@ -275,7 +275,7 @@ private function makeQuote($text)
 		throw new MarkupException('paragraph not closed');
 		}
 
-	return $this->createStackLink($out);
+	return $out;
 	}
 
 private function makeList($matches)
