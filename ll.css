@@ -322,10 +322,10 @@
 	height:20px;
 }
 #ll #body #posts tbody:nth-child(odd) {
-	background-color:#dbdbdb;
+	background-color:#eeeeee;
 }
 #ll #body #posts tbody:nth-child(even) {
-	background-color:#eeeeee;
+	background-color:#dbdbdb;
 }
 #ll #body #posts tbody td {
 	padding:10px;
@@ -483,10 +483,10 @@
 	margin-right:10px;
 }
 #ll #body #posts tbody:nth-child(odd) .posts-text blockquote {
-	background-color:#eeeeee;
+	background-color:#dbdbdb;
 }
 #ll #body #posts tbody:nth-child(even) .posts-text blockquote {
-	background-color:#dbdbdb;
+	background-color:#eeeeee;
 }
 #ll #body #posts tbody .posts-text ul {
 	list-style-type:square;
