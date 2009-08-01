@@ -38,12 +38,12 @@ public function fromHtml($text)
 		return '';
 		}
 
-	$text = str_replace('<p>', "", $text);
-	$text = str_replace('</p>', "\n\n", $text);
+	$text = preg_replace('#<cite>(.+?)</cite><blockquote>(?:<p>)?#', '<quote $1>', $text);
+	$text = preg_replace('#(?:</p>)?<blockquote>(?:<p>)?#', '<quote>', $text);
+	$text = preg_replace('#(?:</p>)?</blockquote>#', '</quote>', $text);
 
-	$text = preg_replace('#<cite>(.+?)</cite><blockquote><div>#', '<quote $1>', $text);
-	$text = str_replace('<blockquote><div>', '<quote>', $text);
-	$text = str_replace('</div></blockquote>', '</quote>', $text);
+	$text = str_replace('<p>', '', $text);
+	$text = str_replace('</p>', "\n\n", $text);
 
 	$text = str_replace('<em>', "''", $text);
 	$text = str_replace('</em>', "''", $text);

@@ -18,12 +18,20 @@
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+class MarkupException extends RuntimeException {
+
+function __construct($message)
+	{
+	parent::__construct('MarkupException: '.htmlspecialchars($message, ENT_COMPAT, 'UTF-8'), 0);
+	}
+
+}
+
 class Markup extends Modul {
 
 private $sep = '';
 private $sepc = '';
 private $Stack = null;
-private $Codes = null;
 
 public static $smilies = array(
 	'0:-)' => 'angel',
@@ -43,10 +51,8 @@ public static $smilies = array(
 function __construct()
 	{
 	$this->sep = chr(28);
-	$this->sepc = chr(26);
 
 	$this->Stack = new Stack();
-	$this->Codes = new Stack();
 	}
 
 private function createStackLink($string)
@@ -114,7 +120,8 @@ private function complieSecondPass($text)
 		}
 
 	$text = preg_replace_callback('/(?:^\*+ [^\n]+$\n?)+/m',array($this, 'makeList'), $text);
-	$text = preg_replace_callback('#&lt;quote(?: .+?)?&gt;.+&lt;/quote&gt;#s', array($this, 'makeQuote'), $text);
+
+	$text = $this->makeQuote($text);
 
 	return $text;
 	}
@@ -127,7 +134,6 @@ public function toHtml($text)
 		}
 
 	$text = str_replace($this->sep, '', $text);
-	$text = str_replace($this->sepc, '', $text);
 	$text = str_replace("\r", '', $text);
 
 	$text = $this->complieFirstPass($text);
@@ -144,50 +150,58 @@ public function toHtml($text)
 			);
 		}
 
-	$text = preg_replace('/(.+?)(?:\n{2,}|$)/s', '<p>$1</p>', $text);
-
-	while ($this->Codes->hasNext())
-		{
-		$text = str_replace
-			(
-			$this->sepc.$this->Codes->lastID().$this->sepc,
-			$this->Codes->pop(),
-			$text
-			);
-		}
-
 	return $text;
 	}
 
 private function makePre($matches)
 	{
-	$this->Codes->push('<pre>'.htmlspecialchars($matches[1], ENT_COMPAT, 'UTF-8').'</pre>');
-
-	return $this->sepc.$this->Codes->lastID().$this->sepc;
+	return $this->createStackLink('<pre>'.htmlspecialchars($matches[1], ENT_COMPAT, 'UTF-8').'</pre>');
 	}
 
 private function makeCode($matches)
 	{
-	$this->Codes->push('<code>'.htmlspecialchars($matches[1], ENT_COMPAT, 'UTF-8').'</code>');
-
-	return $this->sepc.$this->Codes->lastID().$this->sepc;
+	return $this->createStackLink('<code>'.htmlspecialchars($matches[1], ENT_COMPAT, 'UTF-8').'</code>');
 	}
 
-private function makeQuote($matches)
+private function makeQuote($text)
 	{
-	$text = $matches[0];
+	$text = preg_replace('/\n{2,}/', "\n\n", $text);
+	$text = preg_replace('/[^\S\n]+/', " ", $text);
+
 	$pos = 0;
+	$ppos = 0;
 	$last = 0;
-	$maxPos = strlen($text);
+	$maxPos = strlen($text)-1;
 	$out = '';
 	$open = 0;
+	$popen = 0;
 
 	while ($pos <= $maxPos)
 		{
 		$start = strpos($text, '&lt;quote', $pos);
 		$end = strpos($text, '&lt;/quote&gt;', $pos);
+		$ppos = strpos($text, "\n\n", $pos);
 
-		if ($start !== false && $end !== false && $start < $end)
+		if ($popen == 0 && $start !== $pos && $end !== $pos && $pos <= $maxPos)
+			{
+			$out .= '<p>';
+			$popen++;
+			}
+		elseif ($open == 0 && $ppos !== false && ($start === false || $ppos < $start))
+			{
+			$out .= substr($text, $last, $ppos-$last);
+			$out .= '</p>';
+			$popen--;
+			$pos = $ppos + 2;
+			}
+		elseif ($ppos === false && $popen > 0 && $pos == $maxPos)
+			{
+			$out .= substr($text, $last);
+			$out .= '</p>';
+			$popen--;
+			break;
+			}
+		elseif ($start !== false && $end !== false && $start < $end)
 			{
 			$out .= substr($text, $last, $start-$last);
 			$quote = substr($text, $start);
@@ -196,18 +210,27 @@ private function makeQuote($matches)
 				{
 				$pos = $start+13+strlen($matches[1])+1;
 				$open++;
-				$out .= '<cite>'.$matches[1].'</cite><blockquote><div>';
+				if ($popen > 0)
+					{
+					$out .= '</p>';
+					$popen--;
+					}
+				$out .= '<cite>'.$matches[1].'</cite><blockquote>';
 				}
 			elseif (preg_match('#^&lt;quote&gt;#', $quote))
 				{
 				$pos = $start+13;
 				$open++;
-				$out .= '<blockquote><div>';
+				if ($popen > 0)
+					{
+					$out .= '</p>';
+					$popen--;
+					}
+				$out .= '<blockquote>';
 				}
 			else
 				{
-				$out .= '&lt;quote';
-				$pos = $start+9;
+				throw new MarkupException('<quote> tag incomplete');
 				}
 			}
 		elseif ($end !== false)
@@ -217,26 +240,42 @@ private function makeQuote($matches)
 				{
 				$pos = $end+14;
 				$open--;
-				$out .= '</div></blockquote>';
+				if ($popen > 0)
+					{
+					$out .= '</p>';
+					$popen--;
+					}
+				$out .= '</blockquote>';
 				}
 			else
 				{
-				$pos = $end+14;
-				$out .= '&lt;/quote&gt;';
+				throw new MarkupException('<quote> closed but not started');
 				}
+			}
+		elseif ($start !== false && $end === false)
+			{
+			throw new MarkupException('</quote> not found');
 			}
 		else
 			{
-			break;
+			$out .= substr($text, $last, $maxPos-$last);
+			$pos = $maxPos;
 			}
 
 		$last = $pos;
 		}
 
-	/* Alle geöffneten Tags auf jeden Fall schließen */
-	$out .= str_repeat('</div></blockquote>', $open);
+	if ($open > 0)
+		{
+		throw new MarkupException('<quote> not closed');
+		}
 
-	return $out;
+	if ($popen > 0)
+		{
+		throw new MarkupException('paragraph not closed');
+		}
+
+	return $this->createStackLink($out);
 	}
 
 private function makeList($matches)

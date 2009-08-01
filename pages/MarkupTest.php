@@ -30,22 +30,29 @@ protected function setForm()
 
 	$this->add(new SubmitButtonElement('Abschicken'));
 
-	if (!$this->Input->Post->isEmptyString('text'))
+	try
 		{
-		$this->text = $this->Input->Post->getString('text');
-		$html = $this->Markup->toHtml($this->text);
+		if (!$this->Input->Post->isEmptyString('text'))
+			{
+			$this->text = $this->Input->Post->getString('text');
+			$html = $this->Markup->toHtml($this->text);
 
-		$this->add(new LabeledElement('previewwindow',
-		'<div>'.$html.'</div>'));
+			$this->add(new LabeledElement('previewwindow',
+			'<div>'.$html.'</div>'));
 
-		$this->add(new LabeledElement('html',
-		'<pre>'.htmlspecialchars($html).'</pre>'));
+			$this->add(new LabeledElement('html',
+			'<pre>'.htmlspecialchars($html).'</pre>'));
 
-		$this->add(new LabeledElement('summary',
-		'<pre>'.getTextFromHtml($html).'</pre>'));
+			$this->add(new LabeledElement('summary',
+			'<pre>'.getTextFromHtml($html).'</pre>'));
 
-		$this->add(new LabeledElement('unmarkup',
-		'<pre>'.htmlspecialchars($this->text = $this->UnMarkup->fromHtml($html)).'</pre>'));
+			$this->add(new LabeledElement('unmarkup',
+			'<pre>'.htmlspecialchars($this->text = $this->UnMarkup->fromHtml($html)).'</pre>'));
+			}
+		}
+	catch (Exception $e)
+		{
+		$this->showWarning($e->getMessage());
 		}
 
 	$this->add(new TextareaInputElement('text', $this->text, 'Deine Nachricht'));

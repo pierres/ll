@@ -58,39 +58,41 @@ test&quot;&lt;pre&gt;
 public function testQuote()
 	{
 	$in = '<quote></quote>';
-	$out = '<p>'.htmlspecialchars('<quote></quote>').'</p>';
+	$out = '<blockquote></blockquote>';
 	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
 
 	$in = '<quote>test</quote>';
-	$out = '<p><blockquote><div>test</div></blockquote></p>';
+	$out = '<blockquote><p>test</p></blockquote>';
 	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
 
 	$in = '<quote>test<quote>test2</quote></quote>';
-	$out = '<p><blockquote><div>test<blockquote><div>test2</div></blockquote></div></blockquote></p>';
-	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
-
-	$in = '<quote ></quote>';
-	$out = '<p>'.htmlspecialchars('<quote ></quote>').'</p>';
+	$out = '<blockquote><p>test</p><blockquote><p>test2</p></blockquote></blockquote>';
 	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
 
 	$in = '<quote author>test</quote>';
-	$out = '<p><cite>author</cite><blockquote><div>test</div></blockquote></p>';
+	$out = '<cite>author</cite><blockquote><p>test</p></blockquote>';
 	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
 
 	$in = '<quote author>test<quote author2>test2</quote></quote>';
-	$out = '<p><cite>author</cite><blockquote><div>test<cite>author2</cite><blockquote><div>test2</div></blockquote></div></blockquote></p>';
+	$out = '<cite>author</cite><blockquote><p>test</p><cite>author2</cite><blockquote><p>test2</p></blockquote></blockquote>';
 	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
 	}
 
 public function testQuoteAndLink()
 	{
 	$in = '<quote>http://www.laber-land.de/</quote>';
-	$out = '<p><blockquote><div><a href="http://www.laber-land.de/" rel="nofollow" rev="auto">http://www.laber-land.de/</a></div></blockquote></p>';
+	$out = '<blockquote><p><a href="http://www.laber-land.de/" rel="nofollow" rev="auto">http://www.laber-land.de/</a></p></blockquote>';
 	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
 
-	$in = 'http://www.laber-land.de/test.html</quote>';
-	$out = '<p><a href="http://www.laber-land.de/test.html" rel="nofollow" rev="auto">http://www.laber-land.de/test.html</a>&lt;/quote&gt;</p>';
-	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
+	try
+		{
+		$in = 'http://www.laber-land.de/test.html</quote>';
+		$this->ll->Markup->toHtml($in);
+		$this->fail();
+		}
+	catch (MarkupException $e)
+		{
+		}
 	}
 
 public function testList()
@@ -217,8 +219,8 @@ public function testBug85()
 * 1
 * 2
 </quote>';
-	$out = '<p><blockquote><div>
-<ul><li>1</li><li>2</li></ul></div></blockquote></p>';
+	$out = '<blockquote><p>
+<ul><li>1</li><li>2</li></ul></p></blockquote>';
 
 	$this->assertEquals($out,  $this->ll->Markup->toHtml($in));
 
@@ -240,29 +242,49 @@ reg
 
 public function testBug121()
 	{
-	$in = '<quote>
+	try
+		{
+		$in = '<quote>
 * a</quote>';
+		$this->ll->Markup->toHtml($in);
+		$this->fail();
+		}
+	catch (MarkupException $e)
+		{
+		}
 
-	$out = '<p>&lt;quote&gt;
-<ul><li>a&lt;/quote&gt;</li></ul></p>';
-	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
+	try
+		{
+		$in = '<quote></quote></quote><quote></quote>';
+		$this->ll->Markup->toHtml($in);
+		$this->fail();
+		}
+	catch (MarkupException $e)
+		{
+		}
 
-	$in = '<quote></quote></quote><quote></quote>';
-
-	$out = '<p><blockquote><div></div></blockquote>&lt;/quote&gt;<blockquote><div></div></blockquote></p>';
-	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
-
-	$in = 'a<quote>b</quote>c</quote>d<quote>e</quote>f';
-
-	$out = '<p>a<blockquote><div>b</div></blockquote>c&lt;/quote&gt;d<blockquote><div>e</div></blockquote>f</p>';
-	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
+	try
+		{
+		$in = 'a<quote>b</quote>c</quote>d<quote>e</quote>f';
+		$this->ll->Markup->toHtml($in);
+		$this->fail();
+		}
+	catch (MarkupException $e)
+		{
+		}
 	}
 
 public function testBug131()
 	{
-	$in = '<quote>a<quote>b</quote>';
-	$out = '<p><blockquote><div>a<blockquote><div>b</div></blockquote></div></blockquote></p>';
-	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
+	try
+		{
+		$in = '<quote>a<quote>b</quote>';
+		$this->ll->Markup->toHtml($in);
+		$this->fail();
+		}
+	catch (MarkupException $e)
+		{
+		}
 	}
 
 }

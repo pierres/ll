@@ -60,11 +60,11 @@ public function testQuote()
 	$this->assertEquals($out, $this->ll->UnMarkup->fromHtml($in));
 
 	$out = '<quote>test</quote>';
-	$in = '<blockquote><div>test</div></blockquote>';
+	$in = '<blockquote><p>test</p></blockquote>';
 	$this->assertEquals($out, $this->ll->UnMarkup->fromHtml($in));
 
 	$out = '<quote>test<quote>test2</quote></quote>';
-	$in = '<blockquote><div>test<blockquote><div>test2</div></blockquote></div></blockquote>';
+	$in = '<blockquote><p>test</p><blockquote><p>test2</p></blockquote></blockquote>';
 	$this->assertEquals($out, $this->ll->UnMarkup->fromHtml($in));
 
 	$out = '<quote ></quote>';
@@ -72,11 +72,11 @@ public function testQuote()
 	$this->assertEquals($out, $this->ll->UnMarkup->fromHtml($in));
 
 	$out = '<quote author>test</quote>';
-	$in = '<cite>author</cite><blockquote><div>test</div></blockquote>';
+	$in = '<cite>author</cite><blockquote><p>test</p></blockquote>';
 	$this->assertEquals($out, $this->ll->UnMarkup->fromHtml($in));
 
 	$out = '<quote author>test<quote author2>test2</quote></quote>';
-	$in = '<cite>author</cite><blockquote><div>test<cite>author2</cite><blockquote><div>test2</div></blockquote></div></blockquote>';
+	$in = '<cite>author</cite><blockquote><p>test<cite>author2</cite><blockquote><p>test2</p></blockquote></p></blockquote>';
 	$this->assertEquals($out, $this->ll->UnMarkup->fromHtml($in));
 	}
 
@@ -171,8 +171,8 @@ public function testBug85()
 * 1
 * 2
 </quote>';
-	$in = '<blockquote><div>
-<ul><li>1</li><li>2</li></ul></div></blockquote>';
+	$in = '<blockquote><p>
+<ul><li>1</li><li>2</li></ul></p></blockquote>';
 
 	$this->assertEquals($out, $this->ll->UnMarkup->fromHtml($in));
 
