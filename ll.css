@@ -399,10 +399,10 @@
 	position:absolute;
 }
 #ll #body #posts tbody:nth-child(odd) .posts-menu  ul li ul {
-	background-color:#dbdbdb;
+	background-color:#eeeeee;
 }
 #ll #body #posts tbody:nth-child(even) .posts-menu  ul li ul {
-	background-color:#eeeeee;
+	background-color:#dbdbdb;
 }
 #ll #body #posts tbody .posts-menu ul li ul li {
 	margin-top:10px;
