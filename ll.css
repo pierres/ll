@@ -304,6 +304,7 @@
 	width:400px;
 	overflow:hidden;
 	padding:5px;
+	z-index:1;
 }
 #ll #body #threads tbody tr:hover .thread-main .thread-summary {
 	visibility:visible;
