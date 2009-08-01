@@ -52,7 +52,7 @@
 	margin:0px;
 	padding:10px;
 }
-#ll #user-menu {
+#ll #sub-menu {
 	font-size:12px;
 	background-color:#eeeeee;
 	margin:0px;
@@ -63,7 +63,19 @@
 	height:17px;
 	position:relative;
 }
-#ll #user-menu ul {
+#ll #foot-menu {
+	font-size:12px;
+	background-color:#eeeeee;
+	margin:30px;
+	margin-left:5%;
+	margin-right:5%;
+	padding:5px;
+	padding-left:10px;
+	height:17px;
+	position:relative;
+}
+#ll #sub-menu ul,
+#ll #foot-menu ul {
 	list-style-type: none;
 	margin:0px;
 	padding:0px;
@@ -71,22 +83,26 @@
 	position:absolute;
 	top:-5px;
 }
-#ll #user-menu ul li {
+#ll #sub-menu ul li,
+#ll #foot-menu ul li {
 	float: left;
 	margin:0px;
 	padding:10px;
 }
-#ll #user-menu ul li ul {
+#ll #sub-menu ul li ul,
+#ll #foot-menu ul li ul {
 	visibility: hidden;
 	background-color:#eeeeee;
 	position:relative;
 }
-#ll #user-menu ul li ul li {
+#ll #sub-menu ul li ul li,
+#ll #foot-menu ul li ul li {
 	margin-top:10px;
 	padding:4px;
 	float:none;
 }
-#ll #user-menu ul li:hover ul {
+#ll #sub-menu ul li:hover ul,
+#ll #foot-menu ul li:hover ul {
 	visibility: visible;
 }
 #ll #body {
@@ -388,6 +404,7 @@
 	list-style-type: none;
 	margin:0px;
 	padding:0px;
+	z-index:1;
 }
 #ll #body #posts tbody .posts-menu ul li {
 	float: left;
