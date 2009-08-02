@@ -335,7 +335,6 @@
 /* Postings */
 #ll #body #posts {
 	border-collapse:collapse;
-	width:100%;
 }
 #ll #body #posts thead th,
 #ll #body #posts thead td,
@@ -440,13 +439,16 @@
 }
 
 #ll #body #posts tbody .posts-text pre {
+	white-space: pre-wrap;
+	word-wrap: break-word;
+	width:450px;
+	min-width:95%;
+	max-height:700px;
 	font-family:monospace;
 	color:#000000;
 	background-color:#ffffff;
 	padding:10px;
 	margin:11px;
-	overflow:auto;
-	max-height:700px;
 	border:solid 1px #002468;
 }
 #ll #body #posts tbody .posts-text code {
