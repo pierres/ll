@@ -129,7 +129,7 @@ private function updateMarkup()
 		$text = str_replace('<blank>', ':-|', $text);
 		$text = str_replace('', '€', $text);
 		$text = str_replace('', '€', $text);
-
+		$text = mb_convert_encoding($text, 'UTF-8', 'UTF-8');
 		try
 			{
 			$text = $this->Markup->toHtml($text);
