@@ -14,6 +14,8 @@ LL 4 TODO
 * atm its not possible to remove files from a posting
 * DB: automatic close of connections on error
 * regenerate images, thumbnails and avatars
+* add LL-Code documentation
+* check utf8 problems; see http://www.phpwact.org/php/i18n/utf-8
 
 == Optional ==
 
