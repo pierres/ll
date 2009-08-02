@@ -57,9 +57,9 @@ public function fromHtml($text)
 	$text = preg_replace_callback('#<a href="(?:.+?)GetImage(?:.+?)url=(.+?)" rel="nofollow" rev="auto"><img src="(?:.+?)" alt="" class="image" /></a>#', array($this, 'unmakeAutoImage'), $text);
 	$text = preg_replace_callback('#<a href="(?:.+?)GetImage(?:.+?)url=(.+?)" rel="nofollow"><img src="(?:.+?)" alt="" class="image" /></a>#', array($this, 'unmakeImage'), $text);
 
-	$text = preg_replace_callback('#<video src="(.+?)" controls="controls" rev="auto"><a href="(?:.+?)" rel="nofollow">(?:.+?)</a></video>#', array($this, 'unmakeAutoVideo'), $text);
-	$text = preg_replace_callback('#<video src="(.+?)" controls="controls"><a href="(?:.+?)" rel="nofollow">(?:.+?)</a></video>#', array($this, 'unmakeVideo'), $text);
-	$text = preg_replace_callback('#<audio src="(.+?)" controls="controls"><a href="(?:.+?)" rel="nofollow">(?:.+?)</a></audio>#', array($this, 'unmakeAudio'), $text);
+	$text = preg_replace_callback('#<video src="(.+?)" controls="true"><a href="(?:.+?)" rel="nofollow" rev="auto">(?:.+?)</a></video>#', array($this, 'unmakeAutoVideo'), $text);
+	$text = preg_replace_callback('#<video src="(.+?)" controls="true"><a href="(?:.+?)" rel="nofollow">(?:.+?)</a></video>#', array($this, 'unmakeVideo'), $text);
+	$text = preg_replace_callback('#<audio src="(.+?)" controls="true"><a href="(?:.+?)" rel="nofollow">(?:.+?)</a></audio>#', array($this, 'unmakeAudio'), $text);
 
 	$text = preg_replace_callback('#<a href="(.+?)" rel="nofollow" rev="auto">.+?</a>#', array($this, 'unmakeAutoLink'), $text);
 	$text = preg_replace_callback('#<a href="(.+?)" rel="nofollow">(.+?)</a>#', array($this, 'unmakeNamedLink'), $text);

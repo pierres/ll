@@ -122,11 +122,11 @@
 
 /* Page */
 #ll .warning {
-	color:darkorange;
+	color:#FF8000;
 	font-weight:bold;
 }
 #ll .failure {
-	color:darkred;
+	color:#C00000;
 	font-weight:bold;
 }
 #ll #body .box {
@@ -236,13 +236,13 @@
 #ll #body form input[type=file],
 #ll #body form textarea {
 	font-family:monospace;
-	color:grey;
+	color:#808080;
 }
 #ll #body form input[type=text]:focus,
 #ll #body form input[type=password]:focus,
 #ll #body form input[type=file]:focus,
 #ll #body form textarea:focus {
-	color:black;
+	color:#000000;
 }
 #ll #body form .form-help {
 	font-size:12px;
@@ -388,7 +388,7 @@
 #ll #body #posts tbody.poll .poll-options * {
 	background-color:transparent;
 	padding:0px;
-	marging:5px;
+	margin:0px;
 }
 #ll #body #posts tbody.poll .poll-options .poll-bar {
 	background-color:#6c83af;

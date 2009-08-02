@@ -443,7 +443,7 @@ private function makeVideo($matches, $auto = false)
 		$rev = '';
 		}
 
-	return $this->createStackLink('<video src="'.$url.'" controls="controls"'.$rev.'><a href="'.$url.'" rel="nofollow">'.$url.'</a></video>');
+	return $this->createStackLink('<video src="'.$url.'" controls="true"><a href="'.$url.'" rel="nofollow"'.$rev.'>'.$url.'</a></video>');
 	}
 
 private function makeWWWVideo($matches, $auto = false)
@@ -479,7 +479,7 @@ private function makeAudio($matches)
 	{
 	$url = htmlspecialchars($matches[1], ENT_COMPAT, 'UTF-8');
 
-	return $this->createStackLink('<audio src="'.$url.'" controls="controls"><a href="'.$url.'" rel="nofollow">'.$url.'</a></audio>');
+	return $this->createStackLink('<audio src="'.$url.'" controls="true"><a href="'.$url.'" rel="nofollow">'.$url.'</a></audio>');
 	}
 
 }

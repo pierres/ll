@@ -182,7 +182,6 @@ public function prepare()
 private function getHead()
 	{
 	return '
-		<meta http-equiv="content-type" content="'.$this->Output->getContentType().'" />
 		<meta name="robots" content="'.$this->getValue('meta.robots').'" />
 		<title>'.$this->getTitle().'</title>
 		<!-- <link rel="stylesheet" media="screen" href="'.$this->Output->createUrl('GetCss').'" /> -->

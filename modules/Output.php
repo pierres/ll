@@ -34,17 +34,6 @@ function __construct()
 	{
 	$this->outputSeparator = ini_get('arg_separator.output');
 	$this->outputSeparatorHtml = htmlspecialchars($this->outputSeparator);
-
-	try
-		{
-		if (strpos($this->Input->Server->getString('HTTP_ACCEPT'), 'application/xhtml+xml') !== false)
-			{
-			$this->contentType = 'application/xhtml+xml; charset=UTF-8';
-			}
-		}
-	catch (RequestException $e)
-		{
-		}
 	}
 
 public function setStatus($code)
