@@ -34,6 +34,14 @@
 	padding-left:10px;
 	margin:0px;
 }
+#ll #title img {
+	position:absolute;
+	z-index:1;
+	right:5%;
+	top:2px;
+	padding:0px;
+	margin:10px;
+}
 #ll #main-menu {
 	background-color:#dddddd;
 	margin:0px;
