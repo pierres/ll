@@ -520,6 +520,14 @@
 #ll #body #posts tbody .posts-text ul {
 	list-style-type:square;
 }
+#ll #body #posts tbody .posts-text .files * {
+	background-color:transparent;
+	padding:0px;
+	margin:0px;
+}
+#ll #body #posts tbody .posts-text .files tr td {
+	padding-left:10px;
+}
 
 
 /* MyFiles */

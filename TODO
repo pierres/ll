@@ -17,7 +17,6 @@ LL 4 TODO
 * add LL-Code documentation
 * check utf8 problems; see http://www.phpwact.org/php/i18n/utf-8
 * check long code lines
-* fix CSS for files lists
 * check all texts (including title, names etc.) for non-unicode characters
 * AdminSettigns does not accept more than one mod/admin
 * compare id order with date order

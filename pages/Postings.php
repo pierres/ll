@@ -436,7 +436,7 @@ protected function getFiles($post)
 		}
 
 
-	$list = '<table>';
+	$list = '<table class="files">';
 
 	foreach ($files as $file)
 		{
@@ -447,7 +447,7 @@ protected function getFiles($post)
 			{
 			$list .= '<tr>
  			<td>
-			<a href="'.$this->Output->createUrl('GetAttachment', array('file' => $file['id'])).'" rel="nofollow"><img src="'.$this->Output->createUrl('GetAttachmentThumb', array('file' => $file['id'])).'" alt="'.$file['name'].'" title="'.$file['name'].'" /></a>
+			<a href="'.$this->Output->createUrl('GetAttachment', array('file' => $file['id'])).'" rel="nofollow"><img src="'.$this->Output->createUrl('GetAttachmentThumb', array('file' => $file['id'])).'" alt="'.$file['name'].'" title="'.$file['name'].'" class="image" /></a>
  			</td>
 			<td>'.round($file['size'] / 1024, 2).'&thinsp;KByte</td>
 			</tr>';
