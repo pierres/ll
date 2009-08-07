@@ -140,7 +140,7 @@ You can now set your password at the follwing website:
 User-ID:	%d
 Key:		%s
 eot
-), $this->name, $this->Board->getName(), $this->Output->createUrl('ChangePasswordKey'), $userid, $key));
+), $this->name, $this->Board->getName(), $this->Output->createUrl('ChangePasswordKey', array(), true, false), $userid, $key));
 	$this->Mail->send();
 
  	$this->Output->redirect('Login');

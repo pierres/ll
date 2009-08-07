@@ -168,7 +168,6 @@ function resizeImage($image, $type, $size)
 
 function getTextFromHtml($html)
 	{
-	$text = str_replace('<br />', ' ', $html);
 	$text = str_replace('</li>', ' </li>', $text);
 	$text = preg_replace('/\s+/', ' ', $text);
 	$text = cutString(strip_tags($text),  300);

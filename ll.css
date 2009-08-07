@@ -335,6 +335,7 @@
 /* Postings */
 #ll #body #posts {
 	border-collapse:collapse;
+	width:100%;
 }
 #ll #body #posts thead th,
 #ll #body #posts thead td,

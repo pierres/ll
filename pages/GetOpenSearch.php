@@ -32,7 +32,7 @@ public function show()
 <ShortName>'.$this->Board->getName().'</ShortName>
 <Description>'.$this->Board->getName().' :: Foren-Suche</Description>
 <Image height="16" width="16" type="image/x-icon">'.$this->Input->getPath().'favicon.ico</Image>
-<Url type="text/html" method="get" template="'.$this->Output->createUrl('Search', array('submit' => '', 'search' => '{searchTerms}')).'"/>
+<Url type="text/html" method="get" template="'.$this->Output->createUrl('Search', array('submit' => '', 'search' => '{searchTerms}'), true).'"/>
 </OpenSearchDescription>';
 
 	$this->Output->setContentType('application/opensearchdescription+xml; charset=UTF-8');

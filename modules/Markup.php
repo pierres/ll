@@ -398,7 +398,7 @@ private function makeImage($matches, $auto = false)
 		$rev = '';
 		}
 
-	return $this->createStackLink('<a href="'.$this->Output->createRelativeUrl('GetImage', array('url' => $url)).'" rel="nofollow"'.$rev.'><img src="'.$this->Output->createRelativeUrl('GetImage', array('thumb' => 1, 'url' => $url)).'" alt="" class="image" /></a>');
+	return $this->createStackLink('<a href="'.$this->Output->createUrl('GetImage', array('url' => $url)).'" rel="nofollow"'.$rev.'><img src="'.$this->Output->createUrl('GetImage', array('thumb' => 1, 'url' => $url)).'" alt="" class="image" /></a>');
 	}
 
 private function makeWWWImage($matches, $auto = false)

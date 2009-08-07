@@ -188,19 +188,28 @@ public function show()
 					{
 					$lastdate = $thread['firstdate'];
 					}
+				
+				if ($showContent)
+					{
+					# FIXME ugly code
+					# make relative URLs absolute
+					$thread['text'] = str_replace('<a href="?', '<a href="'.$this->Input->getPath().'?', $thread['text']);
+					$thread['text'] = str_replace('<img src="?', '<img src="'.$this->Input->getPath().'?', $thread['text']);
+					$thread['text'] = str_replace('<img src="images/smilies/', '<img src="'.$this->Input->getPath().'images/smilies/', $thread['text']);
+					}
 
 				$entries .=
 				'
 				<entry>
-					<id>'.$this->Output->createUrl('Postings', array('thread' => $thread['id'])).'</id>
+					<id>'.$this->Output->createUrl('Postings', array('thread' => $thread['id']), true).'</id>
 					<title>'.$thread['name'].'</title>
-					<link rel="alternate" type="text/html" href="'.$this->Output->createUrl('page=Postings', array('thread' => $thread['id'], 'post' => '-1')).'" />
+					<link rel="alternate" type="text/html" href="'.$this->Output->createUrl('page=Postings', array('thread' => $thread['id'], 'post' => '-1'), true).'" />
 					<updated>'.date('c', $thread['firstdate']).'</updated>
 					<summary>'.$thread['summary'].'</summary>
 					'.($showContent ? '<content type="html"><![CDATA['.$thread['text'].']]></content>' : '').'
 					<author>
 						<name>'.$thread['firstusername'].'</name>
-						<uri>'.$this->Output->createUrl('ShowUser', array('user' => $thread['firstuserid'])).'</uri>
+						<uri>'.$this->Output->createUrl('ShowUser', array('user' => $thread['firstuserid']), true).'</uri>
 					</author>
 				</entry>
 				';
@@ -218,10 +227,10 @@ public function show()
 		$content =
 '<?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="de">
-	<id>'.$this->Output->createUrl('GetRecent').'</id>
+	<id>'.$this->Output->createUrl('GetRecent', array(), true).'</id>
 	<title>'.$this->Board->getName().'</title>
-	<link rel="self" type="application/atom+xml" href="'.$this->Output->createUrl('GetRecent').'" />
-	<link rel="alternate" type="text/html" href="'.$this->Output->createUrl('Forums').'" />
+	<link rel="self" type="application/atom+xml" href="'.$this->Output->createUrl('GetRecent', array(), true).'" />
+	<link rel="alternate" type="text/html" href="'.$this->Output->createUrl('Forums', array(), true).'" />
 	<updated>'.date('c', $lastdate).'</updated>
 	'.$entries.'
 </feed>';

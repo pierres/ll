@@ -22,8 +22,6 @@ LL 4 TODO
 * AdminSettigns does not accept more than one mod/admin
 * compare id order with date order
 * Linkification kills links in edit mode
-* relative URLS in feeds are a problem
-* use relative URLs (without domain)
 
 == Optional ==
 

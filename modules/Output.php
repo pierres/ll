@@ -96,7 +96,7 @@ public function writeOutput(&$text)
 
 public function redirect($page, $options = array())
 	{
-	$this->redirectToUrl($this->createUrl($page, $options, false));
+	$this->redirectToUrl($this->createUrl($page, $options, true, false));
 	}
 
 /** FIXME: XSS->alle Zeilenumbrüche entfernen */
@@ -107,7 +107,7 @@ public function redirectToUrl($url)
 	exit();
 	}
 
-public function createUrl($page, $options = array(), $html = true)
+public function createUrl($page, $options = array(), $absolute = false, $html = true)
 	{
 	$separator = ($html ? $this->outputSeparatorHtml : $this->outputSeparator);
 	$params = '';
@@ -116,19 +116,7 @@ public function createUrl($page, $options = array(), $html = true)
 		$params .= $separator.$key.'='.urlencode($value);
 		}
 
-	return $this->Input->getPath().'?id='.$this->Board->getId().$params;
-	}
-
-public function createRelativeUrl($page, $options = array(), $html = true)
-	{
-	$separator = ($html ? $this->outputSeparatorHtml : $this->outputSeparator);
-	$params = '';
-	foreach (array_merge(array('page' => $page), $options) as $key => $value)
-		{
-		$params .= $separator.$key.'='.urlencode($value);
-		}
-
-	return '?id='.$this->Board->getId().$params;
+	return ($absolute ? $this->Input->getPath() : '').'?id='.$this->Board->getId().$params;
 	}
 
 }
