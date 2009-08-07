@@ -26,31 +26,38 @@ public function prepare()
 
 public function show()
 	{
-	if (!($css = $this->ObjectCache->getObject('LL:GetCss:Css:'.$this->Input->Get->getInt('id'))))
+	try
 		{
-		$this->initDB();
-		try
+		if (!($css = $this->ObjectCache->getObject('LL:GetCss:Css:'.$this->Input->Get->getInt('id'))))
 			{
-			$stm = $this->DB->prepare
-				('
-				SELECT
-					css
-				FROM
-					boards
-				WHERE
-					id = ?'
-				);
-			$stm->bindInteger($this->Board->GetId());
-			$css = $stm->getColumn();
-			$stm->close();
-			$this->ObjectCache->addObject('LL:GetCss:Css:'.$this->Board->getId(), $css, 60*60);
+			$this->initDB();
+			try
+				{
+				$stm = $this->DB->prepare
+					('
+					SELECT
+						css
+					FROM
+						boards
+					WHERE
+						id = ?'
+					);
+				$stm->bindInteger($this->Board->GetId());
+				$css = $stm->getColumn();
+				$stm->close();
+				$this->ObjectCache->addObject('LL:GetCss:Css:'.$this->Board->getId(), $css, 60*60);
+				}
+			catch (DBNoDataException $e)
+				{
+				$stm->close();
+				$this->Output->setStatus(Output::NOT_FOUND);
+				$this->showWarning('Datei nicht gefunden');
+				}
 			}
-		catch (DBNoDataException $e)
-			{
-			$stm->close();
-			$this->Output->setStatus(Output::NOT_FOUND);
-			$this->showWarning('Datei nicht gefunden');
-			}
+		}
+	catch (RequestException $e)
+		{
+		$this->showWarning($e->getMessage());
 		}
 
 	$this->Output->setContentType('text/css; charset=UTF-8');
