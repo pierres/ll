@@ -41,39 +41,13 @@ protected function setForm()
 		$this->add(new TextInputElement('admin', AdminFunctions::getUserName($this->Board->getAdmin()), 'Administrator'));
 		}
 
-	$mods = '';
-	try
-		{
-		$stm = $this->DB->prepare
-			('
-			SELECT
-				users.name
-			FROM
-				users,
-				user_group
-			WHERE
-				user_group.userid = users.id
-				AND user_group.groupid = ?'
-			);
-		$stm->bindInteger($this->Board->getMods());
-
-		foreach($stm->getColumnSet() as $mod)
-			{
-			$mods .= $mod."\n";
-			}
-		$stm->close();
-		}
-	catch (DBNoDataException $e)
-		{
-		$stm->close();
-		}
-	$modsInput = new TextareaInputElement('mods', $mods, 'Moderatoren');
-	$modsInput->setRows(5);
-	$modsInput->setRequired(false);
-	$this->add($modsInput);
-
 	if($this->User->isUser($this->Board->getAdmin()) || $this->User->isLevel(User::ADMIN))
 		{
+		$hostInput = new TextInputElement('host', $this->Board->getHost(), 'Host/Domain');
+		$hostInput->setMinLength(6);
+		$hostInput->setMaxLength(100);
+		$this->add($hostInput);
+
 		$admins = '';
 		try
 			{
@@ -86,8 +60,10 @@ protected function setForm()
 					user_group
 				WHERE
 					user_group.userid = users.id
-					AND user_group.groupid = ?'
-				);
+					AND user_group.groupid = ?
+			ORDER BY
+				users.name
+				');
 			$stm->bindInteger($this->Board->getAdmins());
 
 			foreach($stm->getColumnSet() as $admin)
@@ -104,12 +80,40 @@ protected function setForm()
 		$adminsInput->setRows(5);
 		$adminsInput->setRequired(false);
 		$this->add($adminsInput);
-
-		$hostInput = new TextInputElement('host', $this->Board->getHost(), 'Host/Domain');
-		$hostInput->setMinLength(6);
-		$hostInput->setMaxLength(100);
-		$this->add($hostInput);
 		}
+
+	$mods = '';
+	try
+		{
+		$stm = $this->DB->prepare
+			('
+			SELECT
+				users.name
+			FROM
+				users,
+				user_group
+			WHERE
+				user_group.userid = users.id
+				AND user_group.groupid = ?
+			ORDER BY
+				users.name
+			');
+		$stm->bindInteger($this->Board->getMods());
+
+		foreach($stm->getColumnSet() as $mod)
+			{
+			$mods .= $mod."\n";
+			}
+		$stm->close();
+		}
+	catch (DBNoDataException $e)
+		{
+		$stm->close();
+		}
+	$modsInput = new TextareaInputElement('mods', $mods, 'Moderatoren');
+	$modsInput->setRows(5);
+	$modsInput->setRequired(false);
+	$this->add($modsInput);
 	}
 
 protected function checkForm()
@@ -128,7 +132,7 @@ protected function checkForm()
 
 	if(!$this->Input->Post->isEmptyString('admins') && ($this->User->isUser($this->Board->getAdmin()) || $this->User->isLevel(User::ADMIN)))
 		{
-		$admins = explode("\n", trim($this->Input->Post->getString('admins')));
+		$admins = array_map('trim', explode("\n", trim($this->Input->Post->getString('admins'))));
 
 		foreach ($admins as $admin)
 			{
@@ -145,7 +149,7 @@ protected function checkForm()
 
 	if(!$this->Input->Post->isEmptyString('mods'))
 		{
-		$mods = explode("\n", trim($this->Input->Post->getString('mods')));
+		$mods = array_map('trim', explode("\n", trim($this->Input->Post->getString('mods'))));
 
 		foreach ($mods as $mod)
 			{
