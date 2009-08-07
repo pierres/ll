@@ -4,23 +4,10 @@ LL 4 TODO
 == Required for Release ==
 
 * use L10n-Methods for all (english) Strings
-* isEmptyString fails on arrays
-* adapt new theme
-* dfeine common translations
-* drop supprt for php < 5.3 (at least when its in extra)
-* review use of showFailure and showWarning
-* APC user var collision when running several instances on one server
-* Add/remove files is confusing
-* atm its not possible to remove files from a posting
-* DB: automatic close of connections on error
 * regenerate images, thumbnails and avatars
 * add LL-Code documentation
-* check utf8 problems; see http://www.phpwact.org/php/i18n/utf-8
-* check long code lines
-* check all texts (including title, names etc.) for non-unicode characters
-* AdminSettigns does not accept more than one mod/admin
-* compare id order with date order
-* Linkification kills links in edit mode
+* update Database; remove unused tables and columns
+* Move ll.{html,css} into DB and RegisterBoard
 
 == Optional ==
 
@@ -38,6 +25,20 @@ LL 4 TODO
 * make fileinfo non optional (included in PHP 5.3 anyway)
 * create some kind of test scripts that checks server and php configuration
 * create Form that can be embedded into a Page
+* Linkification kills links in edit mode
+* check long code lines
+* DB: automatic close of connections on error
+* atm its not possible to remove files from a posting
+* Add/remove files is confusing
+* APC user var collision when running several instances on one server
+* review use of showFailure and showWarning
+* drop supprt for php < 5.3 (at least when its in extra)
+* isEmptyString fails on arrays
+* define common translations
+* check all texts (including title, names, summary etc.) for non-unicode characters
+* check utf8 problems; see http://www.phpwact.org/php/i18n/utf-8
+* compare id order with date order
+	* should only affect very old posts/threads
 
 == Security ==
 
