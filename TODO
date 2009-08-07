@@ -16,6 +16,14 @@ LL 4 TODO
 * regenerate images, thumbnails and avatars
 * add LL-Code documentation
 * check utf8 problems; see http://www.phpwact.org/php/i18n/utf-8
+* check long code lines
+* fix CSS for files lists
+* check all texts (including title, names etc.) for non-unicode characters
+* AdminSettigns does not accept more than one mod/admin
+* compare id order with date order
+* Linkification kills links in edit mode
+* relative URLS in feeds are a problem
+* use relative URLs (without domain)
 
 == Optional ==
 
@@ -25,7 +33,7 @@ LL 4 TODO
 * add simple FormElement to ger user's confirmation
 	* means generic "Are you sure to..." dialog
 * separate Threads and PrivateThreads in DB
-* extract common Methods to list Postigns in order to simplify Postings and PrivatePostings
+* extract common Methods to list Postings in order to simplify Postings and PrivatePostings
 * remove image size from db or reimplement usage
 * FileElement should set the right form encoding itself
 * Last page link on Recent is wrong
