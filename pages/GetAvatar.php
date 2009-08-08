@@ -43,7 +43,6 @@ public function show()
 			('
 			SELECT
 				type,
-				name,
 				content
 			FROM
 				avatars
@@ -61,7 +60,7 @@ public function show()
 		$this->showWarning('Datei nicht gefunden');
 		}
 
-	$this->sendInlineFile($data['type'], $data['name'], $data['content']);
+	$this->sendInlineFile($data['type'], $this->user, $data['content']);
 	}
 }
 

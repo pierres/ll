@@ -112,7 +112,7 @@ function resizeImage($image, $type, $size)
 	if ($width <= $size && $height <= $size)
 		{
 		/** TODO: besser eigene Exception */
-		throw new Exception('we do not need to resize');
+		throw new RuntimeException('we do not need to resize');
 		}
 	else
 		{

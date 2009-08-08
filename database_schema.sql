@@ -22,7 +22,6 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 CREATE TABLE `attachments` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `name` varchar(200) NOT NULL default '',
-  `size` int(10) unsigned NOT NULL default '0',
   `type` varchar(100) NOT NULL default '',
   `userid` int(10) unsigned NOT NULL default '0',
   `uploaded` int(10) unsigned NOT NULL default '0',
@@ -41,9 +40,6 @@ CREATE TABLE `attachments` (
 
 CREATE TABLE `attachment_thumbnails` (
   `id` int(10) unsigned NOT NULL,
-  `name` varchar(200) NOT NULL default '',
-  `size` int(10) unsigned NOT NULL default '0',
-  `type` varchar(100) NOT NULL default '',
   `content` mediumblob NOT NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
@@ -56,8 +52,6 @@ CREATE TABLE `attachment_thumbnails` (
 
 CREATE TABLE `avatars` (
   `id` int(10) unsigned NOT NULL,
-  `name` varchar(200) NOT NULL default '',
-  `size` int(10) unsigned NOT NULL default '0',
   `type` varchar(100) NOT NULL default '',
   `content` mediumblob NOT NULL,
   PRIMARY KEY  (`id`)
@@ -77,16 +71,11 @@ CREATE TABLE `boards` (
   `posts` int(10) unsigned NOT NULL default '0',
   `threads` int(10) unsigned NOT NULL default '0',
   `lastpost` int(10) unsigned NOT NULL default '0',
-  `description` text NOT NULL,
   `admins` int(10) unsigned NOT NULL default '0',
   `mods` int(10) unsigned NOT NULL default '0',
   `host` varchar(255) NOT NULL,
   `html` text NOT NULL,
   `css` text NOT NULL,
-  `admin_name` varchar(255) NOT NULL,
-  `admin_address` varchar(255) NOT NULL,
-  `admin_email` varchar(255) NOT NULL,
-  `admin_tel` varchar(255) NOT NULL,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `host` (`host`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
@@ -180,9 +169,7 @@ CREATE TABLE `images` (
   `url` varchar(255) NOT NULL,
   `type` varchar(100) NOT NULL,
   `content` mediumblob NOT NULL,
-  `size` int(10) unsigned NOT NULL,
   `thumbcontent` mediumblob NOT NULL,
-  `thumbsize` int(10) unsigned NOT NULL,
   `lastupdate` int(11) unsigned NOT NULL,
   PRIMARY KEY  (`url`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
@@ -198,24 +185,6 @@ CREATE TABLE `password_key` (
   `key` varchar(40) NOT NULL,
   `request_time` int(10) unsigned NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `plz`
---
-
-CREATE TABLE `plz` (
-  `location` varchar(100) NOT NULL default '',
-  `country` varchar(3) NOT NULL default '',
-  `code` mediumint(5) unsigned NOT NULL default '0',
-  `length` varchar(5) NOT NULL default '',
-  `width` varchar(5) NOT NULL default '',
-  `x` smallint(3) unsigned NOT NULL default '0',
-  `y` smallint(3) unsigned NOT NULL default '0',
-  KEY `code` (`code`),
-  KEY `location` (`location`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -314,7 +283,6 @@ CREATE TABLE `session` (
   `lastupdate` int(10) unsigned NOT NULL default '0',
   `security_token` varchar(40) NOT NULL,
   `boardid` int(10) unsigned NOT NULL default '0',
-  `hidden` tinyint(1) unsigned NOT NULL default '0',
   PRIMARY KEY  (`sessionid`),
   KEY `lastupdate` (`lastupdate`),
   KEY `id` (`id`),
@@ -416,18 +384,12 @@ CREATE TABLE `users` (
   `password` varchar(40) NOT NULL,
   `email` varchar(100) NOT NULL default '',
   `jabber` varchar(100) NOT NULL default '',
-  `birthday` int(11) NOT NULL default '0',
   `posts` int(10) unsigned NOT NULL default '0',
   `regdate` int(10) unsigned NOT NULL default '0',
   `level` tinyint(1) unsigned NOT NULL default '0',
-  `gender` tinyint(1) unsigned NOT NULL default '0',
   `lastpost` int(10) unsigned NOT NULL default '0',
   `avatar` tinyint(1) unsigned NOT NULL default '0',
-  `location` varchar(255) default NULL,
-  `plz` mediumint(5) unsigned default NULL,
-  `text` text,
   `lastlogin` int(10) unsigned NOT NULL default '0',
-  `hidden` tinyint(1) unsigned NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `name` (`name`(10)),
   KEY `posts` (`posts`),

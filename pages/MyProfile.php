@@ -214,7 +214,6 @@ private function sendNewAvatar()
 			UPDATE
 				avatars
 			SET
-				name = ?,
 				type = ?,
 				content = ?
 			WHERE
@@ -228,14 +227,12 @@ private function sendNewAvatar()
 			INSERT INTO
 				avatars
 			SET
-				name = ?,
 				type = ?,
 				content = ?,
 				id = ?'
 			);
 		}
 
-	$stm->bindString(htmlspecialchars($this->newavatar->getFileName()));
 	$stm->bindString($this->newavatar->getFileType());
 	$stm->bindString($content);
 	$stm->bindInteger($this->User->getId());

@@ -67,11 +67,18 @@ public function run()
 	$this->updateAvatars();
 	$this->updateAttachements();
 
+	$this->DB->execute('OPTIMIZE TABLE `'.implode('` , `', $tables).'`');
 	$this->DB->execute('UNLOCK TABLES');
 	}
 
 private function updateDB()
 	{
+// 	$this->DB->execute('DROP TABLE tags');
+// 	$this->DB->execute('ALTER TABLE threads DROP tag');
+	$this->DB->execute('ALTER TABLE boards DROP description, DROP admin_name, DROP admin_email, DROP admin_address, DROP admin_tel');
+	$this->DB->execute('DROP TABLE plz');
+	$this->DB->execute('ALTER TABLE session DROP hidden');
+	$this->DB->execute('ALTER TABLE users DROP birthday, DROP location, DROP plz, DROP `text`, DROP hidden');
 	$this->DB->execute('DROP TABLE `cache`');
 	$this->DB->execute
 		('CREATE TABLE `search` (
@@ -161,7 +168,7 @@ private function updateImages()
 
 private function updateAvatars()
 	{
-	$this->DB->execute('ALTER TABLE avatars DROP size');
+	$this->DB->execute('ALTER TABLE avatars DROP size, DROP name');
 	$totalAvatars = $this->DB->getColumn
 		('SELECT
 			COUNT(*)
@@ -287,9 +294,12 @@ private function updateAttachements()
 				$updateThumbs->bindInteger($image['id']);
 				$updateThumbs->execute();
 				}
+			catch (RuntimeException $e)
+				{
+				}
 			catch (Exception $e)
 				{
-				echo 'Removing file ', $image['id'], "\n";
+				echo "\n", 'Removing file ', $image['id'], "\n";
 				$this->delFile($image['id']);
 				continue;
 				}
@@ -417,6 +427,7 @@ private function getTypeFromContent($content)
 
 private function updateMarkup()
 	{
+	$this->DB->execute('ALTER TABLE posts DROP smilies');
 	$totalPosts = $this->DB->getColumn
 		('SELECT
 			COUNT(*)
