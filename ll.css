@@ -445,6 +445,7 @@
 	width:450px;
 	min-width:95%;
 	max-height:700px;
+	overflow:auto;
 	font-family:monospace;
 	color:#000000;
 	background-color:#ffffff;
@@ -460,16 +461,14 @@
 	padding:2px;
 }
 #ll #body #posts tbody .posts-text a {
-	border-bottom:1px solid;
-	text-decoration:none;
+	text-decoration:underline;
 }
 #ll #body #posts tbody .posts-text a[rev=auto] {
-	border-bottom:1px dotted;
-	text-decoration:none;
 }
 #ll #body #posts tbody .posts-text .image {
+	line-height:128px;
+	vertical-align:middle;
 	border: solid 1px transparent;
-	display:block;
 	margin:10px;
 }
 #ll #body #posts tbody .posts-text .image:hover {
@@ -504,7 +503,7 @@
 }
 #ll #body #posts tbody .posts-text blockquote {
 	border:solid 1px #002468;
-	padding:0px;
+	padding:5px;
 	padding-left:15px;
 	padding-right:15px;
 	margin:0px;
@@ -520,13 +519,9 @@
 #ll #body #posts tbody .posts-text ul {
 	list-style-type:square;
 }
-#ll #body #posts tbody .posts-text .files * {
-	background-color:transparent;
+#ll #body #posts tbody .posts-text .files {
 	padding:0px;
 	margin:0px;
-}
-#ll #body #posts tbody .posts-text .files tr td {
-	padding-left:10px;
 }
 
 
