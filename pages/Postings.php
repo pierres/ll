@@ -416,7 +416,6 @@ protected function getFiles($post)
 			SELECT
 				attachments.id,
 				attachments.name,
-				attachments.size,
 				attachments.type
 			FROM
 				attachments,
@@ -436,7 +435,7 @@ protected function getFiles($post)
 		}
 
 
-	$list = '<table class="files">';
+	$list = '';
 
 	foreach ($files as $file)
 		{
@@ -445,24 +444,16 @@ protected function getFiles($post)
 			strpos($file['type'], 'image/png') === 0 ||
 			strpos($file['type'], 'image/gif') === 0)
 			{
-			$list .= '<tr>
- 			<td>
-			<a href="'.$this->Output->createUrl('GetAttachment', array('file' => $file['id'])).'" rel="nofollow"><img src="'.$this->Output->createUrl('GetAttachmentThumb', array('file' => $file['id'])).'" alt="'.$file['name'].'" title="'.$file['name'].'" class="image" /></a>
- 			</td>
-			<td>'.round($file['size'] / 1024, 2).'&thinsp;KByte</td>
-			</tr>';
+			$list .= '<a href="'.$this->Output->createUrl('GetAttachment', array('file' => $file['id'])).'" rel="nofollow"><img src="'.$this->Output->createUrl('GetAttachmentThumb', array('file' => $file['id'])).'" alt="'.$file['name'].'" title="'.$file['name'].'" class="image" /></a> ';
 			}
 		else
 			{
-			$list .= '<tr>
- 			<td><a href="'.$this->Output->createUrl('GetAttachment', array('file' => $file['id'])).'">'.$file['name'].'</a></td>
-			<td>'.round($file['size'] / 1024, 2).'&thinsp;KByte</td>
-			</tr>';
+			$list .= '<a href="'.$this->Output->createUrl('GetAttachment', array('file' => $file['id'])).'">'.$file['name'].'</a> ';
 			}
 		}
 	$stm->close();
 
-	return $list.'</table>';
+	return $list;
 	}
 
 protected function getPoll()

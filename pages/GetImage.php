@@ -88,8 +88,6 @@ private function loadImage()
  		$this->showWarning('Das Bild konnte nicht geladen werden.');
 		}
 
-	$thumbsize = strlen($thumbcontent);
-
 	$stm = $this->DB->prepare
 		('
 		REPLACE INTO
@@ -97,18 +95,14 @@ private function loadImage()
 		SET
 			url = ?,
 			type = ?,
-			size = ?,
 			content = ?,
 			thumbcontent = ?,
-			thumbsize = ?,
 			lastupdate = ?'
 		);
 	$stm->bindString($this->file->getFileUrl());
 	$stm->bindString($this->file->getFileType());
-	$stm->bindInteger($this->file->getFileSize());
 	$stm->bindString($this->file->getFileContent());
 	$stm->bindString($thumbcontent);
-	$stm->bindInteger($thumbsize);
 	$stm->bindInteger($this->Input->getTime());
 	$stm->execute();
 	$stm->close();
@@ -153,7 +147,6 @@ public function show()
 			{
 			$stm = $this->DB->prepare
 				('
-				(
 				SELECT
 					type,
 					thumbcontent AS content,
@@ -162,27 +155,12 @@ public function show()
 					images
 				WHERE
 					url = ?
-					AND thumbsize > 0
-				)
-				UNION
-				(
-				SELECT
-					type,
-					content,
-					lastupdate
-				FROM
-					images
-				WHERE
-					url = ?
-					AND thumbsize = 0
-				)
 				');
-			$stm->bindString($this->file->getFileUrl());
 			$stm->bindString($this->file->getFileUrl());
 			$data = $stm->getRow();
 			$stm->close();
-			}
-		else
+			}		
+		if (!$this->thumb || empty($data['content']))
 			{
 			$stm = $this->DB->prepare
 				('

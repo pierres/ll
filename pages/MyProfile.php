@@ -216,7 +216,6 @@ private function sendNewAvatar()
 			SET
 				name = ?,
 				type = ?,
-				size = ?,
 				content = ?
 			WHERE
 				id = ?'
@@ -231,7 +230,6 @@ private function sendNewAvatar()
 			SET
 				name = ?,
 				type = ?,
-				size = ?,
 				content = ?,
 				id = ?'
 			);
@@ -239,7 +237,6 @@ private function sendNewAvatar()
 
 	$stm->bindString(htmlspecialchars($this->newavatar->getFileName()));
 	$stm->bindString($this->newavatar->getFileType());
-	$stm->bindInteger($this->newavatar->getFileSize());
 	$stm->bindString($content);
 	$stm->bindInteger($this->User->getId());
 	$stm->execute();

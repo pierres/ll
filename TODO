@@ -4,10 +4,10 @@ LL 4 TODO
 == Required for Release ==
 
 * use L10n-Methods for all (english) Strings
-* regenerate images, thumbnails and avatars
 * add LL-Code documentation
 * update Database; remove unused tables and columns
 * Move ll.{html,css} into DB and RegisterBoard
+* update schema
 
 == Optional ==
 

@@ -38,7 +38,7 @@ protected function setForm()
 			SELECT
 				id,
 				name,
-				size,
+				OCTET_LENGTH(content) AS size,
 				uploaded,
 				type
 			FROM
@@ -87,7 +87,7 @@ protected function setForm()
 			('
 			SELECT
 				COUNT(*) AS files,
-				SUM(size) AS quota
+				SUM(OCTET_LENGTH(content)) AS quota
 			FROM
 				attachments
 			WHERE
@@ -141,7 +141,7 @@ protected function checkForm()
 			('
 			SELECT
 				COUNT(*) AS files,
-				SUM(size) AS quota
+				SUM(OCTET_LENGTH(content)) AS quota
 			FROM
 				attachments
 			WHERE
@@ -179,14 +179,12 @@ protected function sendForm()
 			name = ?,
 			type = ?,
 			content = ?,
-			size = ?,
 			userid = ?,
 			uploaded = ?'
 		);
 	$stm->bindString(htmlspecialchars($this->file->getFileName()));
 	$stm->bindString($this->file->getFileType());
 	$stm->bindString($this->file->getFileContent());
-	$stm->bindInteger($this->file->getFileSize());
 	$stm->bindInteger($this->User->getId());
 	$stm->bindInteger($this->Input->getTime());
 	$stm->execute();
@@ -212,11 +210,9 @@ protected function sendForm()
 					attachment_thumbnails
 				SET
 					id = ?,
-					size = ?,
 					content = ?'
 				);
 			$stm->bindInteger($this->DB->getInsertId());
-			$stm->bindInteger(strlen($thumbcontent));
 			$stm->bindString($thumbcontent);
 
 			$stm->execute();

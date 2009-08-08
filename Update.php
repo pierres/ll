@@ -63,6 +63,9 @@ public function run()
 
 	$this->updateDB();
 	$this->updateMarkup();
+	$this->updateImages();
+	$this->updateAvatars();
+	$this->updateAttachements();
 
 	$this->DB->execute('UNLOCK TABLES');
 	}
@@ -85,6 +88,331 @@ private function updateDB()
 			`score` double unsigned NOT NULL,
 		KEY `searchid` (`searchid`,`threadid`)
 		) ENGINE=MyISAM DEFAULT CHARSET=utf8');
+	}
+
+private function updateImages()
+	{
+	$this->DB->execute('ALTER TABLE images DROP size, DROP thumbsize');
+	$totalImages = $this->DB->getColumn
+		('SELECT
+			COUNT(*)
+		FROM
+			images
+		');
+	$images = $this->DB->getRowSet
+		('
+		SELECT
+			url,
+			content
+		FROM
+			images
+		');
+	$update = $this->DB->prepare
+		('
+		UPDATE
+			images
+		SET
+			type = ?,
+			thumbcontent = ?
+		WHERE
+			url = ?
+		');
+
+	$i = 0;
+	foreach ($images as $image)
+		{
+		$i++;
+		if ($i % 5 == 0)
+			{
+			echo "Processing $i of $totalImages...\t";
+			}
+		
+		$type = $this->getTypeFromContent($image['content']);
+		
+		if (	strpos($type, 'image/jpeg') !== 0 &&
+			strpos($type, 'image/png') !== 0 &&
+			strpos($type, 'image/gif') !== 0)
+			{
+			throw new RuntimeException('no image type', $i);
+			}
+
+		try
+			{
+			$thumbcontent = resizeImage($image['content'], $type, $this->Settings->getValue('thumb_size'));
+			}
+		catch (Exception $e)
+			{
+			$thumbcontent = '';
+			}
+		
+		$update->bindString($type);
+		$update->bindString($thumbcontent);
+		$update->bindString($image['url']);
+		$update->execute();
+		
+		if ($i % 5 == 0)
+			{
+			echo "done\n";
+			}
+		}
+
+	$update->close();
+	}
+
+private function updateAvatars()
+	{
+	$this->DB->execute('ALTER TABLE avatars DROP size');
+	$totalAvatars = $this->DB->getColumn
+		('SELECT
+			COUNT(*)
+		FROM
+			avatars
+		');
+	$avatars = $this->DB->getRowSet
+		('
+		SELECT
+			id,
+			content
+		FROM
+			avatars
+		');
+	$update = $this->DB->prepare
+		('
+		UPDATE
+			avatars
+		SET
+			type = ?,
+			content = ?
+		WHERE
+			id = ?
+		');
+
+	$i = 0;
+	foreach ($avatars as $avatar)
+		{
+		$i++;
+		if ($i % 5 == 0)
+			{
+			echo "Processing $i of $totalAvatars...\t";
+			}
+		
+		$type = $this->getTypeFromContent($avatar['content']);
+		
+		if (	strpos($type, 'image/jpeg') !== 0 &&
+			strpos($type, 'image/png') !== 0 &&
+			strpos($type, 'image/gif') !== 0)
+			{
+			throw new RuntimeException('no image type', $i);
+			}
+
+		try
+			{
+			$content = resizeImage($avatar['content'], $type, $this->Settings->getValue('avatar_size'));
+			}
+		catch (Exception $e)
+			{
+			$content = $avatar['content'];
+			}
+		
+		$update->bindString($type);
+		$update->bindString($content);
+		$update->bindInteger($avatar['id']);
+		$update->execute();
+		
+		if ($i % 5 == 0)
+			{
+			echo "done\n";
+			}
+		}
+
+	$update->close();
+	}
+
+private function updateAttachements()
+	{
+	$this->DB->execute('ALTER TABLE attachments DROP size');
+	$this->DB->execute('ALTER TABLE attachment_thumbnails DROP size, DROP name, DROP type');
+	$this->DB->execute('DELETE FROM attachment_thumbnails');
+	$totalImages = $this->DB->getColumn
+		('SELECT
+			COUNT(*)
+		FROM
+			attachments
+		');
+	$images = $this->DB->getRowSet
+		('
+		SELECT
+			id,
+			content
+		FROM
+			attachments
+		');
+	$update = $this->DB->prepare
+		('
+		UPDATE
+			attachments
+		SET
+			type = ?
+		WHERE
+			id = ?
+		');
+	$updateThumbs = $this->DB->prepare
+		('
+		INSERT INTO
+			attachment_thumbnails
+		SET
+			content = ?,
+			id = ?
+		');
+
+	$i = 0;
+	foreach ($images as $image)
+		{
+		$i++;
+		if ($i % 5 == 0)
+			{
+			echo "Processing $i of $totalImages...\t";
+			}
+		
+		$type = $this->getTypeFromContent($image['content']);
+		
+		if (	strpos($type, 'image/jpeg') === 0 ||
+			strpos($type, 'image/png') === 0 ||
+			strpos($type, 'image/gif') === 0)
+			{
+			try
+				{
+				$thumbcontent = resizeImage($image['content'], $type, $this->Settings->getValue('thumb_size'));
+				$updateThumbs->bindString($thumbcontent);
+				$updateThumbs->bindInteger($image['id']);
+				$updateThumbs->execute();
+				}
+			catch (Exception $e)
+				{
+				echo 'Removing file ', $image['id'], "\n";
+				$this->delFile($image['id']);
+				continue;
+				}
+			}
+		
+		$update->bindString($type);
+		$update->bindInteger($image['id']);
+		$update->execute();
+		
+		if ($i % 5 == 0)
+			{
+			echo "done\n";
+			}
+		}
+
+	$update->close();
+	$updateThumbs->close();
+	}
+
+protected function delFile($id)
+	{
+	$stm = $this->DB->prepare
+		('
+		DELETE FROM
+			attachments
+		WHERE
+			id = ?'
+		);
+	$stm->bindInteger($id);
+	$stm->execute();
+	$stm->close();
+
+	$stm = $this->DB->prepare
+		('
+		DELETE FROM
+			attachment_thumbnails
+		WHERE
+			id = ?'
+		);
+	$stm->bindInteger($id);
+	$stm->execute();
+	$stm->close();
+
+	try
+		{
+		$stm = $this->DB->prepare
+			('
+			SELECT
+				postid
+			FROM
+				post_attachments
+			WHERE
+				attachment_id = ?'
+			);
+		$stm->bindInteger($id);
+
+		foreach($stm->getColumnSet() as $post)
+			{
+			// Das ist also die letzte Datei für diesen Beitrag ...
+			$stm2 = $this->DB->prepare
+				('
+				SELECT
+					COUNT(*)
+				FROM
+					post_attachments
+				WHERE
+					postid = ?'
+				);
+			$stm2->bindInteger($post);
+
+			if ($stm2->getColumn() == 1)
+				{
+				$stm3 = $this->DB->prepare
+					('
+					UPDATE
+						posts
+					SET
+						file = 0
+					WHERE
+						id = ?'
+					);
+				$stm3->bindInteger($post);
+				$stm3->execute();
+				$stm3->close();
+				}
+			$stm2->close();
+			}
+		$stm->close();
+		}
+	catch (DBNoDataException $e)
+		{
+		}
+
+	$stm = $this->DB->prepare
+		('
+		DELETE FROM
+			post_attachments
+		WHERE
+			attachment_id = ?'
+		);
+	$stm->bindInteger($id);
+	$stm->execute();
+	$stm->close();
+	}
+
+private function getTypeFromContent($content)
+	{
+	if (function_exists('finfo_open'))
+		{
+		$finfo = finfo_open(FILEINFO_MIME);
+		$type = finfo_buffer($finfo, $content);
+		finfo_close($finfo);
+		/** @TODO: review with php 5.3 */
+		// new version produces strings like 'image/png; charset=binary'
+		// we only need the first part
+		$type = strtok($type, ';');
+		}
+	else
+		{
+		throw new FileException('No fileinfo module found');
+		}
+
+	return $type;
 	}
 
 private function updateMarkup()

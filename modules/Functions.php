@@ -94,13 +94,16 @@ function generatePassword($length = 8)
 /** @TODO: Sollte in eigene Klasse */
 function resizeImage($image, $type, $size)
 	{
-	try
+	# ignore recoverable errors
+	restore_error_handler();
+	$temp = error_reporting(0);
+	$src = imagecreatefromstring($image);
+	error_reporting($temp);
+	set_error_handler('ErrorHandler');
+	
+	if ($src === false)
 		{
-		$src = imagecreatefromstring($image);
-		}
-	catch (Exception $e)
-		{
-		throw new Exception('wrong format');
+		throw new Exception('wrong format');		
 		}
 
 	$width = imagesx($src);
