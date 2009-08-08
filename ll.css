@@ -12,7 +12,7 @@
 }
 #ll a:hover {
 	color:#6c83af;
-	text-decoration:none;
+	text-decoration:underline;
 }
 #ll #title {
 	color:#FFFFFF;
@@ -123,11 +123,17 @@
 /* Page */
 #ll .warning {
 	color:#FF8000;
-	font-weight:bold;
 }
 #ll .failure {
 	color:#C00000;
+}
+#ll .failure,
+#ll .warning {
+	list-style-type:square;
 	font-weight:bold;
+	margin:0px;
+	padding:0px;
+	padding-left:15px;
 }
 #ll #body .box {
 	padding:10px;
@@ -145,6 +151,10 @@
 #ll #body .box td * {
 	margin:0px;
 	vertical-align:top;
+}
+#ll #body .current-page {
+	color:#6c83af;
+	text-decoration:underline;
 }
 
 

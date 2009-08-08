@@ -176,7 +176,7 @@ private function getPages()
 
 		if ($this->currentThread == ($this->Settings->getValue('max_threads') * $i))
 			{
-			$pages .= ' <strong>'.($i+1).'</strong>';
+			$pages .= ' <strong class="current-page">'.($i+1).'</strong>';
 			}
 		else
 			{

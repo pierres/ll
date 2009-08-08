@@ -384,7 +384,7 @@ protected function getPages()
 
 		if ($this->post == ($this->Settings->getValue('max_posts') * $i))
 			{
-			$pages .= ' <strong>'.($i+1).'</strong>';
+			$pages .= ' <strong class="current-page">'.($i+1).'</strong>';
 			}
 		else
 			{
