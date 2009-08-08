@@ -179,8 +179,7 @@ public function login($name, $password, $cookie = false)
 				SELECT
 					id,
 					name,
-					level,
-					hidden
+					level
 				FROM
 					users
 				WHERE
@@ -198,8 +197,7 @@ public function login($name, $password, $cookie = false)
 				SELECT
 					id,
 					name,
-					level,
-					hidden
+					level
 				FROM
 					users
 				WHERE
@@ -245,10 +243,10 @@ public function login($name, $password, $cookie = false)
 		$stm->close();
 		}
 
-	$this->start($data['id'], $data['name'], $data['level'], $gruopArray, $data['hidden']);
+	$this->start($data['id'], $data['name'], $data['level'], $gruopArray);
 	}
 
-private function start($id, $name ,$level, $groups, $hidden)
+private function start($id, $name ,$level, $groups)
 	{
 	$this->collectGarbage();//evtl. könnte man überlegen den Müll öfters zu entfernen
 
@@ -273,9 +271,8 @@ private function start($id, $name ,$level, $groups, $hidden)
 			groups = ?,
 			lastupdate = ?,
 			security_token = ?,
-			boardid = ?,
-			hidden = ?'
-		);
+			boardid = ?
+		');
 	$stm->bindString($this->sessionid);
 	$stm->bindInteger($this->id);
 	$stm->bindString($this->name);
@@ -284,7 +281,6 @@ private function start($id, $name ,$level, $groups, $hidden)
 	$stm->bindInteger($this->Input->getTime());
 	$stm->bindString($this->securityToken);
 	$stm->bindInteger($this->Board->getId());
-	$stm->bindInteger($hidden);
 	$stm->execute();
 	$stm->close();
 
@@ -357,7 +353,6 @@ public function getOnline()
 				session
 			WHERE
 				boardid = ?
-				AND hidden = 0
 			');
 		$stm->bindInteger($this->Board->getId());
 
