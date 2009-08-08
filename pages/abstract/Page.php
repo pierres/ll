@@ -79,6 +79,7 @@ private static $availablePages = array
 	'Logout' => 'pages/Logout.php',
 	'MarkAllAsRead' => 'pages/MarkAllAsRead.php',
 	'MarkAsRead' => 'pages/MarkAsRead.php',
+	'MarkupHelp' => 'pages/MarkupHelp.php',
 	'MarkupTest' => 'pages/MarkupTest.php',
 	'MovePosting' => 'pages/MovePosting.php',
 	'MoveThread' => 'pages/MoveThread.php',

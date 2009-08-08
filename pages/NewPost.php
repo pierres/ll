@@ -36,6 +36,8 @@ protected function setForm()
 
 	$this->setTitle($this->title);
 
+	$this->addUserMenuEntry('<a href="'.$this->Output->createUrl('MarkupHelp').'">'.$this->L10n->getText('Markup Help').'</a>');
+
 	$this->add(new SubmitButtonElement($this->L10n->getText('Submit')));
 
 	if (!$this->User->isOnline())

@@ -71,7 +71,7 @@ private function complieFirstPass($text)
 	$path 		= '(?:\/(?:[a-z0-9_%&:;,\+\-\/=~\.#]*[a-z0-9\/])?)?';
 	$request 	= '(?:\?[a-z0-9_%&:;,\+\-\/=~\.#]*[a-z0-9])?';
 	$img	 	= '[a-z0-9_\-]+\.(?:gif|jpe?g|png)';
-	$video	 	= '[a-z0-9_\-]+\.(?:ogg|ogm)';
+	$video	 	= '[a-z0-9_\-]+\.(?:ogg|ogm|ogv)';
 
 	# restricted HTML support
 	$text = preg_replace_callback('#<pre>(.+?)</pre>#s', array($this, 'makePre'), $text);

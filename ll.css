@@ -546,3 +546,21 @@
 #ll #body form table .files tbody tr:nth-child(even) {
 	background-color:#eeeeee;
 }
+
+/* MarkupHelp */
+#ll #body .box #markup-help {
+}
+#ll #body .box #markup-help th {
+	width:250px;
+}
+#ll #body .box #markup-help .markup-help-title {
+	text-align:center;
+	padding:5px;
+	padding-top:20px;
+}
+#ll #body .box #markup-help ul {
+	list-style-type:square;
+	margin:0px;
+	padding:0px;
+	padding-left:15px;
+}
