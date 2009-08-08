@@ -43,8 +43,7 @@ protected function checkInput()
 			('
 			SELECT
 				text,
-				threadid,
-				smilies
+				threadid
 			FROM
 				posts
 			WHERE
@@ -56,7 +55,6 @@ protected function checkInput()
 
 		$this->text =  $this->UnMarkup->fromHtml($data['text']);
 		$this->thread = $data['threadid'];
-		$this->smilies = ($data['smilies'] == 0 ? false : true);
 		}
 	catch (DBNoDataException $e)
 		{
@@ -102,15 +100,13 @@ protected function sendForm()
 		SET
 			text = ?,
 			editdate = ?,
-			editby = ?,
-			smilies = ?
+			editby = ?
 		WHERE
 			id = ?'
 		);
 	$stm->bindString($this->text);
 	$stm->bindInteger($this->Input->getTime());
 	$stm->bindInteger($this->User->getId());
-	$stm->bindInteger($this->smilies ? 1 : 0);
 	$stm->bindInteger($this->post);
 	$stm->execute();
 	$stm->close();

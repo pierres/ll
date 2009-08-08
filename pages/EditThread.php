@@ -49,7 +49,6 @@ protected function checkInput()
 			SELECT
 				posts.id,
 				posts.text,
-				posts.smilies,
 				threads.forumid,
 				threads.name
 			FROM
@@ -116,7 +115,6 @@ protected function checkInput()
 	$this->text =  $this->UnMarkup->fromHtml($data['text']);
 	$this->forum = $data['forumid'];
 	$this->topic = unhtmlspecialchars($data['name']);
-	$this->smilies = ($data['smilies'] == 0 ? false : true);
 
 	$this->db_poll_question = $this->poll_question;
 	$this->db_poll_options = $this->poll_options;
@@ -222,15 +220,13 @@ protected function sendForm()
 		SET
 			text = ?,
 			editdate = ?,
-			editby = ?,
-			smilies = ?
+			editby = ?
 		WHERE
 			id = ?'
 		);
 	$stm->bindString($this->text);
 	$stm->bindInteger($this->Input->getTime());
 	$stm->bindInteger($this->User->getId());
-	$stm->bindInteger($this->smilies ? 1 : 0);
 	$stm->bindInteger($this->post);
 	$stm->execute();
 	$stm->close();

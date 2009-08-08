@@ -242,7 +242,6 @@ CREATE TABLE `posts` (
   `dat` int(10) unsigned NOT NULL default '0',
   `editdate` int(10) unsigned NOT NULL default '0',
   `editby` int(10) unsigned NOT NULL default '0',
-  `smilies` tinyint(1) NOT NULL default '1',
   `deleted` tinyint(1) NOT NULL default '0',
   `text` text NOT NULL,
   `file` tinyint(1) unsigned NOT NULL default '0',

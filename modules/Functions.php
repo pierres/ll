@@ -169,7 +169,7 @@ function resizeImage($image, $type, $size)
 	return $thumb;
 	}
 
-function getTextFromHtml($html)
+function getTextFromHtml($text)
 	{
 	$text = str_replace('</li>', ' </li>', $text);
 	$text = preg_replace('/\s+/', ' ', $text);
