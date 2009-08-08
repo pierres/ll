@@ -29,6 +29,9 @@ function __construct($message)
 
 class Markup extends Modul {
 
+private $loop = 0;
+private $maxLoop = 10000;
+private $maxLength = 1000000;
 private $sep = '';
 private $sepc = '';
 private $Stack = null;
@@ -51,12 +54,19 @@ public static $smilies = array(
 function __construct()
 	{
 	$this->sep = chr(28);
+	}
 
-	$this->Stack = new Stack();
+private function loopCheck()
+	{
+	if ($this->loop++ > $this->maxLoop)
+		{
+		throw new MarkupException('Maximum loop count exceeded');
+		}
 	}
 
 private function createStackLink($string)
 	{
+	$this->loopCheck();
 	$this->Stack->push($string);
 	return $this->sep.$this->Stack->lastID().$this->sep;
 	}
@@ -69,37 +79,23 @@ private function complieFirstPass($text)
 	$domain		=  $name.'\.'.$tld;
 	$address	= '(?:'.$domain.'|[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})';
 	$path 		= '(?:\/(?:[a-z0-9_%&:;,\+\-\/=~\.#]*[a-z0-9\/])?)?';
-	$request 	= '(?:\?[a-z0-9_%&:;,\+\-\/=~\.#]*[a-z0-9])?';
+	$request 	= '(?:\?[a-z0-9_%&:;,\+\-\/=~\.#\[\]]*[a-z0-9=\[\]])?';
 	$img	 	= '[a-z0-9_\-]+\.(?:gif|jpe?g|png)';
 	$video	 	= '[a-z0-9_\-]+\.(?:ogg|ogm|ogv)';
 
 	# restricted HTML support
 	$text = preg_replace_callback('#<pre>(.+?)</pre>#s', array($this, 'makePre'), $text);
-	$text = preg_replace_callback('#<code>(.+?)</code>#s', array($this, 'makeCode'), $text);
+	$text = preg_replace_callback('#<code>(.+?)</code>#', array($this, 'makeCode'), $text);
 
 	$text = preg_replace_callback('#<a href="('.$protocoll.'.+?)">(.+?)</a>#', array($this, 'makeNamedLink'), $text);
-	$text = preg_replace_callback('#<a href="(www\..+?)">(.+?)</a>#',  array($this, 'makeNamedWWWLink'), $text);
-	$text = preg_replace_callback('#<a href="(ftp\..+?)">(.+?)</a>#',  array($this, 'makeNamedFTPLink'), $text);
-
-	$text = preg_replace_callback('#<img src="('.$protocoll.'.+?)" />#', array($this, 'makeImage'), $text);
-	$text = preg_replace_callback('#<img src="(www\..+?)" />#', array($this, 'makeWWWImage'), $text);
-	$text = preg_replace_callback('#<img src="(ftp\..+?)" />#', array($this, 'makeFTPImage'), $text);
-	
-	$text = preg_replace_callback('#<video src="('.$protocoll.'.+?)" />#', array($this, 'makeVideo'), $text);
+	$text = preg_replace_callback('#<img src="('.$protocoll.'.+?)" />#', array($this, 'makeImage'), $text);	
 	$text = preg_replace_callback('#<audio src="('.$protocoll.'.+?)" />#', array($this, 'makeAudio'), $text);
+	$text = preg_replace_callback('#<video src="('.$protocoll.'.+?)" />#', array($this, 'makeVideo'), $text);
 
 	# auto detection for some URLs
-	$text = preg_replace_callback('/'.$protocoll.$address.$path.$video.'/i', array($this, 'makeAutoVideo'), $text);
-	$text = preg_replace_callback('/www\.'.$domain.$path.$video.'/i', array($this, 'makeAutoWWWVideo'), $text);
-	$text = preg_replace_callback('/ftp\.'.$domain.$path.$video.'/i', array($this, 'makeAutoFTPVideo'), $text);
-
-	$text = preg_replace_callback('/'.$protocoll.$address.$path.$img.'/i', array($this, 'makeAutoImage'), $text);
-	$text = preg_replace_callback('/www\.'.$domain.$path.$img.'/i', array($this, 'makeAutoWWWImage'), $text);
-	$text = preg_replace_callback('/ftp\.'.$domain.$path.$img.'/i', array($this, 'makeAutoFTPImage'), $text);
-
+	$text = preg_replace_callback('/'.$protocoll.$address.$path.$request.$video.'/i', array($this, 'makeAutoVideo'), $text);
+	$text = preg_replace_callback('/'.$protocoll.$address.$path.$request.$img.'/i', array($this, 'makeAutoImage'), $text);
 	$text = preg_replace_callback('/'.$protocoll.$address.$path.$request.'/i', array($this, 'makeAutoLink'), $text);
-	$text = preg_replace_callback('/www\.'.$domain.$path.$request.'/i', array($this, 'makeAutoWWWLink'), $text);
-	$text = preg_replace_callback('/ftp\.'.$domain.$path.$request.'/i', array($this, 'makeAutoFTPLink'), $text);
 
 	foreach (self::$smilies as $search => $replace)
 		{
@@ -129,13 +125,21 @@ public function toHtml($text)
 		return '';
 		}
 
+	if (strlen($text) > $this->maxLength)
+		{
+		throw new MarkupException('Maximum text length exceeded');
+		}
+
+	$this->loop = 0;
+	$this->Stack = new Stack();
+
 	$text = str_replace($this->sep, '', $text);
+	$text = str_replace("\r", '', $text);
 
 	$text = $this->complieFirstPass($text);
 	$text = htmlspecialchars($text, ENT_COMPAT, 'UTF-8');
 	$text = $this->complieSecondPass($text);
-	$text = preg_replace('/[\n\r]{2,}/', "\n\n", $text);
-	$text = preg_replace('/[^\S\n]+/', " ", $text);
+	$text = preg_replace('/\n{2,}/', "\n\n", $text);
 	$text = $this->makeQuoteAndParagraph($text);
 
 	while ($this->Stack->hasNext())
@@ -173,6 +177,8 @@ private function makeQuoteAndParagraph($text)
 
 	while ($pos <= $maxPos)
 		{
+		$this->loopCheck();
+
 		$start = strpos($text, '&lt;quote', $pos);
 		$end = strpos($text, '&lt;/quote&gt;', $pos);
 		$ppos = strpos($text, "\n\n", $pos);
@@ -284,6 +290,8 @@ private function makeList($matches)
 
 	foreach (explode("\n", trim($matches[0])) as $line)
 		{
+		$this->loopCheck();
+
 		$cur = 0;
 
 		# get the current depth
@@ -338,21 +346,6 @@ private function makeInlineQuote($matches)
 	return $this->createStackLink('<q>'.$matches[1].'</q>');
 	}
 
-private function makeAutoLink($matches)
-	{
-	return $this->makeNamedLink($matches, true);
-	}
-
-private function makeAutoWWWLink($matches)
-	{
-	return $this->makeNamedWWWLink($matches, true);
-	}
-
-private function makeAutoFTPLink($matches)
-	{
-	return $this->makeNamedFTPLink($matches, true);
-	}
-
 private function makeNamedLink($matches, $auto = false)
 	{
 	if ($auto)
@@ -371,18 +364,9 @@ private function makeNamedLink($matches, $auto = false)
 	return $this->createStackLink('<a href="'.$url.'" rel="nofollow"'.$rev.'>'.$name.'</a>');
 	}
 
-private function makeNamedWWWLink($matches, $auto = false)
+private function makeAutoLink($matches)
 	{
-	$offset = ($auto ? 0 : 1);
-	$matches[$offset] = 'http://'.$matches[$offset];
-	return $this->makeNamedLink($matches, $auto);
-	}
-
-private function makeNamedFTPLink($matches, $auto = false)
-	{
-	$offset = ($auto ? 0 : 1);
-	$matches[$offset] = 'ftp://'.$matches[$offset];
-	return $this->makeNamedLink($matches, $auto);
+	return $this->makeNamedLink($matches, true);
 	}
 
 private function makeImage($matches, $auto = false)
@@ -398,36 +382,12 @@ private function makeImage($matches, $auto = false)
 		$rev = '';
 		}
 
-	return $this->createStackLink('<a href="'.$this->Output->createUrl('GetImage', array('url' => $url)).'" rel="nofollow"'.$rev.'><img src="'.$this->Output->createUrl('GetImage', array('thumb' => 1, 'url' => $url)).'" alt="" class="image" /></a>');
-	}
-
-private function makeWWWImage($matches, $auto = false)
-	{
-	$offset = ($auto ? 0 : 1);
-	$matches[$offset] = 'http://'.$matches[$offset];
-	return $this->makeImage($matches, $auto);
-	}
-
-private function makeFTPImage($matches, $auto = false)
-	{
-	$offset = ($auto ? 0 : 1);
-	$matches[$offset] = 'ftp://'.$matches[$offset];
-	return $this->makeImage($matches, $auto);
+	return $this->createStackLink('<a href="?page=GetImage&amp;url='.urlencode($url).'" rel="nofollow"'.$rev.'><img src="?page=GetImage&amp;thumb=1&amp;url='.urlencode($url).'" alt="" class="image" /></a>');
 	}
 
 private function makeAutoImage($matches)
 	{
 	return $this->makeImage($matches, true);
-	}
-
-private function makeAutoWWWImage($matches)
-	{
-	return $this->makeWWWImage($matches, true);
-	}
-
-private function makeAutoFTPImage($matches)
-	{
-	return $this->makeFTPImage($matches, true);
 	}
 
 private function makeVideo($matches, $auto = false)
@@ -446,33 +406,9 @@ private function makeVideo($matches, $auto = false)
 	return $this->createStackLink('<video src="'.$url.'" controls="true"><a href="'.$url.'" rel="nofollow"'.$rev.'>'.$url.'</a></video>');
 	}
 
-private function makeWWWVideo($matches, $auto = false)
-	{
-	$offset = ($auto ? 0 : 1);
-	$matches[$offset] = 'http://'.$matches[$offset];
-	return $this->makeVideo($matches, $auto);
-	}
-
-private function makeFTPVideo($matches, $auto = false)
-	{
-	$offset = ($auto ? 0 : 1);
-	$matches[$offset] = 'ftp://'.$matches[$offset];
-	return $this->makeVideo($matches, $auto);
-	}
-
 private function makeAutoVideo($matches)
 	{
 	return $this->makeVideo($matches, true);
-	}
-
-private function makeAutoWWWVideo($matches)
-	{
-	return $this->makeWWWVideo($matches, true);
-	}
-
-private function makeAutoFTPVideo($matches)
-	{
-	return $this->makeFTPVideo($matches, true);
 	}
 
 private function makeAudio($matches)

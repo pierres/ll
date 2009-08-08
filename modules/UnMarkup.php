@@ -38,7 +38,11 @@ public function fromHtml($text)
 		return '';
 		}
 
-	$text = preg_replace('#<cite>(.+?)</cite><blockquote>(?:<p>)?#', '<quote $1>', $text);
+	# those chars are only used for HTML tags
+	# & is transformed to &amp; and cannot be used here
+	$noHtml = '[^"<>]';
+
+	$text = preg_replace('#(?:</p>)?<cite>('.$noHtml.'+?)</cite><blockquote>(?:<p>)?#', '<quote $1>', $text);
 	$text = preg_replace('#(?:</p>)?<blockquote>(?:<p>)?#', '<quote>', $text);
 	$text = preg_replace('#(?:</p>)?</blockquote>#', '</quote>', $text);
 
@@ -54,17 +58,17 @@ public function fromHtml($text)
 	$text = str_replace('<q>', '"', $text);
 	$text = str_replace('</q>', '"', $text);
 
-	$text = preg_replace_callback('#<a href="(?:.+?)GetImage(?:.+?)url=(.+?)" rel="nofollow" rev="auto"><img src="(?:.+?)" alt="" class="image" /></a>#', array($this, 'unmakeAutoImage'), $text);
-	$text = preg_replace_callback('#<a href="(?:.+?)GetImage(?:.+?)url=(.+?)" rel="nofollow"><img src="(?:.+?)" alt="" class="image" /></a>#', array($this, 'unmakeImage'), $text);
+	$text = preg_replace_callback('#<a href="(?:'.$noHtml.'+?)GetImage(?:'.$noHtml.'+?)url=('.$noHtml.'+?)" rel="nofollow" rev="auto"><img src="(?:'.$noHtml.'+?)" alt="" class="image" /></a>#', array($this, 'unmakeAutoImage'), $text);
+	$text = preg_replace_callback('#<a href="(?:'.$noHtml.'+?)GetImage(?:'.$noHtml.'+?)url=('.$noHtml.'+?)" rel="nofollow"><img src="(?:'.$noHtml.'+?)" alt="" class="image" /></a>#', array($this, 'unmakeImage'), $text);
 
-	$text = preg_replace_callback('#<video src="(.+?)" controls="true"><a href="(?:.+?)" rel="nofollow" rev="auto">(?:.+?)</a></video>#', array($this, 'unmakeAutoVideo'), $text);
-	$text = preg_replace_callback('#<video src="(.+?)" controls="true"><a href="(?:.+?)" rel="nofollow">(?:.+?)</a></video>#', array($this, 'unmakeVideo'), $text);
-	$text = preg_replace_callback('#<audio src="(.+?)" controls="true"><a href="(?:.+?)" rel="nofollow">(?:.+?)</a></audio>#', array($this, 'unmakeAudio'), $text);
+	$text = preg_replace_callback('#<video src="('.$noHtml.'+?)" controls="true"><a href="(?:'.$noHtml.'+?)" rel="nofollow" rev="auto">(?:'.$noHtml.'+?)</a></video>#', array($this, 'unmakeAutoVideo'), $text);
+	$text = preg_replace_callback('#<video src="('.$noHtml.'+?)" controls="true"><a href="(?:'.$noHtml.'+?)" rel="nofollow">(?:'.$noHtml.'+?)</a></video>#', array($this, 'unmakeVideo'), $text);
+	$text = preg_replace_callback('#<audio src="('.$noHtml.'+?)" controls="true"><a href="(?:'.$noHtml.'+?)" rel="nofollow">(?:'.$noHtml.'+?)</a></audio>#', array($this, 'unmakeAudio'), $text);
 
-	$text = preg_replace_callback('#<a href="(.+?)" rel="nofollow" rev="auto">.+?</a>#', array($this, 'unmakeAutoLink'), $text);
-	$text = preg_replace_callback('#<a href="(.+?)" rel="nofollow">(.+?)</a>#', array($this, 'unmakeNamedLink'), $text);
+	$text = preg_replace_callback('#<a href="('.$noHtml.'+?)" rel="nofollow" rev="auto">'.$noHtml.'+?</a>#', array($this, 'unmakeAutoLink'), $text);
+	$text = preg_replace_callback('#<a href="('.$noHtml.'+?)" rel="nofollow">('.$noHtml.'+?)</a>#', array($this, 'unmakeNamedLink'), $text);
 
-	$text = preg_replace_callback('#<img src="images/smilies/[\w-]+.png" alt="([\w-]+)" class="smiley" />#',array($this, 'unmakeSmiley'), $text);
+	$text = preg_replace_callback('#<img src="images/smilies/[\w-]+\.png" alt="([\w-]+)" class="smiley" />#',array($this, 'unmakeSmiley'), $text);
 
 	$text = preg_replace_callback('#<ul>.+</ul>#m', array($this, 'unmakeList'), $text);
 

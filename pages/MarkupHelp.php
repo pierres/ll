@@ -102,7 +102,7 @@ public function prepare()
 					<th>'.$this->L10n->getText('Hint').'</th>
 					<td>
 						<ul>
-							<li>'.$this->L10n->getText('<em>URL</em>s have to begin with <code>http://</code>, <code>https://</code>, <code>www.</code> or <code>ftp.</code>').'</li>
+							<li>'.$this->L10n->getText('<em>URL</em>s have to begin with <code>http://</code>, <code>https://</code> or <code>ftp://</code>').'</li>
 							<li>'.$this->L10n->getText('If automatic detection does not work, use the explicit notation').'</li>
 						</ul>
 					</td>

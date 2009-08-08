@@ -23,36 +23,167 @@ require('LLTestCase.php');
 class MarkupTest extends LLTestCase {
 
 
-public function testEmpty()
+public function testEmptyText()
 	{
-	$this->assertEquals($this->ll->Markup->toHtml(''), '');
+	$this->assertEquals('', $this->ll->Markup->toHtml(''));
+	}
+
+public function testLongText()
+	{
+	$count = 1000000;
+	$this->assertEquals('<p>'.str_repeat('a', $count).'</p>', $this->ll->Markup->toHtml(str_repeat('a', $count)));
+	try
+		{
+		$this->assertEquals('', $this->ll->Markup->toHtml(str_repeat('a', $count+1)));
+		$this->fail();
+		}
+	catch (MarkupException $e)
+		{
+		}
+	}
+
+public function testLoopCounter()
+	{
+	$depth = 10000;
+
+	$in = '<quote>'.str_repeat('...<quote>', $depth).str_repeat('...</quote>', $depth).'...</quote>';
+	$out = '';
+	try
+		{
+		$this->assertEquals($out, $this->ll->Markup->toHtml($in));
+		$this->fail();
+		}
+	catch (MarkupException $e)
+		{
+		}
+	}
+
+public function testPre()
+	{
+	$in = "<pre>.\n\t\n\n\n\n..</pre>";
+	$out = "<p><pre>.\n\t\n\n\n\n..</pre></p>";
+	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
+
+	$in = "<pre>\ntest<pre>...</pre>\n</pre>";
+	$out = "<p><pre>\ntest&lt;pre&gt;...</pre>\n&lt;/pre&gt;</p>";
+	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
+
+	$in = "<pre>\ntest</pre>...<pre>\t\n\n\n\n</pre>";
+	$out = "<p><pre>\ntest</pre>...<pre>\t\n\n\n\n</pre></p>";
+	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
+
+	$in = "<pre>\ntest";
+	$out = "<p>&lt;pre&gt;\ntest</p>";
+	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
+
+	$in = "</pre>\ntest";
+	$out = "<p>&lt;/pre&gt;\ntest</p>";
+	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
 	}
 
 public function testCode()
 	{
-	$in =
-'-
-<pre>
-test"<pre>
-</pre>
--';
-	$out =
-'<p>-
-<pre>
-test&quot;&lt;pre&gt;
-</pre>
--</p>';
+	$in = "<code>.\t\t..</code>";
+	$out = "<p><code>.\t\t..</code></p>";
 	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
 
-	$in =
-'<pre>
-test"<pre>
-</pre>';
-	$out =
-'<p><pre>
-test&quot;&lt;pre&gt;
-</pre></p>';
+	$in = "<code>.\n\t..</code>";
+	$out = "<p>&lt;code&gt;.\n\t..&lt;/code&gt;</p>";
 	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
+
+	$in = "<code>\ttest<code>...</code>\t</code>";
+	$out = "<p><code>\ttest&lt;code&gt;...</code>\t&lt;/code&gt;</p>";
+	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
+
+	$in = "<code>\ttest</code>...<code>\t\t\t\t\t</code>";
+	$out = "<p><code>\ttest</code>...<code>\t\t\t\t\t</code></p>";
+	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
+
+	$in = "<code>\ttest";
+	$out = "<p>&lt;code&gt;\ttest</p>";
+	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
+
+	$in = "</code>\ttest";
+	$out = "<p>&lt;/code&gt;\ttest</p>";
+	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
+	}
+
+public function testLinks()
+	{
+	$mediaUrls = array(
+		'http://www.archlinux.de/',
+		'ftp://ftp.archlinux.org/path/',
+		'http://www.archlinux.de/some-other-long/path/',
+		'http://www.archlinux.de/some-other-long/path/?media='
+		);
+	$urls = array_merge($mediaUrls, array(
+		'http://www.archlinux.de',
+		'http://www.archlinux.de/?page=Packages;orderby=builddate;sort=1;repository=0;architecture=2;group=0;packager=0;search=;searchfield=0;package=50',
+		'http://www.archlinux.de/?page=Packages&orderby=builddate&sort=1&repository=0&architecture=2&group=0&packager=0&search=&searchfield=0&package=50',
+		'http://www.google.de/search?hl=de&client=firefox-a&rls=org.mozilla%3Aen-US%3Aofficial&hs=eAU&q=archlinux+%2Bdeutsch&btnG=Suche&meta=',
+		'http://bugs.archlinux.org/index.php?string=&project=6&due[]=59&due[]=67&due[]=72&status[]',
+		'ftp://ftp.archlinux.org',
+		'ftp://www.archlinux.org//',
+		'http://wiki.archlinux.org/index.php/Main_Page_%28Deutsch%29'
+		));
+
+	foreach ($urls as $url)
+		{
+		$this->assertEquals('<p><a href="'.htmlentities($url).'" rel="nofollow">...</a></p>', $this->ll->Markup->toHtml('<a href="'.$url.'">...</a>'));
+		$this->assertEquals('<p><a href="'.htmlentities($url).'" rel="nofollow" rev="auto">'.htmlentities($url).'</a></p>', $this->ll->Markup->toHtml($url));
+		}
+
+	foreach ($urls as $url)
+		{
+		$this->assertEquals('<p><a href="?page=GetImage&amp;url='.urlencode($url).'" rel="nofollow"><img src="?page=GetImage&amp;thumb=1&amp;url='.urlencode($url).'" alt="" class="image" /></a></p>', $this->ll->Markup->toHtml('<img src="'.$url.'" />'));
+		}
+
+	foreach ($urls as $url)
+		{
+		$this->assertEquals('<p><audio src="'.htmlentities($url).'" controls="true"><a href="'.htmlentities($url).'" rel="nofollow">'.htmlentities($url).'</a></audio></p>', $this->ll->Markup->toHtml('<audio src="'.$url.'" />'));
+		}
+
+	foreach ($urls as $url)
+		{
+		$this->assertEquals('<p><video src="'.htmlentities($url).'" controls="true"><a href="'.htmlentities($url).'" rel="nofollow">'.htmlentities($url).'</a></video></p>', $this->ll->Markup->toHtml('<video src="'.$url.'" />'));
+		}
+
+	foreach ($mediaUrls as $url)
+		{
+		$this->assertEquals('<p><a href="?page=GetImage&amp;url='.urlencode($url.'test.png').'" rel="nofollow" rev="auto"><img src="?page=GetImage&amp;thumb=1&amp;url='.urlencode($url.'test.png').'" alt="" class="image" /></a></p>', $this->ll->Markup->toHtml($url.'test.png'));
+		}
+
+	foreach ($mediaUrls as $url)
+		{
+		$this->assertEquals('<p><video src="'.htmlentities($url.'test.ogg').'" controls="true"><a href="'.htmlentities($url.'test.ogg').'" rel="nofollow" rev="auto">'.htmlentities($url.'test.ogg').'</a></video></p>', $this->ll->Markup->toHtml($url.'test.ogg'));
+		}
+
+	$in = '<a href="http://www.archlinux.de/">...</a> http://www.archlinux.de/test.png';
+	$out = '<p><a href="http://www.archlinux.de/" rel="nofollow">...</a> <a href="?page=GetImage&amp;url=http%3A%2F%2Fwww.archlinux.de%2Ftest.png" rel="nofollow" rev="auto"><img src="?page=GetImage&amp;thumb=1&amp;url=http%3A%2F%2Fwww.archlinux.de%2Ftest.png" alt="" class="image" /></a></p>';
+	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
+	}
+
+public function testSmilies()
+	{
+	foreach (Markup::$smilies as $smiley => $name)
+		{
+		$this->assertEquals('<p><img src="images/smilies/'.$name.'.png" alt="'.$name.'" class="smiley" /></p>', $this->ll->Markup->toHtml($smiley));
+		}
+	}
+
+public function testEm()
+	{
+	$this->assertEquals('<p><em>test</em></p>', $this->ll->Markup->toHtml("''test''"));
+	$this->assertEquals('<p><strong>test</strong></p>', $this->ll->Markup->toHtml("'''test'''"));
+	$this->assertEquals("<p>'''test\n'''</p>", $this->ll->Markup->toHtml("'''test\n'''"));
+	$this->assertEquals("<p><em>test</em>'</p>", $this->ll->Markup->toHtml("''test'''"));
+	$this->assertEquals("<p><strong>''test</strong>''</p>", $this->ll->Markup->toHtml("'''''test'''''"));
+	}
+
+public function testInlineQuote()
+	{
+	$this->assertEquals('<p><q>test</q></p>', $this->ll->Markup->toHtml('"test"'));
+	$this->assertEquals("<p>&quot;test\n&quot;</p>", $this->ll->Markup->toHtml("\"test\n\""));
 	}
 
 public function testQuote()
@@ -79,9 +210,7 @@ public function testQuote()
 
 	try
 		{
-		$in = '</quote>
-
-a';
+		$in = "</quote>\n\na";
 		$this->ll->Markup->toHtml($in);
 		$this->fail();
 		}
@@ -92,10 +221,24 @@ a';
 
 public function testParagraph()
 	{
-	$in = 'a
-
-b';
+	$in = "a\n\nb";
 	$out = '<p>a</p><p>b</p>';
+	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
+
+	$in = "a\n\n\n\n\n\n\nb";
+	$out = '<p>a</p><p>b</p>';
+	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
+
+	$in = "a\r\n\r\nb";
+	$out = '<p>a</p><p>b</p>';
+	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
+
+	$in = "a\nb";
+	$out = "<p>a\nb</p>";
+	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
+
+	$in = "a\r\nb";
+	$out = "<p>a\nb</p>";
 	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
 	}
 
@@ -191,88 +334,24 @@ abc';
 	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
 	}
 
-public function testEm()
+public function testQuoteAndList()
 	{
-	$this->assertEquals('<p><em>test</em></p>', $this->ll->Markup->toHtml("''test''"));
-	}
-
-public function testStrong()
-	{
-	$this->assertEquals('<p><strong>test</strong></p>', $this->ll->Markup->toHtml("'''test'''"));
-	}
-
-public function testInlineCode()
-	{
-	$this->assertEquals("<p><code>''test''</code></p>", $this->ll->Markup->toHtml("<code>''test''</code>"));
-	}
-
-public function testInlineQuote()
-	{
-	$this->assertEquals('<p><q>test</q></p>', $this->ll->Markup->toHtml('"test"'));
-	}
-
-public function testURL()
-	{
-	$this->assertEquals('<p><a href="http://www.laber-land.de" rel="nofollow">Laber-Land</a></p>', $this->ll->Markup->toHtml('<a href="http://www.laber-land.de">Laber-Land</a>'));
-	$this->assertEquals('<p><a href="http://www.laber-land.de" rel="nofollow">Laber-Land</a></p>', $this->ll->Markup->toHtml('<a href="www.laber-land.de">Laber-Land</a>'));
-	$this->assertEquals('<p><a href="ftp://ftp.laber-land.de" rel="nofollow">Laber-Land</a></p>', $this->ll->Markup->toHtml('<a href="ftp.laber-land.de">Laber-Land</a>'));
-
-	$this->assertEquals('<p><a href="http://www.laber-land.de" rel="nofollow" rev="auto">http://www.laber-land.de</a></p>', $this->ll->Markup->toHtml('http://www.laber-land.de'));
-	$this->assertEquals('<p><a href="http://www.laber-land.de" rel="nofollow" rev="auto">http://www.laber-land.de</a></p>', $this->ll->Markup->toHtml('www.laber-land.de'));
-	$this->assertEquals('<p><a href="ftp://ftp.laber-land.de" rel="nofollow" rev="auto">ftp://ftp.laber-land.de</a></p>', $this->ll->Markup->toHtml('ftp.laber-land.de'));
-	}
-
-public function testSmilies()
-	{
-	$this->assertEquals('<p><img src="images/smilies/wink.png" alt="wink" class="smiley" /></p>',$this->ll->Markup->toHtml(';-)'));
-	}
-
-public function testBug86()
-	{
-	$this->assertEquals('<p>test
-<pre>
-123
-</pre>
-blah</p>', $this->ll->Markup->toHtml('test
-<pre>
-123
-</pre>
-blah'));
-	}
-
-public function testBug85()
-	{
-	$in = '<quote>
-* 1
-* 2
-</quote>';
-	$out = '<blockquote><p>
-<ul><li>1</li><li>2</li></ul></p></blockquote>';
+	$in = "<quote>\n* 1\n* 2\n</quote>";
+	$out = "<blockquote><p>\n<ul><li>1</li><li>2</li></ul></p></blockquote>";
 
 	$this->assertEquals($out,  $this->ll->Markup->toHtml($in));
 
-	$in = '* 2
-* 3
-* 4
-<pre>
-reg
-</pre>
-* 2
-* 3';
-	$out = '<p><ul><li>2</li><li>3</li><li>4</li></ul><pre>
-reg
-</pre>
-<ul><li>2</li><li>3</li></ul></p>';
+	$in = "* 2\n* 3\n* 4\n<pre>\nreg\n</pre>\n* 2\n* 3";
+	$out = "<p><ul><li>2</li><li>3</li><li>4</li></ul><pre>\nreg\n</pre>\n<ul><li>2</li><li>3</li></ul></p>";
 
 	$this->assertEquals($out,  $this->ll->Markup->toHtml($in));
 	}
 
-public function testBug121()
+public function testQuoteErrorCheck()
 	{
 	try
 		{
-		$in = '<quote>
-* a</quote>';
+		$in = "<quote>\n* a</quote>";
 		$this->ll->Markup->toHtml($in);
 		$this->fail();
 		}
@@ -299,10 +378,7 @@ public function testBug121()
 	catch (MarkupException $e)
 		{
 		}
-	}
 
-public function testBug131()
-	{
 	try
 		{
 		$in = '<quote>a<quote>b</quote>';
