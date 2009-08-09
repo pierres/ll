@@ -33,12 +33,12 @@ protected function getParams()
 		}
 	catch (RequestException $e)
 		{
-		$this->showWarning('keine Datei angegeben');
+		$this->showWarning('Keine Datei angegeben');
 		}
 
 	if ($this->Input->Get->isEmptyString('url'))
 		{
-		$this->showWarning('keine Datei angegeben');
+		$this->showWarning('Keine Datei angegeben');
 		}
 
 	try
@@ -58,19 +58,19 @@ private function loadImage()
 		// ask the remote Server first...
 		if ($this->file->getRemoteFileSize() > $this->Settings->getValue('max_image_file_size'))
 			{
-			$this->showWarning('Diese Datei ist zu groß.');
+			$this->showWarning('Diese Datei ist zu groß');
 			}
 		// ...but do not trust him (this fetches the file first)
 		if ($this->file->getFileSize() > $this->Settings->getValue('max_image_file_size'))
 			{
-			$this->showWarning('Diese Datei ist zu groß.');
+			$this->showWarning('Diese Datei ist zu groß');
 			}
 
 		if (	strpos($this->file->getFileType(), 'image/jpeg') !== 0 &&
 			strpos($this->file->getFileType(), 'image/png') !== 0 &&
 			strpos($this->file->getFileType(), 'image/gif') !== 0)
 			{
-			$this->showWarning('Diese URL enthält kein Bild.');
+			$this->showWarning('Diese URL enthält kein Bild');
 			}
 
 		try
@@ -85,7 +85,7 @@ private function loadImage()
 	catch (FileException $e)
 		{
 		$this->Output->setStatus(Output::NOT_FOUND);
- 		$this->showWarning('Das Bild konnte nicht geladen werden.');
+ 		$this->showWarning('Das Bild konnte nicht geladen werden');
 		}
 
 	$stm = $this->DB->prepare

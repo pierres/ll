@@ -39,7 +39,7 @@ protected function checkForm()
 		{
 		if (!preg_match('<!-- '.$tag.' -->', $this->Input->Post->getString('html')))
 			{
-			$this->showWarning('Der &quot;&lt;!-- '.$tag.' --&gt;&quot;-Tag fehlt!');
+			$this->showWarning('Der &quot;&lt;!-- '.$tag.' --&gt;&quot;-Tag fehlt');
 			}
 		}
 	}

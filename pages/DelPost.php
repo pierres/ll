@@ -33,7 +33,7 @@ protected function setForm()
 		}
 	catch (RequestException $e)
 		{
-		$this->showFailure('Kein Beitrag angegeben!');
+		$this->showFailure('Kein Beitrag angegeben');
 		}
 
 	try
@@ -63,7 +63,7 @@ protected function setForm()
 	catch (DBNoDataException $e)
 		{
 		$stm->close();
-		$this->showFailure('Beitrag nicht gefunden oder Thema geschlossen!');
+		$this->showFailure('Beitrag nicht gefunden oder Thema geschlossen');
 		}
 
 	$this->setTitle('Beitrag '.($this->deleted ? 'wiederherstellen' : 'löschen'));
@@ -80,7 +80,7 @@ protected function checkForm()
 	if (!$this->User->isForumMod($this->forum))
 		{
 		// Tun wir so, als wüssten wir von nichts
-		$this->showFailure('Kein Beitrag gefunden.');
+		$this->showFailure('Kein Beitrag gefunden');
 		}
 	}
 

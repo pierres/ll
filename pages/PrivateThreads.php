@@ -25,7 +25,7 @@ public function prepare()
 	{
 	if (!$this->User->isOnline())
 		{
-		$this->showWarning($this->L10n->getText('Access denied!'));
+		$this->showWarning($this->L10n->getText('Access denied'));
 		}
 
 	$this->currentThread = nat($this->Input->Get->getInt('thread', 0));

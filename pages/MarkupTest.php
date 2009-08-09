@@ -37,7 +37,7 @@ protected function setForm()
 			$this->text = $this->Input->Post->getString('text');
 			$html = $this->Markup->toHtml($this->text);
 
-			$this->add(new LabeledElement('previewwindow',
+			$this->add(new LabeledElement('preview',
 			'<div>'.$html.'</div>'));
 
 			$this->add(new LabeledElement('html',
@@ -55,7 +55,7 @@ protected function setForm()
 		$this->showWarning($e->getMessage());
 		}
 
-	$this->add(new TextareaInputElement('text', $this->text, 'Deine Nachricht'));
+	$this->add(new TextareaInputElement('text', $this->text, 'Nachricht'));
 	}
 
 protected function checkForm()

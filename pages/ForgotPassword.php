@@ -68,7 +68,7 @@ protected function checkForm()
 	catch (DBNoDataException $e)
 		{
 		$stm->close();
-		$this->showWarning('Name und E-Mail wurden nicht gefunden.');
+		$this->showWarning('Name und E-Mail wurden nicht gefunden');
 		}
 	}
 
@@ -111,14 +111,15 @@ protected function sendForm()
 Du kannst Dein Passwort ändern, wenn Du folgende Seite besuchst:
 '.$this->Output->createUrl('ChangePasswordKey', array(), true, false).'
 
-Sollte obiger Link bei Deinem Mail-Programm nicht funktionieren,
-so wähle im Anmelde-Dialog die Option "Passwort setzen" und gebe folgende Daten an:
+Sollte obiger Link bei Deinem Mail-Programm nicht funktionieren, so
+wähle im Anmelde-Dialog die Option "Passwort setzen" und gebe
+folgende Daten an:
 Benutzer-ID:	'.$this->id.'
 Schlüssel:	'.$key.'
 
-Solltest Du Dir diese Erinnerung nicht geschickt haben,
-so kannst Du diese Nachricht ignorieren.
-Dein altes Passwort bleibt dann weiterhin gültig.');
+Solltest Du Dir diese Erinnerung nicht geschickt haben, so kannst Du
+diese Nachricht ignorieren. Dein altes Passwort bleibt dann weiterhin
+gültig.');
 	$this->Mail->send();
 
 	$this->Output->redirect('Login');

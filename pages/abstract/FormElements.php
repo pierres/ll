@@ -161,17 +161,17 @@ abstract class ActiveFormElement extends FormElement {
 
 		if ($this->required && $currentLength == 0)
 			{
-			throw new FormElementException('Das Feld "'.$this->label.'" darf nicht leer sein.');
+			throw new FormElementException('Das Feld "'.$this->label.'" darf nicht leer sein');
 			}
 		elseif ($currentLength > 0)
 			{
 			if ($currentLength < $this->minLength)
 				{
-				throw new FormElementException('Im Feld "'.$this->label.'" fehlen noch '.($this->minLength - $currentLength).' Zeichen.');
+				throw new FormElementException('Im Feld "'.$this->label.'" fehlen noch '.($this->minLength - $currentLength).' Zeichen');
 				}
 			elseif ($currentLength > $this->maxLength)
 				{
-				throw new FormElementException('Im Feld "'.$this->label.'" sind '.($currentLength - $this->maxLength).' Zeichen zuviel.');
+				throw new FormElementException('Im Feld "'.$this->label.'" sind '.($currentLength - $this->maxLength).' Zeichen zuviel');
 				}
 			}
 		}
@@ -218,7 +218,7 @@ class SecurityTokenElement extends HiddenElement {
 
 		if (sha1($this->page.$this->User->getSecurityToken()) != $token)
 			{
-			throw new FormElementException('Sicherheitswarnung: Ungültiger Schlüssel!');
+			throw new FormElementException('Sicherheitswarnung: Ungültiger Schlüssel');
 			}
 		else
 			{
@@ -272,7 +272,7 @@ abstract class InputElement extends ActiveFormElement {
 			}
 		else
 			{
-			throw new FormElementException($this->L10n->getText('Focus already set!'));
+			throw new FormElementException($this->L10n->getText('Focus already set'));
 			}
 		}
 }
@@ -349,7 +349,7 @@ class AntiSpamElement extends TextInputElement {
 
 		if ($hash != substr(sha1($time.$this->Settings->getValue('antispam_hash')), 0, 4))
 			{
-			throw new FormElementException('Fehlerhafte Formulardaten empfangen. Überprüfe den Sicherheitscode!');
+			throw new FormElementException('Fehlerhafte Formulardaten empfangen. Überprüfe den Sicherheitscode');
 			}
 
 		if ($this->Input->getTime() - $time > $this->Settings->getValue('antispam_timeout'))
@@ -592,11 +592,11 @@ class SelectInputElement extends InputElement {
 
 					if ($currentLength < $this->minLength)
 						{
-						throw new FormElementException('Im Feld "'.$this->label.'" fehlen noch '.($this->minLength - $currentLength).' Zeichen.');
+						throw new FormElementException('Im Feld "'.$this->label.'" fehlen noch '.($this->minLength - $currentLength).' Zeichen');
 						}
 					elseif ($currentLength > $this->maxLength)
 						{
-						throw new FormElementException('Im Feld "'.$this->label.'" sind '.($currentLength - $this->maxLength).' Zeichen zuviel.');
+						throw new FormElementException('Im Feld "'.$this->label.'" sind '.($currentLength - $this->maxLength).' Zeichen zuviel');
 						}
 					}
 				}
@@ -604,7 +604,7 @@ class SelectInputElement extends InputElement {
 				{
 				if ($this->required)
 					{
-					throw new FormElementException('Das Feld "'.$this->label.'" darf nicht leer sein.');
+					throw new FormElementException('Das Feld "'.$this->label.'" darf nicht leer sein');
 					}
 				}
 			}

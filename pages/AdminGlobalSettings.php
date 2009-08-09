@@ -25,7 +25,7 @@ public function prepare()
 	{
 	if (!$this->User->isLevel(User::ROOT))
 		{
-		$this->showFailure('kein Zugriff!');
+		$this->showFailure('kein Zugriff');
 		}
 
 	$this->setTitle('Globale Einstellungen');

@@ -30,7 +30,7 @@ protected function setForm()
 		}
 	catch(RequestException $e)
 		{
-		$this->showWarning('Keine Kategorien angegeben.');
+		$this->showWarning('Keine Kategorien angegeben');
 		}
 
 	$this->setTitle('Kategorien löschen');

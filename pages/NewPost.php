@@ -211,17 +211,17 @@ protected function checkInput()
 	catch (RequestException $e)
 		{
 		$stm->close();
-		$this->showFailure($this->L10n->getText('No topic specified.'));
+		$this->showFailure($this->L10n->getText('No topic specified'));
 		}
 	catch (DBNoDataException $e)
 		{
 		$stm->close();
-		$this->showFailure($this->L10n->getText('Topic not found.'));
+		$this->showFailure($this->L10n->getText('Topic not found'));
 		}
 
 	if ($data['closed'] != 0)
 		{
-		$this->showFailure($this->L10n->getText('Topic is closed.'));
+		$this->showFailure($this->L10n->getText('Topic is closed'));
 		}
 
 	$this->thread = $data['id'];

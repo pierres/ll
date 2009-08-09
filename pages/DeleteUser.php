@@ -37,12 +37,12 @@ protected function setForm()
 
 	if (!$this->User->isOnline())
 		{
-		$this->showFailure('Nur für Mitglieder!');
+		$this->showFailure('Nur für Mitglieder');
 		}
 
 	if ($this->User->getID() != $this->user && !$this->User->isLevel(User::ROOT))
 		{
-		$this->showFailure('Keine Berechtigung!');
+		$this->showFailure('Keine Berechtigung');
 		}
 
 	try

@@ -26,7 +26,7 @@ public function prepare(){
 
 if (!$this->User->isOnline())
 	{
-	$this->showFailure($this->L10n->getText('Access denied!'));
+	$this->showFailure($this->L10n->getText('Access denied'));
 	}
 
 try
@@ -35,7 +35,7 @@ try
 	}
 catch (RequestException $e)
 	{
-	$this->showFailure($this->L10n->getText('No topic specified.'));
+	$this->showFailure($this->L10n->getText('No topic specified'));
 	}
 
 
@@ -73,7 +73,7 @@ catch (DBNoDataException $e)
 	{
 	$stm->close();
 	$this->Output->setStatus(Output::NOT_FOUND);
-	$this->showWarning($this->L10n->getText('Topic not found.'));
+	$this->showWarning($this->L10n->getText('Topic not found'));
 	}
 
 try

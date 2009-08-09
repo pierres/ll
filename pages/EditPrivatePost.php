@@ -34,7 +34,7 @@ protected function checkInput()
 		}
 	catch (RequestException $e)
 		{
-		$this->showFailure('Kein Beitrag angegeben!');
+		$this->showFailure('Kein Beitrag angegeben');
 		}
 
 	try
@@ -59,7 +59,7 @@ protected function checkInput()
 	catch (DBNoDataException $e)
 		{
 		$stm->close();
-		$this->showFailure('Beitrag nicht gefunden!');
+		$this->showFailure('Beitrag nicht gefunden');
 		}
 	}
 
@@ -87,7 +87,7 @@ protected function checkAccess()
 	catch (DBNoDataException $e)
 		{
 		$stm->close();
-		$this->showFailure('Kein Beitrag gefunden.');
+		$this->showFailure('Kein Beitrag gefunden');
 		}
 	}
 

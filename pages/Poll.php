@@ -33,12 +33,12 @@ protected function setForm()
 		}
 	catch (RequestException $e)
 		{
-		$this->showFailure($this->L10n->getText('No topic specified.'));
+		$this->showFailure($this->L10n->getText('No topic specified'));
 		}
 
 	if (!$this->User->isOnline())
 		{
-		$this->showFailure($this->L10n->getText('Access denied!'));
+		$this->showFailure($this->L10n->getText('Access denied'));
 		}
 
 	try
@@ -114,7 +114,7 @@ protected function setForm()
 		$stm->close();
 		$this->Output->setStatus(Output::NOT_FOUND);
 		$this->setValue('meta.robots', 'noindex,nofollow');
-		$this->showWarning($this->L10n->getText('No poll found.'));
+		$this->showWarning($this->L10n->getText('No poll found'));
 		}
 
 	$this->setTitle($question);
@@ -142,7 +142,7 @@ protected function checkForm()
 		$stm->bindInteger($this->User->getId());
 		$stm->getColumn();
 		$stm->close();
-		$this->showWarning($this->L10n->getText('You have already voted!'));
+		$this->showWarning($this->L10n->getText('You have already voted'));
 		}
 	catch (DBNoDataException $e)
 		{

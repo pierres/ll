@@ -23,25 +23,25 @@ class Login extends Form {
 
 protected function setForm()
 	{
-	$this->setTitle('Login');
+	$this->setTitle($this->L10n->getText('Login'));
 
 	$this->add(new SubmitButtonElement('Einloggen'));
 
-	$nameInput = new TextInputElement('name', '', 'Dein Name');
+	$nameInput = new TextInputElement('name', '', 'Name');
 	$nameInput->setMinLength(3);
 	$nameInput->setMaxLength(25);
 	$nameInput->setSize(30);
 	$nameInput->setFocus();
 	$this->add($nameInput);
 
-	$passwordInput = new PasswordInputElement('password', 'Dein Passwort');
+	$passwordInput = new PasswordInputElement('password', 'Passwort');
 	$passwordInput->setMinLength(6);
 	$passwordInput->setMaxLength(25);
 	$passwordInput->setSize(30);
 	$passwordInput->setHelp('<a href="'.$this->Output->createUrl('ForgotPassword').'">Passwort vergessen?</a>');
 	$this->add($passwordInput);
 
-	$cookieInput = new CheckboxInputElement('cookie', 'Keks benutzen');
+	$cookieInput = new CheckboxInputElement('cookie', 'Keks');
 	$cookieInput->setRequired(false);
 	$this->add($cookieInput);
 	}
@@ -54,7 +54,7 @@ protected function checkForm()
 		}
 	catch (LoginException $e)
 		{
-		$this->showWarning('Falsches Passwort.');
+		$this->showWarning('Falsches Passwort');
 		}
 	}
 

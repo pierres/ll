@@ -22,7 +22,7 @@ require('LLTestCase.php');
 
 class InputTest extends LLTestCase {
 
-public function testBug165()
+public function testInvalidInput()
 	{
 	// this might be ugly...
 	$_POST['test_bad'] = 'ab'.chr(27);

@@ -32,7 +32,7 @@ public function prepare()
 		}
 	catch (RequestException $e)
 		{
-		$this->showFailure($this->L10n->getText('No user specified!'));
+		$this->showFailure($this->L10n->getText('No user specified'));
 		}
 
 	try
@@ -55,7 +55,7 @@ public function prepare()
 		{
 		$stm->close();
 		$this->Output->setStatus(Output::NOT_FOUND);
-		$this->showFailure($this->L10n->getText('User not found.'));
+		$this->showFailure($this->L10n->getText('User not found'));
 		}
 
 	$this->setTitle(sprintf($this->L10n->getText('Recent posts of %s'), $data['name']));

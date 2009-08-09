@@ -26,10 +26,10 @@ protected function setForm()
 	{
 	if (!$this->User->isOnline())
 		{
-		$this->showFailure('Nur für Mitglieder!');
+		$this->showFailure('Nur für Mitglieder');
 		}
 
-	$this->setTitle('Meine Dateien');
+	$this->setTitle('Dateien');
 
 	try
 		{
@@ -160,12 +160,12 @@ protected function checkForm()
 
 	if ($data['quota'] + $this->file->getFileSize() >=  $this->Settings->getValue('quota'))
 		{
-		$this->showWarning('Dein Speicherplatz ist voll!');
+		$this->showWarning('Dein Speicherplatz ist voll');
 		}
 
 	if ($data['files'] + 1 >=  $this->Settings->getValue('files'))
 		{
-		$this->showWarning('Du hast zu viele Dateien gespeichert!');
+		$this->showWarning('Du hast zu viele Dateien gespeichert');
 		}
 	}
 

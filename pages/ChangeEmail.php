@@ -26,21 +26,21 @@ protected function setForm()
 	{
 	if (!$this->User->isOnline())
 		{
-		$this->showFailure('Nur für Mitglieder!');
+		$this->showFailure('Nur für Mitglieder');
 		}
 
 	$this->setTitle('E-Mail-Adresse ändern');
 
 	$this->add(new SubmitButtonElement('Ändern'));
 
-	$emailInput = new TextInputElement('email', '', 'Deine E-Mail-Adresse');
+	$emailInput = new TextInputElement('email', '', 'E-Mail-Adresse');
 	$emailInput->setMinLength(6);
 	$emailInput->setMaxLength(50);
 	$emailInput->setSize(25);
 	$emailInput->setHelp('Achte auf die Gültigkeit dieser Adresse,<br /> da die Zugangsdaten dorthin verschickt werden.');
 	$this->add($emailInput);
 
-	$confirmInput = new TextInputElement('confirm', '', 'Bestätige Deine E-Mail-Adresse');
+	$confirmInput = new TextInputElement('confirm', '', 'Bestätige E-Mail-Adresse');
 	$confirmInput->setMinLength(6);
 	$confirmInput->setMaxLength(50);
 	$confirmInput->setSize(25);
@@ -53,12 +53,12 @@ protected function checkForm()
 
 	if (!$this->Mail->validateMail($this->email))
 		{
-		$this->showWarning('Keine gültige E-Mail-Adresse angegeben!');
+		$this->showWarning('Keine gültige E-Mail-Adresse angegeben');
 		}
 
 	if ($this->email != $this->Input->Post->getString('confirm'))
 		{
-		$this->showWarning('Du hast Dich vertippt!');
+		$this->showWarning('Du hast Dich vertippt');
 		}
 
 	try
@@ -82,7 +82,7 @@ protected function checkForm()
 		return;
 		}
 
-	$this->showWarning('E-Mail-Adresse bereits vergeben!');
+	$this->showWarning('E-Mail-Adresse bereits vergeben');
 	}
 
 protected function sendForm()
@@ -140,8 +140,9 @@ protected function sendForm()
 Du kannst Dein Passwort ändern, wenn Du folgende Seite besuchst:
 '.$this->Output->createUrl('ChangePasswordKey', array(), true, false).'
 
-Sollte obiger Link bei Deinem Mail-Programm nicht funktionieren,
-so wähle im Anmelde-Dialog die Option "Passwort setzen" und gebe folgende Daten an:
+Sollte obiger Link bei Deinem Mail-Programm nicht funktionieren, so
+wähle im Anmelde-Dialog die Option "Passwort setzen" und gebe
+folgende Daten an:
 Benutzer-ID:	'.$this->User->getId().'
 Schlüssel:	'.$key.'
 

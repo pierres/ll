@@ -98,7 +98,7 @@ protected function checkForm()
 		{
 		if ($this->Input->Post->isEmptyString('newname'))
 			{
-			$this->showWarning('Keine Kategorien angegeben.');
+			$this->showWarning('Keine Kategorien angegeben');
 			}
 		else
 			{
@@ -110,17 +110,17 @@ protected function checkForm()
 		{
 		if (empty($id))
 			{
-			$this->showWarning('Keine Kategorie-ID angegeben.');
+			$this->showWarning('Keine Kategorie-ID angegeben');
 			}
 
 		if (empty($cat['position']))
 			{
-			$this->showWarning('Keine Kategorie-Position angegeben.');
+			$this->showWarning('Keine Kategorie-Position angegeben');
 			}
 
 		if (empty($cat['name']))
 			{
-			$this->showWarning('Kein Kategorie-Name angegeben.');
+			$this->showWarning('Kein Kategorie-Name angegeben');
 			}
 		}
 	}

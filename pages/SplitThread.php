@@ -37,7 +37,7 @@ protected function setForm()
 		}
 	catch (RequestException $e)
 		{
-		$this->showWarning($this->L10n->getText('No post specified.'));
+		$this->showWarning($this->L10n->getText('No post specified'));
 		}
 
 	$this->checkAccess();
@@ -97,12 +97,12 @@ protected function checkAccess()
 	catch (DBNoDataException $e)
 		{
 		$stm->close();
-		$this->showFailure($this->L10n->getText('Topic not found.'));
+		$this->showFailure($this->L10n->getText('Topic not found'));
 		}
 
 	if (!$this->User->isMod() && !$this->User->isGroup($forum['mods']))
 		{
-		$this->showFailure($this->L10n->getText('Topic not found.'));
+		$this->showFailure($this->L10n->getText('Topic not found'));
 		}
 	}
 

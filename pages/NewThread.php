@@ -73,11 +73,11 @@ protected function setPoll()
 
 					if (strlen($poll_option) > 100)
 						{
-						$this->showWarning(sprintf($this->L10n->getText('Option %s is %d characters too long.'), $i, (strlen($poll_option)-100)));
+						$this->showWarning(sprintf($this->L10n->getText('Option %s is %d characters too long'), $i, (strlen($poll_option)-100)));
 						}
 					elseif (strlen($poll_option) < 1)
 						{
-						$this->showWarning(sprintf($this->L10n->getText('Option %s is %d characters too long.'), $i, (1-strlen($poll_option))));
+						$this->showWarning(sprintf($this->L10n->getText('Option %s is %d characters too long'), $i, (1-strlen($poll_option))));
 						}
 					$i++;
 					}
@@ -113,7 +113,7 @@ protected function checkInput()
 			}
 		catch (RequestException $e)
 			{
-			$this->showFailure($this->L10n->getText('No forum specified.'));
+			$this->showFailure($this->L10n->getText('No forum specified'));
 			}
 		}
 

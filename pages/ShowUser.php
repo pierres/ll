@@ -31,7 +31,7 @@ public function prepare()
 		}
 	catch (RequestException $e)
 		{
-		$this->showFailure($this->L10n->getText('No user specified.'));
+		$this->showFailure($this->L10n->getText('No user specified'));
 		}
 
 	try
@@ -60,7 +60,7 @@ public function prepare()
 		{
 		$stm->close();
 		$this->Output->setStatus(Output::NOT_FOUND);
-		$this->showFailure($this->L10n->getText('User not found.'));
+		$this->showFailure($this->L10n->getText('User not found'));
 		}
 
 	$avatar = (empty($data['avatar']) ? '' : '<img src="'.$this->Output->createUrl('GetAvatar', array('user' => $data['id'])).'" alt="" />');
@@ -93,7 +93,7 @@ public function prepare()
 					<th>'.$this->L10n->getText('Posts').'</th>
 					<td>'.$data['posts'].'</td>
 				</tr>
-				'.(!empty($data['lastpost']) ? '.
+				'.(!empty($data['lastpost']) ? '
 				<tr>
 					<th>'.$this->L10n->getText('Last post').'</th>
 					<td>'.$this->L10n->getDateTime($data['lastpost']).'</td>

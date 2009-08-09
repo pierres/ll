@@ -29,7 +29,7 @@ protected function setForm()
 
 	if (!$this->User->isLevel(User::ROOT))
 		{
-		$this->showFailure('nur root darf das!');
+		$this->showFailure('Nur root darf das');
 		}
 
 	$this->add(new SubmitButtonElement('Erstellen'));
@@ -67,7 +67,7 @@ protected function checkForm()
 		$stm->getColumn();
 		$stm->close();
 
-		$this->showWarning('Name oder Host/Domain bereits vergeben!');
+		$this->showWarning('Name oder Host/Domain bereits vergeben');
 		}
 	catch (DBNoDataException $e)
 		{

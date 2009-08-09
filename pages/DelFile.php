@@ -26,7 +26,7 @@ protected function setForm()
 	{
 	if (!$this->User->isOnline())
 		{
-		$this->showFailure('Nur für Mitglieder!');
+		$this->showFailure('Nur für Mitglieder');
 		}
 
 	try
@@ -35,7 +35,7 @@ protected function setForm()
 		}
 	catch (RequestException $e)
 		{
-		$this->showFailure('Keine Datei angegeben!');
+		$this->showFailure('Keine Datei angegeben');
 		}
 
 	$this->setTitle('Datei löschen');
@@ -68,7 +68,7 @@ protected function checkForm()
 	catch (DBNoDataException $e)
 		{
 		$stm->close();
-		$this->showFailure('Datei nicht gefunden!');
+		$this->showFailure('Datei nicht gefunden');
 		}
 	}
 

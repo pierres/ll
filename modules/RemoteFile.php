@@ -33,7 +33,7 @@ public function __construct($url)
 	{
 	if (!preg_match('/^(https?|ftp):\/\//', $url))
 		{
- 		throw new FileException($this->L10n->getText('Only http and ftp are allowed.'));
+ 		throw new FileException($this->L10n->getText('Only http, https and ftp are allowed'));
 		}
 
 	$this->url = $url;
@@ -104,7 +104,7 @@ public function getFileContent()
 
 		if (!$this->isAllowedType($this->type))
 			{
-			throw new FileException(sprintf($this->L10n->getText('Uploading files of type %s is not allowed.'), htmlspecialchars($this->type)));
+			throw new FileException(sprintf($this->L10n->getText('Uploading files of type %s is not allowed'), htmlspecialchars($this->type)));
 			}
 
 		$this->size = strlen($this->content);

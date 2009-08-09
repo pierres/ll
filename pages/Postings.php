@@ -33,7 +33,7 @@ try
 	}
 catch (RequestException $e)
 	{
-	$this->showWarning($this->L10n->getText('No topic specified.'));
+	$this->showWarning($this->L10n->getText('No topic specified'));
 	}
 
 $this->post = $this->Input->Get->getInt('post', 0);
@@ -75,7 +75,7 @@ catch (DBNoDataException $e)
 	{
 	$stm->close();
 	$this->Output->setStatus(Output::NOT_FOUND);
-	$this->showWarning($this->L10n->getText('Topic not found.'));
+	$this->showWarning($this->L10n->getText('Topic not found'));
 	}
 
 $this->ismod = $this->User->isGroup($thread['mods']) || $this->User->isMod();
@@ -139,7 +139,7 @@ if ($this->post < 0)
 
 if ($thread['deleted'] == 1 && !$this->ismod)
 	{
-	$this->showWarning($this->L10n->getText('Topic not found.'));
+	$this->showWarning($this->L10n->getText('Topic not found'));
 	}
 
 

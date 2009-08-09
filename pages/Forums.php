@@ -127,10 +127,10 @@ $body =	'
 		<thead>
 			<tr>
 				<th colspan="2">
-					'.$this->L10n->getText('forum').'
+					'.$this->L10n->getText('Forum').'
 				</th>
 				<th>
-					'.$this->L10n->getText('last post').'
+					'.$this->L10n->getText('Last post').'
 				</th>
 			</tr>
 		</thead>
@@ -140,7 +140,7 @@ $body =	'
 	</table>
 	';
 
-$this->setTitle($this->L10n->getText('index'));
+$this->setTitle($this->L10n->getText('Index'));
 $this->setBody($body);
 }
 

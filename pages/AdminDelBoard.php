@@ -28,7 +28,7 @@ protected function setForm()
 
 	if (!$this->User->isLevel(User::ROOT))
 		{
-		$this->showFailure('kein Zugriff!');
+		$this->showFailure('kein Zugriff');
 		}
 
 	$boardInput = new RadioInputElement('board', 'Welches Board soll gelöscht werden?');

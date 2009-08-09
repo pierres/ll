@@ -116,7 +116,7 @@ public static function loadPage($name)
 		}
 	else
 		{
-		throw new RuntimeException(sprintf('Page "%s" not found!', $name), 0);
+		throw new RuntimeException(sprintf('Page "%s" not found', $name), 0);
 		}
 	}
 
@@ -184,7 +184,7 @@ private function getHead()
 	{
 	return '
 		<meta name="robots" content="'.$this->getValue('meta.robots').'" />
-		<title>'.$this->getTitle().'</title>
+		<title>'.$this->Board->getName().' - '.$this->getTitle().'</title>
 		<!-- <link rel="stylesheet" media="screen" href="'.$this->Output->createUrl('GetCss').'" /> -->
 		<link rel="stylesheet" media="screen" href="ll.css" />
 		<link rel="alternate" type="application/atom+xml" title="'.$this->L10n->getText('Recent topics').'" href="'.$this->Output->createUrl('GetRecent').'" />
@@ -251,41 +251,12 @@ private function sendOutput()
 // 	$file = $this->Board->getHtml();
 	$file = file_get_contents('ll.html');
 
-// 	$this->variables['content-type'] = $this->Output->getContentType();
-// 	$this->variables['id'] = $this->Board->getId();
 	$this->variables['name'] = $this->Board->getName();
-// 	$this->variables['description'] = $this->Board->getDescription();
 	$this->variables['main-menu'] = $this->getMainMenu();
 	$this->variables['head'] = $this->getHead();
 // 	$this->variables['page'] = $this->getName();
 	$this->variables['user-welcome'] = $this->getUserWelcome();
 	$this->variables['user-menu'] = $this->getUserMenu();
-
-// 	if ($this->User->isOnline())
-// 		{
-// 		$this->variables['user'] = $this->User->getName();
-// 		}
-
-// 	$this->setBody($this->getValue('body').
-// 		'
-// 		<div style="text-align:right;font-size:10px;margin-top:30px;">
-// 			Powered by <a href="http://www.laber-land.de">LL 4.0</a><br />
-// 			&copy; Copyright 2002&ndash;2009 Pierre Schmitz
-// 		</div>
-// 		');
-
-// 	$this->setValue('about', 'Powered by <strong><a href="http://www.laber-land.de/">LL 4.0</a></strong>');
-
-
-// 	if ($this->Settings->getValue('debug') && function_exists('xdebug_time_index'))
-// 		{
-// 		$this->setValue('debug',
-// 			'<div style="text-align:left;font-size:10px;font-family:monospace;margin-top:3px;">
-// 			Ausführungszeit:&nbsp;&nbsp;&nbsp;'.xdebug_time_index().' s<br />
-// 			Speicherverbrauch:&nbsp;'.(xdebug_peak_memory_usage()/1024).' KByte
-// 			</div>'
-// 			);
-// 		}
 
 	/** FIXME Explizit aufrufen und body zuletzt ersetzen; sonst dorht rekursive Ersetzung */
 	foreach ($this->variables as $key => $value)

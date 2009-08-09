@@ -31,20 +31,20 @@ protected function setForm()
 	{
 	if (!$this->User->isOnline())
 		{
-		$this->showFailure('Nur für Mitglieder!');
+		$this->showFailure('Nur für Mitglieder');
 		}
 
 	$this->getData();
 
-	$this->setTitle('Mein Profil');
+	$this->setTitle('Profil');
 	$this->add(new SubmitButtonElement('Speichern'));
 
-	$realnameInput = new TextInputElement('realname', $this->realname, 'Dein Name');
+	$realnameInput = new TextInputElement('realname', $this->realname, 'Realer Name');
 	$realnameInput->setMinLength(3);
 	$realnameInput->setMaxLength(100);
 	$this->add($realnameInput);
 
-	$jabberInput = new TextInputElement('jabber', $this->jabber, 'Deine Jabber-Adresse');
+	$jabberInput = new TextInputElement('jabber', $this->jabber, 'Jabber-Adresse');
 	$jabberInput->setMinLength(6);
 	$jabberInput->setMaxLength(50);
 	$this->add($jabberInput);
@@ -67,8 +67,8 @@ protected function setForm()
 			<li><a href="'.$this->Output->createUrl('ShowUser', array('user' => $this->User->getId())).'"><span>Eigenes Profil ansehen</span></a></li>
 			<li><a href="'.$this->Output->createUrl('ChangeEmail').'"><span>E-Mail-Adresse ändern</span></a></li>
 			<li><a href="'.$this->Output->createUrl('ChangePassword').'"><span>Passwort ändern</span></a></li>
-			<li><a href="'.$this->Output->createUrl('MyFiles').'"><span>Meine Dateien</span></a></li>
-			<li><a href="'.$this->Output->createUrl('DeleteUser', array('user' => $this->User->getId())).'"><span>Mein Benutzerkonto löschen</span></a></li>
+			<li><a href="'.$this->Output->createUrl('MyFiles').'"><span>Dateien</span></a></li>
+			<li><a href="'.$this->Output->createUrl('DeleteUser', array('user' => $this->User->getId())).'"><span>Benutzerkonto löschen</span></a></li>
 		</ul>'));
 	}
 
@@ -82,7 +82,7 @@ protected function checkForm()
 			{
 			if (!$this->Mail->validateMail($this->jabber))
 				{
-				$this->showWarning('Keine gültige Jabber-Adresse angegeben!');
+				$this->showWarning('Keine gültige Jabber-Adresse angegeben');
 				}
 
 			try
@@ -101,7 +101,7 @@ protected function checkForm()
 				$stm->bindInteger($this->User->getId());
 				$stm->getColumn();
 				$stm->close();
-				$this->showWarning('Jabber-Adresse bereits vergeben!');
+				$this->showWarning('Jabber-Adresse bereits vergeben');
 				}
 			catch (DBNoDataException $e)
 				{
@@ -122,12 +122,12 @@ protected function checkForm()
 
 		if ($this->newavatar->getFileSize() >= $this->Settings->getValue('file_size'))
 			{
-			$this->showWarning('Neuer Avatar ist zu groß!');
+			$this->showWarning('Neuer Avatar ist zu groß');
 			}
 
 		if (strpos($this->newavatar->getFileType(), 'image/') !== 0)
 			{
-			$this->showWarning('Neuer Avatar ist kein Bild!');
+			$this->showWarning('Neuer Avatar ist kein Bild');
 			}
 		}
 	catch (FileException $e)
@@ -157,7 +157,7 @@ private function getData()
 	catch (DBNoDataException $e)
 		{
 		$stm->close();
-		$this->showFailure('Es wurde kein Benutzerkonto gefunden!');
+		$this->showFailure('Es wurde kein Benutzerkonto gefunden');
 		}
 
 	$this->realname 	= unhtmlspecialchars($data['realname']);

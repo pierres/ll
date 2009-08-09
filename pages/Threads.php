@@ -32,7 +32,7 @@ public function prepare()
 		}
 	catch (RequestException $e)
 		{
-		$this->showFailure($this->L10n->getText('No forum specified.'));
+		$this->showFailure($this->L10n->getText('No forum specified'));
 		}
 
 	$this->currentThread = $this->Input->Get->getInt('thread', 0);
@@ -65,7 +65,7 @@ public function prepare()
 		{
 		$stm->close();
 		$this->Output->setStatus(Output::NOT_FOUND);
-		$this->showFailure($this->L10n->getText('Forum not found.'));
+		$this->showFailure($this->L10n->getText('Forum not found'));
 		}
 
 	$this->ismod = $this->User->isGroup($forum['mods']) || $this->User->isMod();

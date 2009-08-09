@@ -53,15 +53,15 @@ protected function checkInput()
 	catch (RequestException $e)
 		{
 		$stm->close();
-		$this->showFailure($this->L10n->getText('No post specified.'));
+		$this->showFailure($this->L10n->getText('No post specified'));
 		}
 	catch (DBNoDataException $e)
 		{
 		$stm->close();
-		$this->showFailure($this->L10n->getText('Post not found.'));
+		$this->showFailure($this->L10n->getText('Post not found'));
 		}
 
-	$this->text = '<quote '.unhtmlspecialchars($data['username']).">\n".$this->UnMarkup->fromHtml($data['text'])."\n</quote>\n\n";
+	$this->text = '<quote '.unhtmlspecialchars($data['username']).'>'.$this->UnMarkup->fromHtml($data['text'])."</quote>\n\n";
 
 	$this->thread = $data['thread'];
 

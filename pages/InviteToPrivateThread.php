@@ -109,12 +109,12 @@ protected function checkForm()
 			}
 		catch(DBNoDataException $e)
 			{
-			$this->showWarning('Empfänger "'.htmlspecialchars($recipient).'" ist unbekannt.');
+			$this->showWarning('Empfänger "'.htmlspecialchars($recipient).'" ist unbekannt');
 			}
 
 		if (empty($this->newto))
 			{
-			$this->showWarning('keine Empfänger angegeben.');
+			$this->showWarning('keine Empfänger angegeben');
 			}
 		}
 	}

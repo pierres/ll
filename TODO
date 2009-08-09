@@ -3,10 +3,7 @@ LL 4 TODO
 
 == Required for Release ==
 
-* use L10n-Methods for all (english) Strings
 * Move ll.{html,css} into DB and RegisterBoard
-* move code outside of htdocs
-* update database_minimal.sql
 
 == Optional ==
 
@@ -38,6 +35,8 @@ LL 4 TODO
 * check utf8 problems; see http://www.phpwact.org/php/i18n/utf-8
 * compare id order with date order
 	* should only affect very old posts/threads
+* update database_minimal.sql
+* move code outside of htdocs
 
 == Security ==
 

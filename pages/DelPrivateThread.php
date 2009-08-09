@@ -31,7 +31,7 @@ protected function setForm()
 		}
 	catch (RequestException $e)
 		{
-		$this->showFailure('Kein Privates Thema angegeben!');
+		$this->showFailure('Kein Privates Thema angegeben');
 		}
 
 	if (!$this->User->isOnline())
@@ -60,7 +60,7 @@ protected function setForm()
 	catch (DBNoDataException $e)
 		{
 		$stm->close();
-		$this->showFailure('Privates Thema nicht gefunden!');
+		$this->showFailure('Privates Thema nicht gefunden');
 		}
 
 	$this->setTitle('Privates Thema '.($this->deleted ? 'wiederherstellen' : 'löschen'));

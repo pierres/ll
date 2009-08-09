@@ -39,7 +39,7 @@ protected function checkInput()
 		}
 	catch (RequestException $e)
 		{
-		$this->showFailure('Kein Thema angegeben!');
+		$this->showFailure('Kein Thema angegeben');
 		}
 
 	try
@@ -68,7 +68,7 @@ protected function checkInput()
 	catch (DBNoDataException $e)
 		{
 		$stm->close();
-		$this->showFailure('Thema nicht gefunden oder geschlossen!');
+		$this->showFailure('Thema nicht gefunden oder geschlossen');
 		}
 
 	try
@@ -144,13 +144,13 @@ protected function checkAccess()
 	catch (DBNoDataException $e)
 		{
 		$stm->close();
-		$this->showFailure('Kein Beitrag gefunden.');
+		$this->showFailure('Kein Beitrag gefunden');
 		}
 
 	if (!$this->User->isUser($access) && !$this->User->isForumMod($this->forum))
 		{
 		// Tun wir so, als wüssten wir von nichts
-		$this->showFailure('Kein Beitrag gefunden.');
+		$this->showFailure('Kein Beitrag gefunden');
 		}
 	}
 

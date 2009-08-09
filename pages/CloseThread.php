@@ -32,7 +32,7 @@ protected function setForm()
 		}
 	catch (RequestException $e)
 		{
-		$this->showFailure('Kein Thema angegeben!');
+		$this->showFailure('Kein Thema angegeben');
 		}
 
 	try
@@ -57,7 +57,7 @@ protected function setForm()
 	catch (DBNoDataException $e)
 		{
 		$stm->close();
-		$this->showFailure('Thema nicht gefunden!');
+		$this->showFailure('Thema nicht gefunden');
 		}
 
 	$this->setTitle('Thema '.($this->closed ? 'öffnen' : 'schließen'));
@@ -73,7 +73,7 @@ protected function checkForm()
 	if (!$this->User->isForumMod($this->forum))
 		{
 		// Tun wir so, als wüssten wir von nichts
-		$this->showFailure('Kein Thema gefunden.');
+		$this->showFailure('Kein Thema gefunden');
 		}
 	}
 

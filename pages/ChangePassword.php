@@ -29,20 +29,20 @@ protected function setForm()
 	{
 	if (!$this->User->isOnline())
 		{
-		$this->showFailure('Nur für Mitglieder!');
+		$this->showFailure('Nur für Mitglieder');
 		}
 
 	$this->setTitle('Passwort ändern');
 
 	$this->add(new SubmitButtonElement('Ändern'));
 
-	$passwordInput = new PasswordInputElement('password', 'Dein Passwort');
+	$passwordInput = new PasswordInputElement('password', 'Passwort');
 	$passwordInput->setMinLength(6);
 	$passwordInput->setMaxLength(25);
 	$passwordInput->setSize(25);
 	$this->add($passwordInput);
 
-	$newpasswordInput = new PasswordInputElement('newpassword', 'Dein neues Passwort');
+	$newpasswordInput = new PasswordInputElement('newpassword', 'Neues Passwort');
 	$newpasswordInput->setMinLength(6);
 	$newpasswordInput->setMaxLength(25);
 	$newpasswordInput->setSize(25);
@@ -86,7 +86,7 @@ protected function checkForm()
 
 	if ($this->newpassword != sha1($this->Input->Post->getString('confirm')))
 		{
-		$this->showWarning('Du hast Dich vertippt!');
+		$this->showWarning('Du hast Dich vertippt');
 		}
 	}
 

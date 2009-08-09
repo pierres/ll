@@ -52,7 +52,7 @@ public function __construct()
 				}
 			catch (Exception $e)
 				{
-				die('FATAL ERROR: board not found!');
+				die('FATAL ERROR: board not found');
 				}
 			}
 		}

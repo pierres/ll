@@ -37,7 +37,7 @@ protected function setForm()
 	$nameInput->setFocus();
 	$this->add($nameInput);
 
-	$emailInput = new TextInputElement('email', '', $this->L10n->getText('e-mail address'));
+	$emailInput = new TextInputElement('email', '', $this->L10n->getText('E-mail address'));
 	$emailInput->setMinLength(6);
 	$emailInput->setMaxLength(50);
 	$emailInput->setSize(50);
@@ -51,7 +51,7 @@ protected function checkForm()
 
 	if (!$this->Mail->validateMail($this->email))
 		{
-		$this->showWarning($this->L10n->getText('e-mail address is invalid'));
+		$this->showWarning($this->L10n->getText('E-mail address is invalid'));
 		}
 
 	try
@@ -130,7 +130,7 @@ protected function sendForm()
 	$this->Mail->setTo($this->email);
 	$this->Mail->setFrom($this->Settings->getValue('email'));
 	$this->Mail->setSubject(sprintf($this->L10n->getText('Register at %s'), $this->Board->getName()));
-	$this->Mail->setText(sprintf($this->L10n->getText(<<<eot
+	$this->Mail->setText(sprintf($this->L10n->getText(
 'Hello %s!
 
 Thank you for your registration at "%s".
@@ -138,8 +138,7 @@ You can now set your password at the follwing website:
 %s
 
 User-ID:	%d
-Key:		%s
-eot
+Key:		%s'
 ), $this->name, $this->Board->getName(), $this->Output->createUrl('ChangePasswordKey', array(), true, false), $userid, $key));
 	$this->Mail->send();
 

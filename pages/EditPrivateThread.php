@@ -38,7 +38,7 @@ protected function checkInput()
 		}
 	catch (RequestException $e)
 		{
-		$this->showFailure('Kein Thema angegeben!');
+		$this->showFailure('Kein Thema angegeben');
 		}
 
 	try
@@ -65,7 +65,7 @@ protected function checkInput()
 	catch (DBNoDataException $e)
 		{
 		$stm->close();
-		$this->showFailure('Thema nicht gefunden!');
+		$this->showFailure('Thema nicht gefunden');
 		}
 
 	try
@@ -152,7 +152,7 @@ protected function checkAccess()
 	catch (DBNoDataException $e)
 		{
 		$stm->close();
-		$this->showFailure('Kein Beitrag gefunden.');
+		$this->showFailure('Kein Beitrag gefunden');
 		}
 	}
 

@@ -55,7 +55,7 @@ public function prepare()
 		}
 	catch (DBNoDataException $e)
 		{
-		$this->showFailure($this->L10n->getText('No search results.'));
+		$this->showFailure($this->L10n->getText('No search results'));
 		}
 		
 
@@ -93,7 +93,7 @@ public function prepare()
 		}
 	catch (DBNoDataException $e)
 		{
-		$this->showFailure($this->L10n->getText('No search results.'));
+		$this->showFailure($this->L10n->getText('No search results'));
 		}
 
 	$this->pageOptions = array('searchId' => $searchId);

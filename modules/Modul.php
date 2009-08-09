@@ -56,7 +56,7 @@ public static function loadModul($name)
 		}
 	else
 		{
-		throw new RuntimeException('Modul '.$name.' wurde nicht gefunden!', 0);
+		throw new RuntimeException('Modul '.$name.' wurde nicht gefunden', 0);
 		}
 	}
 

@@ -27,7 +27,7 @@ protected function setForm()
 	{
 	if (!$this->User->isLevel(User::ROOT))
 		{
-		$this->showFailure('kein Zugriff!');
+		$this->showFailure('kein Zugriff');
 		}
 
 	$this->setTitle('Foren zusammenlegen');
@@ -68,7 +68,7 @@ protected function checkForm()
 	$this->target = $this->Input->Post->getInt('target');
 	if ($this->source == $this->target)
 		{
-		$this->showWarning('Quell- und Ziel-Forum sind identisch!');
+		$this->showWarning('Quell- und Ziel-Forum sind identisch');
 		}
 	}
 

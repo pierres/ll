@@ -82,12 +82,12 @@ protected function checkAccessMoveto()
 	catch (DBNoDataException $e)
 		{
 		$stm->close();
-		$this->showFailure('Thema nicht gefunden oder geschlossen!');
+		$this->showFailure('Thema nicht gefunden oder geschlossen');
 		}
 
 	if (!$this->User->isMod() && !$this->User->isGroup($mods))
 		{
-		$this->showFailure('Kein Beitrag gefunden.');
+		$this->showFailure('Kein Beitrag gefunden');
 		}
 	}
 
@@ -123,12 +123,12 @@ protected function checkAccess()
 	catch (DBNoDataException $e)
 		{
 		$stm->close();
-		$this->showFailure('Thema nicht gefunden oder geschlossen!');
+		$this->showFailure('Thema nicht gefunden oder geschlossen');
 		}
 
 	if (!$this->User->isMod() && !$this->User->isGroup($forum['mods']))
 		{
-		$this->showFailure('Kein Beitrag gefunden.');
+		$this->showFailure('Kein Beitrag gefunden');
 		}
 	}
 

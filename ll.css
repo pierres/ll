@@ -141,12 +141,14 @@
 }
 #ll #body .box th {
 	margin:0px;
-	min-width:150px;
+	min-width:200px;
 	vertical-align:top;
 }
 #ll #body .box td {
 	margin:0px;
 	vertical-align:top;
+	text-align:left;
+	padding-left:10px;
 }
 #ll #body .box td * {
 	margin:0px;
@@ -256,6 +258,12 @@
 }
 #ll #body form .form-help {
 	font-size:12px;
+}
+#ll #body form ul {
+	list-style-type:square;
+	margin:0px;
+	padding:0px;
+	padding-left:15px;
 }
 
 /* ThreadList */
@@ -558,7 +566,7 @@
 	padding:5px;
 	padding-top:20px;
 }
-#ll #body .box #markup-help ul {
+#ll #body .box ul {
 	list-style-type:square;
 	margin:0px;
 	padding:0px;

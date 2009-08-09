@@ -46,7 +46,7 @@ protected function setForm()
 	$keyInput->setSize(25);
 	$this->add($keyInput);
 
-	$newpasswordInput = new PasswordInputElement('newpassword', 'Dein neues Passwort');
+	$newpasswordInput = new PasswordInputElement('newpassword', 'Neues Passwort');
 	$newpasswordInput->setMinLength(6);
 	$newpasswordInput->setMaxLength(25);
 	$newpasswordInput->setSize(25);
@@ -90,7 +90,7 @@ protected function checkForm()
 
 	if ($this->newpassword != sha1($this->Input->Post->getString('confirm')))
 		{
-		$this->showWarning('Du hast Dich vertippt!');
+		$this->showWarning('Du hast Dich vertippt');
 		}
 	}
 	
@@ -141,7 +141,7 @@ protected function sendForm()
 		}
 	catch (LoginException $e)
 		{
-		$this->showFailure('Falsches Passwort.');
+		$this->showFailure('Falsches Passwort');
 		}
 
 	$this->Output->redirect('Forums');
