@@ -17,7 +17,7 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-
+/** TODO \n in Mail einschleussbar? http://forum.hardened-php.net/viewtopic.php?id=69 */
 class Mail extends Modul{
 
 private $from 		= '';
@@ -26,81 +26,47 @@ private $replyto 	= '';
 private $text 		= '';
 private $subject 	= '';
 
-
+/** FIXME: XSS->alle Zeilenumbrüche entfernen */
 public function send()
 	{
-	$headers =
-		"MIME-Version: 1.0\n".
-		"Content-type: text/plain; charset=\"utf-8\"\n".
-		"Content-Transfer-Encoding: quoted-printable\n".
-		'From: '.$this->from;
-	if (!empty($this->replyto))
-		{
-		$headers .= "\nReply-To: ".$this->replyto;
-		}
-
 	$logDir = $this->Settings->getValue('mail_log_dir');
 	if (!empty($logDir))
 		{
-		$log = 	$headers."\n".
+		$log = 	$this->from."\n".
 			$this->to."\n".
 			$this->subject."\n".
 			$this->text."\n";
 		file_put_contents($logDir.'/'.time().'.txt', $log);
 		}
 
-	if (mail($this->to, $this->subject, $this->text, $headers) === false)
-		{
-		throw new MailException('Error sending mail');
-		}
-	}
-
-# inspired by MediaWiki
-private function escapeCharacters($matches)
-	{
-	return sprintf('=%02X', ord($matches[1]));
-	}
-private function quotePrintable($text)
-	{
-	$illegal = '\x00-\x08\x0b\x0c\x0e-\x1f\x7f-\xff=';
-	$replace = $illegal . '\t ?_';
-
-	if (!preg_match("/[$illegal]/", $text))
-		{
-		return $text;
-		}
-
-	$out = '=?UTF-8?Q?';
-	$out .= preg_replace( "/([$replace])/e", 'sprintf("=%02X",ord("$1"))', $text);
-	$out .= preg_replace_callback("/([$replace])/", array($this, 'escapeCharacters'), $text);
-	$out .= '?=';
-
-	return $out;
+	mb_internal_encoding('UTF-8');
+	mb_language('uni');
+	mb_send_mail($this->to, $this->subject, $this->text, 'From: '.$this->from."\r\n".(!empty($this->replyto) ? 'Reply-To: '.$this->replyto."\r\n" : ''), '-f'.$this->from);
 	}
 
 public function setFrom($from)
 	{
-	$this->from = $this->quotePrintable($from);
+	$this->from = $from;
 	}
 
 public function setTo($to)
 	{
-	$this->to = $this->quotePrintable($to);
+	$this->to = $to;
 	}
 
 public function setReplyTo($addess)
 	{
-	$this->replyto = $this->quotePrintable($addess);
+	$this->replyto = $addess;
 	}
 
 public function setSubject($subject)
 	{
-	$this->subject = $this->quotePrintable($subject);
+	$this->subject = $subject;
 	}
 
 public function setText($text)
 	{
-	$this->text = $this->quotePrintable($text);
+	$this->text = $text;
 	}
 
 public function validateMail($mail)
