@@ -17,8 +17,8 @@
 	You should have received a copy of the GNU General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-/** TODO \n in Mail einschleussbar? http://forum.hardened-php.net/viewtopic.php?id=69 */
-class Mail extends Modul{
+
+class Mail extends Modul {
 
 private $from 		= '';
 private $to 		= '';
@@ -26,7 +26,7 @@ private $replyto 	= '';
 private $text 		= '';
 private $subject 	= '';
 
-/** FIXME: XSS->alle Zeilenumbrüche entfernen */
+
 public function send()
 	{
 	$logDir = $this->Settings->getValue('mail_log_dir');
@@ -39,9 +39,7 @@ public function send()
 		file_put_contents($logDir.'/'.time().'.txt', $log);
 		}
 
-	mb_internal_encoding('UTF-8');
-	mb_language('uni');
-	mb_send_mail($this->to, $this->subject, $this->text, 'From: '.$this->from."\r\n".(!empty($this->replyto) ? 'Reply-To: '.$this->replyto."\r\n" : ''), '-f'.$this->from);
+	mail($this->to, mb_convert_encoding($this->subject, 'ISO-8859-1', 'UTF-8'), mb_convert_encoding($this->text, 'ISO-8859-1', 'UTF-8'), 'From: '.$this->from."\n".(!empty($this->replyto) ? 'Reply-To: '.$this->replyto."\n" : ''), '-f'.$this->from);
 	}
 
 public function setFrom($from)
