@@ -4,9 +4,9 @@ LL 4 TODO
 == Required for Release ==
 
 * use L10n-Methods for all (english) Strings
-* add LL-Code documentation
 * Move ll.{html,css} into DB and RegisterBoard
 * move code outside of htdocs
+* update database_minimal.sql
 
 == Optional ==
 

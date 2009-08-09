@@ -204,7 +204,7 @@ protected function sendForm()
 	$stm->bindString(htmlspecialchars($this->topic));
 	$stm->bindInteger($this->forum);
 	$stm->bindInteger($counter);
-	$stm->bindString(getTextFromHtml($this->text));
+	$stm->bindString($this->UnMarkup->fromHtmlToText($this->text));
 
 	$stm->execute();
 	$stm->close();

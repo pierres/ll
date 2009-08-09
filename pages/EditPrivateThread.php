@@ -169,7 +169,7 @@ protected function sendForm()
 			id = ?'
 		);
 	$stm->bindString(htmlspecialchars($this->topic));
-	$stm->bindString(getTextFromHtml($this->text));
+	$stm->bindString($this->UnMarkup->fromHtmlToText($this->text));
 	$stm->bindInteger($this->thread);
 	$stm->execute();
 	$stm->close();

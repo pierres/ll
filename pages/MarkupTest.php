@@ -44,7 +44,7 @@ protected function setForm()
 			'<pre>'.htmlspecialchars($html).'</pre>'));
 
 			$this->add(new LabeledElement('summary',
-			'<pre>'.getTextFromHtml($html).'</pre>'));
+			'<pre>'.$this->UnMarkup->fromHtmlToText($html).'</pre>'));
 
 			$this->add(new LabeledElement('unmarkup',
 			'<pre>'.htmlspecialchars($this->text = $this->UnMarkup->fromHtml($html)).'</pre>'));

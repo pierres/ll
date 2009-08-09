@@ -371,7 +371,6 @@ public static function delBoard($board)
 	$stm->close();
 	}
 
-/** TODO: Summary erstellen; Änderungen optimieren (nur falls nötig) */
 //---------------------------------------------------------------------------------------------------------
 public static function updateThread($thread)
 	{
@@ -403,7 +402,8 @@ public static function updateThread($thread)
 			SELECT
 				dat,
 				userid,
-				username
+				username,
+				text
 			FROM
 				posts
 			WHERE
@@ -428,7 +428,8 @@ public static function updateThread($thread)
 				firstdate = ?,
 				firstuserid = ?,
 				firstusername = ?,
-				posts = (SELECT COUNT(*) FROM posts WHERE deleted = 0 AND threadid = ?)
+				posts = (SELECT COUNT(*) FROM posts WHERE deleted = 0 AND threadid = ?),
+				summary = ?
 			WHERE
 				id = ?'
 			);
@@ -439,8 +440,9 @@ public static function updateThread($thread)
 		$stm->bindInteger($firstpost['dat']);
 		$stm->bindInteger($firstpost['userid']);
 		$stm->bindString($firstpost['username']);
-
 		$stm->bindInteger($thread);
+		$stm->bindString(self::get('UnMarkup')->fromHtmlToText($firstpost['text']));
+
 		$stm->bindInteger($thread);
 
 		$stm->execute();

@@ -217,7 +217,7 @@ protected function sendForm()
 			summary = ?'
 		);
 	$stm->bindString(htmlspecialchars($this->topic));
-	$stm->bindString(getTextFromHtml($this->text));
+	$stm->bindString($this->UnMarkup->fromHtmlToText($this->text));
 	$stm->execute();
 	$stm->close();
 

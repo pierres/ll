@@ -186,7 +186,7 @@ protected function sendThreadSummary()
 			id = ?
 		');
 
-	$stm->bindString(getTextFromHtml($text));
+	$stm->bindString($this->UnMarkup->fromHtmlToText($text));
 	$stm->bindInteger($this->newthread);
 	$stm->execute();
 	$stm->close();

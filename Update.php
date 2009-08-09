@@ -63,6 +63,8 @@ public function run()
 
 	$this->updateDB();
 	$this->updateMarkup();
+	$this->updateThreads();
+	$this->updateForums();
 	$this->updateImages();
 	$this->updateAvatars();
 	$this->updateAttachements();
@@ -475,9 +477,18 @@ private function updateMarkup()
 			}
 		catch (RuntimeException $e)
 			{
-			$brokenPosts[] = $post['id'];
-			AdminFunctions::delPost($post['id']);
-			continue;
+			try
+				{
+				$text = str_replace('<pre>', ' ', $text);
+				$text = str_replace('</pre>', ' ', $text);
+				$text = $this->Markup->toHtml('<pre>'.$text.'</pre>');
+				}
+			catch (RuntimeException $e)
+				{
+				$brokenPosts[] = $post['id'];
+				AdminFunctions::delPost($post['id']);
+				continue;
+				}
 			}
 
 		$update->bindString($text);
@@ -503,6 +514,74 @@ private function updateMarkup()
 	$update->close();
 	
 	print_r($brokenPosts);
+	}
+
+private function updateThreads()
+	{
+	$totalThreads = $this->DB->getColumn
+		('SELECT
+			COUNT(*)
+		FROM
+			threads
+		');
+	$threads = $this->DB->getColumnSet
+		('
+		SELECT
+			id
+		FROM
+			threads
+		');
+
+	$i = 0;
+	foreach ($threads as $thread)
+		{
+		$i++;
+		if ($i % 100 == 0)
+			{
+			echo "Processing $i of $totalThreads...\t";
+			}
+
+		AdminFunctions::updateThread($thread);
+
+		if ($i % 100 == 0)
+			{
+			echo "done\n";
+			}
+		}
+	}
+
+private function updateForums()
+	{
+	$totalForums = $this->DB->getColumn
+		('SELECT
+			COUNT(*)
+		FROM
+			forums
+		');
+	$forums = $this->DB->getColumnSet
+		('
+		SELECT
+			id
+		FROM
+			forums
+		');
+
+	$i = 0;
+	foreach ($forums as $forum)
+		{
+		$i++;
+		if ($i % 10 == 0)
+			{
+			echo "Processing $i of $totalForums...\t";
+			}
+
+		AdminFunctions::updateForum($forum);
+
+		if ($i % 10 == 0)
+			{
+			echo "done\n";
+			}
+		}
 	}
 
 }
@@ -546,7 +625,7 @@ public function fromHtml($text)
 	$text = str_replace('<strong>', "'''", $text);
 	$text = str_replace('</strong>', "'''", $text);
 
-	$text = str_replace('<hr />', "----\n\n", $text);
+	$text = str_replace('<hr />', "\n----\n\n", $text);
 
 	$text = str_replace('<q>', '"', $text);
 	$text = str_replace('</q>', '"', $text);
@@ -600,7 +679,7 @@ private function urldecode($matches)
 
 private function unmakeHeading($matches)
 	{
-	return str_repeat('!', $matches[2]).$matches[1];
+	return "'''".$matches[1]."'''\n\n";
 	}
 
 private function unmakeLocalUrl($url)
@@ -620,8 +699,15 @@ private function unmakeLink($matches)
 	{
 	$url = $matches[1];
 	$name = $matches[2];
-
-	$this->Stack->push( '<a href="'.$this->unmakeLocalUrl($url).'">'.$name.'</a>');
+	
+	if ($url != $name)
+		{
+		$this->Stack->push('<a href="'.$this->unmakeLocalUrl($url).'">'.$name.'</a>');
+		}
+	else
+		{
+		$this->Stack->push($this->unmakeLocalUrl($url));		
+		}
 
 	return $this->sep.$this->Stack->lastID().$this->sep;
 	}

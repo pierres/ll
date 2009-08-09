@@ -24,15 +24,6 @@ function hexVal($in)
 	return (empty($result) ? 0 : $result);
 	}
 
-function mTime()
-	{
-	$ms = explode(' ', microtime());
-	return ((float) $ms[0] + (float) $ms[1]);
-	}
-
-/**
-* Wandle $number in natrliche Zahl (inkl. 0) um
-*/
 function nat($number)
 	{
 	return ($number < 0 ? 0 : floor($number));
@@ -167,20 +158,6 @@ function resizeImage($image, $type, $size)
 	imagedestroy($img);
 
 	return $thumb;
-	}
-
-function getTextFromHtml($text)
-	{
-	$text = str_replace('</li>', ' </li>', $text);
-	$text = preg_replace('/\s+/', ' ', $text);
-	$text = cutString(strip_tags($text),  300);
-
-	return $text;
-	}
-
-function br2nl($text)
-	{
-	return str_replace('<br />', '', $text);
 	}
 
 ?>

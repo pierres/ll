@@ -87,6 +87,24 @@ public function fromHtml($text)
 	return trim($text);
 	}
 
+public function fromHtmlToText($text)
+	{
+	$replace = array(
+		'#</li>#',
+		'#</p>#',
+		'#<pre>.+?</pre>#s',
+		'#<code>.+?</code>#',
+		'#<audio.+?</audio>#',
+		'#<video.+?</video>#',
+		'/\s+/');
+
+	$text = preg_replace($replace, ' ', $text);
+	$text = strip_tags($text);
+	$text = cutString($text, 400);
+
+	return $text;
+	}
+
 private function unmakeImage($matches)
 	{
 	$this->Stack->push('<img src="'.urldecode($matches[1]).'" />');
