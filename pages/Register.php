@@ -131,7 +131,7 @@ protected function sendForm()
 	$this->Mail->setFrom($this->Settings->getValue('email'));
 	$this->Mail->setSubject(sprintf($this->L10n->getText('Register at %s'), $this->Board->getName()));
 	$this->Mail->setText(sprintf($this->L10n->getText(<<<eot
-'Hello %s!
+Hello %s!
 
 Thank you for your registration at "%s".
 You can now set your password at the follwing website:
