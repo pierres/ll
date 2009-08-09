@@ -478,7 +478,11 @@
 	color:#000000;
 	background-color:#ffffff;
 	border:solid 1px #002468;
-	padding:2px;
+	padding:1px;
+	padding-left:4px;
+	padding-right:4px;
+	margin-left:4px;
+	margin-right:4px;
 }
 #ll #body #posts tbody .posts-text a {
 	text-decoration:underline;
