@@ -534,7 +534,7 @@ msgstr "Audio Medien"
 
 #: ../../../pages/MarkupHelp.php:138
 msgid "Video Media"
-msgstr "Video Medion"
+msgstr "Video Medien"
 
 #: ../../../pages/NewThread.php:76
 #: ../../../pages/NewThread.php:80
