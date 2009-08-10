@@ -253,7 +253,7 @@ protected function checkForm()
 			$user = $stm->getRow();
 			$stm->close();
 
-			$this->showWarning(sprintf($this->L10n->getText('Name %s is already registered', '<a href="'.$this->Output->createUrl('ShowUser', array('user' => $user['id'])).'">'.$user['name'].'</a>')));
+			$this->showWarning(sprintf($this->L10n->getText('Name %s is already registered'), '<a href="'.$this->Output->createUrl('ShowUser', array('user' => $user['id'])).'">'.$user['name'].'</a>'));
 			}
 		catch (DBNoDataException $e)
 			{
