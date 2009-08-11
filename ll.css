@@ -143,6 +143,7 @@
 	margin:0px;
 	min-width:200px;
 	vertical-align:top;
+	text-align:left;
 }
 #ll #body .box td {
 	margin:0px;
@@ -363,6 +364,10 @@
 	padding-left:10px;
 	font-size:12px;
 	height:20px;
+	text-align:left;
+}
+#ll #body #posts tbody {
+	background-color:#eeeeee;
 }
 #ll #body #posts tbody:nth-child(odd) {
 	background-color:#eeeeee;
@@ -443,6 +448,7 @@
 #ll #body #posts tbody .posts-menu  ul li ul {
 	display: none;
 	position:absolute;
+	background-color:#eeeeee;
 }
 #ll #body #posts tbody:nth-child(odd) .posts-menu  ul li ul {
 	background-color:#eeeeee;
@@ -535,6 +541,7 @@
 	margin:0px;
 	margin-left:10px;
 	margin-right:10px;
+	background-color:#dbdbdb;
 }
 #ll #body #posts tbody:nth-child(odd) .posts-text blockquote {
 	background-color:#dbdbdb;
@@ -552,6 +559,9 @@
 
 
 /* MyFiles */
+#ll #body form table .files tbody tr {
+	background-color:#dbdbdb;
+}
 #ll #body form table .files tbody tr:nth-child(odd) {
 	background-color:#dbdbdb;
 }
