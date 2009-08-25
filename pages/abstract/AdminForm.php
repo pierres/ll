@@ -22,7 +22,13 @@ abstract class AdminForm extends Form{
 
 public function __construct()
 	{
-	AdminPage::__construct();
+	parent::__construct();
+
+	if (!$this->User->isAdmin())
+		{
+		//$this->showWarning('Zutritt verboten!');
+		$this->Output->redirect('Forums');
+		}
 	}
 
 protected function makeMenu()
