@@ -23,7 +23,20 @@ abstract class AdminForm extends Form {
 
 public function __construct()
 	{
-	AdminPage::__construct();
+	parent::__construct();
+
+	if (!$this->User->isAdmin())
+		{
+		$this->showFailure('Zutritt verboten!');
+		}
+
+	if ($this->User->isLevel(User::ROOT))
+		{
+		$this->addUserMenuEntry('<a href="'.$this->Output->createUrl('AdminGlobalSettings').'">Globale Einstellungen</a>');
+		}
+	$this->addUserMenuEntry('<a href="'.$this->Output->createUrl('AdminSettings').'">Einstellungen</a>');
+	$this->addUserMenuEntry('<a href="'.$this->Output->createUrl('AdminCats').'">Kategorien &amp; Foren</a>');
+	$this->addUserMenuEntry('<a href="'.$this->Output->createUrl('AdminDesign').'">Layout &amp; Design</a>');
 	}
 
 }
