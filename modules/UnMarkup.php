@@ -58,14 +58,14 @@ public function fromHtml($text)
 	$text = str_replace('<q>', '"', $text);
 	$text = str_replace('</q>', '"', $text);
 
-	$text = preg_replace_callback('#<a href="(?:'.$noHtml.'+?)GetImage(?:'.$noHtml.'+?)url=('.$noHtml.'+?)" rel="nofollow" rev="auto"><img src="(?:'.$noHtml.'+?)" alt="" class="image" /></a>#', array($this, 'unmakeAutoImage'), $text);
+	$text = preg_replace_callback('#<a href="(?:'.$noHtml.'+?)GetImage(?:'.$noHtml.'+?)url=('.$noHtml.'+?)" rel="nofollow" class="link-auto"><img src="(?:'.$noHtml.'+?)" alt="" class="image" /></a>#', array($this, 'unmakeAutoImage'), $text);
 	$text = preg_replace_callback('#<a href="(?:'.$noHtml.'+?)GetImage(?:'.$noHtml.'+?)url=('.$noHtml.'+?)" rel="nofollow"><img src="(?:'.$noHtml.'+?)" alt="" class="image" /></a>#', array($this, 'unmakeImage'), $text);
 
-	$text = preg_replace_callback('#<video src="('.$noHtml.'+?)" controls="true"><a href="(?:'.$noHtml.'+?)" rel="nofollow" rev="auto">(?:'.$noHtml.'+?)</a></video>#', array($this, 'unmakeAutoVideo'), $text);
-	$text = preg_replace_callback('#<video src="('.$noHtml.'+?)" controls="true"><a href="(?:'.$noHtml.'+?)" rel="nofollow">(?:'.$noHtml.'+?)</a></video>#', array($this, 'unmakeVideo'), $text);
-	$text = preg_replace_callback('#<audio src="('.$noHtml.'+?)" controls="true"><a href="(?:'.$noHtml.'+?)" rel="nofollow">(?:'.$noHtml.'+?)</a></audio>#', array($this, 'unmakeAudio'), $text);
+	$text = preg_replace_callback('#<video src="('.$noHtml.'+?)" controls="controls"><a href="(?:'.$noHtml.'+?)" rel="nofollow" class="link-auto">(?:'.$noHtml.'+?)</a></video>#', array($this, 'unmakeAutoVideo'), $text);
+	$text = preg_replace_callback('#<video src="('.$noHtml.'+?)" controls="controls"><a href="(?:'.$noHtml.'+?)" rel="nofollow">(?:'.$noHtml.'+?)</a></video>#', array($this, 'unmakeVideo'), $text);
+	$text = preg_replace_callback('#<audio src="('.$noHtml.'+?)" controls="controls"><a href="(?:'.$noHtml.'+?)" rel="nofollow">(?:'.$noHtml.'+?)</a></audio>#', array($this, 'unmakeAudio'), $text);
 
-	$text = preg_replace_callback('#<a href="('.$noHtml.'+?)" rel="nofollow" rev="auto">'.$noHtml.'+?</a>#', array($this, 'unmakeAutoLink'), $text);
+	$text = preg_replace_callback('#<a href="('.$noHtml.'+?)" rel="nofollow" class="link-auto">'.$noHtml.'+?</a>#', array($this, 'unmakeAutoLink'), $text);
 	$text = preg_replace_callback('#<a href="('.$noHtml.'+?)" rel="nofollow">('.$noHtml.'+?)</a>#', array($this, 'unmakeNamedLink'), $text);
 
 	$text = preg_replace_callback('#<img src="images/smilies/[\w-]+\.png" alt="([\w-]+)" class="smiley" />#',array($this, 'unmakeSmiley'), $text);

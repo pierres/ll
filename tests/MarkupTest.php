@@ -130,7 +130,7 @@ public function testLinks()
 	foreach ($urls as $url)
 		{
 		$this->assertEquals('<p><a href="'.htmlentities($url).'" rel="nofollow">...</a></p>', $this->ll->Markup->toHtml('<a href="'.$url.'">...</a>'));
-		$this->assertEquals('<p><a href="'.htmlentities($url).'" rel="nofollow" rev="auto">'.htmlentities($url).'</a></p>', $this->ll->Markup->toHtml($url));
+		$this->assertEquals('<p><a href="'.htmlentities($url).'" rel="nofollow" class="link-auto">'.htmlentities($url).'</a></p>', $this->ll->Markup->toHtml($url));
 		}
 
 	foreach ($urls as $url)
@@ -140,26 +140,26 @@ public function testLinks()
 
 	foreach ($urls as $url)
 		{
-		$this->assertEquals('<p><audio src="'.htmlentities($url).'" controls="true"><a href="'.htmlentities($url).'" rel="nofollow">'.htmlentities($url).'</a></audio></p>', $this->ll->Markup->toHtml('<audio src="'.$url.'" />'));
+		$this->assertEquals('<p><audio src="'.htmlentities($url).'" controls="controls"><a href="'.htmlentities($url).'" rel="nofollow">'.htmlentities($url).'</a></audio></p>', $this->ll->Markup->toHtml('<audio src="'.$url.'" />'));
 		}
 
 	foreach ($urls as $url)
 		{
-		$this->assertEquals('<p><video src="'.htmlentities($url).'" controls="true"><a href="'.htmlentities($url).'" rel="nofollow">'.htmlentities($url).'</a></video></p>', $this->ll->Markup->toHtml('<video src="'.$url.'" />'));
+		$this->assertEquals('<p><video src="'.htmlentities($url).'" controls="controls"><a href="'.htmlentities($url).'" rel="nofollow">'.htmlentities($url).'</a></video></p>', $this->ll->Markup->toHtml('<video src="'.$url.'" />'));
 		}
 
 	foreach ($mediaUrls as $url)
 		{
-		$this->assertEquals('<p><a href="?page=GetImage&amp;url='.urlencode($url.'test.png').'" rel="nofollow" rev="auto"><img src="?page=GetImage&amp;thumb=1&amp;url='.urlencode($url.'test.png').'" alt="" class="image" /></a></p>', $this->ll->Markup->toHtml($url.'test.png'));
+		$this->assertEquals('<p><a href="?page=GetImage&amp;url='.urlencode($url.'test.png').'" rel="nofollow" class="link-auto"><img src="?page=GetImage&amp;thumb=1&amp;url='.urlencode($url.'test.png').'" alt="" class="image" /></a></p>', $this->ll->Markup->toHtml($url.'test.png'));
 		}
 
 	foreach ($mediaUrls as $url)
 		{
-		$this->assertEquals('<p><video src="'.htmlentities($url.'test.ogg').'" controls="true"><a href="'.htmlentities($url.'test.ogg').'" rel="nofollow" rev="auto">'.htmlentities($url.'test.ogg').'</a></video></p>', $this->ll->Markup->toHtml($url.'test.ogg'));
+		$this->assertEquals('<p><video src="'.htmlentities($url.'test.ogg').'" controls="controls"><a href="'.htmlentities($url.'test.ogg').'" rel="nofollow" class="link-auto">'.htmlentities($url.'test.ogg').'</a></video></p>', $this->ll->Markup->toHtml($url.'test.ogg'));
 		}
 
 	$in = '<a href="http://www.archlinux.de/">...</a> http://www.archlinux.de/test.png';
-	$out = '<p><a href="http://www.archlinux.de/" rel="nofollow">...</a> <a href="?page=GetImage&amp;url=http%3A%2F%2Fwww.archlinux.de%2Ftest.png" rel="nofollow" rev="auto"><img src="?page=GetImage&amp;thumb=1&amp;url=http%3A%2F%2Fwww.archlinux.de%2Ftest.png" alt="" class="image" /></a></p>';
+	$out = '<p><a href="http://www.archlinux.de/" rel="nofollow">...</a> <a href="?page=GetImage&amp;url=http%3A%2F%2Fwww.archlinux.de%2Ftest.png" rel="nofollow" class="link-auto"><img src="?page=GetImage&amp;thumb=1&amp;url=http%3A%2F%2Fwww.archlinux.de%2Ftest.png" alt="" class="image" /></a></p>';
 	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
 	}
 
@@ -245,7 +245,7 @@ public function testParagraph()
 public function testQuoteAndLink()
 	{
 	$in = '<quote>http://www.laber-land.de/</quote>';
-	$out = '<blockquote><p><a href="http://www.laber-land.de/" rel="nofollow" rev="auto">http://www.laber-land.de/</a></p></blockquote>';
+	$out = '<blockquote><p><a href="http://www.laber-land.de/" rel="nofollow" class="link-auto">http://www.laber-land.de/</a></p></blockquote>';
 	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
 
 	try
