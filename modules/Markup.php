@@ -152,12 +152,16 @@ public function toHtml($text)
 			);
 		}
 
+	# FIXME/workaround
+	# remove empty paragraphs
+	$text = str_replace('<p></p>', '', $text);
+
 	return $text;
 	}
 
 private function makePre($matches)
 	{
-	return $this->createStackLink('<pre>'.htmlspecialchars($matches[1], ENT_COMPAT, 'UTF-8').'</pre>');
+	return $this->createStackLink('</p><pre><code>'.htmlspecialchars($matches[1], ENT_COMPAT, 'UTF-8').'</code></pre><p>');
 	}
 
 private function makeCode($matches)
@@ -328,7 +332,7 @@ private function makeList($matches)
 	# close all open tags
 	$out .= str_repeat('</li></ul>', $cur);
 
-	return $this->createStackLink($out);
+	return $this->createStackLink('</p>'.$out.'<p>');
 	}
 
 private function makeEm($matches)

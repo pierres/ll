@@ -42,6 +42,9 @@ public function fromHtml($text)
 	# & is transformed to &amp; and cannot be used here
 	$noHtml = '[^"<>]';
 
+	$text = preg_replace('#(?:</p>)?<pre><code>#', '<pre>', $text);
+	$text = preg_replace('#</code></pre>(?:<p>)?#', '</pre>', $text);
+
 	$text = preg_replace('#(?:</p>)?<cite>('.$noHtml.'+?)</cite><blockquote>(?:<p>)?#', '<quote $1>', $text);
 	$text = preg_replace('#(?:</p>)?<blockquote>(?:<p>)?#', '<quote>', $text);
 	$text = preg_replace('#(?:</p>)?</blockquote>#', '</quote>', $text);
@@ -70,7 +73,7 @@ public function fromHtml($text)
 
 	$text = preg_replace_callback('#<img src="images/smilies/[\w-]+\.png" alt="([\w-]+)" class="smiley" />#',array($this, 'unmakeSmiley'), $text);
 
-	$text = preg_replace_callback('#<ul>.+</ul>#m', array($this, 'unmakeList'), $text);
+	$text = preg_replace_callback("#(?:\n\n)?<ul>.+</ul>#m", array($this, 'unmakeList'), $text);
 
 	while ($this->Stack->hasNext())
 		{
@@ -92,7 +95,7 @@ public function fromHtmlToText($text)
 	$replace = array(
 		'#</li>#',
 		'#</p>#',
-		'#<pre>.+?</pre>#s',
+		'#<pre><code>.+?</code></pre>#s',
 		'#<code>.+?</code>#',
 		'#<audio.+?</audio>#',
 		'#<video.+?</video>#',
