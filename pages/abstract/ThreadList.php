@@ -125,11 +125,9 @@ private function listThreads()
 					<span class="status-'.$status.'"></span>
 				</th>
 				<td class="thread-main">
+					<a class="thread-title" href="'.$this->Output->createUrl($this->target, array('thread' => $data['id'])).'">'.$data['name'].'</a>
 					<div class="thread-summary">
 						'.$data['summary'].'
-					</div>
-					<div>
-					<a href="'.$this->Output->createUrl($this->target, array('thread' => $data['id'])).'">'.$data['name'].'</a>
 					</div>
 					<div>von '.$data['firstusername'].'</div>
 				</td>

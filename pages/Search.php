@@ -33,7 +33,6 @@ protected function setForm()
 	$searchInput = new TextInputElement('search', $this->Input->Get->getHtml('search', ''), $this->L10n->getText('Search'));
 	$searchInput->setMinLength(3);
 	$searchInput->setMaxLength(100);
-	$searchInput->setSize(100);
 	$searchInput->setFocus();
 	$this->add($searchInput);
 	}

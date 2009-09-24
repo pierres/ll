@@ -5,6 +5,9 @@
 	text-align:left;
 	color:#002468;
 	background-color:#ffffff;
+	max-width:1000px;
+	margin-left:auto;
+	margin-right:auto;
 }
 #ll a {
 	text-decoration:none;
@@ -17,10 +20,10 @@
 #ll #title {
 	color:#FFFFFF;
 	background-color:#6c83af;
+	position:relative;
 	padding:0px;
-	margin:0px;
-	margin-left:5%;
-	margin-right:5%;
+	margin-top:0px;
+	margin-bottom:0px;
 }
 #ll #title h1 {
 	font-size:18px;
@@ -37,16 +40,15 @@
 #ll #title img {
 	position:absolute;
 	z-index:1;
-	right:5%;
-	top:2px;
+	right:0px;
+	top:-2px;
 	padding:0px;
 	margin:10px;
 }
 #ll #main-menu {
 	background-color:#dddddd;
-	margin:0px;
-	margin-left:5%;
-	margin-right:5%;
+	margin-top:0px;
+	margin-bottom:0px;
 	padding:5px;
 	padding-left:0px;
 }
@@ -63,9 +65,8 @@
 #ll #sub-menu {
 	font-size:12px;
 	background-color:#eeeeee;
-	margin:0px;
-	margin-left:5%;
-	margin-right:5%;
+	margin-top:0px;
+	margin-bottom:0px;
 	padding:5px;
 	padding-left:10px;
 	height:17px;
@@ -74,9 +75,8 @@
 #ll #foot-menu {
 	font-size:12px;
 	background-color:#eeeeee;
-	margin:30px;
-	margin-left:5%;
-	margin-right:5%;
+	margin-top:30px;
+	margin-bottom:30px;
 	padding:5px;
 	padding-left:10px;
 	height:17px;
@@ -115,8 +115,6 @@
 }
 #ll #body {
 	margin-top:30px;
-	margin-left:5%;
-	margin-right:5%;
 }
 
 
@@ -333,7 +331,7 @@
 	padding:5px;
 	z-index:1;
 }
-#ll #body #threads tbody tr:hover .thread-main .thread-summary {
+#ll #body #threads tbody tr .thread-main .thread-title:hover + .thread-summary {
 	visibility:visible;
 }
 #ll #body #threads tbody .thread-posts {
@@ -479,7 +477,7 @@
 	margin:11px;
 	border:solid 1px #002468;
 }
-#ll #body #posts tbody .posts-text code {
+#ll #body #posts tbody .posts-text p code {
 	font-family:monospace;
 	color:#000000;
 	background-color:#ffffff;

@@ -178,7 +178,7 @@ private function getPrivateThreads()
 
 	if ($this->Log->isNew($data['lastthread'], $data['lastdate']))
 		{
-		$status = ' new';
+		$status = 'new';
 		}
 	else
 		{

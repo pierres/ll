@@ -71,20 +71,6 @@ protected function checkInput()
 	$this->setParam('post', $data['post']);
 	}
 
-protected function checkForm()
-	{
-	if (!$this->User->isOnline())
-		{
-		$text = preg_replace('/\s*<quote .+?>.+<\/quote>\s*/s', '', $this->Input->Post->getString('text'));
-		if (empty($text))
-			{
-			$this->showWarning($this->L10n->getText('Post is emnpty'));
-			}
-		}
-
-	parent::checkForm();
-	}
-
 }
 
 ?>

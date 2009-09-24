@@ -4,7 +4,7 @@ LL 4 TODO
 == Required for Release ==
 
 * Move ll.{html,css} into DB and RegisterBoard
-* summary makes thread list unusable at small screen sizes
+* change license to http://www.fsf.org/licensing/licenses/agpl-3.0.html
 
 == Optional ==
 
@@ -15,7 +15,6 @@ LL 4 TODO
 	* means generic "Are you sure to..." dialog
 * separate Threads and PrivateThreads in DB
 * extract common Methods to list Postings in order to simplify Postings and PrivatePostings
-* remove image size from db or reimplement usage
 * FileElement should set the right form encoding itself
 * Last page link on Recent is wrong
 * solve issue when date/time is undefined (1970 problem)
