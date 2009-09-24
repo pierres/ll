@@ -4,11 +4,7 @@ LL 4 TODO
 == Required for Release ==
 
 * Move ll.{html,css} into DB and RegisterBoard
-* its not possible to use more than one pre block?
 * summary makes thread list unusable at small screen sizes
-* http://validator.w3.org/check?uri=https%3A%2F%2Fexperimental.archlinux.de%2F%3Fid%3D20%26page%3DPostings%26thread%3D13466&charset=%28detect+automatically%29&doctype=Inline&group=0
-* no block elemts within p!
-* <pre><code>? http://de.selfhtml.org/html/text/praeformatiert.htm#definieren
 
 == Optional ==
 

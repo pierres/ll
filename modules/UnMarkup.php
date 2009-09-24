@@ -42,8 +42,8 @@ public function fromHtml($text)
 	# & is transformed to &amp; and cannot be used here
 	$noHtml = '[^"<>]';
 
-	$text = preg_replace('#(?:</p>)?<pre><code>#', '<pre>', $text);
-	$text = preg_replace('#</code></pre>(?:<p>)?#', '</pre>', $text);
+	$text = preg_replace('#(?:</p>)?<pre><code>#', '<code>', $text);
+	$text = preg_replace('#</code></pre>(?:<p>)?#', '</code>', $text);
 
 	$text = preg_replace('#(?:</p>)?<cite>('.$noHtml.'+?)</cite><blockquote>(?:<p>)?#', '<quote $1>', $text);
 	$text = preg_replace('#(?:</p>)?<blockquote>(?:<p>)?#', '<quote>', $text);

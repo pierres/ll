@@ -58,37 +58,34 @@ public function testLoopCounter()
 		}
 	}
 
-public function testPre()
+public function testCode()
 	{
-	$in = "<pre>.\n\t\n\n\n\n..</pre>";
+	$in = "<code>.\n\t\n\n\n\n..</code>";
 	$out = "<pre><code>.\n\t\n\n\n\n..</code></pre>";
 	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
 
-	$in = "<pre>\ntest<pre>...</pre>\n</pre>";
-	$out = "<pre><code>\ntest&lt;pre&gt;...</code></pre><p>\n&lt;/pre&gt;</p>";
+	$in = "<code>\ntest<code>...</code>\n</code>";
+	$out = "<pre><code>\ntest&lt;code&gt;...</code></pre><p>\n&lt;/code&gt;</p>";
 	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
 
-	$in = "<pre>\ntest</pre>...<pre>\t\n\n\n\n</pre>";
+	$in = "<code>\ntest</code>...<code>\t\n\n\n\n</code>";
 	$out = "<pre><code>\ntest</code></pre><p>...</p><pre><code>\t\n\n\n\n</code></pre>";
 	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
 
-	$in = "<pre>\ntest";
-	$out = "<p>&lt;pre&gt;\ntest</p>";
+	$in = "<code>\ntest<code>...<code>\t\n\n\n\n</code></code>";
+	$out = "<pre><code>\ntest&lt;code&gt;...&lt;code&gt;\t\n\n\n\n</code></pre><p>&lt;/code&gt;</p>";
 	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
 
-	$in = "</pre>\ntest";
-	$out = "<p>&lt;/pre&gt;\ntest</p>";
+	$in = "<code>\ntest";
+	$out = "<p>&lt;code&gt;\ntest</p>";
 	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
-	}
 
-public function testCode()
-	{
+	$in = "</code>\ntest";
+	$out = "<p>&lt;/code&gt;\ntest</p>";
+	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
+
 	$in = "<code>.\t\t..</code>";
 	$out = "<p><code>.\t\t..</code></p>";
-	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
-
-	$in = "<code>.\n\t..</code>";
-	$out = "<p>&lt;code&gt;.\n\t..&lt;/code&gt;</p>";
 	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
 
 	$in = "<code>\ttest<code>...</code>\t</code>";
@@ -340,7 +337,7 @@ public function testQuoteAndList()
 
 	$this->assertEquals($out,  $this->ll->Markup->toHtml($in));
 
-	$in = "* 2\n* 3\n* 4\n<pre>\nreg\n</pre>\n* 2\n* 3";
+	$in = "* 2\n* 3\n* 4\n<code>\nreg\n</code>\n* 2\n* 3";
 	$out = "<ul><li>2</li><li>3</li><li>4</li></ul><pre><code>\nreg\n</code></pre><p>\n</p><ul><li>2</li><li>3</li></ul>";
 
 	$this->assertEquals($out,  $this->ll->Markup->toHtml($in));

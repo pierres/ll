@@ -84,8 +84,7 @@ private function complieFirstPass($text)
 	$video	 	= '[a-z0-9_\-]+\.(?:ogg|ogm|ogv)';
 
 	# restricted HTML support
-	$text = preg_replace_callback('#<pre>(.+?)</pre>#s', array($this, 'makePre'), $text);
-	$text = preg_replace_callback('#<code>(.+?)</code>#', array($this, 'makeCode'), $text);
+	$text = preg_replace_callback('#<code>(.+?)</code>#s', array($this, 'makeCode'), $text);
 
 	$text = preg_replace_callback('#<a href="('.$protocoll.'.+?)">(.+?)</a>#', array($this, 'makeNamedLink'), $text);
 	$text = preg_replace_callback('#<img src="('.$protocoll.'.+?)" />#', array($this, 'makeImage'), $text);	
@@ -159,14 +158,16 @@ public function toHtml($text)
 	return $text;
 	}
 
-private function makePre($matches)
-	{
-	return $this->createStackLink('</p><pre><code>'.htmlspecialchars($matches[1], ENT_COMPAT, 'UTF-8').'</code></pre><p>');
-	}
-
 private function makeCode($matches)
 	{
-	return $this->createStackLink('<code>'.htmlspecialchars($matches[1], ENT_COMPAT, 'UTF-8').'</code>');
+	if (strpos($matches[1], "\n") === false)
+		{
+		return $this->createStackLink('<code>'.htmlspecialchars($matches[1], ENT_COMPAT, 'UTF-8').'</code>');
+		}
+	else
+		{
+		return $this->createStackLink('</p><pre><code>'.htmlspecialchars($matches[1], ENT_COMPAT, 'UTF-8').'</code></pre><p>');
+		}
 	}
 
 private function makeQuoteAndParagraph($text)

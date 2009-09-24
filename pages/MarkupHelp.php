@@ -57,9 +57,9 @@ public function prepare()
 					</td>
 				</tr>
 				<tr>
-					<th>'.$this->L10n->getText('Preformatted Text').'</th>
+					<th>'.$this->L10n->getText('Code').'</th>
 					<td>
-						<pre>'.htmlentities('<pre>...</pre>').'</pre>
+						<pre>'.htmlentities('<code>...</code>').'</pre>
 					</td>
 				</tr>
 				<tr>
@@ -87,12 +87,6 @@ public function prepare()
 					<th>'.$this->L10n->getText('Smilies').'</th>
 					<td>
 						<pre>'.implode('<br />', array_keys(Markup::$smilies)).'</pre>
-					</td>
-				</tr>
-				<tr>
-					<th>'.$this->L10n->getText('Code Text').'</th>
-					<td>
-						<pre>'.htmlentities('<code>...</code>').'</pre>
 					</td>
 				</tr>
 				<tr>

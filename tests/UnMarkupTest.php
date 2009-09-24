@@ -28,31 +28,28 @@ public function testEmpty()
 	$this->assertEquals('', $this->ll->UnMarkup->fromHtml(''));
 	}
 
-public function testPre()
+public function testCode()
 	{
-	$out = "<pre>.\n\t\n\n\n\n..</pre>";
+	$out = "<code>.\n\t\n\n\n\n..</code>";
 	$in = "<pre><code>.\n\t\n\n\n\n..</code></pre>";
 	$this->assertEquals($out, $this->ll->UnMarkup->fromHtml($in));
 
-	$out = "<pre>\ntest<pre>...</pre>\n</pre>";
-	$in = "<pre><code>\ntest&lt;pre&gt;...</code></pre><p>\n&lt;/pre&gt;</p>";
+	$out = "<code>\ntest<code>...</code>\n</code>";
+	$in = "<pre><code>\ntest&lt;code&gt;...</code></pre><p>\n&lt;/code&gt;</p>";
 	$this->assertEquals($out, $this->ll->UnMarkup->fromHtml($in));
 
-	$out = "<pre>\ntest</pre>...<pre>\t\n\n\n\n</pre>";
+	$out = "<code>\ntest</code>...<code>\t\n\n\n\n</code>";
 	$in = "<pre><code>\ntest</code></pre><p>...</p><pre><code>\t\n\n\n\n</code></pre>";
 	$this->assertEquals($out, $this->ll->UnMarkup->fromHtml($in));
 
-	$out = "<pre>\ntest";
-	$in = "<p>&lt;pre&gt;\ntest</p>";
+	$out = "<code>\ntest";
+	$in = "<p>&lt;code&gt;\ntest</p>";
 	$this->assertEquals($out, $this->ll->UnMarkup->fromHtml($in));
 
-	$out = "</pre>\ntest";
-	$in = "<p>&lt;/pre&gt;\ntest</p>";
+	$out = "</code>\ntest";
+	$in = "<p>&lt;/code&gt;\ntest</p>";
 	$this->assertEquals($out, $this->ll->UnMarkup->fromHtml($in));
-	}
 
-public function testCode()
-	{
 	$out = "<code>.\t\t..</code>";
 	$in = "<p><code>.\t\t..</code></p>";
 	$this->assertEquals($out, $this->ll->UnMarkup->fromHtml($in));
@@ -258,7 +255,7 @@ public function testQuoteAndList()
 
 	$this->assertEquals($out,  $this->ll->UnMarkup->fromHtml($in));
 
-	$out = "* 2\n* 3\n* 4\n<pre>\nreg\n</pre>\n* 2\n* 3";
+	$out = "* 2\n* 3\n* 4\n<code>\nreg\n</code>\n* 2\n* 3";
 	$in = "<ul><li>2</li><li>3</li><li>4</li></ul><pre><code>\nreg\n</code></pre><p>\n</p><ul><li>2</li><li>3</li></ul>";
 
 	$this->assertEquals($out,  $this->ll->UnMarkup->fromHtml($in));
