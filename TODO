@@ -1,13 +1,6 @@
 
 LL 4 TODO
 
-== Required for Release ==
-
-* Move ll.{html,css} into DB and RegisterBoard
-* change license to http://www.fsf.org/licensing/licenses/agpl-3.0.html
-
-== Optional ==
-
 * use L10n-Methods for all Strings
 	* translate to German
 * readd tagging feature
@@ -18,7 +11,6 @@ LL 4 TODO
 * FileElement should set the right form encoding itself
 * Last page link on Recent is wrong
 * solve issue when date/time is undefined (1970 problem)
-* make fileinfo non optional (included in PHP 5.3 anyway)
 * create some kind of test scripts that checks server and php configuration
 * create Form that can be embedded into a Page
 * Linkification kills links in edit mode
@@ -28,7 +20,6 @@ LL 4 TODO
 * Add/remove files is confusing
 * APC user var collision when running several instances on one server
 * review use of showFailure and showWarning
-* drop supprt for php < 5.3 (at least when its in extra)
 * isEmptyString fails on arrays
 * define common translations
 * check all texts (including title, names, summary etc.) for non-unicode characters
