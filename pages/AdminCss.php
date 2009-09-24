@@ -48,6 +48,7 @@ protected function setForm()
 
 protected function sendForm()
 	{
+	$css = str_replace("\r", '', $this->Input->Post->getString('css'));
 	$stm = $this->DB->prepare
 		('
 		UPDATE
@@ -57,7 +58,7 @@ protected function sendForm()
 		WHERE
 			id = ?'
 		);
-	$stm->bindString($this->Input->Post->getString('css'));
+	$stm->bindString($css);
 	$stm->bindInteger($this->Board->getId());
 	$stm->execute();
 	$stm->close();

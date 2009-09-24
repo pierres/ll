@@ -185,8 +185,7 @@ private function getHead()
 	return '
 		<meta name="robots" content="'.$this->getValue('meta.robots').'" />
 		<title>'.$this->Board->getName().' - '.$this->getTitle().'</title>
-		<!-- <link rel="stylesheet" media="screen" href="'.$this->Output->createUrl('GetCss').'" /> -->
-		<link rel="stylesheet" media="screen" href="ll.css" />
+		<link rel="stylesheet" media="screen" href="'.$this->Output->createUrl('GetCss').'" />
 		<link rel="alternate" type="application/atom+xml" title="'.$this->L10n->getText('Recent topics').'" href="'.$this->Output->createUrl('GetRecent').'" />
 		<link rel="search" type="application/opensearchdescription+xml" href="'.$this->Output->createUrl('GetOpenSearch').'" title="'.$this->Board->getName().'" />
 		';
@@ -248,8 +247,8 @@ protected function addUserMenuEntry($entry)
 
 private function sendOutput()
 	{
-// 	$file = $this->Board->getHtml();
-	$file = file_get_contents('ll.html');
+	$file = $this->Board->getHtml();
+// 	$file = file_get_contents('ll.html');
 
 	$this->variables['name'] = $this->Board->getName();
 	$this->variables['main-menu'] = $this->getMainMenu();

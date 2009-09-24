@@ -46,6 +46,8 @@ protected function checkForm()
 
 protected function sendForm()
 	{
+	$html = str_replace("\r", '', $this->Input->Post->getString('html'));
+
 	$stm = $this->DB->prepare
 		('
 		UPDATE
@@ -55,7 +57,7 @@ protected function sendForm()
 		WHERE
 			id = ?'
 		);
-	$stm->bindString($this->Input->Post->getString('html'));
+	$stm->bindString($html);
 	$stm->bindInteger($this->Board->getId());
 	$stm->execute();
 	$stm->close();
