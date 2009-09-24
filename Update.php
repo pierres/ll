@@ -636,6 +636,9 @@ public function fromHtml($text)
 	$text = str_replace('<span><ins>', '++', $text);
 	$text = str_replace('</ins>', '++', $text);
 
+	$text = str_replace('<pre>', '<code>', $text);
+	$text = str_replace('</pre>', '</code>', $text);
+
 	$text = preg_replace('#<a href="mailto:(.+?)">.+?</a>#', '$1', $text);
 
 
