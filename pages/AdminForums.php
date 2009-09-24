@@ -289,7 +289,7 @@ protected function sendForm()
 				boardid = ?'
 			);
 		$stm->bindString($this->Input->Post->getHtml('newname'));
-		$stm->bindString($this->Input->Post->getHtml('newdescription'));
+		$stm->bindString($this->Input->Post->getHtml('newdescription', ''));
 		$stm->bindInteger($this->Board->getId());
 		$stm->execute();
 		$stm->close();
@@ -303,7 +303,7 @@ protected function sendForm()
 				position = ?,
 				catid = ?'
 			);
-		$stm->bindInteger($this->Input->Post->getInt('newposition'));
+		$stm->bindInteger($this->Input->Post->getInt('newposition', 1));
 		$stm->bindInteger($this->cat);
 		$stm->execute();
 		$stm->close();

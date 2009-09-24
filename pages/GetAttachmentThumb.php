@@ -47,8 +47,7 @@ public function show()
 					attachments.type,
 					attachments.content
 				FROM
-					attachments,
-					attachment_thumbnails
+					attachments
 				WHERE
 					attachments.id = ?
 					AND attachments.id NOT IN (SELECT id FROM attachment_thumbnails)

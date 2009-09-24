@@ -42,11 +42,13 @@ protected function setForm()
 	$realnameInput = new TextInputElement('realname', $this->realname, 'Realer Name');
 	$realnameInput->setMinLength(3);
 	$realnameInput->setMaxLength(100);
+	$realnameInput->setRequired(false);
 	$this->add($realnameInput);
 
 	$jabberInput = new TextInputElement('jabber', $this->jabber, 'Jabber-Adresse');
 	$jabberInput->setMinLength(6);
 	$jabberInput->setMaxLength(50);
+	$jabberInput->setRequired(false);
 	$this->add($jabberInput);
 
 	$avatarInput = new FileInputElement('newavatar', '', 'neuer Avatar');

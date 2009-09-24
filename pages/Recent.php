@@ -64,7 +64,10 @@ public function prepare()
 		$this->resultSet = array();
 		}
 
-	$this->addUserMenuEntry('<a href="'.$this->Output->createUrl('MarkAllAsRead').'">'.$this->L10n->getText('Mark all topics as read').'</a>');
+	if ($this->User->isOnline())
+		{
+		$this->addUserMenuEntry('<a href="'.$this->Output->createUrl('MarkAllAsRead').'">'.$this->L10n->getText('Mark all topics as read').'</a>');
+		}
 	$this->setList();
 	$stm->close();
 	}
