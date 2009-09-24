@@ -39,12 +39,12 @@ public function __construct($name)
 
 		if (!$this->isAllowedType($this->file['type']))
 			{
-			throw new FileException(sprintf($this->L10n->getText('Uploading files of type %s is not allowed', htmlspecialchars($this->file['type']))));
+			throw new FileException(sprintf($this->L10n->getText('Uploading files of type %s is not allowed'), htmlspecialchars($this->file['type'])));
 			}
 
 		if ($this->getFileSize() >= $this->Settings->getValue('file_size'))
 			{
-			throw new FileException(sprintf($this->L10n->getText('File is larger than %d Bytes', $this->Settings->getValue('file_size'))));
+			throw new FileException(sprintf($this->L10n->getText('File is larger than %d Bytes'), $this->Settings->getValue('file_size')));
 			}
 		}
 	elseif (isset($_FILES[$name]) && !empty($_FILES[$name]['error']))// && !empty($_FILES[$name]['name']))
@@ -106,20 +106,13 @@ public function getFileContent()
 
 private function getTypeFromFile($file)
 	{
-	if (function_exists('finfo_open'))
-		{
-		$finfo = finfo_open(FILEINFO_MIME);
-		$type = finfo_file($finfo, $file);
-		finfo_close($finfo);
-		/** @TODO: review with php 5.3 */
-		// new version produces strings like 'image/png; charset=binary'
-		// we only need the first part
-		$type = strtok($type, ';');
-		}
-	else
-		{
-		throw new FileException('No fileinfo module found');
-		}
+	$finfo = finfo_open(FILEINFO_MIME);
+	$type = finfo_file($finfo, $file);
+	finfo_close($finfo);
+	/** @TODO: review with php 5.3 */
+	// new version produces strings like 'image/png; charset=binary'
+	// we only need the first part
+	$type = strtok($type, ';');
 
 	return $type;
 	}
