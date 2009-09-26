@@ -107,7 +107,7 @@ private function loadImage()
 	$stm->execute();
 	$stm->close();
 
-	if ($this->thumb && $thumbsize > 0)
+	if ($this->thumb && strlen($thumbcontent) > 0)
 		{
 		return array('type' => $this->file->getFileType(), 'content' => $thumbcontent, 'name' => $this->file->getFileName());
 		}
