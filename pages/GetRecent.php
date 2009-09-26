@@ -203,7 +203,7 @@ public function show()
 				<entry>
 					<id>'.$this->Output->createUrl('Postings', array('thread' => $thread['id']), true).'</id>
 					<title>'.$thread['name'].'</title>
-					<link rel="alternate" type="text/html" href="'.$this->Output->createUrl('page=Postings', array('thread' => $thread['id'], 'post' => '-1'), true).'" />
+					<link rel="alternate" type="text/html" href="'.$this->Output->createUrl('Postings', array('thread' => $thread['id'], 'post' => '-1'), true).'" />
 					<updated>'.date('c', $thread['firstdate']).'</updated>
 					<summary>'.$thread['summary'].'</summary>
 					'.($showContent ? '<content type="html"><![CDATA['.$thread['text'].']]></content>' : '').'
