@@ -479,9 +479,9 @@ private function updateMarkup()
 			{
 			try
 				{
-				$text = str_replace('<pre>', ' ', $text);
-				$text = str_replace('</pre>', ' ', $text);
-				$text = $this->Markup->toHtml('<pre>'.$text.'</pre>');
+				$text = str_replace('<code>', ' ', $text);
+				$text = str_replace('</code>', ' ', $text);
+				$text = $this->Markup->toHtml('<code>'.$text.'</code>');
 				}
 			catch (RuntimeException $e)
 				{
