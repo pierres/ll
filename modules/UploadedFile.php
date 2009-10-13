@@ -51,7 +51,7 @@ public function __construct($name)
 		{
 		switch ($_FILES[$name]['error'])
 			{
-			case 1 : $message = sprintf($this->L10n->getText('File is larger than %d Bytes'), ini_get('upload_max_filesize')); break;
+			case 1 : $message = sprintf($this->L10n->getText('File is larger than %s Bytes'), ini_get('upload_max_filesize')); break;
 			case 2 : $message = $this->L10n->getText('The uploaded file exceeds the directive that was specified in the form'); break;
 			case 3 : $message = $this->L10n->getText('The uploaded file was only partially uploaded'); break;
 			case 4 : $message = $this->L10n->getText('No file was uploaded'); break;
