@@ -44,7 +44,7 @@ public function __construct($name)
 
 		if ($this->getFileSize() >= $this->Settings->getValue('file_size'))
 			{
-			throw new FileException(sprintf($this->L10n->getText('File is larger than %d Bytes'), $this->Settings->getValue('file_size')));
+			throw new FileException(sprintf($this->L10n->getText('File is larger than %s Bytes'), $this->Settings->getValue('file_size')));
 			}
 		}
 	elseif (isset($_FILES[$name]) && !empty($_FILES[$name]['error']))// && !empty($_FILES[$name]['name']))
