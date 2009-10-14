@@ -50,9 +50,9 @@ public function testInvalidInput()
 
 public function testPcreSegfault()
 	{
-	$_POST['text'] = str_repeat('#', 6000);
+	$_POST['text'] = str_repeat('#', 600000);
 	$text = $this->ll->Input->Post->getString('text');
-	$this->assertEquals(strlen($text), 6000);
+	$this->assertEquals(strlen($text), 600000);
 	}
 }
 
