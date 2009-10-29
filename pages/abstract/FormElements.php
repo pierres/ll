@@ -302,22 +302,21 @@ class AntiSpamElement extends TextInputElement {
 		{
 		parent::__construct('AntiSpamHash', '', 'CAPTCHA');
 
-		$this->Output->setCookie('AntiSpamTime',  $this->Input->getTime());
 		$wantedHash = substr(sha1($this->Input->getTime().$this->Settings->getValue('antispam_hash')), 0, 4);
-
 		$this->help = 'Please type in the following code: <strong>'.$wantedHash.'</strong>';
 		}
 
 	protected function formatOutput($input)
 		{
 		return
-		'<tr style="background-image:url('.$this->Output->createUrl('FunnyDot').');visibility:hidden;position:absolute;z-index:-1">
+		'<tr style="background-image:url('.$this->Output->createUrl('FunnyDot', array('AntiSpamTime' => $this->Input->getTime())).');visibility:hidden;position:absolute;z-index:-1">
 			<th>
 				<label for="'.$this->getId().'">'.$this->label.'</label>
 			</th>
 			<td>
 				<input id="'.$this->getId().'" type="text" name="'.$this->name.'" size="'.$this->size.'" value="'.$this->value.'" />
 				'.(!empty($this->help) ? '<div class="form-help">'.$this->help.'</div>' : '').'
+				<input type="hidden" name="AntiSpamTime" value="'.$this->Input->getTime().'" />
 			</td>
 		</tr>';
 		}
@@ -340,7 +339,7 @@ class AntiSpamElement extends TextInputElement {
 
 		try
 			{
-			$time = $this->Input->Cookie->getInt('AntiSpamTime');
+			$time = $this->Input->Post->getInt('AntiSpamTime');
 			}
 		catch (RequestException $e)
 			{

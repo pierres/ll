@@ -25,7 +25,7 @@ public function prepare()
 	{
 	try
 		{
-		$this->Output->setCookie('AntiSpamHash', substr(sha1($this->Input->Cookie->getInt('AntiSpamTime').$this->Settings->getValue('antispam_hash')), 0, 4));
+		$this->Output->setCookie('AntiSpamHash', substr(sha1($this->Input->Get->getInt('AntiSpamTime').$this->Settings->getValue('antispam_hash')), 0, 4));
 		}
 	catch (RequestException $e)
 		{
@@ -35,7 +35,7 @@ public function prepare()
 public function show()
 	{
 	header('HTTP/1.1 200 OK');
-	header("Cache-Control: no-cache");
+	header("Cache-Control: no-cache, must-revalidate, no-store");
 	header('Content-Type: image/png');
 	header('Content-Length: 135');
 
