@@ -30,7 +30,7 @@ public function prepare()
 protected function exitIfCached()
 	{
 	if ($this->Input->Server->isString('HTTP_IF_MODIFIED_SINCE')
-	&& strtotime($this->Input->Server->getString('HTTP_IF_MODIFIED_SINCE')) <= $this->Input->getTime() - $this->Settings->getValue('file_refresh'))
+	&& strtotime($this->Input->Server->getString('HTTP_IF_MODIFIED_SINCE')) > $this->Input->getTime() - $this->Settings->getValue('file_refresh'))
 		{
 		header('HTTP/1.1 304 Not Modified');
 		exit;
