@@ -20,6 +20,8 @@
 
 abstract class GetFile extends Modul implements IOutput {
 
+protected $compression = false;
+
 public function prepare()
 	{
 	$this->exitIfCached();
@@ -32,7 +34,7 @@ protected function exitIfCached()
 	if ($this->Input->Server->isString('HTTP_IF_MODIFIED_SINCE')
 	&& strtotime($this->Input->Server->getString('HTTP_IF_MODIFIED_SINCE')) > $this->Input->getTime() - $this->Settings->getValue('file_refresh'))
 		{
-		header('HTTP/1.1 304 Not Modified');
+		$this->Output->writeHeader('HTTP/1.1 304 Not Modified');
 		exit;
 		}
 	}
@@ -58,13 +60,12 @@ public function showWarning($text)
 
 protected function sendFile($type, $name, $content, $disposition = 'attachment')
 	{
-	header('HTTP/1.1 200 OK');
-	header('Content-Type: '.$type);
-	header('Content-Length: '.strlen($content));
-	header('Content-Disposition: '.$disposition.'; filename="'.urlencode($name).'"');
-	header('Last-Modified: '.date('r'));
-	echo $content;
-	exit;
+	$this->Output->setContentType($type);
+	$this->Output->setModified();
+	$this->Output->setCompression($this->compression);
+	$this->Output->writeHeader('Content-Disposition: '.$disposition.'; filename="'.urlencode($name).'"');
+	$this->Output->writeHeader('Cache-Control: private, max-age='.$this->Settings->getValue('file_refresh'));
+	$this->Output->writeOutput($content);
 	}
 
 protected function sendInlineFile($type, $name, $content)

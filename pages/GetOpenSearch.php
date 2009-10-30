@@ -17,7 +17,7 @@
 	You should have received a copy of the GNU Affero General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-class GetOpenSearch extends GetFile{
+class GetOpenSearch extends GetFile {
 
 public function prepare()
 	{
@@ -35,8 +35,8 @@ public function show()
 <Url type="text/html" method="get" template="'.$this->Output->createUrl('Search', array('submit' => '', 'search' => '{searchTerms}'), true).'"/>
 </OpenSearchDescription>';
 
-	$this->Output->setContentType('application/opensearchdescription+xml; charset=UTF-8');
-	$this->Output->writeOutput($xml);
+	$this->compression = true;
+	$this->sendInlineFile('application/opensearchdescription+xml; charset=UTF-8', $this->Board->getId().'.xml', $xml);
 	}
 
 }

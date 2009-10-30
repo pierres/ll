@@ -17,7 +17,7 @@
 	You should have received a copy of the GNU Affero General Public License
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
-class GetCss extends GetFile{
+class GetCss extends GetFile {
 
 public function prepare()
 	{
@@ -60,8 +60,8 @@ public function show()
 		$this->showWarning($e->getMessage());
 		}
 
-	$this->Output->setContentType('text/css; charset=UTF-8');
-	$this->Output->writeOutput($css);
+	$this->compression = true;
+	$this->sendInlineFile('text/css; charset=UTF-8', $this->Board->getId().'.css', $css);
 	}
 
 }

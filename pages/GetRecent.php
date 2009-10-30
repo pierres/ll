@@ -238,6 +238,7 @@ public function show()
 		$this->ObjectCache->addObject('LL:GetRecent:Atom:'.$id.':'.$forum.':'.$showContent, $content, 15*60);
 		}
 
+	$this->compression = true;
 	$this->sendInlineFile('application/atom+xml; charset=UTF-8', 'recent.xml', $content);
 	}
 

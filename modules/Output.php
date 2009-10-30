@@ -22,6 +22,8 @@ class Output extends Modul {
 
 private $contentType = 'text/html; charset=UTF-8';
 private $status = 'HTTP/1.1 200 OK';
+private $modified = false;
+private $compression = true;
 private $outputSeparator = '&';
 private $outputSeparatorHtml = '&amp;';
 
@@ -41,6 +43,16 @@ public function setStatus($code)
 	$this->status = $code;
 	}
 
+public function setModified($modified = true)
+	{
+	$this->modified = $modified;
+	}
+
+public function setCompression($compression = true)
+	{
+	$this->compression = $compression;
+	}
+
 public function setContentType($type)
 	{
 	$this->contentType = $type;
@@ -56,8 +68,7 @@ public function setOutputHandler($handler)
 	$this->outputHandler = $handler;
 	}
 
-/** FIXME: XSS->alle Zeilenumbrüche entfernen */
-private function writeHeader($string)
+public function writeHeader($string)
 	{
 	if (@header($string) != 0)
 		{
@@ -73,19 +84,26 @@ public function setCookie($key, $value, $expire = 0)
 public function writeOutput(&$text)
 	{
 	$this->writeHeader ($this->status);
+	if ($this->modified)
+		{
+		$this->writeHeader ('Last-Modified: '.date('r', $this->Input->getTime()));
+		}
 	$this->writeHeader ('Content-Type: '.$this->contentType);
 
-	try
+	if ($this->compression)
 		{
-		if (strpos($this->Input->Server->getString('HTTP_ACCEPT_ENCODING'), 'gzip') !== false)
+		try
 			{
-			$this->writeHeader('Content-Encoding: gzip');
-			$this->writeHeader('Vary: Accept-Encoding');
-			$text = gzencode($text, 3);
+			if (strpos($this->Input->Server->getString('HTTP_ACCEPT_ENCODING'), 'gzip') !== false)
+				{
+				$this->writeHeader('Content-Encoding: gzip');
+				$this->writeHeader('Vary: Accept-Encoding');
+				$text = gzencode($text, 3);
+				}
 			}
-		}
-	catch (RequestException $e)
-		{
+		catch (RequestException $e)
+			{
+			}
 		}
 
 	$this->writeHeader('Content-Length: '.strlen($text));
