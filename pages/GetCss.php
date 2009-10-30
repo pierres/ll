@@ -61,7 +61,7 @@ public function show()
 		}
 
 	$this->compression = true;
-	$this->sendInlineFile('text/css; charset=UTF-8', $this->Board->getId().'.css', $css);
+	$this->sendInlineFile('text/css; charset=UTF-8', $this->Input->Get->getInt('id').'.css', $css);
 	}
 
 }
