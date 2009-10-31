@@ -39,7 +39,6 @@ private static $availableModules = array
 	'Mail' => 'modules/Mail.php',
 	'Markup' => 'modules/Markup.php',
 	'Modul' => 'modules/Modul.php',
-	'ObjectCache' => 'modules/ObjectCache.php',
 	'Ouput' => 'modules/Output.php',
 	'Settings' => 'modules/Settings.php',
 	'Stack' => 'modules/Stack.php',

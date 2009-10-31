@@ -19,11 +19,6 @@
 */
 class GetOpenSearch extends GetFile {
 
-public function prepare()
-	{
-	$this->exitIfCached();
-	$this->initDB();
-	}
 
 public function show()
 	{

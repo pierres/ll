@@ -22,7 +22,6 @@ require ('modules/DB.php');
 require ('modules/User.php');
 require ('modules/Board.php');
 require ('modules/IOutput.php');
-require ('modules/ICache.php');
 
 abstract class Page extends Modul implements IOutput {
 

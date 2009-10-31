@@ -19,49 +19,33 @@
 */
 class GetCss extends GetFile {
 
-public function prepare()
-	{
-	$this->exitIfCached();
-	}
 
 public function show()
 	{
 	try
 		{
-		if (!($css = $this->ObjectCache->getObject('LL:GetCss:Css:'.$this->Input->Get->getInt('id'))))
-			{
-			$this->initDB();
-			try
-				{
-				$stm = $this->DB->prepare
-					('
-					SELECT
-						css
-					FROM
-						boards
-					WHERE
-						id = ?'
-					);
-				$stm->bindInteger($this->Board->GetId());
-				$css = $stm->getColumn();
-				$stm->close();
-				$this->ObjectCache->addObject('LL:GetCss:Css:'.$this->Board->getId(), $css, 60*60);
-				}
-			catch (DBNoDataException $e)
-				{
-				$stm->close();
-				$this->Output->setStatus(Output::NOT_FOUND);
-				$this->showWarning('Datei nicht gefunden');
-				}
-			}
+		$stm = $this->DB->prepare
+			('
+			SELECT
+				css
+			FROM
+				boards
+			WHERE
+				id = ?'
+			);
+		$stm->bindInteger($this->Board->GetId());
+		$css = $stm->getColumn();
+		$stm->close();
 		}
-	catch (RequestException $e)
+	catch (DBNoDataException $e)
 		{
-		$this->showWarning($e->getMessage());
+		$stm->close();
+		$this->Output->setStatus(Output::NOT_FOUND);
+		$this->showWarning('Datei nicht gefunden');
 		}
 
 	$this->compression = true;
-	$this->sendInlineFile('text/css; charset=UTF-8', $this->Input->Get->getInt('id').'.css', $css);
+	$this->sendInlineFile('text/css; charset=UTF-8', $this->Board->GetId().'.css', $css);
 	}
 
 }
