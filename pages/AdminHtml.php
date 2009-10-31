@@ -35,7 +35,7 @@ protected function setForm()
 
 protected function checkForm()
 	{
-	foreach (array('body', 'user-menu', 'user-welcome', 'main-menu', 'title', 'name') as $tag)
+	foreach (array('body', 'user-menu', 'user-welcome', 'main-menu') as $tag)
 		{
 		if (!preg_match('<!-- '.$tag.' -->', $this->Input->Post->getString('html')))
 			{
