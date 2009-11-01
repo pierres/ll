@@ -104,7 +104,7 @@ public function show()
 						25
 					');
 				}
-			$stm->bindInteger($id);
+			$stm->bindInteger($this->Board->getId());
 			}
 		else
 			{
