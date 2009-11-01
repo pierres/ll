@@ -69,6 +69,7 @@ protected function setFile()
 			$filesInput->setMaxLength(11);
 			$filesInput->setSize(10);
 			$filesInput->setMultiple();
+			$filesInput->setRequired(false);
 
 			try
 				{
