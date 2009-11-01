@@ -38,6 +38,33 @@ protected function getParams()
 
 protected function checkAccess()
 	{
+	if ($this->User->isOnline())
+		{
+		try
+			{
+			$stm = $this->DB->prepare
+				('
+				SELECT
+					userid
+				FROM
+					attachments
+				WHERE
+					userid = ?
+					AND id = ?'
+				);
+			$stm->bindInteger($this->User->getId());
+			$stm->bindInteger($this->file);
+			$stm->getColumn();
+			$stm->close();
+			# users should be able to see their own files
+			return;
+			}
+		catch (DBNoDataException $e)
+			{
+			$stm->close();
+			}
+		}
+
 	try
 		{
 		/** if one of the threads is private return 0 */
