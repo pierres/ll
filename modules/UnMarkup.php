@@ -167,33 +167,50 @@ private function unmakeSmiley($matches)
 
 private function unmakeList($matches)
 	{
-	$in = str_replace('</li>', '', $matches[0]);
-
+	$in = $matches[0];
 	$out = '';
 	$depth = 0;
+	$pos = 0;
+	$maxPos = strlen($in)-1;
 
-	while (preg_match('/<(ul|li|\/ul)>([^<]*)(.*)/sS', $in, $matches))
+	while ($pos <= $maxPos)
 		{
-		switch ($matches[1])
+		$listart = strpos($in, '<li>', $pos);
+		$liend = strpos($in, '</li>', $pos);
+		$ulstart = strpos($in, '<ul>', $pos);
+		$ulend = strpos($in, '</ul>', $pos);
+
+		if ($ulstart === $pos)
 			{
-			case 'ul' :
-				$depth++;
-			break;
-
-			case 'li' :
-				$out .= str_repeat('*', $depth).' '.$matches[2]."\n";
-			break;
-
-			case '/ul' :
-				$depth--;
-				if ($depth == 0)
-					{
-					$out .= $matches[2];
-					}
-			break;
+			$pos += 4;
+			$depth++;
 			}
-
-		$in = $matches[3];
+		elseif ($listart === $pos)
+			{
+			if ($ulstart !== false && $ulstart < $liend)
+				{
+				$out .= str_repeat('*', $depth).' '.substr($in, $listart + 4, $ulstart - $listart - 4)."\n";
+				$pos = $ulstart;
+				}
+			else
+				{
+				$out .= str_repeat('*', $depth).' '.substr($in, $listart + 4, $liend - $listart - 4)."\n";
+				$pos = $liend + 5;
+				}
+			}
+		elseif ($liend === $pos)
+			{
+			$pos += 5;
+			}
+		elseif ($ulend === $pos)
+			{
+			$pos += 5;
+			$depth--;
+			}
+		else
+			{
+			$pos = $ulstart;
+			}
 		}
 
 	return $out;

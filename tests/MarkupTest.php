@@ -343,6 +343,14 @@ public function testQuoteAndList()
 	$this->assertEquals($out,  $this->ll->Markup->toHtml($in));
 	}
 
+public function testCodeAndList()
+	{
+	$in = "* <code>a</code>";
+	$out = "<ul><li><code>a</code></li></ul>";
+
+	$this->assertEquals($out,  $this->ll->Markup->toHtml($in));
+	}
+
 public function testQuoteErrorCheck()
 	{
 	try

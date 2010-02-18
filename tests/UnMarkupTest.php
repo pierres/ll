@@ -261,6 +261,14 @@ public function testQuoteAndList()
 	$this->assertEquals($out,  $this->ll->UnMarkup->fromHtml($in));
 	}
 
+public function testCodeAndList()
+	{
+	$in = "<ul><li><code>a</code></li></ul>";
+	$out = "* <code>a</code>";
+
+	$this->assertEquals($out,  $this->ll->UnMarkup->fromHtml($in));
+	}
+
 }
 
 ?>
