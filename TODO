@@ -1,6 +1,8 @@
 
 LL 4 TODO
 
+* Add/remove files is confusing
+* add page title to body
 * use L10n-Methods for all Strings
 	* translate to German
 * readd tagging feature
@@ -13,12 +15,8 @@ LL 4 TODO
 * solve issue when date/time is undefined (1970 problem)
 * create some kind of test scripts that checks server and php configuration
 * create Form that can be embedded into a Page
-* Linkification kills links in edit mode
 * check long code lines
 * DB: automatic close of connections on error
-* atm its not possible to remove files from a posting
-* Add/remove files is confusing
-* APC user var collision when running several instances on one server
 * review use of showFailure and showWarning
 * isEmptyString fails on arrays
 * define common translations
