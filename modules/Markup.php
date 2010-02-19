@@ -112,7 +112,7 @@ private function complieSecondPass($text)
 	$text = preg_replace_callback("#'''(.+?)'''#", array($this, 'makeStrong'), $text);
 	$text = preg_replace_callback("#''(.+?)''#", array($this, 'makeEm'), $text);
 	$text = preg_replace_callback('/&quot;(.+?)&quot;/', array($this, 'makeInlineQuote'), $text);
-	$text = preg_replace_callback('/(?:^\*+ [^\n]+$\n?)+/m',array($this, 'makeList'), $text);
+	$text = preg_replace_callback('/(?:\n*^\*+ [^\n]+$\n?)+/m',array($this, 'makeList'), $text);
 
 	return $text;
 	}

@@ -326,19 +326,27 @@ abcd
 * 3
 ** 4
 abc';
-	$out = "<ul><li>1</li><li>2<ul><li>2a</li><li>2b<ul><li>2bi<ul><li>2bii</li></ul></li></ul></li><li>2c</li></ul></li><li>3<ul><li>4</li></ul></li></ul><p>abcd\n</p><ul><li>1</li><li>2<ul><li>2a</li><li>2b<ul><li>2bi<ul><li>2bii</li></ul></li></ul></li><li>2c</li></ul></li><li>3<ul><li>4</li></ul></li></ul><p>abc</p>";
+	$out = "<ul><li>1</li><li>2<ul><li>2a</li><li>2b<ul><li>2bi<ul><li>2bii</li></ul></li></ul></li><li>2c</li></ul></li><li>3<ul><li>4</li></ul></li></ul><p>abcd</p><ul><li>1</li><li>2<ul><li>2a</li><li>2b<ul><li>2bi<ul><li>2bii</li></ul></li></ul></li><li>2c</li></ul></li><li>3<ul><li>4</li></ul></li></ul><p>abc</p>";
+	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
+
+	$in = "* a\nb\n\n* c";
+	$out = '<ul><li>a</li></ul><p>b</p><ul><li>c</li></ul>';
+	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
+
+	$in = "* a\nb\n* c";
+	$out = '<ul><li>a</li></ul><p>b</p><ul><li>c</li></ul>';
 	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
 	}
 
 public function testQuoteAndList()
 	{
 	$in = "<quote>\n* 1\n* 2\n</quote>";
-	$out = "<blockquote><p>\n</p><ul><li>1</li><li>2</li></ul></blockquote>";
+	$out = "<blockquote><ul><li>1</li><li>2</li></ul></blockquote>";
 
 	$this->assertEquals($out,  $this->ll->Markup->toHtml($in));
 
 	$in = "* 2\n* 3\n* 4\n<code>\nreg\n</code>\n* 2\n* 3";
-	$out = "<ul><li>2</li><li>3</li><li>4</li></ul><pre><code>\nreg\n</code></pre><p>\n</p><ul><li>2</li><li>3</li></ul>";
+	$out = "<ul><li>2</li><li>3</li><li>4</li></ul><pre><code>\nreg\n</code></pre><ul><li>2</li><li>3</li></ul>";
 
 	$this->assertEquals($out,  $this->ll->Markup->toHtml($in));
 	}

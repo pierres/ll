@@ -73,7 +73,7 @@ public function fromHtml($text)
 
 	$text = preg_replace_callback('#<img src="images/smilies/[\w-]+\.png" alt="([\w-]+)" class="smiley" />#',array($this, 'unmakeSmiley'), $text);
 
-	$text = preg_replace_callback("#(?:\n\n)?<ul>.+</ul>#m", array($this, 'unmakeList'), $text);
+	$text = preg_replace_callback("#\n*<ul>.+</ul>#m", array($this, 'unmakeList'), $text);
 
 	while ($this->Stack->hasNext())
 		{
@@ -168,7 +168,7 @@ private function unmakeSmiley($matches)
 private function unmakeList($matches)
 	{
 	$in = $matches[0];
-	$out = '';
+	$out = "\n";
 	$depth = 0;
 	$pos = 0;
 	$maxPos = strlen($in)-1;
