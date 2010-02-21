@@ -157,7 +157,7 @@ abstract class ActiveFormElement extends FormElement {
 
 	public function validate()
 		{
-		$currentLength = $this->Input->Post->getLength($this->name);
+		$currentLength = $this->Input->Post->getHtmlLength($this->name);
 
 		if ($this->required && $currentLength == 0)
 			{
@@ -587,7 +587,7 @@ class SelectInputElement extends InputElement {
 				{
 				foreach ($this->Input->Post->getArray($this->name) as $inputValue)
 					{
-					$currentLength = strlen($inputValue);
+					$currentLength = strlen(htmlspecialchars($inputValue));
 
 					if ($currentLength < $this->minLength)
 						{

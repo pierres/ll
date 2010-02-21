@@ -58,6 +58,11 @@ public function getLength($name)
 	return $this->isEmptyString($name) ? 0 : strlen($this->request[$name]);
 	}
 
+public function getHtmlLength($name)
+	{
+	return $this->isEmptyString($name) ? 0 : strlen(htmlspecialchars($this->request[$name], ENT_COMPAT));
+	}
+
 public function getString($name, $default = false)
 	{
 	if (!$this->isEmptyString($name))
