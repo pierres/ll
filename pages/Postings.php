@@ -337,6 +337,11 @@ $body =
 		<thead>
 			<tr>
 				<th colspan="2">
+					'.$thread['name'].'
+				</th>
+			</tr>
+			<tr>
+				<th colspan="2">
 					'.$pages.'
 				</th>
 			</tr>
