@@ -69,7 +69,8 @@ public function __construct()
 
 	$this->config['allowed_mime_types']		= array('text/plain', 'text/x-c', 'text/x-c++', 'text/xml',
 								'image/gif', 'image/jpeg', 'image/png',
-								'application/pdf', 'application/x-bzip2', 'application/x-gzip', 'application/x-zip');
+								'application/pdf',
+								'application/x-bzip2', 'application/x-gzip', 'application/x-zip', 'application/x-xz');
 
 	if (file_exists('LocalSettings.php'))
 		{
