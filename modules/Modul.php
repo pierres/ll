@@ -35,6 +35,7 @@ private static $availableModules = array
 	'Functions' => 'modules/Functions.php',
 	'Input' => 'modules/Input.php',
 	'L10n' => 'modules/L10n.php',
+	'LLtoBB' => 'modules/LLtoBB.php',
 	'Log' => 'modules/Log.php',
 	'Mail' => 'modules/Mail.php',
 	'Markup' => 'modules/Markup.php',
