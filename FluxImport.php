@@ -108,7 +108,7 @@ private function setAutoIncrement($source, $target) {
 					FROM
 						information_schema.TABLES
 					WHERE
-						TABLE_SCHEMA = \'ll\'
+						TABLE_SCHEMA = \''.$this->Settings->getValue('sql_database').'\'
 						AND TABLE_NAME=\''.$source.'\'');
 	$this->DB->execute('ALTER TABLE fluxbb.'.$target.' AUTO_INCREMENT = '.$auto);
 }
