@@ -1,7 +1,6 @@
 
 LL 4 TODO
 
-* display ''blah'' in italic only and not bold
 * don't ignore paragraphs within quotes
 * Add/remove files is confusing
 * use L10n-Methods for all Strings

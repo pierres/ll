@@ -551,7 +551,6 @@ INSERT INTO `boards` VALUES (1, 1, 'Mein Forum', UNIX_TIMESTAMP(), 0, 0, 0, 0, 0
 	font-weight:bolder;
 }
 #ll #body #posts tbody .posts-text em {
-	font-weight:bold;
 	font-style:italic;
 }
 #ll #body #posts tbody .posts-text q {
