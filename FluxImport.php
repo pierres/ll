@@ -94,10 +94,11 @@ private function cleanup() {
 						FROM
 							users
 						WHERE
-							lastlogin<'.$preal.'
+							(lastlogin<'.$preal.'
 							AND regdate<'.$preal.'
 							AND lastpost<'.$preal.'
 							AND id NOT IN (SELECT userid FROM posts WHERE threadid IN (SELECT id FROM threads WHERE forumid>0))
+							) OR password=\'\'
 						ORDER BY
 							id ASC');
 		foreach ($users as $user) {
