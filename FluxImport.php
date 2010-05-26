@@ -31,10 +31,10 @@ public function run() {
 		$this->Settings->getValue('sql_user'),
 		$this->Settings->getValue('sql_password'),
 		$this->Settings->getValue('sql_database'));
-	echo "Cleanup old entries\n";
+	echo "Cleanup\n";
 	$this->cleanup();
 	$this->checkPostIds();
-	echo "Starting Import\n";
+	echo "Import\n";
 	$this->importCategories();
 	$this->importForums();
 	$this->importPosts();
@@ -58,12 +58,13 @@ private function cleanup() {
 							id ASC');
 		foreach ($threads as $thread) {
 			AdminFunctions::delThread($thread);
-			echo "\tremove thread ", $thread, "\n";
+			echo "\r\tempty thread ", $thread;
 		}
 		}
 	catch (DBNoDataException $e)
 		{
 		}
+	echo "\n";
 
 	try
 		{
@@ -77,12 +78,13 @@ private function cleanup() {
 							id ASC');
 		foreach ($threads as $thread) {
 			AdminFunctions::delThread($thread);
-			echo "\tremove thread ", $thread, "\n";
+			echo "\r\told thread ", $thread;
 		}
 		}
 	catch (DBNoDataException $e)
 		{
 		}
+	echo "\n";
 
 	# non-al.de users
 	try
@@ -99,16 +101,17 @@ private function cleanup() {
 						ORDER BY
 							id ASC');
 		foreach ($users as $user) {
-			echo "\tremove user ", $user, "\n";
-			AdminFunctions::delUser($user);
+			echo "\r\told user ", $user;
+			$this->delUser($user);
 		}
 		}
 	catch (DBNoDataException $e)
 		{
 		}
+	echo "\n";
 
 	# duplicate: "ren hoek" vs. "Ren Höek"
-	AdminFunctions::delUser(2678);
+	$this->delUser(2678);
 
 	# bad usernames
 	$users = $this->DB->getRowSet('SELECT
@@ -120,10 +123,11 @@ private function cleanup() {
 						id ASC');
 	foreach ($users as $user) {
 		if (!$this->checkUserName(unhtmlspecialchars($user['name']))) {
-			echo "\tremove user ", $user['id'], "\n";
-			AdminFunctions::delUser($user['id']);
+			echo "\r\tbad user ", $user['id'];
+			$this->delUser($user['id']);
 		}
 	}
+	echo "\n";
 
 	system('rm -f '.$this->fluxdir.'/cache/*.php');
 }
@@ -144,6 +148,17 @@ private function checkUserName($username) {
 	}
 }
 
+private function delUser($id)
+	{
+	$stm = $this->DB->execute
+		('
+		DELETE FROM
+			users
+		WHERE
+			id ='.$id
+		);
+	}
+
 private function checkPostIds() {
 	$threads = $this->DB->getColumnSet('SELECT id FROM threads ORDER BY id ASC');
 	$run = true;
@@ -154,7 +169,7 @@ private function checkPostIds() {
 			for ($i=0; $i < count($postids); $i++) {
 				$run = false;
 				if ($postids[$i] != $postdat[$i]) {
-					echo "\tfix broken thread: ", $thread, "\n";
+					echo "\r\tfix broken thread: ", $thread;
 // 					echo "\t    id: ", implode (', ', $postids), "\n";
 // 					echo "\t    dat: ", implode (', ', $postdat), "\n";
 // 					echo "\n";
@@ -167,6 +182,7 @@ private function checkPostIds() {
 			}
 		} while ($run);
 	}
+	echo "\n";
 }
 
 private function setAutoIncrement($source, $target) {
@@ -183,7 +199,7 @@ private function setAutoIncrement($source, $target) {
 private function importCategories() {
 	$this->DB->execute('TRUNCATE TABLE fluxbb.categories');
 	$this->setAutoIncrement('cats', 'categories');
-	$cats = $this->DB->getRowSet('SELECT * FROM cats');
+	$cats = $this->DB->getRowSet('SELECT * FROM cats ORDER BY id ASC');
 	$stm = $this->DB->prepare('INSERT INTO 
 						fluxbb.categories
 					SET
@@ -191,12 +207,14 @@ private function importCategories() {
 						cat_name = ?,
 						disp_position = ?');
 	foreach ($cats as $cat) {
+		echo "\r\tcategory ", $cat['id'];
 		$stm->bindInteger($cat['id']);
 		$stm->bindString(unhtmlspecialchars(cutString($cat['name'], 80)));
 		$stm->bindInteger($cat['position']);
 		$stm->execute();
 	}
 	$stm->close();
+	echo "\n";
 }
 
 private function importForums() {
@@ -214,7 +232,9 @@ private function importForums() {
 						(SELECT forum_cat.position FROM forum_cat WHERE forum_cat.forumid = forums.id) AS disp_position,
 						(SELECT forum_cat.catid FROM forum_cat WHERE forum_cat.forumid = forums.id) AS cat_id
 					FROM
-						forums');
+						forums
+					ORDER BY
+						forums.id ASC');
 	$stm = $this->DB->prepare('INSERT INTO 
 						fluxbb.forums
 					SET
@@ -229,6 +249,7 @@ private function importForums() {
 						disp_position = ?,
 						cat_id = ?');
 	foreach ($forums as $forum) {
+		echo "\r\tforum ", $forum['id'];
 		$stm->bindInteger($forum['id']);
 		$stm->bindString(unhtmlspecialchars(cutString($forum['forum_name'], 80)));
 		$stm->bindString(unhtmlspecialchars($forum['forum_desc']));
@@ -242,6 +263,7 @@ private function importForums() {
 		$stm->execute();
 	}
 	$stm->close();
+	echo "\n";
 }
 
 private function importPosts() {
@@ -253,7 +275,7 @@ private function importPosts() {
 	$posts = $this->DB->getRowSet('SELECT
 						posts.id AS id,
 						posts.username AS poster,
-						(IF(posts.userid > 0, posts.userid, 1)) AS poster_id,
+						COALESCE((SELECT users.id FROM users WHERE users.id = posts.userid), 1) AS poster_id,
 						posts.text AS message,
 						posts.dat AS posted,
 						posts.editdate AS edited,
@@ -262,7 +284,9 @@ private function importPosts() {
 					FROM
 						posts
 					WHERE
-						posts.threadid NOT IN (SELECT threads.id FROM threads WHERE threads.forumid=0)');
+						posts.threadid NOT IN (SELECT threads.id FROM threads WHERE threads.forumid=0)
+					ORDER BY
+						posts.id ASC');
 	$stm = $this->DB->prepare('INSERT INTO 
 						fluxbb.posts
 					SET
@@ -275,6 +299,7 @@ private function importPosts() {
 						edited_by = ?,
 						topic_id = ?');
 	foreach ($posts as $post) {
+		echo "\r\tpost ", $post['id'];
 		$stm->bindInteger($post['id']);
 		$stm->bindString(unhtmlspecialchars($post['poster']));
 		$stm->bindInteger($post['poster_id']);
@@ -288,6 +313,7 @@ private function importPosts() {
 	$stm->close();
 	
 	$this->DB->execute('UPDATE fluxbb.posts SET edited=NULL, edited_by=NULL WHERE edited=0');
+	echo "\n";
 }
 
 private function importTopics() {
@@ -309,7 +335,9 @@ private function importTopics() {
 					FROM
 						threads a
 					WHERE
-						a.forumid>0');
+						a.forumid>0
+					ORDER BY
+						a.id ASC');
 	$stm = $this->DB->prepare('INSERT INTO 
 						fluxbb.topics
 					SET
@@ -326,6 +354,7 @@ private function importTopics() {
 						sticky = ?,
 						forum_id = ?');
 	foreach ($topics as $topic) {
+		echo "\r\ttopic ", $topic['id'];
 		$stm->bindInteger($topic['id']);
 		$stm->bindString(unhtmlspecialchars($topic['poster']));
 		$stm->bindString(unhtmlspecialchars($topic['subject']));
@@ -347,6 +376,7 @@ private function importTopics() {
 		$this->DB->execute('INSERT INTO fluxbb.topics (poster, subject, posted, first_post_id, last_post, last_post_id, last_poster, num_views, num_replies, closed, sticky, moved_to, forum_id) SELECT poster, subject, posted, first_post_id, last_post, last_post_id, last_poster, num_views, num_replies, closed, sticky, '.$move['id'].', '.$move['movedfrom'].' FROM fluxbb.topics WHERE id = '.$move['id']);
 		$this->DB->execute('UPDATE fluxbb.forums SET num_topics=num_topics+1 WHERE id ='.$move['movedfrom']);
 	}
+	echo "\n";
 }
 
 private function importUsers() {
@@ -365,7 +395,8 @@ private function importUsers() {
 						regdate AS registered,
 						lastlogin AS last_visit
 					FROM
-						users');
+						users
+					ORDER BY id ASC');
 	$stm = $this->DB->prepare('INSERT INTO 
 						fluxbb.users
 					SET
@@ -383,6 +414,7 @@ private function importUsers() {
 						timezone = 1,
 						dst = 1');
 	foreach ($users as $user) {
+		echo "\r\tuser ", $user['id'];
 		$stm->bindInteger($user['id']);
 		$stm->bindString(unhtmlspecialchars($user['username']));
 		$stm->bindString(unhtmlspecialchars($user['password']));
@@ -426,6 +458,7 @@ private function importUsers() {
 		}
 		file_put_contents($this->fluxdir.'/img/avatars/'.$avatar['id'].$ext, $avatar['content']);
 	}
+	echo "\n";
 }
 
 
