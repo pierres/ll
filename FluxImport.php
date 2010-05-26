@@ -22,7 +22,7 @@ ini_set('memory_limit', '1024M');
 
 class FluxImport extends Modul {
 
-private $fluxdir = '/home/pierre/public_html/fluxbb-1.4-rc3/upload';
+private $fluxdir = '/home/pierre/public_html/fluxbb';
 
 
 public function run() {
@@ -33,6 +33,7 @@ public function run() {
 		$this->Settings->getValue('sql_database'));
 	echo "Cleanup old entries\n";
 	$this->cleanup();
+	$this->checkPostIds();
 	echo "Starting Import\n";
 	$this->importCategories();
 	$this->importForums();
@@ -43,6 +44,46 @@ public function run() {
 
 private function cleanup() {
 	$preal = 1103639163;# al.de creation
+
+	# empty threads
+	try
+		{
+		$threads = $this->DB->getColumnSet('SELECT
+							id
+						FROM
+							threads
+						WHERE
+							id NOT IN (SELECT threadid FROM posts)
+						ORDER BY
+							id ASC');
+		foreach ($threads as $thread) {
+			AdminFunctions::delThread($thread);
+			echo "\tremove thread ", $thread, "\n";
+		}
+		}
+	catch (DBNoDataException $e)
+		{
+		}
+
+	try
+		{
+		$threads = $this->DB->getColumnSet('SELECT
+							id
+						FROM
+							threads
+						WHERE
+							lastdate<'.$preal.'
+						ORDER BY
+							id ASC');
+		foreach ($threads as $thread) {
+			AdminFunctions::delThread($thread);
+			echo "\tremove thread ", $thread, "\n";
+		}
+		}
+	catch (DBNoDataException $e)
+		{
+		}
+
 	# non-al.de users
 	try
 		{
@@ -54,42 +95,12 @@ private function cleanup() {
 							lastlogin<'.$preal.'
 							AND regdate<'.$preal.'
 							AND lastpost<'.$preal.'
-							AND id NOT IN (SELECT userid FROM posts WHERE threadid IN (SELECT id FROM threads WHERE forumid>0))');
+							AND id NOT IN (SELECT userid FROM posts WHERE threadid IN (SELECT id FROM threads WHERE forumid>0))
+						ORDER BY
+							id ASC');
 		foreach ($users as $user) {
+			echo "\tremove user ", $user, "\n";
 			AdminFunctions::delUser($user);
-		}
-		}
-	catch (DBNoDataException $e)
-		{
-		}
-
-	# empty threads
-	try
-		{
-		$threads = $this->DB->getColumnSet('SELECT
-							id
-						FROM
-							threads
-						WHERE
-							id NOT IN (SELECT threadid FROM posts)');
-		foreach ($threads as $thread) {
-			AdminFunctions::delThread($thread);
-		}
-		}
-	catch (DBNoDataException $e)
-		{
-		}
-
-	try
-		{
-		$threads = $this->DB->getColumnSet('SELECT
-							id
-						FROM
-							threads
-						WHERE
-							lastdate<'.$preal);
-		foreach ($threads as $thread) {
-			AdminFunctions::delThread($thread);
 		}
 		}
 	catch (DBNoDataException $e)
@@ -99,7 +110,63 @@ private function cleanup() {
 	# duplicate: "ren hoek" vs. "Ren Höek"
 	AdminFunctions::delUser(2678);
 
+	# bad usernames
+	$users = $this->DB->getRowSet('SELECT
+						id,
+						name
+					FROM
+						users
+					ORDER BY
+						id ASC');
+	foreach ($users as $user) {
+		if (!$this->checkUserName(unhtmlspecialchars($user['name']))) {
+			echo "\tremove user ", $user['id'], "\n";
+			AdminFunctions::delUser($user['id']);
+		}
+	}
+
 	system('rm -f '.$this->fluxdir.'/cache/*.php');
+}
+
+private function checkUserName($username) {
+	if (strlen($username) < 2
+	 || strlen($username) > 25
+	 || !strcasecmp($username, 'Guest')
+	 || !strcasecmp($username, 'Gast')
+	 || preg_match('/[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}/', $username)
+	 || preg_match('/((([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){6}:[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){5}:([0-9A-Fa-f]{1,4}:)?[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){4}:([0-9A-Fa-f]{1,4}:){0,2}[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){3}:([0-9A-Fa-f]{1,4}:){0,3}[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){2}:([0-9A-Fa-f]{1,4}:){0,4}[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){6}((\b((25[0-5])|(1\d{2})|(2[0-4]\d)|(\d{1,2}))\b)\.){3}(\b((25[0-5])|(1\d{2})|(2[0-4]\d)|(\d{1,2}))\b))|(([0-9A-Fa-f]{1,4}:){0,5}:((\b((25[0-5])|(1\d{2})|(2[0-4]\d)|(\d{1,2}))\b)\.){3}(\b((25[0-5])|(1\d{2})|(2[0-4]\d)|(\d{1,2}))\b))|(::([0-9A-Fa-f]{1,4}:){0,5}((\b((25[0-5])|(1\d{2})|(2[0-4]\d)|(\d{1,2}))\b)\.){3}(\b((25[0-5])|(1\d{2})|(2[0-4]\d)|(\d{1,2}))\b))|([0-9A-Fa-f]{1,4}::([0-9A-Fa-f]{1,4}:){0,5}[0-9A-Fa-f]{1,4})|(::([0-9A-Fa-f]{1,4}:){0,6}[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){1,7}:))/', $username)
+	 || ((strpos($username, '[') !== false || strpos($username, ']') !== false) && strpos($username, '\'') !== false && strpos($username, '"') !== false)
+	 || preg_match('/(?:\[\/?(?:b|u|i|h|colou?r|quote|code|img|url|email|list|\*)\]|\[(?:img|url|quote|list)=)/i', $username)
+	 || preg_match('#\s{2,}#s', $username)) {
+		return false;
+	} else {
+		return true;
+	}
+}
+
+private function checkPostIds() {
+	$threads = $this->DB->getColumnSet('SELECT id FROM threads ORDER BY id ASC');
+	$run = true;
+	foreach ($threads as $thread) {
+		 do {
+			$postids = $this->DB->getColumnSet('SELECT id FROM posts WHERE threadid='.$thread.' ORDER BY id ASC');
+			$postdat = $this->DB->getColumnSet('SELECT id FROM posts WHERE threadid='.$thread.' ORDER BY dat ASC');
+			for ($i=0; $i < count($postids); $i++) {
+				$run = false;
+				if ($postids[$i] != $postdat[$i]) {
+					echo "\tfix broken thread: ", $thread, "\n";
+// 					echo "\t    id: ", implode (', ', $postids), "\n";
+// 					echo "\t    dat: ", implode (', ', $postdat), "\n";
+// 					echo "\n";
+					$run = true;
+					$this->DB->execute('UPDATE posts SET id=0 WHERE id='.$postids[$i]);
+					$this->DB->execute('UPDATE posts SET id='.$postids[$i].' WHERE id='.$postdat[$i]);
+					$this->DB->execute('UPDATE posts SET id='.$postdat[$i].' WHERE id=0');
+					continue 2;
+				}
+			}
+		} while ($run);
+	}
 }
 
 private function setAutoIncrement($source, $target) {
@@ -137,11 +204,11 @@ private function importForums() {
 	$this->setAutoIncrement('forums', 'forums');
 	$forums = $this->DB->getRowSet('SELECT
 						forums.id,
-						forums.name,
-						forums.description,
-						forums.threads,
-						forums.posts,
-						forums.lastdate,
+						forums.name AS forum_name,
+						forums.description AS forum_desc,
+						(SELECT COUNT(id) FROM threads WHERE forumid=forums.id) AS num_topics,
+						(SELECT COUNT(posts.id) FROM threads,posts WHERE threads.forumid=forums.id AND posts.threadid=threads.id) AS num_posts,
+						forums.lastdate AS last_post,
 						(SELECT MAX(posts.id) FROM posts WHERE posts.threadid = forums.lastthread) AS last_post_id,
 						(SELECT threads.lastusername FROM threads WHERE threads.id = forums.lastthread) AS last_poster,
 						(SELECT forum_cat.position FROM forum_cat WHERE forum_cat.forumid = forums.id) AS disp_position,
@@ -163,11 +230,11 @@ private function importForums() {
 						cat_id = ?');
 	foreach ($forums as $forum) {
 		$stm->bindInteger($forum['id']);
-		$stm->bindString(unhtmlspecialchars(cutString($forum['name'], 80)));
-		$stm->bindString(unhtmlspecialchars($forum['description']));
-		$stm->bindInteger($forum['threads']);
-		$stm->bindInteger($forum['posts']);
-		$stm->bindInteger($forum['lastdate']);
+		$stm->bindString(unhtmlspecialchars(cutString($forum['forum_name'], 80)));
+		$stm->bindString(unhtmlspecialchars($forum['forum_desc']));
+		$stm->bindInteger($forum['num_topics']);
+		$stm->bindInteger($forum['num_posts']);
+		$stm->bindInteger($forum['last_post']);
 		$stm->bindInteger($forum['last_post_id']);
 		$stm->bindString(unhtmlspecialchars($forum['last_poster']));
 		$stm->bindInteger($forum['disp_position']);
@@ -235,7 +302,7 @@ private function importTopics() {
 						a.lastdate AS last_post,
 						(SELECT MAX(posts.id) FROM posts WHERE posts.threadid=a.id) AS last_post_id,
 						a.lastusername AS last_poster,
-						(a.posts-1) AS num_replies,
+						(SELECT COUNT(posts.id)-1 FROM posts WHERE posts.threadid=a.id) AS num_replies,
 						a.closed AS closed,
 						a.sticky AS sticky,
 						a.forumid AS forum_id
@@ -278,6 +345,7 @@ private function importTopics() {
 	$moves = $this->DB->getRowSet('SELECT id, movedfrom FROM threads WHERE movedfrom>0');
 	foreach ($moves as $move) {
 		$this->DB->execute('INSERT INTO fluxbb.topics (poster, subject, posted, first_post_id, last_post, last_post_id, last_poster, num_views, num_replies, closed, sticky, moved_to, forum_id) SELECT poster, subject, posted, first_post_id, last_post, last_post_id, last_poster, num_views, num_replies, closed, sticky, '.$move['id'].', '.$move['movedfrom'].' FROM fluxbb.topics WHERE id = '.$move['id']);
+		$this->DB->execute('UPDATE fluxbb.forums SET num_topics=num_topics+1 WHERE id ='.$move['movedfrom']);
 	}
 }
 
@@ -287,7 +355,6 @@ private function importUsers() {
 	$this->setAutoIncrement('users', 'users');
 	$users = $this->DB->getRowSet('SELECT
 						id AS id,
-						4 AS group_id,
 						name AS username,
 						password AS password,
 						email AS email,
@@ -303,7 +370,7 @@ private function importUsers() {
 						fluxbb.users
 					SET
 						id = ?,
-						group_id = ?,
+						group_id = 4,
 						username = ?,
 						password = ?,
 						email = ?,
@@ -312,10 +379,11 @@ private function importUsers() {
 						num_posts = ?,
 						last_post = ?,
 						registered = ?,
-						last_visit = ?');
+						last_visit = ?,
+						timezone = 1,
+						dst = 1');
 	foreach ($users as $user) {
 		$stm->bindInteger($user['id']);
-		$stm->bindInteger($user['group_id']);
 		$stm->bindString(unhtmlspecialchars($user['username']));
 		$stm->bindString(unhtmlspecialchars($user['password']));
 		$stm->bindString(unhtmlspecialchars($user['email']));
@@ -353,7 +421,7 @@ private function importUsers() {
 		} elseif ($avatar['type'] == 'image/png') {
 			$ext = '.png';
 		} else {
-			echo "error: $avatar[id]\n";
+			echo "\tavatar error: $avatar[id]\n";
 			continue;
 		}
 		file_put_contents($this->fluxdir.'/img/avatars/'.$avatar['id'].$ext, $avatar['content']);

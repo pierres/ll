@@ -28,7 +28,7 @@ public function convert($text)
 	$text = preg_replace('#(?:</p>)?<pre><code>#', '[code]', $text);
 	$text = preg_replace('#</code></pre>(?:<p>)?#', '[/code]', $text);
 
-	$text = preg_replace('#(?:</p>)?<cite>('.$noHtml.'+?)</cite><blockquote>(?:<p>)?#', '[quote=$1]', $text);
+	$text = preg_replace('#(?:</p>)?<cite>(.+?)</cite><blockquote>(?:<p>)?#', '[quote=$1]', $text);
 	$text = preg_replace('#(?:</p>)?<blockquote>(?:<p>)?#', '[quote]', $text);
 	$text = preg_replace("#(?:</p>)?</blockquote>\n*#", "[/quote]\n", $text);
 
@@ -41,8 +41,9 @@ public function convert($text)
 	$text = str_replace('<strong>', "[b]", $text);
 	$text = str_replace('</strong>', "[/b]", $text);
 
-	$text = str_replace('<code>', "[code]", $text);
-	$text = str_replace('</code>', "[/code]", $text);
+	# there is no equivalent bbcode; use i instead
+	$text = str_replace('<code>', "[i]", $text);
+	$text = str_replace('</code>', "[/i]", $text);
 
 	$text = str_replace('<q>', '"', $text);
 	$text = str_replace('</q>', '"', $text);
