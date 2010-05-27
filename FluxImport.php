@@ -22,7 +22,7 @@ ini_set('memory_limit', '1024M');
 
 class FluxImport extends Modul {
 
-private $fluxdir = '/home/pierre/public_html/fluxbb';
+private $fluxdir = './fluxbb';
 
 
 public function run() {
