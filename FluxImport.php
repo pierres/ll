@@ -288,7 +288,7 @@ private function importPosts() {
 						posts.threadid NOT IN (SELECT threads.id FROM threads WHERE threads.forumid=0)
 					ORDER BY
 						posts.id ASC');
-	$stm = $this->DB->prepare('INSERT INTO 
+	$stm = $this->DB->prepare('INSERT INTO
 						fluxbb.posts
 					SET
 						id = ?,
@@ -312,13 +312,14 @@ private function importPosts() {
 		$stm->execute();
 	}
 	$stm->close();
-	
+
 	$this->DB->execute('UPDATE fluxbb.posts SET edited=NULL, edited_by=NULL WHERE edited=0');
 	echo "\n";
 }
 
 private function importTopics() {
 	$this->DB->execute('TRUNCATE TABLE fluxbb.topics');
+	$this->DB->execute('TRUNCATE TABLE fluxbb.reports');
 	$this->setAutoIncrement('threads', 'topics');
 	$topics = $this->DB->getRowSet('SELECT
 						a.id AS id,
@@ -339,7 +340,7 @@ private function importTopics() {
 						a.forumid>0
 					ORDER BY
 						a.id ASC');
-	$stm = $this->DB->prepare('INSERT INTO 
+	$stm = $this->DB->prepare('INSERT INTO
 						fluxbb.topics
 					SET
 						id = ?,
@@ -383,6 +384,8 @@ private function importTopics() {
 private function importUsers() {
 	$this->DB->execute('TRUNCATE TABLE fluxbb.users');
 	$this->DB->execute('TRUNCATE TABLE fluxbb.online');
+	$this->DB->execute('TRUNCATE TABLE fluxbb.bans');
+	$this->DB->execute('TRUNCATE TABLE fluxbb.subscriptions');
 	$this->setAutoIncrement('users', 'users');
 	$users = $this->DB->getRowSet('SELECT
 						id AS id,
@@ -398,7 +401,7 @@ private function importUsers() {
 					FROM
 						users
 					ORDER BY id ASC');
-	$stm = $this->DB->prepare('INSERT INTO 
+	$stm = $this->DB->prepare('INSERT INTO
 						fluxbb.users
 					SET
 						id = ?,
