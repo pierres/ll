@@ -416,7 +416,9 @@ private function importUsers() {
 						registered = ?,
 						last_visit = ?,
 						timezone = 1,
-						dst = 1');
+						dst = 1',
+						language = \'German\',
+						style = \'ArchLinux\');
 	foreach ($users as $user) {
 		echo "\r\tuser ", $user['id'];
 		$stm->bindInteger($user['id']);
