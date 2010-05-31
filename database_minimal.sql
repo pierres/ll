@@ -1,2 +1,616 @@
 INSERT INTO `users` VALUES (1, 'root', '', SHA1('password'), '', '', 0, UNIX_TIMESTAMP(), 3, 0, 0, 0);
-INSERT INTO `boards` VALUES (1, 1, 'Mein Forum', UNIX_TIMESTAMP(), 0, 0, 0, 0, 0, 'localhost', '<!DOCTYPE HTML>\n<html>\n<head>\n	<!-- head -->\n	<link rel=\"shortcut icon\" href=\"images/favicon.ico\" />\n</head>\n<body>\n	<div id=\"ll\">\n		<div id=\"title\">\n			<h1><!-- name --></h1>\n			<h2><!-- title --></h2>\n			<img src=\"images/logo.png\" alt =\"\" />\n		</div>\n		<div id=\"main-menu\">\n			<!-- main-menu -->\n		</div>\n		<div id=\"sub-menu\">\n			<!-- user-welcome -->\n			<!-- user-menu -->\n		</div>\n		<div id=\"body\">\n			<!-- body -->\n		</div>\n		<div id=\"foot-menu\">\n			<!-- user-menu -->\n		</div>\n	</div>\n</body>\n</html>\n','/* LL  */\n#ll {\n	font-family: sans-serif;\n	font-size:14px;\n	text-align:left;\n	color:#002468;\n	background-color:#ffffff;\n	max-width:1000px;\n	margin-left:auto;\n	margin-right:auto;\n}\n#ll a {\n	text-decoration:none;\n	color:#182263;\n}\n#ll a:hover {\n	color:#6c83af;\n	text-decoration:underline;\n}\n#ll #title {\n	color:#FFFFFF;\n	background-color:#6c83af;\n	position:relative;\n	padding:0px;\n	margin-top:0px;\n	margin-bottom:0px;\n}\n#ll #title h1 {\n	font-size:18px;\n	padding:5px;\n	padding-left:10px;\n	margin:0px;\n}\n#ll #title h2 {\n	font-size:12px;\n	padding:5px;\n	padding-left:10px;\n	margin:0px;\n}\n#ll #title img {\n	position:absolute;\n	z-index:1;\n	right:0px;\n	top:-2px;\n	padding:0px;\n	margin:10px;\n}\n#ll #main-menu {\n	background-color:#dddddd;\n	margin-top:0px;\n	margin-bottom:0px;\n	padding:5px;\n	padding-left:0px;\n}\n#ll #main-menu ul {\n	list-style-type: none;\n	margin:0px;\n	padding:0px;\n}\n#ll #main-menu ul li {\n	display: inline;\n	margin:0px;\n	padding:10px;\n}\n#ll #sub-menu {\n	font-size:12px;\n	background-color:#eeeeee;\n	margin-top:0px;\n	margin-bottom:0px;\n	padding:5px;\n	padding-left:10px;\n	height:17px;\n	position:relative;\n}\n#ll #foot-menu {\n	font-size:12px;\n	background-color:#eeeeee;\n	margin-top:30px;\n	margin-bottom:30px;\n	padding:5px;\n	padding-left:10px;\n	height:17px;\n	position:relative;\n}\n#ll #sub-menu ul,\n#ll #foot-menu ul {\n	list-style-type: none;\n	margin:0px;\n	padding:0px;\n	right:0px;\n	position:absolute;\n	top:-5px;\n}\n#ll #sub-menu ul li,\n#ll #foot-menu ul li {\n	float: left;\n	margin:0px;\n	padding:10px;\n}\n#ll #sub-menu ul li ul,\n#ll #foot-menu ul li ul {\n	visibility: hidden;\n	background-color:#eeeeee;\n	position:relative;\n}\n#ll #sub-menu ul li ul li,\n#ll #foot-menu ul li ul li {\n	margin-top:10px;\n	padding:4px;\n	float:none;\n}\n#ll #sub-menu ul li:hover ul,\n#ll #foot-menu ul li:hover ul {\n	visibility: visible;\n}\n#ll #body {\n	margin-top:30px;\n}\n\n\n/* Page */\n#ll .warning {\n	color:#FF8000;\n}\n#ll .failure {\n	color:#C00000;\n}\n#ll .failure,\n#ll .warning {\n	list-style-type:square;\n	font-weight:bold;\n	margin:0px;\n	padding:0px;\n	padding-left:15px;\n}\n#ll #body .box {\n	padding:10px;\n	background-color:#eeeeee;\n}\n#ll #body .box th {\n	margin:0px;\n	min-width:200px;\n	vertical-align:top;\n	text-align:left;\n}\n#ll #body .box td {\n	margin:0px;\n	vertical-align:top;\n	text-align:left;\n	padding-left:10px;\n}\n#ll #body .box td * {\n	margin:0px;\n	vertical-align:top;\n}\n#ll #body .current-page {\n	color:#6c83af;\n	text-decoration:underline;\n}\n\n\n/* Forums */\n#ll #body #forum {\n	border-collapse:collapse;\n	width:100%;\n}\n#ll #body #forum thead th {\n	background-color:#dddddd;\n	text-align:center;\n	padding-top:4px;\n	padding-bottom:4px;\n}\n#ll #body #forum tbody {\n	background-color:#eeeeee;\n}\n#ll #body #forum tbody .category {\n	color:#FFFFFF;\n	background-color:#6c83af;\n	padding:2px;\n	padding-left:41px;\n}\n#ll #body #forum tbody .forum-status {\n	background-color:#dddddd;\n	padding:3px;\n	margin:0px;\n	text-align:center;\n	vertical-align:middle;\n	width:30px;\n	height:30px;\n}\n#ll #body #forum tbody .forum-status .status-old,\n#ll #body #forum tbody .forum-status .status-new {\n	width:10px;\n	height:10px;\n	display:block;\n	margin-left:auto;\n	margin-right:auto;\n}\n#ll #body #forum tbody .forum-status .status-old,\n#ll #body #threads tbody .thread-status .status-old {\n	background-color:#eeeeee;\n}\n#ll #body #forum tbody .forum-status .status-new,\n#ll #body #threads tbody .thread-status .status-new {\n	background-color:#6c83af;\n}\n#ll #body #forum tbody .forum-main {\n	padding:5px;\n}\n#ll #body #forum tbody .forum-main .forum-title {\n	font-weight:bold;\n	vertical-align:top;\n}\n#ll #body #forum tbody .forum-main .forum-description {\n	font-size:12px;\n}\n#ll #body #forum tbody .forum-lastpost {\n	font-size:12px;\n	vertical-align:top;\n	padding:5px;\n	padding-left:30px;\n	width:200px;\n}\n\n\n/* Form */\n#ll #body form table {\n	border-collapse:collapse;\n	background-color:#eeeeee;\n	width:100%;\n	margin-left:auto;\n	margin-right:auto;\n}\n#ll #body form table tr th,\n#ll #body form table tr td {\n	text-align:left;\n	vertical-align:top;\n	padding-left:10px;\n	padding-top:10px;\n	padding-bottom:10px;\n}\n#ll #body form table tr th {\n	width:200px;\n}\n#ll #body form input[type=text],\n#ll #body form input[type=password],\n#ll #body form input[type=file],\n#ll #body form textarea {\n	font-family:monospace;\n	color:#808080;\n}\n#ll #body form input[type=text]:focus,\n#ll #body form input[type=password]:focus,\n#ll #body form input[type=file]:focus,\n#ll #body form textarea:focus {\n	color:#000000;\n}\n#ll #body form .form-help {\n	font-size:12px;\n}\n#ll #body form ul {\n	list-style-type:square;\n	margin:0px;\n	padding:0px;\n	padding-left:15px;\n}\n\n/* ThreadList */\n#ll #body #threads {\n	border-collapse:collapse;\n	width:100%;\n}\n#ll #body #threads thead th {\n	background-color:#dddddd;\n	text-align:center;\n	padding-top:4px;\n	padding-bottom:4px;\n	height:20px;\n}\n#ll #body #threads thead td,\n#ll #body #threads tfoot td {\n	background-color:#dddddd;\n	padding-top:4px;\n	padding-bottom:4px;\n	padding-left:38px;\n	font-size:12px;\n	height:20px;\n}\n#ll #body #threads thead .thread-count,\n#ll #body #threads tfoot .thread-count {\n	text-align:right;\n	padding-right:50px;\n}\n#ll #body #threads tbody {\n	background-color:#eeeeee;\n}\n#ll #body #threads tbody .thread-status {\n	background-color:#dddddd;\n	padding:3px;\n	margin:0px;\n	text-align:center;\n	vertical-align:middle;\n	width:30px;\n	height:30px;\n}\n#ll #body #threads tbody .thread-status .status-old,\n#ll #body #threads tbody .thread-status .status-new {\n	width:10px;\n	height:10px;\n	display:block;\n	margin-left:auto;\n	margin-right:auto;\n}\n#ll #body #threads tbody .thread-main {\n	padding:5px;\n	vertical-align:top;\n	font-size:12px;\n}\n#ll #body #threads tbody .thread-main a {\n	font-weight:bold;\n	font-size:14px;\n}\n#ll #body #threads tbody .thread-main .thread-summary {\n	color:#FFFFFF;\n	background-color:#6c83af;\n	visibility:hidden;\n	position:absolute;\n	left:40%;\n	width:400px;\n	overflow:hidden;\n	padding:5px;\n	z-index:1;\n}\n#ll #body #threads tbody tr .thread-main .thread-title:hover + .thread-summary {\n	visibility:visible;\n}\n#ll #body #threads tbody .thread-posts {\n	font-weight:bold;\n	padding:5px;\n	vertical-align:top;\n	text-align:center;\n}\n#ll #body #threads tbody .thread-lastpost {\n	font-size:12px;\n	vertical-align:top;\n	padding:5px;\n	padding-left:30px;\n	width:200px;\n}\n\n\n/* Postings */\n#ll #body #posts {\n	border-collapse:collapse;\n	width:100%;\n}\n#ll #body #posts thead th,\n#ll #body #posts thead td,\n#ll #body #posts tfoot th {\n	background-color:#dddddd;\n	padding:4px;\n	padding-left:10px;\n	font-size:12px;\n	height:20px;\n	text-align:left;\n}\n#ll #body #posts tbody {\n	background-color:#eeeeee;\n}\n#ll #body #posts tbody:nth-child(odd) {\n	background-color:#eeeeee;\n}\n#ll #body #posts tbody:nth-child(even) {\n	background-color:#dbdbdb;\n}\n#ll #body #posts tbody td {\n	padding:10px;\n}\n#ll #body #posts tbody .posts-user,\n#ll #body #posts tbody.poll th {\n	padding:10px;\n	vertical-align:top;\n	font-weight:bold;\n	width: 150px;\n}\n#ll #body #posts tbody .posts-date {\n	text-align:right;\n}\n#ll #body #posts tbody .poll-question {\n	font-weight:bold;\n}\n#ll #body #posts tbody.status-new .posts-date {\n	font-weight:bold;\n	color:#6c83af;\n}\n#ll #body #posts tbody .posts-avatar {\n	vertical-align:top;\n	text-align:center;\n}\n#ll #body #posts tbody .posts-avatar img {\n	max-width:80px;\n	max-height:80px;\n}\n#ll #body #posts tbody .posts-text {\n}\n#ll #body #posts tbody .posts-text .posts-lastedit {\n	font-style:italic;\n	padding:10px;\n	font-size:12px;\n}\n#ll #body #posts tbody.poll .poll-options * {\n	background-color:transparent;\n	padding:0px;\n	margin:0px;\n}\n#ll #body #posts tbody.poll .poll-options .poll-bar {\n	background-color:#6c83af;\n}\n#ll #body #posts tbody.poll .poll-options .poll-percent,\n#ll #body #posts tbody.poll .poll-options .poll-votes {\n	width:60px;\n	text-align:right;\n}\n#ll #body #posts tbody.poll .poll-options th {\n	width:150px;\n}\n#ll #body #posts tbody.poll .poll-vote {\n	text-align:right;\n	font-size:12px;\n}\n#ll #body #posts tbody .posts-menu {\n/* TODO move menu to the right */\n	font-size:12px;\n}\n#ll #body #posts tbody .posts-menu ul {\n	list-style-type: none;\n	margin:0px;\n	padding:0px;\n	z-index:1;\n}\n#ll #body #posts tbody .posts-menu ul li {\n	float: left;\n	margin:0px;\n	padding:10px;\n}\n#ll #body #posts tbody .posts-menu  ul li ul {\n	display: none;\n	position:absolute;\n	background-color:#eeeeee;\n}\n#ll #body #posts tbody:nth-child(odd) .posts-menu  ul li ul {\n	background-color:#eeeeee;\n}\n#ll #body #posts tbody:nth-child(even) .posts-menu  ul li ul {\n	background-color:#dbdbdb;\n}\n#ll #body #posts tbody .posts-menu ul li ul li {\n	margin-top:10px;\n	padding:4px;\n	float:none;\n}\n#ll #body #posts tbody .posts-menu ul li:hover ul {\n	display: block;\n}\n\n#ll #body #posts tbody .posts-text pre {\n	white-space: pre-wrap;\n	word-wrap: break-word;\n	width:450px;\n	min-width:95%;\n	max-height:700px;\n	overflow:auto;\n	font-family:monospace;\n	color:#000000;\n	background-color:#ffffff;\n	padding:10px;\n	margin:11px;\n	border:solid 1px #002468;\n}\n#ll #body #posts tbody .posts-text p code {\n	font-family:monospace;\n	color:#000000;\n	background-color:#ffffff;\n	border:solid 1px #002468;\n	padding:1px;\n	padding-left:4px;\n	padding-right:4px;\n	margin-left:4px;\n	margin-right:4px;\n}\n#ll #body #posts tbody .posts-text a {\n	text-decoration:underline;\n}\n#ll #body #posts tbody .posts-text a[rev=auto] {\n}\n#ll #body #posts tbody .posts-text .image {\n	line-height:128px;\n	max-width:128px;\n	max-height:128px;\n	vertical-align:middle;\n	border: solid 1px transparent;\n	margin:10px;\n}\n#ll #body #posts tbody .posts-text .image:hover {\n	background-color:#6c83af;\n	border:solid 1px #6c83af;\n}\n#ll #body #posts tbody .posts-text audio,\n#ll #body #posts tbody .posts-text video {\n	display:block;\n	margin:10px;\n	max-width:80%;\n	max-height:700px;\n}\n#ll #body #posts tbody .posts-text .smiley {\n	border: none;\n	vertical-align:top;\n	text-align:center;\n}\n#ll #body #posts tbody .posts-text strong {\n	font-weight:bolder;\n}\n#ll #body #posts tbody .posts-text em {\n	font-weight:bold;\n	font-style:italic;\n}\n#ll #body #posts tbody .posts-text q {\n	font-style:italic;\n}\n#ll #body #posts tbody .posts-text cite {\n	font-style:italic;\n	margin-left:12px;\n}\n#ll #body #posts tbody .posts-text blockquote {\n	border:solid 1px #002468;\n	padding:5px;\n	padding-left:15px;\n	padding-right:15px;\n	margin:0px;\n	margin-left:10px;\n	margin-right:10px;\n	background-color:#dbdbdb;\n}\n#ll #body #posts tbody:nth-child(odd) .posts-text blockquote {\n	background-color:#dbdbdb;\n}\n#ll #body #posts tbody:nth-child(even) .posts-text blockquote {\n	background-color:#eeeeee;\n}\n#ll #body #posts tbody .posts-text ul {\n	list-style-type:square;\n}\n#ll #body #posts tbody .posts-text .files {\n	padding:0px;\n	margin:0px;\n}\n\n\n/* MyFiles */\n#ll #body form table .files tbody tr {\n	background-color:#dbdbdb;\n}\n#ll #body form table .files tbody tr:nth-child(odd) {\n	background-color:#dbdbdb;\n}\n#ll #body form table .files tbody tr:nth-child(even) {\n	background-color:#eeeeee;\n}\n\n/* MarkupHelp */\n#ll #body .box #markup-help {\n}\n#ll #body .box #markup-help th {\n	width:250px;\n}\n#ll #body .box #markup-help .markup-help-title {\n	text-align:center;\n	padding:5px;\n	padding-top:20px;\n}\n#ll #body .box ul {\n	list-style-type:square;\n	margin:0px;\n	padding:0px;\n	padding-left:15px;\n}\n');
+INSERT INTO `boards` VALUES (1, 1, 'Mein Forum', UNIX_TIMESTAMP(), 0, 0, 0, 0, 0, 'localhost', '<!DOCTYPE HTML>
+<html>
+<head>
+	<!-- head -->
+	<link rel=\"shortcut icon\" href=\"images/favicon.ico\" />
+</head>
+<body>
+	<div id=\"ll\">
+		<div id=\"title\">
+			<h1><!-- name --></h1>
+			<h2><!-- title --></h2>
+			<img src=\"images/logo.png\" alt =\"\" />
+		</div>
+		<div id=\"main-menu\">
+			<!-- main-menu -->
+		</div>
+		<div id=\"sub-menu\">
+			<!-- user-welcome -->
+			<!-- user-menu -->
+		</div>
+		<div id=\"body\">
+			<!-- body -->
+		</div>
+		<div id=\"foot-menu\">
+			<!-- user-menu -->
+		</div>
+	</div>
+</body>
+</html>
+','/* LL  */
+#ll {
+	font-family: sans-serif;
+	font-size:14px;
+	text-align:left;
+	color:#002468;
+	background-color:#ffffff;
+	max-width:1000px;
+	margin-left:auto;
+	margin-right:auto;
+}
+#ll a {
+	text-decoration:none;
+	color:#182263;
+}
+#ll a:hover {
+	color:#6c83af;
+	text-decoration:underline;
+}
+#ll #title {
+	color:#FFFFFF;
+	background-color:#6c83af;
+	position:relative;
+	padding:0px;
+	margin-top:0px;
+	margin-bottom:0px;
+}
+#ll #title h1 {
+	font-size:18px;
+	padding:5px;
+	padding-left:10px;
+	margin:0px;
+}
+#ll #title h2 {
+	font-size:12px;
+	padding:5px;
+	padding-left:10px;
+	margin:0px;
+}
+#ll #title img {
+	position:absolute;
+	z-index:1;
+	right:0px;
+	top:-2px;
+	padding:0px;
+	margin:10px;
+}
+#ll #main-menu {
+	background-color:#dddddd;
+	margin-top:0px;
+	margin-bottom:0px;
+	padding:5px;
+	padding-left:0px;
+}
+#ll #main-menu ul {
+	list-style-type: none;
+	margin:0px;
+	padding:0px;
+}
+#ll #main-menu ul li {
+	display: inline;
+	margin:0px;
+	padding:10px;
+}
+#ll #sub-menu {
+	font-size:12px;
+	background-color:#eeeeee;
+	margin-top:0px;
+	margin-bottom:0px;
+	padding:5px;
+	padding-left:10px;
+	height:17px;
+	position:relative;
+}
+#ll #foot-menu {
+	font-size:12px;
+	background-color:#eeeeee;
+	margin-top:30px;
+	margin-bottom:30px;
+	padding:5px;
+	padding-left:10px;
+	height:17px;
+	position:relative;
+}
+#ll #sub-menu ul,
+#ll #foot-menu ul {
+	list-style-type: none;
+	margin:0px;
+	padding:0px;
+	right:0px;
+	position:absolute;
+	top:-5px;
+}
+#ll #sub-menu ul li,
+#ll #foot-menu ul li {
+	float: left;
+	margin:0px;
+	padding:10px;
+}
+#ll #sub-menu ul li ul,
+#ll #foot-menu ul li ul {
+	visibility: hidden;
+	background-color:#eeeeee;
+	position:relative;
+}
+#ll #sub-menu ul li ul li,
+#ll #foot-menu ul li ul li {
+	margin-top:10px;
+	padding:4px;
+	float:none;
+}
+#ll #sub-menu ul li:hover ul,
+#ll #foot-menu ul li:hover ul {
+	visibility: visible;
+}
+#ll #body {
+	margin-top:30px;
+}
+
+
+/* Page */
+#ll .warning {
+	color:#FF8000;
+}
+#ll .failure {
+	color:#C00000;
+}
+#ll .failure,
+#ll .warning {
+	list-style-type:square;
+	font-weight:bold;
+	margin:0px;
+	padding:0px;
+	padding-left:15px;
+}
+#ll #body .box {
+	padding:10px;
+	background-color:#eeeeee;
+}
+#ll #body .box th {
+	margin:0px;
+	min-width:200px;
+	vertical-align:top;
+	text-align:left;
+}
+#ll #body .box td {
+	margin:0px;
+	vertical-align:top;
+	text-align:left;
+	padding-left:10px;
+}
+#ll #body .box td * {
+	margin:0px;
+	vertical-align:top;
+}
+#ll #body .current-page {
+	color:#6c83af;
+	text-decoration:underline;
+}
+
+
+/* Forums */
+#ll #body #forum {
+	border-collapse:collapse;
+	width:100%;
+}
+#ll #body #forum thead th {
+	background-color:#dddddd;
+	text-align:center;
+	padding-top:4px;
+	padding-bottom:4px;
+}
+#ll #body #forum tbody {
+	background-color:#eeeeee;
+}
+#ll #body #forum tbody .category {
+	color:#FFFFFF;
+	background-color:#6c83af;
+	padding:2px;
+	padding-left:41px;
+}
+#ll #body #forum tbody .forum-status {
+	background-color:#dddddd;
+	padding:3px;
+	margin:0px;
+	text-align:center;
+	vertical-align:middle;
+	width:30px;
+	height:30px;
+}
+#ll #body #forum tbody .forum-status .status-old,
+#ll #body #forum tbody .forum-status .status-new {
+	width:10px;
+	height:10px;
+	display:block;
+	margin-left:auto;
+	margin-right:auto;
+}
+#ll #body #forum tbody .forum-status .status-old,
+#ll #body #threads tbody .thread-status .status-old {
+	background-color:#eeeeee;
+}
+#ll #body #forum tbody .forum-status .status-new,
+#ll #body #threads tbody .thread-status .status-new {
+	background-color:#6c83af;
+}
+#ll #body #forum tbody .forum-main {
+	padding:5px;
+}
+#ll #body #forum tbody .forum-main .forum-title {
+	font-weight:bold;
+	vertical-align:top;
+}
+#ll #body #forum tbody .forum-main .forum-description {
+	font-size:12px;
+}
+#ll #body #forum tbody .forum-lastpost {
+	font-size:12px;
+	vertical-align:top;
+	padding:5px;
+	padding-left:30px;
+	width:200px;
+}
+
+
+/* Form */
+#ll #body form table {
+	border-collapse:collapse;
+	background-color:#eeeeee;
+	width:100%;
+	margin-left:auto;
+	margin-right:auto;
+}
+#ll #body form table tr th,
+#ll #body form table tr td {
+	text-align:left;
+	vertical-align:top;
+	padding-left:10px;
+	padding-top:10px;
+	padding-bottom:10px;
+}
+#ll #body form table tr th {
+	width:200px;
+}
+#ll #body form input[type=text],
+#ll #body form input[type=password],
+#ll #body form input[type=file],
+#ll #body form textarea {
+	font-family:monospace;
+	color:#808080;
+}
+#ll #body form input[type=text]:focus,
+#ll #body form input[type=password]:focus,
+#ll #body form input[type=file]:focus,
+#ll #body form textarea:focus {
+	color:#000000;
+}
+#ll #body form .form-help {
+	font-size:12px;
+}
+#ll #body form ul {
+	list-style-type:square;
+	margin:0px;
+	padding:0px;
+	padding-left:15px;
+}
+
+/* ThreadList */
+#ll #body #threads {
+	border-collapse:collapse;
+	width:100%;
+}
+#ll #body #threads thead th {
+	background-color:#dddddd;
+	text-align:center;
+	padding-top:4px;
+	padding-bottom:4px;
+	height:20px;
+}
+#ll #body #threads thead td,
+#ll #body #threads tfoot td {
+	background-color:#dddddd;
+	padding-top:4px;
+	padding-bottom:4px;
+	padding-left:38px;
+	font-size:12px;
+	height:20px;
+}
+#ll #body #threads thead .thread-count,
+#ll #body #threads tfoot .thread-count {
+	text-align:right;
+	padding-right:50px;
+}
+#ll #body #threads tbody {
+	background-color:#eeeeee;
+}
+#ll #body #threads tbody .thread-status {
+	background-color:#dddddd;
+	padding:3px;
+	margin:0px;
+	text-align:center;
+	vertical-align:middle;
+	width:30px;
+	height:30px;
+}
+#ll #body #threads tbody .thread-status .status-old,
+#ll #body #threads tbody .thread-status .status-new {
+	width:10px;
+	height:10px;
+	display:block;
+	margin-left:auto;
+	margin-right:auto;
+}
+#ll #body #threads tbody .thread-main {
+	padding:5px;
+	vertical-align:top;
+	font-size:12px;
+}
+#ll #body #threads tbody .thread-main a {
+	font-weight:bold;
+	font-size:14px;
+}
+#ll #body #threads tbody .thread-main .thread-summary {
+	color:#FFFFFF;
+	background-color:#6c83af;
+	visibility:hidden;
+	position:absolute;
+	left:40%;
+	width:400px;
+	overflow:hidden;
+	padding:5px;
+	z-index:1;
+}
+#ll #body #threads tbody tr .thread-main .thread-title:hover + .thread-summary {
+	visibility:visible;
+}
+#ll #body #threads tbody .thread-posts {
+	font-weight:bold;
+	padding:5px;
+	vertical-align:top;
+	text-align:center;
+}
+#ll #body #threads tbody .thread-lastpost {
+	font-size:12px;
+	vertical-align:top;
+	padding:5px;
+	padding-left:30px;
+	width:200px;
+}
+
+
+/* Postings */
+#ll #body #posts {
+	border-collapse:collapse;
+	width:100%;
+}
+#ll #body #posts thead th,
+#ll #body #posts thead td,
+#ll #body #posts tfoot th {
+	background-color:#dddddd;
+	padding:4px;
+	padding-left:10px;
+	font-size:12px;
+	height:20px;
+	text-align:left;
+}
+#ll #body #posts tbody {
+	background-color:#eeeeee;
+}
+#ll #body #posts tbody:nth-child(odd) {
+	background-color:#eeeeee;
+}
+#ll #body #posts tbody:nth-child(even) {
+	background-color:#dbdbdb;
+}
+#ll #body #posts tbody td {
+	padding:10px;
+}
+#ll #body #posts tbody .posts-user,
+#ll #body #posts tbody.poll th {
+	padding:10px;
+	vertical-align:top;
+	font-weight:bold;
+	width: 150px;
+}
+#ll #body #posts tbody .posts-date {
+	text-align:right;
+}
+#ll #body #posts tbody .poll-question {
+	font-weight:bold;
+}
+#ll #body #posts tbody.status-new .posts-date {
+	font-weight:bold;
+	color:#6c83af;
+}
+#ll #body #posts tbody .posts-avatar {
+	vertical-align:top;
+	text-align:center;
+}
+#ll #body #posts tbody .posts-avatar img {
+	max-width:80px;
+	max-height:80px;
+}
+#ll #body #posts tbody .posts-text {
+}
+#ll #body #posts tbody .posts-text .posts-lastedit {
+	font-style:italic;
+	padding:10px;
+	font-size:12px;
+}
+#ll #body #posts tbody.poll .poll-options * {
+	background-color:transparent;
+	padding:0px;
+	margin:0px;
+}
+#ll #body #posts tbody.poll .poll-options .poll-bar {
+	background-color:#6c83af;
+}
+#ll #body #posts tbody.poll .poll-options .poll-percent,
+#ll #body #posts tbody.poll .poll-options .poll-votes {
+	width:60px;
+	text-align:right;
+}
+#ll #body #posts tbody.poll .poll-options th {
+	width:150px;
+}
+#ll #body #posts tbody.poll .poll-vote {
+	text-align:right;
+	font-size:12px;
+}
+#ll #body #posts tbody .posts-menu {
+/* TODO move menu to the right */
+	font-size:12px;
+}
+#ll #body #posts tbody .posts-menu ul {
+	list-style-type: none;
+	margin:0px;
+	padding:0px;
+	z-index:1;
+}
+#ll #body #posts tbody .posts-menu ul li {
+	float: left;
+	margin:0px;
+	padding:10px;
+}
+#ll #body #posts tbody .posts-menu  ul li ul {
+	display: none;
+	position:absolute;
+	background-color:#eeeeee;
+}
+#ll #body #posts tbody:nth-child(odd) .posts-menu  ul li ul {
+	background-color:#eeeeee;
+}
+#ll #body #posts tbody:nth-child(even) .posts-menu  ul li ul {
+	background-color:#dbdbdb;
+}
+#ll #body #posts tbody .posts-menu ul li ul li {
+	margin-top:10px;
+	padding:4px;
+	float:none;
+}
+#ll #body #posts tbody .posts-menu ul li:hover ul {
+	display: block;
+}
+
+#ll #body #posts tbody .posts-text pre {
+	white-space: pre-wrap;
+	word-wrap: break-word;
+	width:450px;
+	min-width:95%;
+	max-height:700px;
+	overflow:auto;
+	font-family:monospace;
+	color:#000000;
+	background-color:#ffffff;
+	padding:10px;
+	margin:11px;
+	border:solid 1px #002468;
+}
+#ll #body #posts tbody .posts-text p code {
+	font-family:monospace;
+	color:#000000;
+	background-color:#ffffff;
+	border:solid 1px #002468;
+	padding:1px;
+	padding-left:4px;
+	padding-right:4px;
+	margin-left:4px;
+	margin-right:4px;
+}
+#ll #body #posts tbody .posts-text a {
+	text-decoration:underline;
+}
+#ll #body #posts tbody .posts-text a[rev=auto] {
+}
+#ll #body #posts tbody .posts-text .image {
+	line-height:128px;
+	max-width:128px;
+	max-height:128px;
+	vertical-align:middle;
+	border: solid 1px transparent;
+	margin:10px;
+}
+#ll #body #posts tbody .posts-text .image:hover {
+	background-color:#6c83af;
+	border:solid 1px #6c83af;
+}
+#ll #body #posts tbody .posts-text audio,
+#ll #body #posts tbody .posts-text video {
+	display:block;
+	margin:10px;
+	max-width:80%;
+	max-height:700px;
+}
+#ll #body #posts tbody .posts-text .smiley {
+	border: none;
+	vertical-align:top;
+	text-align:center;
+}
+#ll #body #posts tbody .posts-text strong {
+	font-weight:bolder;
+}
+#ll #body #posts tbody .posts-text em {
+	font-style:italic;
+}
+#ll #body #posts tbody .posts-text q {
+	font-style:italic;
+}
+#ll #body #posts tbody .posts-text cite {
+	font-style:italic;
+	margin-left:12px;
+}
+#ll #body #posts tbody .posts-text blockquote {
+	border:solid 1px #002468;
+	padding:5px;
+	padding-left:15px;
+	padding-right:15px;
+	margin:0px;
+	margin-left:10px;
+	margin-right:10px;
+	background-color:#dbdbdb;
+}
+#ll #body #posts tbody:nth-child(odd) .posts-text blockquote {
+	background-color:#dbdbdb;
+}
+#ll #body #posts tbody:nth-child(even) .posts-text blockquote {
+	background-color:#eeeeee;
+}
+#ll #body #posts tbody .posts-text ul {
+	list-style-type:square;
+}
+#ll #body #posts tbody .posts-text .files {
+	padding:0px;
+	margin:0px;
+}
+
+
+/* MyFiles */
+#ll #body form table .files tbody tr {
+	background-color:#dbdbdb;
+}
+#ll #body form table .files tbody tr:nth-child(odd) {
+	background-color:#dbdbdb;
+}
+#ll #body form table .files tbody tr:nth-child(even) {
+	background-color:#eeeeee;
+}
+
+/* MarkupHelp */
+#ll #body .box #markup-help {
+}
+#ll #body .box #markup-help th {
+	width:250px;
+}
+#ll #body .box #markup-help .markup-help-title {
+	text-align:center;
+	padding:5px;
+	padding-top:20px;
+}
+#ll #body .box ul {
+	list-style-type:square;
+	margin:0px;
+	padding:0px;
+	padding-left:15px;
+}
+');

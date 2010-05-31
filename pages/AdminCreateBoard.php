@@ -632,7 +632,6 @@ eot;
 	font-weight:bolder;
 }
 #ll #body #posts tbody .posts-text em {
-	font-weight:bold;
 	font-style:italic;
 }
 #ll #body #posts tbody .posts-text q {

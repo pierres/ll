@@ -239,6 +239,21 @@ public function testParagraph()
 	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
 	}
 
+public function testQuoteAndParagraphs()
+	{
+	$in = "<quote>a\n\nb</quote>";
+	$out = "<blockquote><p>a</p><p>b</p></blockquote>";
+	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
+
+	$in = "<quote>a<quote>b\n\nc</quote></quote>";
+	$out = "<blockquote><p>a</p><blockquote><p>b</p><p>c</p></blockquote></blockquote>";
+	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
+
+	$in = "<quote>a<quote>b\n\nc</quote>d</quote>";
+	$out = "<blockquote><p>a</p><blockquote><p>b</p><p>c</p></blockquote><p>d</p></blockquote>";
+	$this->assertEquals($out, $this->ll->Markup->toHtml($in));
+	}
+
 public function testQuoteAndLink()
 	{
 	$in = '<quote>http://www.laber-land.de/</quote>';
