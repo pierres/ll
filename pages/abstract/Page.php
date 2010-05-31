@@ -82,7 +82,6 @@ private static $availablePages = array
 	'MarkupTest' => 'pages/MarkupTest.php',
 	'MovePosting' => 'pages/MovePosting.php',
 	'MoveThread' => 'pages/MoveThread.php',
-	'MyFavorites' => 'pages/MyFavorites.php',
 	'MyFiles' => 'pages/MyFiles.php',
 	'MyProfile' => 'pages/MyProfile.php',
 	'NewPost' => 'pages/NewPost.php',
