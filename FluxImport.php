@@ -379,6 +379,12 @@ private function importTopics() {
 		$this->DB->execute('UPDATE fluxbb.forums SET num_topics=num_topics+1 WHERE id ='.$move['movedfrom']);
 	}
 	echo "\n";
+
+	#update topics set first_post_id=0, last_post_id=0, last_poster=null, num_views=0, num_replies=0 where moved_to is not null;
+	#delete from topics where forum_id not in (select id from forums);
+	#update topics set num_replies=(select count(id)-1 from posts where topic_id=topics.id) where topics.moved_to is null;
+	#update forums set num_topics=(select count(id) from topics where forum_id=forums.id);
+	#update forums set num_posts=(select sum(num_replies)+count(topics.id) from topics where forum_id=forums.id and topics.moved_to is null);
 }
 
 private function importUsers() {
