@@ -21,13 +21,10 @@ class UnMarkup extends Modul{
 
 private $sep;
 private $sepc;
-private $Stack;
 
 function __construct()
 	{
 	$this->sep = chr(28);
-
-	$this->Stack = new Stack();
 	}
 
 

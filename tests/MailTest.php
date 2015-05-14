@@ -18,8 +18,6 @@
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-require('LLTestCase.php');
-
 class MailTest extends LLTestCase {
 
 public function testValidateMail()

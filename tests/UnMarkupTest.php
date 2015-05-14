@@ -18,8 +18,6 @@
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-require('LLTestCase.php');
-
 class UnMarkupTest extends LLTestCase {
 
 
@@ -132,6 +130,7 @@ public function testLinks()
 
 public function testSmilies()
 	{
+	$this->ll->loadModul('Markup');
 	foreach (Markup::$smilies as $smiley => $name)
 		{
 		$this->assertEquals($smiley, $this->ll->UnMarkup->fromHtml('<p><img src="images/smilies/'.$name.'.png" alt="'.$name.'" class="smiley" /></p>'));

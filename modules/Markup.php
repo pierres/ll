@@ -34,7 +34,6 @@ private $maxLoop = 10000;
 private $maxLength = 1000000;
 private $sep = '';
 private $sepc = '';
-private $Stack = null;
 
 public static $smilies = array(
 	'0:-)' => 'angel',
@@ -130,7 +129,6 @@ public function toHtml($text)
 		}
 
 	$this->loop = 0;
-	$this->Stack = new Stack();
 
 	$text = str_replace($this->sep, '', $text);
 	$text = str_replace("\r", '', $text);

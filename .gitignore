@@ -1,3 +1,4 @@
 *~
 *.orig
 LocalSettings.php
+/.idea

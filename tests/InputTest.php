@@ -18,8 +18,6 @@
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-require('LLTestCase.php');
-
 class InputTest extends LLTestCase {
 
 public function testInvalidInput()

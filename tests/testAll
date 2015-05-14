@@ -1,7 +1,0 @@
-#!/bin/bash
-
-for t in *Test.php; do
-	echo "Testing ${t%Test\.php}..."
-	phpunit --colors --syntax-check --process-isolation "${t}" || exit 1
-	echo ''
-done

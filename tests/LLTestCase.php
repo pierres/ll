@@ -18,8 +18,6 @@
 	along with LL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-require_once 'PHPUnit/Framework.php';
-
 ini_set('include_path', ini_get('include_path').':../');
 
 require ('modules/Modul.php');
